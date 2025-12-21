@@ -6,6 +6,7 @@ class PublicPagesController < ApplicationController
   end
 
   def features
+    render "public_pages/main_home"
   end
 
   def contact

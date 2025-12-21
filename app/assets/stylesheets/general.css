@@ -7,6 +7,7 @@
   --lang-bg: #D7E2E7;
   --border: #A6BBC6;
   --body-bg-color: #F9F9F9;
+  --primary-button-bg: #0087CA;
 }
 
 @font-face {
@@ -37,10 +38,6 @@ html {
   font-size: 16px; 
 }
 
-html, body {
-
-  margin: 0;
-}
 
 body {
   font-family: "Nunito Sans", system-ui, sans-serif;
@@ -48,6 +45,8 @@ body {
   background-color: var(--body-bg-color);
   min-width: 700px;
   font-size: 1rem;
+  min-height: 100vh;
+
 }
 
 main {
@@ -86,4 +85,3 @@ a {
 p {
   margin-bottom: 0;
 }
-

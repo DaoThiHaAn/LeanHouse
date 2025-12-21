@@ -1,2 +1,72 @@
-<h1>Authentication#sign_up</h1>
-<p>Find me in app/views/authentication/sign_up.html.erb</p>
+<% content_for :title, "Sign Up" %>
+
+<div class="d-flex w-100 h-100 signup-container">
+    <%=image_tag "signup-bg.png", alt: "Sign Up Background", class: "align-self-stretch signup-bg" %>
+    <div class="form-wrapper d-flex flex-column gap-4 align-items-center py-4 flex-fill">
+        <div class="greeting">
+            <p class="mb-2 text-center"><%= t('common.welcome.greeting') %></p>
+            <p class="text-center">LEANHOUSE !</p>
+        </div>
+        <h1><%= t("common.auth.sign_up").upcase %></h1>
+
+        <%= form_with model: @user, local: true, 
+                    class:"signup-form d-flex flex-column gap-3" do |form| %>
+
+            <!-- Role selection -->
+            <div data-controller="role-selector" class="form-group">
+                <%= form.hidden_field :role, data: { role_selector_target: "input" } %>
+                <div class="d-flex gap-3">
+                    <div
+                        class="role-option selected d-flex flex-column align-items-center gap-1 px-2 py-1"
+                        data-action="click->role-selector#select"
+                        data-role-selector-value="tenant"
+                    >
+                        <%= image_tag "tenant-icon.png" %>
+                        <p><%= t('common.role.tenant') %></p>
+                    </div>
+
+                    <div
+                        class="role-option d-flex flex-column align-items-center gap-1 px-2 py-1"
+                        data-action="click->role-selector#select"
+                        data-role-selector-value="landlord"
+                    >
+                        <%= image_tag "landlord-icon.png" %>
+                        <p><%= t('common.role.landlord') %></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <%= form.label t('form.profile.fullname'), class: "form-label" %>
+                <%= form.text_field :fullname, class: "form-control" %>
+            </div>
+
+            <div class="form-group">
+                <%= form.label t('form.profile.tel'), class: "form-label" %>
+                <%= form.text_field :tel, class: "form-control" %>
+            </div>
+
+            <div class="form-group">
+                <%= form.label :password, class: "form-label" %>
+                <%= form.password_field :password, class: "form-control" %>
+            </div>
+
+            <div class="form-group">
+                <%= form.label t('form.profile.sex'), class: "form-label" %>
+                <%= form.select :sex, options_for_select([["Male", "M"], ["Female", "F"]]), {}, {class: "form-control"} %>
+            </div>
+
+            <div class="form-group">
+                <%= form.label t('form.profile.bday'), class: "form-label" %>
+                <%= form.date_field :bday, class: "form-control" %>
+            </div>
+
+            <div class="form-group">
+                <%= form.label t('form.profile.address'), class: "form-label" %>
+                <%= form.text_area :address, rows: 3, class: "form-control" %>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100"><%= t("common.auth.sign_up") %></button>
+        <% end %>
+    </div>
+</div>

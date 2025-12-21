@@ -1,0 +1,14 @@
+vi:
+  form:
+    profile:
+      role: "Bạn là"
+      title: "Đăng Ký Tài Khoản Mới"
+      fullname: "Họ và Tên"
+      tel: "Số điện thoại"
+      password: "Mật khẩu"
+      password_confirmation: "Xác nhận mật khẩu"
+      address: "Địa chỉ thường trú"
+      male: "Nam"
+      female: "Nữ"
+      sex: "Giới tính"
+      bday: "Ngày sinh"

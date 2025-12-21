@@ -1,0 +1,53 @@
+.signup-bg {
+    width: 60%;
+    object-fit: cover;
+}
+
+
+.greeting p {
+    font-family: "Playpen Sans", system-ui, sans-serif;
+    font-size: 1.2rem;
+    color: #185363;
+}
+
+.greeting :first-child {
+    font-weight: 300;
+}
+
+.greeting :last-child {
+    font-weight: 800;
+}
+
+.form-wrapper {
+    height: 100vh;
+     overflow-y: scroll;
+}
+
+.form-wrapper h1 {
+    color: var(--primary-button-bg);
+}
+
+.role-option {
+    border: 1px solid #E8E8E8;
+    width: 120px;
+    height: 100px;
+    cursor: pointer;
+}
+
+.role-option p {
+    color: #2F5692;
+    font-weight: 800;
+}
+
+.role-option img {
+    width: 60px;
+    height: 60px;
+}
+
+.role-option:hover {
+    background-color: rgb(236, 236, 236);
+}
+
+.role-option.selected {
+    border: 2px solid #2F5692;
+}
