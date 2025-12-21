@@ -1,0 +1,43 @@
+footer {
+    background-color: var(--bar-bg);
+    font-size: 0.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+footer .logo {
+    height: px;
+    width: auto;
+}
+
+.main-links-container {
+    border-bottom: 1px solid #C1DAE0;
+}
+
+.main-links a {
+    color: var(--normal-text);
+}
+
+.muted-text {
+    color: #6D96A3;
+    font-size: 0.65rem;
+    font-style: italic;
+}
+
+.main-links.contact :not(:first-child) {
+    font-weight: 200;
+} 
+
+.main-links.contact span {
+    font-size: 0.85rem;
+}
+
+.notify-bct {
+    width: 120px;
+    height: auto;
+}
+.reg-bct {
+    width: 120px;
+    height: auto;
+}

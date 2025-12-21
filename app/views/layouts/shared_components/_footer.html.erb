@@ -1,0 +1,63 @@
+<footer class="w-100 d-flex flex-md-row flex-column align-items-center justify-content-center px-3 pt-4 pb-2" style="background-color: var(--bar-bg); gap: 4rem;">
+    <!-- Col 1: Logo -->
+    <%= image_tag "logo.png", alt: "LeanHouse Logo", class: "logo align-self-stretch" %>
+
+    <!-- Col 2: Main content: links + copyright -->
+    <div class="d-flex flex-column flex-wrap gap-2">
+        <!-- Row 1: main links + contact + logos -->
+        <div class="main-links-container d-flex gap-5 pb-1">
+        
+            <!-- Links rows -->
+            <div class="main-links d-flex flex-column flex-wrap align-items-start gap-2">
+                <%= link_to root_path, class: "d-flex align-items-center gap-1" do %>
+                <span class="icon material-symbols-outlined">home</span>
+                <%= t('bar.home') %>
+                <% end %>
+                <%= link_to t('bar.about'), about_path %>
+                <%= link_to t('bar.features'), features_path %>
+                <%= link_to t('bar.report_issues'), report_issues_path %>
+            </div>
+
+            <div class="main-links d-flex flex-column flex-wrap align-items-start gap-2">
+                <%= link_to posts_path, class: "d-flex align-items-center gap-1" do %>
+                <span class="icon material-symbols-outlined">search</span>
+                <%= t('bar.find_rooms') %>
+                <% end %>
+                <%= link_to t('bar.terms'), terms_of_use_path %>
+                <%= link_to t('bar.privacy'), privacy_path %>
+            </div>
+
+            <!-- Contact -->
+            <div class="main-links contact d-flex flex-column gap-1">
+                <p class="mb-2"><%= t('bar.contact') %></p>
+                <p><%= t('bar.company_name').upcase %></p>
+                <p><%= t('bar.working_hours') %></p>
+                <p class="d-flex align-items-center gap-1">
+                <span class="material-symbols-outlined">call</span>
+                (+84) 123 456 789
+                </p>
+                <p class="d-flex align-items-center gap-1">
+                <span class="material-symbols-outlined">location_on</span>
+                <%= t('bar.address') %>
+                </p>
+                <p class="d-flex align-items-center gap-1">
+                <span class="material-symbols-outlined">email</span>
+                <a href="mailto:customerservice@LeanHouse.com">customerservice@LeanHouse.com</a>
+                </p>
+            </div>
+
+            <!-- BCT Logos -->
+            <div class="d-flex flex-column gap-3">
+                <%= image_tag "da-thong-bao-bct.png", alt: t('bar.notified'), class: "notify-bct" %>
+                <%= image_tag "da-dang-ky-bct.png", alt: t('bar.registered'), class: "reg-bct" %>
+            </div>
+
+        </div>
+
+        <!-- Row 2: copyright -->
+        <div class="muted-text w-100 text-center">
+            <%= t('bar.copy_rights') %>
+        </div>
+
+    </div>
+</footer>
