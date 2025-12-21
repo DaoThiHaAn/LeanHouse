@@ -1,0 +1,75 @@
+.content-wrapper {
+  position: relative; /* Essential for positioning quotes */
+  display: inline-block;
+  padding: 0 40px;
+}
+
+#about-us p {
+  font-family: "Playpen Sans", system-ui, sans-serif;
+  line-height: 1.6;
+  font-size: 1.1rem;
+  margin: 0;
+  /* Adjusting word spacing slightly to match the "airy" feel */
+  word-spacing: 1px;
+}
+
+strong {
+  font-weight: 800;
+  color: #1a3a4a;
+}
+
+/* Styling the large quotation marks */
+.quote {
+  font-size: 3.5rem;
+  font-family: "Playpen Sans", serif; /* Serifs look better for quotes */
+  position: absolute;
+  font-weight: bold;
+}
+
+.open {
+  top: -20px;
+  left: 0;
+}
+
+.close {
+  bottom: -40px;
+  right: 0;
+}
+
+#features {
+    background-color: #F1F8FB;
+    font-size: 1.1rem;
+}
+
+.feature-img {
+    width: 180px;
+    height: 200px;
+    border-radius: 20px;
+    object-fit: cover;
+}
+
+.seeker-img {
+    width: 350px;
+    height: auto;
+    border-radius: 5px;
+    object-fit: cover;
+}
+
+.role {
+    font-size: 1.2rem
+}
+
+.seeker p {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #881D1D;
+}
+
+.real_info {
+    max-width: 300px;
+}
+
+.map-wrapper {
+    border: 2px solid #1F6476;
+  display: inline-block; /* border hugs the map */
+}

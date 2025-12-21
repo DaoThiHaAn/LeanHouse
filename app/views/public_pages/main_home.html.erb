@@ -1,1 +1,99 @@
-HOMEPAGE
+<div class="d-flex flex-column w-100">
+    <%= image_tag "banner.png", alt: "Banner Image", class: "w-100" %>
+    
+    <section id="about-us" class="w-75 container-fluid py-5 px-3">
+        <h2 class="text-center"><%= t('home.about_us').upcase %></h2>
+        <div class="content-wrapper w-100">
+            <span class="quote open">“</span>
+            <p class="text-center">
+                <%= t('home.message1_html') %>
+                <br><br>
+                <%= t('home.message2_html') %>
+            </p>
+            <span class="quote close">”</span>
+        </div>
+    </section>
+
+    <section id="features" class="w-100 d-flex flex-column align-items-center gap-4 py-5 px-3">
+        <h2><%= t('home.features').upcase %></h2>
+        <div>
+            <div class="d-flex justify-content-center gap-4 mb-4">
+                <strong class="text-center role"><%= t('common.role.landlord').upcase %></strong>
+                -
+                <div class="text-center fw-semibold"><%= t('home.feature_landlord') %></div>
+            </div>
+
+            <div class="d-flex gap-4">
+                <%= image_tag "landlord-1.png", alt: "Landlord Feature", class: "feature-img" %>
+                <%= image_tag "landlord-2.png", alt: "Landlord Feature", class: "feature-img" %>
+                <%= image_tag "landlord-3.png", alt: "Landlord Feature", class: "feature-img" %>
+                <%= image_tag "landlord-4.png", alt: "Landlord Feature", class: "feature-img" %>
+                <%= image_tag "landlord-5.png", alt: "Landlord Feature", class: "feature-img" %>
+            </div>
+        </div>
+
+        <div>
+            <div class="d-flex mt-3 justify-content-center gap-4 mb-4">
+                <strong class="text-center role"><%= t('common.role.tenant').upcase %></strong>
+                -
+                <div class="text-center fw-semibold"><%= t('home.feature_tenant') %></div>
+            </div>
+
+            <div class="d-flex gap-4">
+                <%= image_tag "tenant-1.png", alt: "Tenant Feature", class: "feature-img" %>
+                <%= image_tag "tenant-2.png", alt: "Tenant Feature", class: "feature-img" %>
+                <%= image_tag "tenant-3.png", alt: "Tenant Feature", class: "feature-img" %>
+                <%= image_tag "tenant-4.png", alt: "Tenant Feature", class: "feature-img" %>
+                <%= image_tag "tenant-5.png", alt: "Tenant Feature", class: "feature-img" %>
+            </div>
+        </div>
+
+        <div class="mt-2 d-flex flex-column align-items-center gap-3">
+             <%= t('home.simple')%>
+             <strong class="role"><%= t('home.seeker').upcase %></strong>
+
+             <div class="seeker d-flex gap-5 align-items-center">
+                <div class="d-flex flex-column align-items-center gap-2">
+                    <p>
+                        <%= t('home.browse_rooms')%>
+                    </p>
+                    <p>-</p>
+                    <p>
+                        <%= t('home.select_room')%>
+                    </p>
+                </div>
+                <%= image_tag "seeker.png", alt: "Seeker Feature", class: "seeker-img" %>
+                <p class="text-center real_info">
+                    <%= t('home.real_info')%>
+                </p>
+            </div>
+        </div>  
+    <section>
+
+    <section id="contact" class="w-100 container-fluid py-5 px-3">
+        <h2 class="text-center"><%= t('common.bar.contact').upcase %></h2>
+        <div class="d-flex justify-content-center gap-5">
+            <div class="map-wrapper">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.511570569363!2d106.6576985904846!3d10.77207568291089!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752ec3c161a3fb%3A0xef77cd47a1cc691e!2zVHLGsOG7nW5nIMSQ4bqhaSBo4buNYyBCw6FjaCBraG9hIC0gxJDhuqFpIGjhu41jIFF14buRYyBnaWEgVFAuSENN!5e0!3m2!1svi!2s!4v1766334742415!5m2!1svi!2s" width="450" height="300" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+
+            <div class="d-flex flex-column gap-3">
+                <p><%= t('common.bar.company_name').upcase %></p>
+                <p><%= t('common.bar.working_hours') %></p>
+                <p class="d-flex align-items-center gap-1">
+                <span class="material-symbols-outlined">call</span>
+                (+84) 123 456 789
+                </p>
+                <p class="d-flex align-items-center gap-1">
+                <span class="material-symbols-outlined">location_on</span>
+                <%= t('bar.address') %>
+                </p>
+                <p class="d-flex align-items-center gap-1">
+                <span class="material-symbols-outlined">email</span>
+                <a href="mailto:customerservice@LeanHouse.com">customerservice@LeanHouse.com</a>
+                </p>
+            </div>
+        </div>
+    </section>
+
+</div>

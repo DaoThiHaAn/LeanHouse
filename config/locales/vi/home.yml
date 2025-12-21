@@ -1,0 +1,13 @@
+vi:
+  home:
+    about_us: "Về Chúng Tôi"
+    message1_html: Tại <strong>LeanHouse</strong>, chúng tôi muốn việc tìm chỗ ở hay quản lý phòng trọ, ký túc xá trở nên dễ dàng hơn cho mọi người. Nền tảng của chúng tôi được xây dựng với mục tiêu mang đến quy trình thuê phòng đơn giản và trải nghiệm sống thoải mái, giúp chủ nhà và người thuê kết nối nhanh chóng, thuận tiện.
+    message2_html: <strong>LeanHouse</strong> sẽ là một trợ lý đáng tin cậy hỗ trợ bạn xử lý giấy tờ gọn gàng, theo dõi mọi thông tin rõ ràng và giúp mọi việc diễn ra suôn sẻ, để bạn có thể tận hưởng cuộc sống theo cách trọn vẹn nhất.
+    features: "Tính Năng Nổi Bật"
+    feature_landlord: "Công cụ quản lý cho thuê thông minh dành cho chủ nhà hiện đại"
+    feature_tenant: "Trải nghiệm thuê phòng thật đơn giản"
+    simple: "Hay đơn giản là"
+    seeker: "Bạn cần tìm trọ?"
+    browse_rooms: "Tìm trọ dễ dàng"
+    select_room: "Chọn phòng trong vài phút"
+    real_info: "Xem trọ thật, giá thật, thông tin minh bạch"

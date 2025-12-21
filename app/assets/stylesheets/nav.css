@@ -1,6 +1,7 @@
 nav {
     background-color: var(--bar-bg);
     height: fit-content !important;
+    border-bottom: 1px solid #ADC3C9;
 }
 
 .navbar-brand img{

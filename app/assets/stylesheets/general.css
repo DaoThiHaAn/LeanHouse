@@ -25,12 +25,20 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: "Playpen Sans";
+  src: url("PlaypenSans-VariableFont_wght.ttf") format("truetype");
+  font-weight: 200 1000;
+  font-style: normal;
+  font-display: swap;
+}
+
 html {
   font-size: 16px; 
 }
 
 html, body {
-  height: 100%;
+
   margin: 0;
 }
 
@@ -47,8 +55,19 @@ main {
   flex: 1;
 }
 
+h1, h2 {
+  font-family: "Playpen Sans", system-ui, sans-serif;
+  margin-bottom: 2rem;
+  font-weight: 600;
+  color: var(--primary-bg);
+}
+
 h1 {
-  font-weight: 800;
+  font-size: 1.8rem;
+}
+
+h2 {
+  font-size: 1.5rem;
 }
 
 em {
@@ -61,6 +80,7 @@ button, a {
 
 a {
   text-decoration: none;
+  color: var(--normal-text)
 }
 
 p {

@@ -10,10 +10,10 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto d-flex align-items-center gap-3">
 
-        <%= nav_item t("bar.home"), "Home", root_path, icon: "home" %>
-        <%= nav_item t("bar.find_rooms"), "Finding Rooms", posts_path, icon: "search" %>
-        <%= nav_item t("bar.about"), "About", about_path %>
-        <%= nav_item t("bar.contact"), "Contact", contact_path %>
+        <%= nav_item t("common.bar.home"), "Home", root_path, icon: "home" %>
+        <%= nav_item t("common.bar.find_rooms"), "Finding Rooms", posts_path, icon: "search" %>
+        <%= nav_item t("common.bar.about"), "About", about_path %>
+        <%= nav_item t("common.bar.contact"), "Contact", contact_path %>
 
         <!-- Dropdown 
         <li class="nav-item dropdown">
@@ -38,10 +38,10 @@
 
     <div class="d-flex gap-3 align-items-center">
         <%# User authentication links %>
-        <%= link_to t("auth.sign_up"), signup_path, class: "signup-btn"%>
+        <%= link_to t("common.auth.sign_up"), signup_path, class: "signup-btn"%>
 
         <%= link_to login_path, class: "login-btn d-flex align-items-center" do %>
-            <%= t("auth.log_in") %>
+            <%= t("common.auth.log_in") %>
             <i class="material-symbols-outlined">door_open</i>
         <% end %>
 
