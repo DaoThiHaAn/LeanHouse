@@ -21,12 +21,16 @@ class UsersController < ApplicationController
 
   # POST /users or /users.json
   def create
-    signup = UserSignup.new(user_params)
-    if signup.call
-      redirect_to root_path, notice: t("flash.signup_success")
+    phone_verification = PhoneVerification.new(user_params)
+    result = phone_verification.request_signup_otp
+
+    if result.status == :otp_sent
+      session[:pending_tel]  = result.user.tel
+      session[:pending_role] = result.user.role
+      redirect_to verify_otp_path, notice: t("messages.send_otp")
     else
-      @user = signup.user
-      flash.now[:alert] = t("flash.signup_failed")
+      @user = result.user
+      # flash.now[:alert] = t("errors.signup_failed")
       render "authentication/sign_up", status: :unprocessable_entity
     end
   end

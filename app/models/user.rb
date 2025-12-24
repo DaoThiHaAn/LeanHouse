@@ -1,8 +1,7 @@
 class User < ApplicationRecord
   MIN_AGE = 15
-  OTP_EXPIRY = 5.minutes
   scope :kept, -> { where(discarded_at: nil) } # user is not deleted
-
+  scope :existed,  -> { where(discarded_at: nil, tel_verified_at: nil) }
 
   # Virtual attribute
   attr_accessor :terms_accepted
@@ -17,15 +16,20 @@ class User < ApplicationRecord
 
   include Otp
 
-
   validates :fullname, :password, :password_confirmation, :tel, :sex, :bday, :address, presence: true
   validates :fullname, format: { with: /\A[\p{L}\s]+\z/, message: :invalid_fname }
-  validates :tel, length: { is: 10 }, format: { with: /\A0\d{9}\z/, message: :invalid_tel }
+  validates :tel, length: { is: 10 },
+            format: { with: /\A0\d{9}\z/, message: :invalid_tel },
+            uniqueness: {
+              scope: :role,
+              conditions: -> { where(discarded_at: nil).where.not(tel_verified_at: nil) },
+              message: :existed_acc
+            }
   validates :sex, inclusion: { in: %w[M F] }
   validates :terms_accepted, acceptance: true, on: :create
 
-  validates :password, presence: true, length: { in: 8..72 }
-  validates :password_confirmation, presence: true, length: { in: 8..72 }
+  validates :password, length: { in: 8..72 }
+  validates :password_confirmation, length: { in: 8..72 }
   validate :pw_complexity
   validate :pw_match
 

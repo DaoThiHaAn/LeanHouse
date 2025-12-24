@@ -54,4 +54,7 @@ vi:
       Không tìm thấy số điện thoại đã xác nhận!
       Hãy gửi lại OTP.
     user_not_found: "Không tìm thấy tài khoản!"
+  
+  messages:
+    send_otp: "Đã gửi OTP!"
 

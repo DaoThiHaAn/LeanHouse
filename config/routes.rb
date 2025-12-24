@@ -27,6 +27,7 @@ Rails.application.routes.draw do
   get "/reset-password", to: "authentication#reset_pw", as: :reset_pw
 
   post "/request_otp", to: "otp#create"
+  get "/otp-verification", to: "otp#input", as: :otp_input
   get  "/verify_otp",  to: "otp#verify"
   post "/verify_otp",  to: "otp#confirm"
   get "/otp", to: "otp#new"

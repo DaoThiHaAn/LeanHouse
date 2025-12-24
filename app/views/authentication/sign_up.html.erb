@@ -9,6 +9,7 @@
         </div>
         <h1><%= t("common.auth.sign_up").upcase %></h1>
 
+        <%# Form is handled at user#create %>
         <%= form_with model: @user, local: true, 
                     class:"signup-form d-flex align-items-center flex-column gap-4" do |form| %>
 

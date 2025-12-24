@@ -7,8 +7,9 @@ vi:
             fullname:
               invalid_fname: "Họ và tên chỉ được chứa chữ cái và khoảng trắng"
             tel:  
-              invalid_tel: "Số điện thoại phải bao gồm 10 ký tự!"
-              blank: "Số điện thoại không được để trống"
+              invalid_tel: "Số điện thoại phải bao gồm 10 ký tự số và bắt đầu bằng số 0!"
+              blank: "Số điện thoại không được để trống!"
+              existed_acc: "Số điện thoại đã được đăng ký cho loại tài khoản này!"
 
             fullname:
               invalid_fname: "Tên không được có ký tự số!"

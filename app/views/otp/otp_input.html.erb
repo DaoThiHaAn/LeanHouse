@@ -19,7 +19,9 @@
                 data-controller="otp"
                 data-otp-length-value="6">
 
-            <form data-otp_target="form">
+            <form data-otp_target="form" action="/search" accept-charset="UTF-8" method="get">
+                <%= csrf_meta_tags %>
+                
                 <input type="hidden" data-otp-target="hidden">
 
                 <div class="d-flex gap-2">
