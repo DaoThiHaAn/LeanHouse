@@ -10,18 +10,23 @@
         <h1><%= t("common.auth.sign_up").upcase %></h1>
 
         <%= form_with model: @user, local: true, 
-                    class:"signup-form d-flex flex-column gap-3" do |form| %>
+                    class:"signup-form d-flex align-items-center flex-column gap-4" do |form| %>
 
             <!-- Role selection -->
-            <div data-controller="role-selector" class="form-group">
+            <div data-controller="role-selector" class="form-group gap-2 d-flex flex-column align-items-center mb-2">
                 <%= form.hidden_field :role, data: { role_selector_target: "input" } %>
+                <%= form.label :role, class: "form-label" do %>
+                    <%= t('form.profile.role') + ": "%> 
+                    <span class="asterisk">*</span>
+                <% end %>
+
                 <div class="d-flex gap-3">
                     <div
                         class="role-option selected d-flex flex-column align-items-center gap-1 px-2 py-1"
                         data-action="click->role-selector#select"
                         data-role-selector-value="tenant"
                     >
-                        <%= image_tag "tenant-icon.png" %>
+                        <%= image_tag "tenant-icon.png", alt: "Tenant Icon" %>
                         <p><%= t('common.role.tenant') %></p>
                     </div>
 
@@ -30,43 +35,203 @@
                         data-action="click->role-selector#select"
                         data-role-selector-value="landlord"
                     >
-                        <%= image_tag "landlord-icon.png" %>
+                        <%= image_tag "landlord-icon.png", alt: "Landlord Icon" %>
                         <p><%= t('common.role.landlord') %></p>
                     </div>
                 </div>
             </div>
 
-            <div class="form-group">
-                <%= form.label t('form.profile.fullname'), class: "form-label" %>
-                <%= form.text_field :fullname, class: "form-control" %>
+            <!-- Tel -->   
+            <div class="form-group" data-controller="form">
+                <%= form.label :tel , class: "form-label d-flex justify-content-between" do%>
+                    <div>
+                        <%= t('form.profile.tel') +  ": "%>
+                        <span class="asterisk">*</span>
+                    </div>
+
+                    <small class="counter-text">
+                        <span data-form-target="charCount">0</span>
+                    </small>
+                <% end %>
+
+                <div class="field-info mb-2 d-flex align-items-center gap-1">
+                    <span class="material-symbols-outlined">info</span>
+                    <small><%= t('form.profile.zalo') %></small>
+                </div>
+
+                <%= form.telephone_field :tel, minLength: 10, maxlength: 10, class: "form-control #{invalid_class(@user, :tel)}", 
+                    placeholder: t('form.profile.tel_placeholder'), required: true,
+                    data: {
+                        form_target: "input",
+                        action: "input->form#update"
+                    } 
+                %>
+                <%= field_error(@user, :tel) %>
             </div>
 
-            <div class="form-group">
-                <%= form.label t('form.profile.tel'), class: "form-label" %>
-                <%= form.text_field :tel, class: "form-control" %>
+
+            <!-- Password -->
+            <div class="form-group" data-controller="form">
+                <%= form.label :password, class: "form-label d-flex justify-content-between" do%>
+                    <div>
+                        <%= t('form.profile.password') +  ": "%>
+                        <span class="asterisk">*</span>
+                    </div>
+
+                    <small class="counter-text">
+                        <span data-form-target="charCount">0</span>
+                    </small>
+                <% end %>
+
+                <div class="position-relative">
+                    <%= form.password_field :password, minLength: 8, maxLength: 72, required: true,
+                    class: "form-control pe-5 #{invalid_class(@user, :password)}",
+                        data: {
+                            form_target: "input",
+                            action: "input->form#update"
+                        } 
+                    %>
+
+                    <span class="eye position-absolute me-2 top-50 end-0 translate-middle-y material-symbols-outlined password-toggle" 
+                            data-action="click->form#togglePasswordVisibility">
+                        visibility
+                    </span>
+                </div>
+
+                <%= field_error(@user, :password) %>
+
+                <div class="field-info m-2 d-flex align-items-center gap-1">
+                    <span class="material-symbols-outlined">info</span>
+                    <p><%= t('form.profile.required_pw') %></p>
+                </div>
+
+                <ul class="field-info d-flex flex-column gap-1 mb-1">
+                    <li><%= t('form.profile.pw_length')%></li>
+                    <li><%= t('form.profile.pw_letters')%></li>
+                    <li><%= t('form.profile.pw_numbers')%></li>
+                </ul>
+            </div>
+            
+
+            <div class="form-group" data-controller="form">
+                <%= form.label :password_confirmation, class: "form-label d-flex justify-content-between" do%>
+                    <div>
+                        <%= t('form.profile.password_confirmation') +  ": "%>
+                        <span class="asterisk">*</span>
+                    </div>
+
+                    <small class="counter-text">
+                        <span data-form-target="charCount">0</span>
+                    </small>
+                <% end %>
+
+                <div class="position-relative">
+                    <%= form.password_field :password_confirmation, minLength: 8, maxLength: 72, required: true,
+                        class: "form-control pe-5 #{invalid_class(@user, :password_confirmation)}",
+                        placeholder: t('form.profile.pw_cf_placeholder'),
+                        data: {
+                            form_target: "input",
+                            action: "input->form#update"
+                        } 
+                    %>
+
+                    <span class="eye position-absolute me-2 top-50 end-0 translate-middle-y material-symbols-outlined password-toggle" 
+                            data-action="click->form#togglePasswordVisibility">
+                        visibility
+                    </span>
+                </div>
+
+                <%= field_error(@user, :password_confirmation) %>
             </div>
 
-            <div class="form-group">
-                <%= form.label :password, class: "form-label" %>
-                <%= form.password_field :password, class: "form-control" %>
+            <!-- Fullname -->
+            <div class="form-group" data-controller="form">
+                <%= form.label :fullname, class: "form-label d-flex justify-content-between" do%>
+                    <div>
+                        <%= t('form.profile.fullname') +  ": "%>
+                        <span class="asterisk">*</span>
+                    </div>
+
+                    <small class="counter-text">
+                        <span data-form-target="charCount">0</span>
+                    </small>
+                <% end %>
+                
+                <%= form.text_field :fullname, maxlength: 50, class: "form-control #{invalid_class(@user, :fullname)}", 
+                    placeholder: t('form.profile.fullname_placeholder'), required: true,
+                    data: {
+                        form_target: "input",
+                        action: "input->form#update"
+                    } 
+                %>
+
+                <%= field_error(@user, :fullname) %>
             </div>
 
-            <div class="form-group">
-                <%= form.label t('form.profile.sex'), class: "form-label" %>
-                <%= form.select :sex, options_for_select([["Male", "M"], ["Female", "F"]]), {}, {class: "form-control"} %>
+            <!-- Address -->
+            <div class="form-group" data-controller="form">
+                <%= form.label :address, class: "form-label d-flex justify-content-between" do%>
+                    <div>
+                        <%= t('form.profile.address') +  ": "%>
+                        <span class="asterisk">*</span>
+                    </div>
+
+                    <small class="counter-text">
+                        <span data-form-target="charCount">0</span>
+                    </small>
+                <% end %>
+
+                <%= form.text_field :address, maxlength: 100, class: "form-control", 
+                    placeholder: t('form.profile.address_placeholder'), required: true,
+                    data: {
+                        form_target: "input",
+                        action: "input->form#update"
+                    } 
+                %>
             </div>
 
-            <div class="form-group">
-                <%= form.label t('form.profile.bday'), class: "form-label" %>
-                <%= form.date_field :bday, class: "form-control" %>
+            <!-- Sex -->
+            <div class="form-group d-flex gap-2">
+                <%= form.label :sex, class: "form-label" do %>
+                    <%= t("form.profile.sex") %>:
+                    <span class="asterisk">*</span>
+                <% end %>
+
+                <div class="form-check form-check-inline">
+                    <%= form.radio_button :sex, "F", class: "form-check-input", required: true %>
+                    <%= form.label :sex_f, t("form.profile.female"), class: "form-check-label" %>
+                </div>
+
+                <div class="form-check form-check-inline">
+                    <%= form.radio_button :sex, "M", class: "form-check-input" %>
+                    <%= form.label :sex_m, t("form.profile.male"), class: "form-check-label" %>
+                </div>
             </div>
 
-            <div class="form-group">
-                <%= form.label t('form.profile.address'), class: "form-label" %>
-                <%= form.text_area :address, rows: 3, class: "form-control" %>
+            <!-- Birthday -->
+            <div class="form-group d-flex align-items-center gap-3">
+                <%= form.label :bday, class: "form-label" do%>
+                        <%= t('form.profile.bday') +  ": "%>
+                        <span class="asterisk">*</span>
+                <% end %>
+                <%= form.date_field :bday, max: 15.years.ago.to_date, class: "date form-control", required: true %>
             </div>
 
-            <button type="submit" class="btn btn-primary w-100"><%= t("common.auth.sign_up") %></button>
+            <!-- Terms and Conditions -->
+            <div class="form-group mt-3">
+                <div class="form-check">
+                    <%= form.check_box :terms_accepted, class: "form-check-input" , required: true %>
+
+                    <%= form.label :terms_accepted, class: "form-check-label" do %>
+                        <%= t("form.profile.agree_prefix") %>
+                        <%= link_to t("common.bar.terms"), terms_of_use_path, target: "_blank", rel: "noopener", class: "link" %>
+                        <%= t("and") %>
+                        <%= link_to t("common.bar.privacy"), privacy_path, target: "_blank", rel: "noopener", class: "link" %>
+                    <% end %>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn"><%= t("form.profile.create_acc") %></button>
         <% end %>
     </div>
 </div>

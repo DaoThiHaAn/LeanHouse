@@ -24,7 +24,14 @@ module LeanHouse
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
     #     config.i18n.default_locale = :en
+    #
+    # Load services
+    config.autoload_paths << Rails.root.join("app/services")
+
     config.i18n.available_locales = [ :en, :vi ]
     config.i18n.default_locale = :vi
+
+    config.time_zone = "Asia/Ho_Chi_Minh"
+    config.active_record.default_timezone = :utc
   end
 end

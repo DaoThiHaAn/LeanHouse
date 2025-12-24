@@ -10,7 +10,7 @@
             <!-- Links rows -->
             <div class="main-links d-flex flex-column flex-wrap align-items-start gap-2">
                 <%= link_to root_path, class: "d-flex align-items-center gap-1" do %>
-                <span class="icon material-symbols-outlined">home</span>
+                <span class="icon material-symbols-filled">home</span>
                 <%= t('bar.home') %>
                 <% end %>
                 <%= link_to t('common.bar.about'), about_path %>
@@ -20,7 +20,7 @@
 
             <div class="main-links d-flex flex-column flex-wrap align-items-start gap-2">
                 <%= link_to posts_path, class: "d-flex align-items-center gap-1" do %>
-                <span class="icon material-symbols-outlined">search</span>
+                <span class="icon material-symbols-filled">search</span>
                 <%= t('common.bar.find_rooms') %>
                 <% end %>
                 <%= link_to t('common.bar.terms'), terms_of_use_path %>
@@ -33,15 +33,15 @@
                 <p><%= t('common.bar.company_name').upcase %></p>
                 <p><%= t('common.bar.working_hours') %></p>
                 <p class="d-flex align-items-center gap-1">
-                <span class="material-symbols-outlined">call</span>
+                <span class="material-symbols-filled">call</span>
                 (+84) 123 456 789
                 </p>
                 <p class="d-flex align-items-center gap-1">
-                <span class="material-symbols-outlined">location_on</span>
+                <span class="material-symbols-filled">location_on</span>
                 <%= t('bar.address') %>
                 </p>
                 <p class="d-flex align-items-center gap-1">
-                <span class="material-symbols-outlined">email</span>
+                <span class="material-symbols-filled">email</span>
                 <a href="mailto:customerservice@LeanHouse.com">customerservice@LeanHouse.com</a>
                 </p>
             </div>

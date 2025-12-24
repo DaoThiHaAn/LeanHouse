@@ -1,0 +1,23 @@
+vi:
+  activerecord:
+    errors:
+      models:
+        user:
+          attributes:
+            fullname:
+              invalid_fname: "Họ và tên chỉ được chứa chữ cái và khoảng trắng"
+            tel:  
+              invalid_tel: "Số điện thoại phải bao gồm 10 ký tự!"
+              blank: "Số điện thoại không được để trống"
+
+            fullname:
+              invalid_fname: "Tên không được có ký tự số!"
+              blank: "Tên không được để trống!"
+            password:
+              invalid_pw: "Mật khẩu không thỏa yêu cầu!"
+              blank: "Mật khẩu không được để trống!"
+            password_confirmation:
+              confirmation: "Mật khẩu xác nhận không khớp!"
+              blank: "Mật khẩu không được để trống!"
+            address:
+              blank: "Địa chỉ không được để trống!"

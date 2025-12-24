@@ -1,4 +1,15 @@
 vi:
+  # Used in view: l(variable, format: :default/:short)
+  date: 
+    formats:
+      default: "%d/%m/%Y"
+      short: "%d/%m/%y"
+
+  time:
+    formats:
+      default: "%d/%m/%Y %H:%M:%S"
+      short: "%d/%m/%y %H:%M"
+
   common: 
     bar:
       home: "Trang Chủ"
@@ -29,3 +40,10 @@ vi:
     
     welcome:
       greeting: "Chào mừng bạn đến với"
+
+  flash:
+    signup_success: "Đăng ký thành công"
+    signup_failed: "Đăng ký thất bại! Hãy thử lại"
+
+  and: "và"
+

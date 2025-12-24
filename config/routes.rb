@@ -19,10 +19,19 @@ Rails.application.routes.draw do
   get "/report-issues", to: "public_pages#report_issues"
 
 
-  get "authentication/signup", to: "authentication#sign_up", as: :signup
-  get "authentication/login", to: "authentication#log_in", as: :login
-  get "authentication/logout", to: "authentication#log_out", as: :logout
+  get "/signup", to: "authentication#sign_up", as: :signup
+  get "/login", to: "authentication#log_in", as: :login
+  get "/logout", to: "authentication#log_out", as: :logout
 
 
   resources :posts, only: [ :index, :show ]
+  resources :users
+
+  namespace :landlord do
+    # Use path: "" to remove the extra "/landlord" segment from the URL
+    # but keep the "Landlord::" module and folder structure
+    resources :landlords, path: "", shallow: true do
+      resources :reports
+    end
+  end
 end

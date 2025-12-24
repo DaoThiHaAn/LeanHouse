@@ -12,12 +12,20 @@ nav {
     height: 100%;
 }
 
-.nav-item.active {
-    background-color: var(--primary-bg);
-    height: 100%;
+.nav-link {
+    color: var(--normal-text) !important;
+    font-weight: 600;
 }
 
-.nav-item.active .nav-link {
+.nav-item.custom:hover {
+    background-color: #142c3d3e;
+}
+
+.nav-item.custom.active {
+    background-color: var(--primary-bg);
+}
+
+.nav-item.custom.active .nav-link {
     color: white !important;
 }
 
@@ -57,4 +65,16 @@ nav {
     background-color: transparent;
     color: #44656F;
     background-color: #D7E2E7;
+}
+
+.lang-switcher {
+    width: 80px;
+}
+
+.lang-switcher .dropdown-menu {
+    min-width: min-content;
+}
+
+.lang-switcher .dropdown-item {
+    font-size: 0.8rem;
 }

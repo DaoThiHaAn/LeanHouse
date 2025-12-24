@@ -1,6 +1,6 @@
 module ApplicationHelper
   def nav_item(real_text, label, path, icon: nil)
-    li_classes = [ "nav-item d-lg-flex align-items-center align-self-center" ]
+    li_classes = [ "nav-item custom d-lg-flex align-items-center align-self-center" ]
     a_classes  = [ "nav-link d-flex align-items-center px-2" ]
 
     if current_page?(path)
@@ -13,7 +13,7 @@ module ApplicationHelper
                   aria: (current_page?(path) ? { current: "page" } : {}) do
         # prepend icon if given
         safe_join([
-          icon.present? ? content_tag(:span, icon, class: "material-symbols-outlined me-1") : nil,
+          icon.present? ? content_tag(:span, icon, class: "material-symbols-filled me-1") : nil,
           real_text
         ].compact)
       end

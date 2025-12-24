@@ -70,6 +70,6 @@ strong {
 }
 
 .map-wrapper {
-    border: 2px solid #1F6476;
+  border: 2px solid #1F6476;
   display: inline-block; /* border hugs the map */
 }

@@ -21,16 +21,13 @@ class UsersController < ApplicationController
 
   # POST /users or /users.json
   def create
-    @user = User.new(user_params)
-
-    respond_to do |format|
-      if @user.save
-        format.html { redirect_to @user, notice: "User was successfully created." }
-        format.json { render :show, status: :created, location: @user }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @user.errors, status: :unprocessable_entity }
-      end
+    signup = UserSignup.new(user_params)
+    if signup.call
+      redirect_to root_path, notice: t("flash.signup_success")
+    else
+      @user = signup.user
+      flash.now[:alert] = t("flash.signup_failed")
+      render "authentication/sign_up", status: :unprocessable_entity
     end
   end
 
@@ -65,6 +62,16 @@ class UsersController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def user_params
-      params.expect(user: [ :fullname ])
+      params.require(:user).permit(
+        :fullname,
+        :tel,
+        :password,
+        :password_confirmation,
+        :role,
+        :address,
+        :sex,
+        :bday,
+        :terms_accepted
+      )
     end
 end

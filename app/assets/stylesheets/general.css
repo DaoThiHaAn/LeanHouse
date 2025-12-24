@@ -8,6 +8,9 @@
   --border: #A6BBC6;
   --body-bg-color: #F9F9F9;
   --primary-button-bg: #0087CA;
+  --primary-button-hover-bg: #0c597c;
+  --placeholder: #adb3b8;
+  --info-text: #7e7e7e;
 }
 
 @font-face {
@@ -35,7 +38,7 @@
 }
 
 html {
-  font-size: 16px; 
+  font-size: 15px; 
 }
 
 
@@ -46,7 +49,6 @@ body {
   min-width: 700px;
   font-size: 1rem;
   min-height: 100vh;
-
 }
 
 main {
@@ -82,6 +84,78 @@ a {
   color: var(--normal-text)
 }
 
+.link {
+  color: var(--primary-button-bg);
+  font-weight: 600;
+}
+.link:hover {
+  text-decoration: underline;
+}
+
 p {
   margin-bottom: 0;
+}
+
+input {
+  border: 1px solid var(--border) !important;
+}
+
+::placeholder {
+  font-style: italic !important;
+  font-size: 0.8rem;
+  color: var(--placeholder)!important;
+}
+
+.field-info, .counter-text {
+  font-size: 0.9rem;
+  color: var(--info-text);
+  font-weight: 400;
+}
+
+.field-info span {
+  font-size: 0.9rem;
+}
+
+.form-label {
+  font-weight: 600;
+}
+
+.date.form-control {
+  width: fit-content
+}
+
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'opsz' 24,
+    'GRAD' 0;
+}
+
+.material-symbols-filled {
+  font-family: 'Material Symbols Outlined';
+  font-variation-settings:
+    'FILL' 1,
+    'wght' 400,
+    'opsz' 24,
+    'GRAD' 0;
+}
+
+.eye {
+    cursor: pointer;
+    color: var(--info-text)
+}
+
+.flash-container {
+  position: fixed;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1055; /* above navbar */
+  width: min(90%, 480px);
+}
+
+.is-invalid {
+  border: 1px solid var(--alert-text) !important;
 }
