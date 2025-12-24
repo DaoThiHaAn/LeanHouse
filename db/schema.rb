@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_23_091259) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_24_031631) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -65,8 +65,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_23_091259) do
     t.string "address", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "is_deleted", default: false, null: false
     t.boolean "is_active", default: true, null: false
+    t.string "otp_code"
+    t.datetime "otp_sent_at"
+    t.datetime "tel_verified_at"
+    t.string "role"
+    t.datetime "discarded_at"
+    t.index ["tel", "role"], name: "index_users_on_tel_and_role", unique: true, where: "(discarded_at IS NULL)"
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"

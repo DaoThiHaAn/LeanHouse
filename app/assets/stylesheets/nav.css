@@ -4,6 +4,10 @@ nav {
     border-bottom: 1px solid #ADC3C9;
 }
 
+nav .material-symbols-filled {
+    font-size: 1.1rem;
+}
+
 .navbar-brand img{
     height: 50px;
 }

@@ -40,10 +40,18 @@ vi:
     
     welcome:
       greeting: "Chào mừng bạn đến với"
+      back: "Chào mừng bạn quay trở lại"
 
   flash:
     signup_success: "Đăng ký thành công"
     signup_failed: "Đăng ký thất bại! Hãy thử lại"
 
   and: "và"
+  turn_back: "Quay lại"
+
+  errors:
+    session_expired: |
+      Không tìm thấy số điện thoại đã xác nhận!
+      Hãy gửi lại OTP.
+    user_not_found: "Không tìm thấy tài khoản!"
 

@@ -1,2 +1,91 @@
-<h1>Authentication#log_in</h1>
-<p>Find me in app/views/authentication/log_in.html.erb</p>
+<% content_for :title, "Login" %>
+
+<div class="d-flex w-100 h-100 signup-container">
+    <%=image_tag "signup-bg.png", alt: "Sign Up Background", class: "align-self-stretch signup-bg" %>
+    <div class="form-wrapper d-flex flex-column gap-4 align-items-center py-4 flex-fill">
+        <div class="greeting">
+            <p class="mb-2 text-center"><%= t('common.welcome.back') %></p>
+            <p class="text-center">LEANHOUSE !</p>
+        </div>
+        <h1><%= t("common.auth.sign_up").upcase %></h1>
+
+        <form action="<%= login_path %>" method="post"
+            class="signup-form d-flex align-items-center justify-content-center flex-column gap-4">
+
+            <%= csrf_meta_tags %>
+
+            <!-- Role -->
+            <input type="hidden" name="user[role]" value="tenant">
+            <div data-controller="role-selector" class="form-group gap-2 d-flex flex-column align-items-center mb-2">
+                <input type="hidden" name="user[role]" data-role-selector-target="input">
+                <%= label_tag "user_role", class: "form-label" do %>
+                    <%= t('form.profile.role') %>:
+                    <span class="asterisk">*</span>
+                <% end %>
+
+
+                <div class="d-flex gap-3">
+                    <div
+                        class="role-option selected d-flex flex-column align-items-center gap-1 px-2 py-1"
+                        data-action="click->role-selector#select"
+                        data-role-selector-value="tenant"
+                    >
+                        <%= image_tag "tenant-icon.png", alt: "Tenant Icon" %>
+                        <p><%= t('common.role.tenant') %></p>
+                    </div>
+
+                    <div
+                        class="role-option d-flex flex-column align-items-center gap-1 px-2 py-1"
+                        data-action="click->role-selector#select"
+                        data-role-selector-value="landlord"
+                    >
+                        <%= image_tag "landlord-icon.png", alt: "Landlord Icon" %>
+                        <p><%= t('common.role.landlord') %></p>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Tel -->
+            <div class="form-group w-100">
+                <label class="form-label">
+                <%= t('form.profile.tel') %> <span class="asterisk">*</span>
+                </label>
+
+                <input type="tel"
+                    name="user[tel]"
+                    minlength="10"
+                    maxlength="10"
+                    required
+                    class="form-control"
+                    placeholder="<%= t('form.profile.tel_login_placeholder') %>">
+            </div>
+
+            <!-- Password -->
+            <div class="form-group w-100">
+                <label class="form-label">
+                    <%= t('form.profile.password') %> <span class="asterisk">*</span>
+                </label>
+
+                <input type="password"
+                    name="user[password]"
+                    minlength="8"
+                    maxlength="72"
+                    required
+                    placeholder="<%=t('form.profile.pw_placeholder')%>"
+                    class="form-control">
+            </div>
+
+            <%= link_to t('form.profile.forgot_pw'), forgot_pw_path, class: "forgot-pw link" %>
+
+            <button type="submit" class="mx-auto custom-primary-btn">
+                <%= t("common.auth.log_in") %>
+            </button>
+        </form>
+
+        <div class="d-flex flex-wrap gap-2"> 
+            <%= t('form.profile.not_have_acc')%> 
+            <%= link_to t('form.profile.reg_now'), login_path, class: "fw-bold link" %> 
+        </div>
+    </div>
+</div>

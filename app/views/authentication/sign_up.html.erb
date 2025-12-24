@@ -85,7 +85,8 @@
 
                 <div class="position-relative">
                     <%= form.password_field :password, minLength: 8, maxLength: 72, required: true,
-                    class: "form-control pe-5 #{invalid_class(@user, :password)}",
+                        class: "form-control pe-5 #{invalid_class(@user, :password)}",
+                        placeholder: t('form.profile.pw_placeholder'),
                         data: {
                             form_target: "input",
                             action: "input->form#update"
@@ -231,7 +232,7 @@
                 </div>
             </div>
 
-            <button type="submit" class="submit-btn"><%= t("form.profile.create_acc") %></button>
+            <button type="submit" class="custom-primary-btn"><%= t("form.profile.create_acc") %></button>
         <% end %>
     </div>
 </div>

@@ -1,0 +1,94 @@
+<% content_for :title, "Reset Password" %>
+
+<div class="custom card px-5 py-4 mt-5 mx-auto">
+    <div class="card-body d-flex flex-column gap-3">
+        <h1 class="card-title text-center"><%=t('form.profile.reset_pw').upcase %></h1>
+
+        <!-- TODO handle-->
+        <%= form_with model: @user, local: true, 
+                    class:"signup-form d-flex align-items-center flex-column gap-4" do |form| %>
+
+             <!-- Password -->
+            <div class="form-group" data-controller="form">
+                <%= form.label :password, class: "form-label d-flex justify-content-between" do%>
+                    <div>
+                        <%= t('form.profile.password') +  ": "%>
+                        <span class="asterisk">*</span>
+                    </div>
+
+                    <small class="counter-text">
+                        <span data-form-target="charCount">0</span>
+                    </small>
+                <% end %>
+
+                <div class="position-relative">
+                    <%= form.password_field :password, minLength: 8, maxLength: 72, required: true,
+                        class: "form-control pe-5 #{invalid_class(@user, :password)}",
+                        placeholder: t('form.profile.pw_placeholder'),
+                        data: {
+                            form_target: "input",
+                            action: "input->form#update"
+                        } 
+                    %>
+
+                    <span class="eye position-absolute me-2 top-50 end-0 translate-middle-y material-symbols-outlined password-toggle" 
+                            data-action="click->form#togglePasswordVisibility">
+                        visibility
+                    </span>
+                </div>
+
+                <%= field_error(@user, :password) %>
+
+                <div class="field-info m-2 d-flex align-items-center gap-1">
+                    <span class="material-symbols-outlined">info</span>
+                    <p><%= t('form.profile.required_pw') %></p>
+                </div>
+
+                <ul class="field-info d-flex flex-column gap-1 mb-1">
+                    <li><%= t('form.profile.pw_length')%></li>
+                    <li><%= t('form.profile.pw_letters')%></li>
+                    <li><%= t('form.profile.pw_numbers')%></li>
+                </ul>
+            </div>
+            
+
+            <div class="form-group" data-controller="form">
+                <%= form.label :password_confirmation, class: "form-label d-flex justify-content-between" do%>
+                    <div>
+                        <%= t('form.profile.password_confirmation') +  ": "%>
+                        <span class="asterisk">*</span>
+                    </div>
+
+                    <small class="counter-text">
+                        <span data-form-target="charCount">0</span>
+                    </small>
+                <% end %>
+
+                <div class="position-relative">
+                    <%= form.password_field :password_confirmation, minLength: 8, maxLength: 72, required: true,
+                        class: "form-control pe-5 #{invalid_class(@user, :password_confirmation)}",
+                        placeholder: t('form.profile.pw_cf_placeholder'),
+                        data: {
+                            form_target: "input",
+                            action: "input->form#update"
+                        } 
+                    %>
+
+                    <span class="eye position-absolute me-2 top-50 end-0 translate-middle-y material-symbols-outlined password-toggle" 
+                            data-action="click->form#togglePasswordVisibility">
+                        visibility
+                    </span>
+                </div>
+
+                <%= field_error(@user, :password_confirmation) %>
+            </div>
+        <%end%>
+
+        <%= link_to :back, class: "mx-auto d-flex align-items-center forgot-pw link" do%>
+            <span class="material-symbols-outlined">arrow_left_alt</span>
+            <%=t('turn_back')%>
+        <%end%>
+
+        </div>
+    </div>
+</div>

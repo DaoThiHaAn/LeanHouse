@@ -1,4 +1,4 @@
-class UserSignup
+class UserCreation
   def initialize(user_params)
     @user = User.new(user_params)
   end

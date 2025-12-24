@@ -61,7 +61,7 @@
     width: 50%;
 }
 
-.submit-btn {
+.custom-primary-btn {
     width: fit-content;
     padding: 5px 30px;
     border: none;
@@ -71,8 +71,15 @@
     font-weight: bold;
     font-size: 1.1rem;
     transition: background-color 0.3s ease-in-out;
+    box-shadow: 1px 2px 5px rgba(0, 0, 0, 0.35);
 }
 
-.submit-btn:hover {
+.custom-primary-btn:hover {
     background-color: var(--primary-button-hover-bg);
+}
+
+.forgot-pw.link {
+    color: var(--info-text);
+    font-style: italic;
+    font-weight: 400
 }

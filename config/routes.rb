@@ -21,7 +21,15 @@ Rails.application.routes.draw do
 
   get "/signup", to: "authentication#sign_up", as: :signup
   get "/login", to: "authentication#log_in", as: :login
+  post "/login", to: "authentication#handle_log_in", as: :login_handle
   get "/logout", to: "authentication#log_out", as: :logout
+  get "/forgot-password", to: "authentication#forgot_pw", as: :forgot_pw
+  get "/reset-password", to: "authentication#reset_pw", as: :reset_pw
+
+  post "/request_otp", to: "otp#create"
+  get  "/verify_otp",  to: "otp#verify"
+  post "/verify_otp",  to: "otp#confirm"
+  get "/otp", to: "otp#new"
 
 
   resources :posts, only: [ :index, :show ]

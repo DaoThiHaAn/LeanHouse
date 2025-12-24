@@ -1,7 +1,10 @@
 class User < ApplicationRecord
   MIN_AGE = 15
+  OTP_EXPIRY = 5.minutes
+  scope :kept, -> { where(discarded_at: nil) } # user is not deleted
+
+
   # Virtual attribute
-  attr_accessor :role
   attr_accessor :terms_accepted
   has_secure_password   # 2 virtual attributes: password, password_confirmation
 
@@ -10,6 +13,10 @@ class User < ApplicationRecord
   has_one :tenant, dependent: :destroy
 
   before_validation :normalize_inputs
+  before_create :send_tel_otp
+
+  include Otp
+
 
   validates :fullname, :password, :password_confirmation, :tel, :sex, :bday, :address, presence: true
   validates :fullname, format: { with: /\A[\p{L}\s]+\z/, message: :invalid_fname }
@@ -21,6 +28,38 @@ class User < ApplicationRecord
   validates :password_confirmation, presence: true, length: { in: 8..72 }
   validate :pw_complexity
   validate :pw_match
+
+
+  def tel_verified?
+    tel_verified_at.present?
+  end
+
+  def active?
+    is_active
+  end
+  # OTP
+  def send_tel_otp
+    self.tel_verified = false
+    self.otp_code = SecureRandom.random_number(1_000_000).to_s.rjust(6, "0")
+    self.otp_sent_at = Time.current
+    puts "OTP for #{tel}: #{otp_code}"
+  end
+
+  def verify_tel!(otp)
+    return false if discarded?
+    return false if otp_code != otp
+    return false if otp_sent_at < OTP_EXPIRY.ago
+
+    update!(
+      tel_verified: true,
+      otp_code: nil,
+      otp_sent_at: nil
+    )
+  end
+
+  def discard!
+    update!(discarded_at: Time.current)
+  end
 
   private
 
