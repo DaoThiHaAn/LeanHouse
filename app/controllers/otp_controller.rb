@@ -39,11 +39,11 @@ class OtpController < ApplicationController
         return
 
       when :otp_verification_failed
-        message = t("messages.otp_failed")
+        message = t("errors.otp_failed")
       when :expired_otp
         message = t("errors.expired_otp")
       else
-        message = t("messages.wrong_otp")
+        message = t("errors.wrong_otp")
       end
 
       flash.now[:alert] = message

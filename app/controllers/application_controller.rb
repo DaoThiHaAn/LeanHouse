@@ -3,6 +3,7 @@ class ApplicationController < ActionController::Base
   allow_browser versions: :modern
 
   include SessionHelper
+  helper_method :current_user, :logged_in?
 
   # Set locale from params or default locale
   around_action :switch_locale

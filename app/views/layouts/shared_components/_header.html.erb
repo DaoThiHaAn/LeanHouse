@@ -7,46 +7,13 @@
     <% end %>
 
     <!-- Nav links -->
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto d-flex align-items-center gap-3">
-
-        <%= nav_item t("common.bar.home"), "Home", root_path, icon: "home" %>
-        <%= nav_item t("common.bar.find_rooms"), "Finding Rooms", posts_path, icon: "search" %>
-        <%= nav_item t("common.bar.features"), "Features", features_path%>
-        <%= nav_item t("common.bar.about"), "About", about_path %>
-        <%= nav_item t("common.bar.contact"), "Contact", contact_path %>
-
-        <!-- Dropdown 
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle"
-             href="#"
-             role="button"
-             data-bs-toggle="dropdown"
-             aria-expanded="false">
-            Dropdown
-          </a>
-
-          <ul class="dropdown-menu">
-            <li><%= link_to "Action", "#", class: "dropdown-item" %></li>
-            <li><%= link_to "Another action", "#", class: "dropdown-item" %></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><%= link_to "Something else", "#", class: "dropdown-item" %></li>
-          </ul>
-        </li>
-        -->
-      </ul>
-    </div>
+    <%= render "layouts/shared_components/nav_link" %>
 
     <div class="d-flex gap-3 align-items-center">
         <%# User authentication links %>
-      <%= link_to t("common.auth.sign_up"), signup_path, class: "signup-btn"%>
+      <%= render "layouts/shared_components/auth_box" %>
 
-      <%= link_to login_path, class: "login-btn gap-1 d-flex align-items-center" do %>
-          <%= t("common.auth.log_in") %>
-          <span class="material-symbols-filled">door_open</span>
-      <% end %>
-
-      <%# TODO Language selector%>
+      <%# Language selector%>
       <div class="nav-item dropdown lang-switcher">
         <a class="nav-link lang-btn dropdown-toggle d-flex justify-content-center align-items-center gap-1"
                 type="button"
@@ -79,5 +46,10 @@
             aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
+  </div>
+
+  <!-- TODO: Addition bar for landlords -->
+  <div class="secondary-nav px-3 py-1 d-flex gap-3 flex-wrap align-items-center">
+
   </div>
 </nav>

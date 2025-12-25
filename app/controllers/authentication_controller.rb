@@ -7,7 +7,9 @@ class AuthenticationController < ApplicationController
   end
 
   def log_out
-    # TODO
+    destroy_session
+    flash[:notice] = t("messages.logout_success")
+    redirect_to root_path
   end
 
   def forgot_pw

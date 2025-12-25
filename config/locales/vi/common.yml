@@ -27,6 +27,10 @@ vi:
       report_issues: "Báo cáo sự cố"
       registered: "Đã Đăng ký Bộ Công Thương"
       notified: "Đã Thông báo Bộ Công Thương"
+      my_profile: "Tài khoản của tôi"
+      my_bank_acc: "Tài khoản ngân hàng"
+      my_vehicle: "Xe của tôi"
+      my_saved_post: "Bài đăng đã lưu"
 
     auth:
       sign_up: "Đăng Ký"
@@ -52,10 +56,11 @@ vi:
     user_not_found: "Không tìm thấy tài khoản!"
     wrong_otp: "Mã OTP không đúng!"
     expired_otp: "Mã OTP đã hết hiệu lực!"
+    otp_failed: "Xảy ra lỗi khi xác minh OTP! Hãy thử lại."
+    signup_failed: "Đăng ký thất bại! Hãy thử lại."
   
   messages:
     send_otp: "Đã gửi OTP!"
     resend_success: "Đã gửi lại mã OTP!"
     signup_success: "Đăng ký thành công!"
-    signup_failed: "Đăng ký thất bại! Hãy thử lại."
-    otp_failed: "Xảy ra lỗi khi xác minh OTP! Hãy thử lại."
+    logout_success: "Đăng xuất thành công!"

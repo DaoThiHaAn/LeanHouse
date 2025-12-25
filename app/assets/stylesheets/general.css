@@ -174,7 +174,7 @@ input {
 }
 
 .custom-primary-btn:hover {
-    background-color: var(--primary-button-hover-bg);
+  background-color: var(--primary-button-hover-bg);
 }
 
 .custom-secondary-btn {

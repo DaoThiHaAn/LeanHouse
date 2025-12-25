@@ -7,14 +7,14 @@ module SessionHelper
   end
 
   def current_user
-    @current_user ||= User.kept.find_by(id: session[:user_id])
+    @current_user ||= User.kept.with_attached_avatar.find_by(id: session[:user_id], is_active: true)
   end
 
   def logged_in?
     current_user.present?
   end
 
-  def log_out
+  def destroy_session
     session.delete(:user_id)
     session[:role] = "guest"
   end
