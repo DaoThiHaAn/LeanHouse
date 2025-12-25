@@ -60,7 +60,7 @@
                     <small><%= t('form.profile.zalo') %></small>
                 </div>
 
-                <%= form.telephone_field :tel, minlength: 10, maxlength: 10, class: "form-control #{invalid_class(@user, :tel)}", 
+                <%= form.telephone_field :tel, minlength: 10, maxlength: 10, class: "mb-1 form-control #{invalid_class(@user, :tel)}", 
                     placeholder: t('form.profile.tel_placeholder'), required: true, autofocus: true,
                     data: {
                         form_target: "input",

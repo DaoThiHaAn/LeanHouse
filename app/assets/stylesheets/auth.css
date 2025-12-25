@@ -61,23 +61,6 @@
     width: 50%;
 }
 
-.custom-primary-btn {
-    width: fit-content;
-    padding: 5px 30px;
-    border: none;
-    border-radius: 40px;
-    background-color: var(--primary-button-bg);
-    color: white;
-    font-weight: bold;
-    font-size: 1.1rem;
-    transition: background-color 0.3s ease-in-out;
-    box-shadow: 1px 2px 5px rgba(0, 0, 0, 0.35);
-}
-
-.custom-primary-btn:hover {
-    background-color: var(--primary-button-hover-bg);
-}
-
 .forgot-pw.link {
     color: var(--info-text);
     font-style: italic;

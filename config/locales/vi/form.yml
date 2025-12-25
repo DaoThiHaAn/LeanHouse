@@ -31,6 +31,7 @@ vi:
       otp_valid: "Mã OTP chỉ có hiệu lực trong 5 phút!"
       resend_otp: "Gửi lại OTP"
       send_otp: "Gửi OTP"
+      verify: "Xác minh"
       otp_note: "Nếu chưa thấy tin nhắn, vui lòng đợi trong giây lát hoặc yêu cầu gửi lại mã."
       forgot_pw: "Bạn quên mật khẩu?"
       forgot_pw_title: "Quên mật khẩu"

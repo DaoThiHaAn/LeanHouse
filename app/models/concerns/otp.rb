@@ -16,4 +16,11 @@ module Otp
   def otp_expired?
     otp_sent_at.nil? || otp_sent_at < OTP_EXPIRY.ago
   end
+
+  def clear_otp
+    self.otp_code = nil
+    self.tel_verified_at = Time.current
+
+    save!(validate: false)
+  end
 end

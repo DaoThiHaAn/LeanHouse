@@ -32,7 +32,9 @@
   </head>
 
   <body class="d-flex flex-column">
-    <%= render "layouts/shared_components/flash_message"%>
+    <div id="flash">
+      <%= render "layouts/shared_components/flash_message"%>
+    </div>
     <%= render "layouts/shared_components/header" %>
     <main>
       <%= yield %>

@@ -17,15 +17,44 @@ class OtpController < ApplicationController
   end
 
   def verify
-    service = PhoneVerification.new(tel: session[:pending_tel], role: session[:pending_role])
+    service = PhoneVerification.new(
+      tel: session[:pending_tel],
+      role: session[:pending_role]
+    )
+
+    Rails.logger.info "Input OTP in after form submission: #{params[:otp]}"
+
     result = service.verify_otp(params[:otp])
 
-    if result.status == :verified
-      log_in(result.user)
-      redirect_to root_path
-    else
-      flash[:alert] = t("errors.wrong_otp")
-      render "otp_input", locals: { tel: session[:pending_tel] }
+    respond_to do |format|
+      message = ""
+      case result.status
+      when :verified
+        session.delete(:pending_tel)
+        session.delete(:pending_role)
+        log_in(result.user)
+
+        flash[:notice] = t("messages.signup_success")
+        redirect_to root_path
+        return
+
+      when :otp_verification_failed
+        message = t("messages.otp_failed")
+      when :expired_otp
+        message = t("errors.expired_otp")
+      else
+        message = t("messages.wrong_otp")
+      end
+
+      flash.now[:alert] = message
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.update(
+          "flash",
+          partial: "layouts/shared_components/flash_message"
+        )
+      end
+
+      flash.discard
     end
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_24_031631) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_25_105837) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -45,15 +45,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_24_031631) do
   create_table "landlords", force: :cascade do |t|
     t.integer "posts_count", default: 0, null: false
     t.integer "houses_count", default: 0, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "tenants", force: :cascade do |t|
-    t.integer "posts_count", default: 0, null: false
-    t.integer "houses_count", default: 0, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.integer "saved_posts_count", default: 0, null: false
   end
 
   create_table "users", force: :cascade do |t|

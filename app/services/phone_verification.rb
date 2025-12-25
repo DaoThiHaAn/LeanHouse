@@ -12,7 +12,7 @@ class PhoneVerification
     user = User.kept.find_by(tel: @tel, role: @role, tel_verified_at: nil)
 
     if user.present?
-      user.update!(@params, context: :signup)
+      user.update!(@params)
     else
       user = User.new(@params)
       user.save!(context: :signup)
@@ -38,12 +38,29 @@ class PhoneVerification
   end
 
   def verify_otp(code)
+    Rails.logger.info "Input OTP #{code}"
+
     user = User.kept.find_by!(tel: @tel, role: @role)
 
-    if user.verify_otp!(code)
+    return Result.new(user, :expired_otp) if user.otp_expired?
+    return Result.new(user, :invalid_otp) unless code == user.otp_code
+
+    begin
+      ActiveRecord::Base.transaction do
+        user.clear_otp
+
+        if user.role == "landlord"
+          Landlord.find_or_create_by!(id: user.id)
+        else
+          Tenant.find_or_create_by!(id: user.id)
+        end
+      end
+
       Result.new(user, :verified)
-    else
-      Result.new(user, :invalid_otp)
+
+    rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => e
+      Rails.logger.error("OTP verification failed: #{e.message}")
+      Result.new(user, :otp_verification_failed)
     end
   end
 

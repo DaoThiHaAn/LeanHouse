@@ -18,25 +18,31 @@
             data-controller="otp"
             data-otp-length-value="6">
 
-            <form data-otp-target="form" action="<%=verify_otp_path%>" accept-charset="UTF-8" method="post" autocomplete="off">
-                <%= csrf_meta_tags %>
+            <%# Use form_with for automatic CSRF handling and Turbo compatibility %>
+            <%= form_with url: verify_otp_path, method: :post, local: false, 
+                            data: { otp_target: "form" }, 
+                            class: "d-flex flex-column gap-3 mb-5 align-items-center" do |f| %>
                 
-                <input type="hidden" data-otp-target="hidden">
+                <%# The hidden field that will hold the combined 6 digits %>
+                <%= f.hidden_field :otp, data: { otp_target: "hidden" } %>
 
                 <div class="d-flex gap-2">
-                    <% 6.times do |i| %>
-                        <input
-                            type="text"
-                            inputmode="numeric"
-                            maxlength="1" autocomplete="off"
-                            class="otp-box form-control"
-                            data-otp-target="digit"
-                            data-action="input->otp#input keydown->otp#keydown paste->otp#paste"
-                            <%= "autofocus" if i == 0 %>
-                        >
-                    <% end %>
+                <% 6.times do |i| %>
+                    <input
+                    type="text"
+                    inputmode="numeric"
+                    maxlength="1"
+                    autocomplete="one-time-code" <%# Helps mobile browsers suggest the SMS code %>
+                    class="otp-box form-control"
+                    data-otp-target="digit"
+                    data-action="input->otp#input keydown->otp#keydown paste->otp#paste"
+                    <%= "autofocus" if i == 0 %>
+                    >
+                <% end %>
                 </div>
-            </form>
+
+                <button type="submit" class="custom-primary-btn"><%= t('form.profile.verify') %></button>
+            <% end %>
         </div>
 
 
@@ -45,7 +51,7 @@
             <small><%= t('form.profile.otp_note') %></small>
         </div>
 
-        <%= button_to t('form.profile.resend_otp'), resend_otp_path, data: { turbo: false }, class:"custom-primary-btn" %>
+        <%= button_to t('form.profile.resend_otp'), resend_otp_path, data: { turbo: false }, class:"custom-secondary-btn" %>
         <%= link_to :back, class: "mx-auto d-flex align-items-center forgot-pw link" do%>
             <span class="material-symbols-outlined">arrow_left_alt</span>
             <%=t('turn_back')%>
