@@ -22,3 +22,6 @@ vi:
               blank: "Mật khẩu không được để trống!"
             address:
               blank: "Địa chỉ không được để trống!"
+
+      messages:
+        record_invalid: "Dữ liệu không hợp lệ"

@@ -12,7 +12,6 @@ class User < ApplicationRecord
   has_one :tenant, dependent: :destroy
 
   before_validation :normalize_inputs
-  before_create :send_tel_otp
 
   include Otp
 
@@ -24,15 +23,19 @@ class User < ApplicationRecord
               scope: :role,
               conditions: -> { where(discarded_at: nil).where.not(tel_verified_at: nil) },
               message: :existed_acc
-            }
+            },
+            on: [ :signup, :change_tel ]
   validates :sex, inclusion: { in: %w[M F] }
   validates :terms_accepted, acceptance: true, on: :create
 
   validates :password, length: { in: 8..72 }
   validates :password_confirmation, length: { in: 8..72 }
-  validate :pw_complexity
-  validate :pw_match
+  validate :pw_complexity, on: [ :signup, :pw_reset ]
+  validate :pw_match, on: [ :signup, :pw_reset ]
 
+  def get_otp_sent_at
+    self.otp_sent_at
+  end
 
   def tel_verified?
     tel_verified_at.present?
@@ -40,25 +43,6 @@ class User < ApplicationRecord
 
   def active?
     is_active
-  end
-  # OTP
-  def send_tel_otp
-    self.tel_verified = false
-    self.otp_code = SecureRandom.random_number(1_000_000).to_s.rjust(6, "0")
-    self.otp_sent_at = Time.current
-    puts "OTP for #{tel}: #{otp_code}"
-  end
-
-  def verify_tel!(otp)
-    return false if discarded?
-    return false if otp_code != otp
-    return false if otp_sent_at < OTP_EXPIRY.ago
-
-    update!(
-      tel_verified: true,
-      otp_code: nil,
-      otp_sent_at: nil
-    )
   end
 
   def discard!

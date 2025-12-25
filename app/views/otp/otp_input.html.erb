@@ -1,51 +1,54 @@
-<div class="d-flex align-items-center justify-content-center min-h-100">
-    <div class="custom card mt-5 px-5 py-4">
-        <div class="card-body d-flex flex-column gap-3">
-            <h1 class="card-title text-center"><%=t('form.profile.otp_title').upcase %></h1>
-            <p class="card-text"><%=t('form.profile.check_tel') %></p>
-            <p class="card-text"><%=t('form.profile.check_tel_html', tel: tel) %></p>
-            <p class="card-text otp-valid"><%=t('form.profile.otp_valid') %></p>
+<div class="custom card my-5 mx-auto px-5 py-4">
+    <div class="card-body d-flex align-items-center flex-column gap-3">
+        <h1 class="card-title text-center"><%=t('form.profile.otp_title').upcase %></h1>
+        <p class="card-text"><%=t('form.profile.check_tel') %></p>
+        <p class="card-text"><%=t('form.profile.check_tel_html', tel: tel) %></p>
+        <p class="card-text otp-valid"><%=t('form.profile.otp_valid') %></p>
 
-            <!-- Timer -->
-            <div class="text-center fw-bold timer"
-                data-controller="otp-timer"
-                data-otp-timer-duration-value="300">
+        <!-- Timer -->
+        <div class="text-center fw-bold timer"
+            data-controller="otp-timer"
+            data-otp-timer-duration-value="300">
 
-                <span data-otp-timer-target="time"></span>
-            </div>
+            <span data-otp-timer-target="time"></span>
+        </div>
 
-            <!-- Input boxes-->
-            <div class="d-flex gap-2 justify-content-center otp-inputs"
-                data-controller="otp"
-                data-otp-length-value="6">
+        <!-- Input boxes-->
+        <div class="d-flex gap-2 justify-content-center otp-inputs"
+            data-controller="otp"
+            data-otp-length-value="6">
 
-            <form data-otp_target="form" action="/search" accept-charset="UTF-8" method="get">
+            <form data-otp-target="form" action="<%=verify_otp_path%>" accept-charset="UTF-8" method="post" autocomplete="off">
                 <%= csrf_meta_tags %>
                 
                 <input type="hidden" data-otp-target="hidden">
 
                 <div class="d-flex gap-2">
-                <% 6.times do |i| %>
-                    <input
-                        type="text"
-                        inputmode="numeric"
-                        maxlength="1"
-                        class="otp-box form-control"
-                        data-otp-target="digit"
-                        data-action="input->otp#input keydown->otp#keydown"
-                    >
-                <% end %>
+                    <% 6.times do |i| %>
+                        <input
+                            type="text"
+                            inputmode="numeric"
+                            maxlength="1" autocomplete="off"
+                            class="otp-box form-control"
+                            data-otp-target="digit"
+                            data-action="input->otp#input keydown->otp#keydown paste->otp#paste"
+                            <%= "autofocus" if i == 0 %>
+                        >
+                    <% end %>
                 </div>
             </form>
-            </div>
-
-
-            <div class="field-info mb-2 d-flex align-items-center gap-1">
-                <span class="material-symbols-outlined">info</span>
-                <small><%= t('form.profile.otp_note') %></small>
-            </div>
-
-            <a href="#" class="custom-primary-btn"><%=t('form.profile.resend_otp') %></a>
         </div>
+
+
+        <div class="field-info mb-2 d-flex align-items-center gap-1">
+            <span class="material-symbols-outlined">info</span>
+            <small><%= t('form.profile.otp_note') %></small>
+        </div>
+
+        <%= button_to t('form.profile.resend_otp'), resend_otp_path, data: { turbo: false }, class:"custom-primary-btn" %>
+        <%= link_to :back, class: "mx-auto d-flex align-items-center forgot-pw link" do%>
+            <span class="material-symbols-outlined">arrow_left_alt</span>
+            <%=t('turn_back')%>
+        <%end%>
     </div>
 </div>

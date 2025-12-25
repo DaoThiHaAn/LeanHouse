@@ -54,7 +54,8 @@ vi:
       Không tìm thấy số điện thoại đã xác nhận!
       Hãy gửi lại OTP.
     user_not_found: "Không tìm thấy tài khoản!"
+    wrong_otp: "Mã OTP không đúng hoặc đã hết hiệu lực!"
   
   messages:
     send_otp: "Đã gửi OTP!"
-
+    resend_success: "Đã gửi lại mã OTP!"

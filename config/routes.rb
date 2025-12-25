@@ -28,9 +28,9 @@ Rails.application.routes.draw do
 
   post "/request_otp", to: "otp#create"
   get "/otp-verification", to: "otp#input", as: :otp_input
-  get  "/verify_otp",  to: "otp#verify"
-  post "/verify_otp",  to: "otp#confirm"
-  get "/otp", to: "otp#new"
+  post "/verify-otp",  to: "otp#verify", as: :verify_otp
+  post "/resend-otp",  to: "otp#resend"
+  # get "/otp", to: "otp#new"
 
 
   resources :posts, only: [ :index, :show ]

@@ -27,7 +27,7 @@ class UsersController < ApplicationController
     if result.status == :otp_sent
       session[:pending_tel]  = result.user.tel
       session[:pending_role] = result.user.role
-      redirect_to verify_otp_path, notice: t("messages.send_otp")
+      redirect_to otp_input_path, notice: t("messages.send_otp")
     else
       @user = result.user
       # flash.now[:alert] = t("errors.signup_failed")
