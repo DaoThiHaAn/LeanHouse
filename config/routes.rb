@@ -20,8 +20,8 @@ Rails.application.routes.draw do
 
 
   get "/signup", to: "authentication#sign_up", as: :signup
-  get "/login", to: "authentication#log_in", as: :login
-  post "/login", to: "authentication#handle_log_in", as: :login_handle
+  get "/login", to: "authentication#login_form", as: :login
+  post "/login", to: "authentication#handle_log_in", as: :handle_login
   get "/logout", to: "authentication#log_out", as: :logout
   get "/forgot-password", to: "authentication#forgot_pw", as: :forgot_pw
   get "/reset-password", to: "authentication#reset_pw", as: :reset_pw
@@ -36,11 +36,26 @@ Rails.application.routes.draw do
   resources :posts, only: [ :index, :show ]
   resources :users
 
-  namespace :landlord do
-    # Use path: "" to remove the extra "/landlord" segment from the URL
-    # but keep the "Landlord::" module and folder structure
-    resources :landlords, path: "", shallow: true do
-      resources :reports
+  scope module: "landlord_area" do
+    resources :landlords, shallow: true do
+      resources :dashboard, :posts
+      resources :houses do
+        resources :rooms, :invoices, :vehicles, :contracts
+      end
+      get "/houses-entry", to: "houses#entry"
+    end
+  end
+
+  scope module: "tenant_area" do
+    resources :tenants, shallow: true do
+      resources :dashboard, :posts
+    end
+  end
+
+  scope module: "admin_area" do
+    resources :admin, shallow: true do
+      resources :dashboard
+      resources :houses
     end
   end
 end

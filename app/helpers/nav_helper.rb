@@ -8,15 +8,17 @@ module NavHelper
     end
   end
 
+
   def get_role
     return t("common.role.landlord") if current_user.role == "landlord"
     return t("common.role.tenant") if current_user.role == "tenant"
     t("common.role.admin")
   end
 
-  def nav_item(real_text, label, path, icon: nil)
+
+  def nav_item(real_text, label, path, icon: nil, is_img: false, img_src: nil)
     li_classes = [ "nav-item custom d-lg-flex align-items-center align-self-center" ]
-    a_classes  = [ "nav-link d-flex align-items-center px-2" ]
+    a_classes  = [ "nav-link d-flex align-items-center px-2 flex-wrap justify-content-center" ]
 
     if current_page?(path)
       li_classes << "active"
@@ -26,12 +28,30 @@ module NavHelper
     content_tag :li, class: li_classes.join(" ") do
       link_to path, class: a_classes.join(" "),
                   aria: (current_page?(path) ? { current: "page" } : {}) do
-        # prepend icon if given
-        safe_join([
-          icon.present? ? content_tag(:span, icon, class: "material-symbols-filled me-1") : nil,
-          real_text
-        ].compact)
+        # decide what to show: image or icon
+        icon_or_img = if is_img && img_src.present?
+                        image_tag(img_src, class: "me-1 icon-img", alt: label)
+        elsif icon.present?
+                        content_tag(:span, icon, class: "material-symbols-filled me-1")
+        end
+
+        safe_join([ icon_or_img, real_text ].compact)
       end
     end
+  end
+
+
+  def format_name(full_name)
+    parts = full_name.strip.split(/\s+/)
+
+    return full_name if parts.length < 2
+
+    first_name = parts.first
+    last_name  = parts.last
+    middle     = parts[1..-2]
+
+    middle_initials = middle.map { |name| "#{name[0].upcase}." }.join
+
+    "#{first_name} #{middle_initials} #{last_name}"
   end
 end

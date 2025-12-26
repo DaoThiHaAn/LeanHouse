@@ -26,7 +26,6 @@ class PhoneVerification
 
   def create_otp(user)
     otp = user.generate_otp!
-    # otp_created_at = user.get_otp_sent_at
     Rails.logger.info "OTP for #{@tel}: #{otp}, role: #{user.role}, created_at #{user.otp_sent_at}"
 
     Result.new(user, :otp_sent)

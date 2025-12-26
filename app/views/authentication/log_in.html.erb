@@ -9,20 +9,15 @@
         </div>
         <h1><%= t("common.auth.sign_up").upcase %></h1>
 
-        <form action="<%= login_path %>" method="post"
-            class="signup-form d-flex align-items-center justify-content-center flex-column gap-4">
+        <%= form_with(model: @user, url: handle_login_path, method: :post, class: "signup-form w-100 d-flex align-items-center justify-content-center flex-column gap-4") do |f| %>
 
-            <%= csrf_meta_tags %>
-
-            <!-- Role -->
-            <input type="hidden" name="user[role]" value="tenant">
+            <!-- Role selection -->
             <div data-controller="role-selector" class="form-group gap-2 d-flex flex-column align-items-center mb-2">
-                <input type="hidden" name="user[role]" data-role-selector-target="input">
-                <%= label_tag "user_role", class: "form-label" do %>
-                    <%= t('form.profile.role') %>:
+                <%= f.hidden_field :role, data: { role_selector_target: "input" } %>
+                <%= f.label :role, class: "form-label" do %>
+                    <%= t('form.profile.role') + ": "%> 
                     <span class="asterisk">*</span>
                 <% end %>
-
 
                 <div class="d-flex gap-3">
                     <div
@@ -45,44 +40,44 @@
                 </div>
             </div>
 
-
             <!-- Tel -->
-            <div class="form-group w-100">
-                <label class="form-label">
-                <%= t('form.profile.tel') %> <span class="asterisk">*</span>
-                </label>
-
-                <input type="tel"
-                    name="user[tel]"
-                    minlength="10"
-                    maxlength="10"
-                    required
-                    autofocus
-                    class="form-control"
-                    placeholder="<%= t('form.profile.tel_login_placeholder') %>">
+            <div class="form-group">
+                <%= f.label :tel, t('form.profile.tel') + ":", class: "form-label" %> <span class="asterisk">*</span>
+                <%= f.telephone_field :tel, 
+                    class: "form-control", 
+                    placeholder: t('form.profile.tel_login_placeholder'), 
+                    minlength: 10, maxlength: 10, required: true, autofocus: true %>
             </div>
 
             <!-- Password -->
-            <div class="form-group w-100">
-                <label class="form-label">
-                    <%= t('form.profile.password') %> <span class="asterisk">*</span>
-                </label>
+            <div class="form-group" data-controller="form">
+                <%= f.label :password, class: "form-label" do%>
+                        <%= t('form.profile.password') +  ": "%>
+                        <span class="asterisk">*</span>
+                <% end %>
 
-                <input type="password"
-                    name="user[password]"
-                    minlength="8"
-                    maxlength="72"
-                    required
-                    placeholder="<%=t('form.profile.pw_placeholder')%>"
-                    class="form-control">
+                <div class="position-relative">
+                    <%= f.password_field :password, minLength: 8, maxLength: 72, required: true,
+                        class: "form-control pe-5 #{invalid_class(@user, :password)}",
+                        placeholder: t('form.profile.pw_placeholder'),
+                        data: {
+                            form_target: "input",
+                            action: "input->form#update"
+                        } 
+                    %>
+
+                    <span class="eye position-absolute me-2 top-50 end-0 translate-middle-y material-symbols-outlined password-toggle" 
+                            data-action="click->form#togglePasswordVisibility">
+                        visibility
+                    </span>
+                </div>
             </div>
+
 
             <%= link_to t('form.profile.forgot_pw'), forgot_pw_path, class: "forgot-pw link" %>
 
-            <button type="submit" class="mx-auto custom-primary-btn">
-                <%= t("common.auth.log_in") %>
-            </button>
-        </form>
+            <%= f.submit t("common.auth.log_in"), class: "mx-auto custom-primary-btn" %>
+        <% end %>
 
         <div class="d-flex flex-wrap gap-2"> 
             <%= t('form.profile.not_have_acc')%> 

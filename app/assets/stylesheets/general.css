@@ -11,6 +11,8 @@
   --primary-button-hover-bg: #126b95;
   --placeholder: #adb3b8;
   --info-text: #7e7e7e;
+  --bs-modal-zindex: 2000;
+  --bs-backdrop-zindex: 1990;
 }
 
 @font-face {
@@ -38,7 +40,7 @@
 }
 
 html {
-  font-size: 15px; 
+  font-size: 14px; 
 }
 
 
@@ -77,6 +79,10 @@ em {
 
 button, a {
   cursor: pointer;
+}
+
+button {
+  border: none;
 }
 
 a {
@@ -191,3 +197,12 @@ input {
 .custom-secondary-btn:hover{
   background-color: whitesmoke;
 }
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+

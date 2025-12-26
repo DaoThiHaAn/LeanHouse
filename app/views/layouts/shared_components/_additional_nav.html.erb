@@ -1,0 +1,88 @@
+<div class="secondary-nav px-3 py-2 d-flex gap-3 align-items-center">
+    <!-- House card -->
+    <div class="card active house-card me-4">
+        <div class="card-body px-2 py-1 d-flex gap-1 align-items-center">
+            <div>
+                 <p class="card-title fw-bold d-flex align-items-center gap-1">
+                    <span class="material-symbols-outlined">location_home</span>
+                    <%="Title"%>
+                </p>
+                <p class="card-text line-clamp-2"><%= "Adrress ...... djekje jdadk iorjeio iojeioaj oejdaoj aldjaoi ............ .........."%></p>
+            </div>
+           
+           <!-- Button trigger modal -->
+            <button type="button" 
+                    class="more-btn d-flex align-items-cente p-1" 
+                    data-bs-toggle="modal" data-bs-target="#houseModal"
+                    data-bs-placement="top" title="<%=t('common.bar.more_actions')%>"
+                >
+                <span class="material-symbols-outlined">more_vert</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Other card -->
+    <%=link_to "#", class:"card active other-card" do %>
+        <div class="card-body p-0 d-flex flex-column gap-1 align-items-center justify-content-center">
+            <%=image_tag "room.png", alt: "Room Icon"%>
+            <h5 class="card-title m-0 d-flex align-items-center ">
+                <%= t("t.common.bar.rooms")%>
+            </h5>
+        </div>
+    <%end%>
+
+    <%=link_to "#", class:"card other-card" do %>
+        <div class="card-body p-0 d-flex flex-column gap-1 align-items-center justify-content-center">
+            <%=image_tag "human-resources.png", alt: "People Icon"%>
+            <h5 class="m-0 card-title d-flex align-items-center">
+                <%= t("t.common.bar.tenants")%>
+            </h5>
+        </div>
+    <%end%>
+
+    <%=link_to "#", class:"card other-card" do %>
+        <div class="card-body p-0 d-flex flex-column gap-1 align-items-center justify-content-center">
+            <%=image_tag "property.png", alt: "Property Icon"%>
+            <h5 class="m-0 card-title d-flex align-items-center">
+                <%= t("t.common.bar.properties")%>
+            </h5>
+        </div>
+    <%end%>
+
+    <%=link_to "#", class:"card other-card" do %>
+        <div class="card-body p-0 d-flex flex-column gap-1 align-items-center justify-content-center">
+            <%=image_tag "home-services.png", alt: "Home services Icon"%>
+            <h5 class="m-0 card-title d-flex align-items-center">
+                <%= t("t.common.bar.services")%>
+            </h5>
+        </div>
+    <%end%>
+
+    <%=link_to "#", class:"card other-card" do %>
+        <div class="card-body p-0 d-flex flex-column gap-1 align-items-center justify-content-center">
+            <%=image_tag "contracts.png", alt: "Contract Icon"%>
+            <h5 class="m-0 card-title d-flex align-items-center">
+                <%= t("t.common.bar.contracts")%>
+            </h5>
+        </div>
+    <%end%>
+
+    <%=link_to "#", class:"card other-card" do %>
+        <div class="card-body p-0 d-flex flex-column gap-1 align-items-center justify-content-center">
+            <%=image_tag "expenses.png", alt: "Invoice Icon"%>
+            <h5 class="m-0 card-title d-flex align-items-center">
+                <%= t("t.common.bar.invoices")%>
+            </h5>
+        </div>
+    <%end%>
+
+    <%=link_to "#", class:"card other-card" do %>
+        <div class="card-body p-0 d-flex flex-column gap-1 align-items-center justify-content-center">
+            <%=image_tag "car.png", alt: "Car Icon"%>
+            <h5 class="m-0 card-title d-flex align-items-center">
+                <%= t("t.common.bar.vehicles")%>
+            </h5>
+        </div>
+    <%end%>
+</div>
+

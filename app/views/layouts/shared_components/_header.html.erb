@@ -1,55 +1,58 @@
-<nav class="navbar sticky-top navbar-expand-md navbar-light py-0">
-  <div class="container-fluid px-4">
+<nav class="sticky-top">
+  <div class="navbar navbar-expand-md navbar-light py-0">
+    <div class="container-fluid px-4">
 
-    <!-- Logo -->
-    <%= link_to root_path, class: "navbar-brand" do %>
-      <%= image_tag "logo.png", alt: "LeanHouse Logo" %>
-    <% end %>
+      <!-- Logo -->
+      <%= link_to root_path, class: "navbar-brand" do %>
+        <%= image_tag "logo.png", alt: "LeanHouse Logo" %>
+      <% end %>
 
-    <!-- Nav links -->
-    <%= render "layouts/shared_components/nav_link" %>
+      <!-- Nav links -->
+      <%= render "layouts/shared_components/nav_link" %>
 
-    <div class="d-flex gap-3 align-items-center">
-        <%# User authentication links %>
-      <%= render "layouts/shared_components/auth_box" %>
+      <div class="d-flex gap-3 align-items-center">
+          <%# User authentication links %>
+        <%= render "layouts/shared_components/auth_box" %>
 
-      <%# Language selector%>
-      <div class="nav-item dropdown lang-switcher">
-        <a class="nav-link lang-btn dropdown-toggle d-flex justify-content-center align-items-center gap-1"
-                type="button"
-                id="langDropdown"
-                data-bs-toggle="dropdown"
-                aria-expanded="false">
-            <span class="material-symbols-outlined">language</span>
-            <%= I18n.locale.to_s.upcase %> <!-- Current language -->
-        </a>
+        <%# Language selector%>
+        <div class="nav-item dropdown lang-switcher">
+          <a class="nav-link lang-btn dropdown-toggle d-flex justify-content-center align-items-center gap-1"
+                  type="button"
+                  id="langDropdown"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false">
+              <span class="material-symbols-outlined">language</span>
+              <%= I18n.locale.to_s.upcase %> <!-- Current language -->
+          </a>
 
-        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="langDropdown">
-            <% ["en", "vi"].each do |loc| %>
-            <li>
-                <%= link_to loc.upcase,
-                            url_for(params.permit!.to_h.merge(lang: loc)),
-                            class: "dropdown-item #{'active' if I18n.locale.to_s == loc}" %>
-            </li>
-            <% end %>
-        </ul>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="langDropdown">
+              <% ["en", "vi"].each do |loc| %>
+              <li>
+                  <%= link_to loc.upcase,
+                              url_for(params.permit!.to_h.merge(lang: loc)),
+                              class: "dropdown-item #{'active' if I18n.locale.to_s == loc}" %>
+              </li>
+              <% end %>
+          </ul>
+        </div>
       </div>
-    </div>
 
-    <!-- Mobile toggle -->
-    <button class="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent"
-            aria-expanded="false"
-            aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+      <!-- Mobile toggle -->
+      <button class="navbar-toggler"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#navbarSupportedContent"
+              aria-controls="navbarSupportedContent"
+              aria-expanded="false"
+              aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </div>  
   </div>
 
   <!-- TODO: Addition bar for landlords -->
-  <div class="secondary-nav px-3 py-1 d-flex gap-3 flex-wrap align-items-center">
-
-  </div>
+ <% #if request.path.include?("houses") && !request.path.include?("house-entry") && @house.present? %>
+  <% #render "layouts/shared_components/additional_nav", house: @house %>
+<%# end %>
+  <%= render "layouts/shared_components/additional_nav"%>
 </nav>

@@ -31,6 +31,23 @@ vi:
       my_bank_acc: "Tài khoản ngân hàng"
       my_vehicle: "Xe của tôi"
       my_saved_post: "Bài đăng đã lưu"
+      dashboard: "Tổng quan"
+      house_mng: "Quản lý nhà"
+      post_mng: "Quản lý bài đăng"
+      request_handle: "Xử lý yêu cầu"
+      my_room: "Phòng của tôi"
+      my_contract: "Hợp đồng của tôi"
+      applied_services: "Dịch vụ sử dụng"
+      my_requests: "Yêu cầu của tôi"
+      my_invoices: "Hóa đơn của tôi"
+      more_actions: "Hành động khác"
+      rooms: "Phòng"
+      invoices: "Hóa đơn"
+      vehicles: "Phương tiện"
+      contracts: "Hợp đồng"
+      tenants: "Khách thuê"
+      services: "Dịch vụ"
+      properties: "Tài sản"
 
     auth:
       sign_up: "Đăng Ký"
@@ -39,7 +56,7 @@ vi:
 
     role:
       landlord: "Chủ Nhà"
-      tenant: "Người Thuê"
+      tenant: "Khách Thuê"
       admin: "Quản Trị Viên"
     
     welcome:
@@ -58,9 +75,16 @@ vi:
     expired_otp: "Mã OTP đã hết hiệu lực!"
     otp_failed: "Xảy ra lỗi khi xác minh OTP! Hãy thử lại."
     signup_failed: "Đăng ký thất bại! Hãy thử lại."
+    wrong_pw: "Số điện thoại hoặc mật khẩu bị sai!"
+    unregistered: "Số điện thoại chưa được đăng ký!"
+    inactive_acc: |
+      Tài khoản bị vô hiệu!
+      Hãy liên hệ với chúng tôi để biết thêm chi tiết!
+
   
   messages:
     send_otp: "Đã gửi OTP!"
     resend_success: "Đã gửi lại mã OTP!"
     signup_success: "Đăng ký thành công!"
+    login_success: "Đăng nhập thành công!"
     logout_success: "Đăng xuất thành công!"

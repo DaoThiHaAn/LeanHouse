@@ -1,22 +1,21 @@
-nav {
+.navbar {
     background-color: var(--bar-bg);
     height: fit-content !important;
     border-bottom: 1px solid #ADC3C9;
 }
 
-nav .dropdown  {
+.navbar .dropdown  {
     color: var(--normal-text) !important;
 }
 
-nav .dropdown-toggle::after {
+.navbar .dropdown-toggle::after {
   color: var(--normal-text);
   margin-left: 6px;
 }
 
-nav .dropdown a {
+.navbar .dropdown a {
     font-size: 0.9rem
 }
-
 
 .profile-dropdown .fullname {
     font-size: 1rem;
@@ -35,7 +34,7 @@ nav .dropdown a {
 }
 
 .notification-dropdown span {
-    font-size: 1.5rem !important;
+    font-size: 2rem !important;
     color: var(--normal-text)
 }
 
@@ -49,8 +48,8 @@ nav .dropdown a {
   justify-content: center;
 }
 
-nav .material-symbols-filled {
-    font-size: 1.1rem;
+.navbar .material-symbols-filled {
+    font-size: 1.2rem;
 }
 
 .navbar-brand img{
@@ -128,12 +127,82 @@ nav .material-symbols-filled {
     font-size: 0.8rem;
 }
 
+.nav-avatar {
+    width: 40px;
+}
+
+.notification-badge {
+  position: absolute;
+  top: 10px;           /* adjust vertical */
+  right: 5px;         /* adjust horizontal */
+  transform: translate(50%, -50%); /* center on corner */
+  background-color: #CF0000;
+  color: white;
+  font-size: 0.65rem;
+  font-weight: bold;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none; /* allow clicking the button under it */
+}
+
+.navbar .icon-img {
+    width: 20px;
+}
+
 .secondary-nav {
     background-color: var(--primary-bg);
     color: white;
     font-weight: 600;
+    overflow-x: auto;
 }
 
-.nav-avatar {
+.secondary-nav .card {
+    color: white;
+    font-size: 0.9rem;
+    background-color: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3)
+}
+
+.secondary-nav .card .card-text {
+    font-weight: 400;
+    font-size: 0.75rem;
+}
+
+.more-btn {
+    background-color: rgba(177, 235, 220, 0.3);
+    border: 1px solid #365B4B;
+    color: #365B4B;
+    border-radius: 50%;
+    transition: all ease 0.1s;
+}
+
+.more-btn:hover {
+    background-color: rgba(93, 184, 159, 0.3);
+}
+
+.house-card {
+    width: 200px;
+    height: 80px; 
+}
+
+.other-card {
+    width: 100px;
+    height: 80px;
+}
+
+.other-card .card-title {
+    font-size: 0.9rem
+}
+
+.other-card img {
     width: 40px;
 }
+
+.secondary-nav .card.active {
+    background-color: rgba(124, 72, 72, 0.2);
+    border: 1px solid #365B4B;  
+}
+

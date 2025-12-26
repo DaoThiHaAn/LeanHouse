@@ -4,7 +4,7 @@
         <button class="dropdown-toggle d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
             <%= display_avatar %>
             <div class="d-flex flex-column align-items-start">
-                <p class="fw-bold fullname"><%=current_user.fullname %></p>
+                <p class="fw-bold fullname"><%=format_name(current_user.fullname) %></p>
                 <p class="role"><%=get_role%></p>
             </div>
         </button>
@@ -27,7 +27,10 @@
     <!-- TODO: Notification -->
     <div class="dropdown notification-dropdown">
         <button class="dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <span class="material-symbols-filled">notifications</span>
+            <div class="position-relative">
+                <span class="material-symbols-filled">notifications</span>
+                <div class="notification-badge">3</div>
+            </div>
         </button>
 
 

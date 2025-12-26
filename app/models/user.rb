@@ -1,7 +1,7 @@
 class User < ApplicationRecord
   MIN_AGE = 15
   scope :kept, -> { where(discarded_at: nil) } # user is not deleted
-  scope :existed,  -> { where(discarded_at: nil, tel_verified_at: nil) }
+  scope :registered, -> { where(discarded_at: nil).where.not(tel_verified_at: nil) }
 
   # Virtual attribute
   attr_accessor :terms_accepted
@@ -12,8 +12,6 @@ class User < ApplicationRecord
   has_one :tenant, dependent: :destroy
 
   before_validation :normalize_inputs
-
-  include Otp
 
   validates :fullname, :password, :password_confirmation, :tel, :sex, :bday, :address, presence: true
   validates :fullname, format: { with: /\A[\p{L}\s]+\z/, message: :invalid_fname }
@@ -33,13 +31,8 @@ class User < ApplicationRecord
   validate :pw_complexity, on: [ :signup, :pw_reset ]
   validate :pw_match, on: [ :signup, :pw_reset ]
 
-  def get_otp_sent_at
-    self.otp_sent_at
-  end
-
-  def tel_verified?
-    tel_verified_at.present?
-  end
+  # Interface for controller
+  include Otp
 
   def active?
     is_active
@@ -47,6 +40,10 @@ class User < ApplicationRecord
 
   def discard!
     update!(discarded_at: Time.current)
+  end
+
+  def self.find_acc(tel, role)
+    registered.find_by(tel: tel, role: role)
   end
 
   private
