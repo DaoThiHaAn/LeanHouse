@@ -1,15 +1,15 @@
 <% content_for :title, "Reset Password" %>
 
-<div class="custom card px-5 py-4 mt-5 mx-auto">
+<div class="custom card px-5 py-4 m-5 mx-auto">
     <div class="card-body d-flex flex-column gap-3">
         <h1 class="card-title text-center"><%=t('form.profile.reset_pw').upcase %></h1>
 
         <!-- TODO handle-->
         <%= form_with model: @user, local: true, 
-                    class:"signup-form d-flex align-items-center flex-column gap-4" do |form| %>
+                    class:"signup-form w-100 d-flex align-items-center flex-column gap-4" do |form| %>
 
              <!-- Password -->
-            <div class="form-group" data-controller="form">
+            <div class="form-group w-100" data-controller="form">
                 <%= form.label :password, class: "form-label d-flex justify-content-between" do%>
                     <div>
                         <%= t('form.profile.password') +  ": "%>
@@ -52,7 +52,7 @@
             </div>
             
 
-            <div class="form-group" data-controller="form">
+            <div class="form-group w-100" data-controller="form">
                 <%= form.label :password_confirmation, class: "form-label d-flex justify-content-between" do%>
                     <div>
                         <%= t('form.profile.password_confirmation') +  ": "%>
@@ -82,6 +82,8 @@
 
                 <%= field_error(@user, :password_confirmation) %>
             </div>
+
+             <%= form.submit t("form.save"), class: "mx-auto custom-primary-btn" %>
         <%end%>
 
         <%= link_to :back, class: "mx-auto d-flex align-items-center forgot-pw link" do%>

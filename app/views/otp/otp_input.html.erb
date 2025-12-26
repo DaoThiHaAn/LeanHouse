@@ -18,7 +18,6 @@
             data-controller="otp"
             data-otp-length-value="6">
 
-            <%# Use form_with for automatic CSRF handling and Turbo compatibility %>
             <%= form_with url: verify_otp_path, method: :post, local: false, 
                             data: { otp_target: "form" }, 
                             class: "d-flex flex-column gap-3 mb-5 align-items-center" do |f| %>

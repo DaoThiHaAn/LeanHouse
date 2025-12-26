@@ -15,7 +15,10 @@ module SessionHelper
   end
 
   def destroy_session
-    session.delete(:user_id)
-    session[:role] = "guest"
+    reset_session
+  end
+
+  def clear_session_keys(*keys)
+    keys.each { |key| session.delete(key) }
   end
 end

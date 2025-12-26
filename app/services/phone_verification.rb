@@ -32,7 +32,7 @@ class PhoneVerification
   end
 
   def resend_otp
-    user = User.kept.find_by(tel: @tel, role: @role, tel_verified_at: nil)
+    user = User.kept.find_by(tel: @tel, role: @role)
     create_otp(user)
   end
 

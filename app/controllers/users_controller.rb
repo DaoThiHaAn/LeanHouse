@@ -27,7 +27,8 @@ class UsersController < ApplicationController
     if result.status == :otp_sent
       session[:pending_tel]  = result.user.tel
       session[:pending_role] = result.user.role
-      redirect_to otp_input_path, notice: t("messages.send_otp")
+      session[:is_reset_password] = false
+      format.html { redirect_to login_path, notice: t("messages.reset_pw_success") }
     else
       @user = result.user
       # flash.now[:alert] = t("errors.signup_failed")
@@ -38,15 +39,30 @@ class UsersController < ApplicationController
   # PATCH/PUT /users/1 or /users/1.json
   def update
     respond_to do |format|
-      if @user.update(user_params)
-        format.html { redirect_to @user, notice: "User was successfully updated.", status: :see_other }
-        format.json { render :show, status: :ok, location: @user }
+      context = session[:is_reset_pw] ? :pw_reset : nil
+
+      @user.assign_attributes(user_params)
+
+      if @user.save(context: context)
+        if session[:is_reset_pw]
+          clear_session_keys(:is_reset_pw, :verified_tel, :pending_role, :pending_tel)
+          format.html { redirect_to login_path, notice: t("messages.user_update_pw_success") }
+        else
+          format.html { redirect_to @user, notice: t("messages.user_update_success"), status: :see_other }
+          format.json { render :show, status: :ok, location: @user }
+        end
       else
-        format.html { render :edit, status: :unprocessable_entity }
+        if session[:is_reset_pw]
+          format.html { render "authentication/reset_pw", status: :unprocessable_entity }
+        else
+          format.html { render :edit, status: :unprocessable_entity }
+        end
+
         format.json { render json: @user.errors, status: :unprocessable_entity }
       end
     end
   end
+
 
   # DELETE /users/1 or /users/1.json
   def destroy
@@ -66,16 +82,20 @@ class UsersController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def user_params
-      params.require(:user).permit(
-        :fullname,
-        :tel,
-        :password,
-        :password_confirmation,
-        :role,
-        :address,
-        :sex,
-        :bday,
-        :terms_accepted
-      )
+      if session[:is_reset_pw]
+        params.require(:user).permit(:password, :password_confirmation)
+      else
+        params.require(:user).permit(
+          :fullname,
+          :tel,
+          :password,
+          :password_confirmation,
+          :role,
+          :address,
+          :sex,
+          :bday,
+          :terms_accepted
+        )
+      end
     end
 end

@@ -20,6 +20,7 @@ class AuthenticationController < ApplicationController
   end
 
   def forgot_pw
+    @user = User.new
   end
 
   def reset_pw
@@ -30,12 +31,7 @@ class AuthenticationController < ApplicationController
       return
     end
 
-    @user = User.find_by(tel: tel)
-
-    unless @user
-      reset_session
-      redirect_to forgot_pw_path, alert: t("errors.user_not_found")
-    end
+    @user = User.kept.find_by(tel: tel, role: session[:pending_role])
   end
 
 
@@ -58,6 +54,43 @@ class AuthenticationController < ApplicationController
     end
 
     # For invalid login: render flash in current view via Turbo
+    flash.now[:alert] = message
+
+    respond_to do |format|
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.update(
+          "flash",
+          partial: "layouts/shared_components/flash_message"
+        )
+      end
+
+      format.html { render :new } # fallback for non-Turbo requests
+    end
+  end
+
+  def handle_forgot_pw
+    user_params = login_params
+    existing_acc = User.find_acc(user_params[:tel], user_params[:role])
+    message = nil
+
+    if existing_acc.nil?
+      message = t("errors.unregistered")
+    elsif !existing_acc.active?
+      message = t("errors.inactive_acc")
+    else
+      #
+      result = PhoneVerification.new(
+        tel: user_params[:tel],
+        role: user_params[:role]
+      )
+      result.create_otp(existing_acc)
+      session[:pending_tel] = existing_acc.tel
+      session[:pending_role] = existing_acc.role
+      session[:is_reset_pw] = true
+      redirect_to otp_input_path, notice: t("messages.send_otp")
+      return
+    end
+
     flash.now[:alert] = message
 
     respond_to do |format|

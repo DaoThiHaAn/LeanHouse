@@ -30,12 +30,16 @@ class OtpController < ApplicationController
       message = ""
       case result.status
       when :verified
-        session.delete(:pending_tel)
-        session.delete(:pending_role)
-        log_in(result.user)
+        if session[:is_reset_pw]
+          session[:verified_tel] = session[:pending_tel]
+          redirect_to reset_pw_path
+        else
+          clear_session_keys(:pending_role, :pending_tel)
+          log_in(result.user)
 
-        flash[:notice] = t("messages.signup_success")
-        redirect_to root_path
+          flash[:notice] = t("messages.signup_success")
+          redirect_to root_path
+        end
         return
 
       when :otp_verification_failed

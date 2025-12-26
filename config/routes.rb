@@ -24,6 +24,7 @@ Rails.application.routes.draw do
   post "/login", to: "authentication#handle_log_in", as: :handle_login
   get "/logout", to: "authentication#log_out", as: :logout
   get "/forgot-password", to: "authentication#forgot_pw", as: :forgot_pw
+  post "/forgot-password", to: "authentication#handle_forgot_pw", as: :handle_forgot_pw
   get "/reset-password", to: "authentication#reset_pw", as: :reset_pw
 
   post "/request_otp", to: "otp#create"

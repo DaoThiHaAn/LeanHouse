@@ -88,3 +88,5 @@ vi:
     signup_success: "Đăng ký thành công!"
     login_success: "Đăng nhập thành công!"
     logout_success: "Đăng xuất thành công!"
+    user_update_success: "Cập nhật thông tin tài khoản thành công!"
+    user_update_pw_success: "Cập nhật mật khẩu thành công!"

@@ -1,61 +1,51 @@
 <% content_for :title, "Forgot Password" %>
 
-<div class="custom card px-5 py-4 mt-5 mx-auto">
+<div class="custom card px-5 py-4 m-5 mx-auto">
     <div class="card-body d-flex flex-column gap-3">
         <h1 class="card-title text-center"><%=t('form.profile.forgot_pw_title').upcase %></h1>
 
         <!-- TODO handle-->
-        <form action="<%= login_path %>" method="post"
-            class="signup-form d-flex align-items-center justify-content-center flex-column gap-4">
-
-            <%= csrf_meta_tags %>
+        <%= form_with model: @user, url: handle_forgot_pw_path, local: true,
+              class: "signup-form d-flex align-items-center justify-content-center flex-column gap-4" do |f| %>
 
             <!-- Role -->
             <div class="form-group w-100 gap-2 d-flex flex-column align-items-center mb-2">
-                <%= label_tag "user_role", class: "form-label" do %>
-                    <%= t('form.profile.role') %>:
-                    <span class="asterisk">*</span>
+                <%= f.label :role, class: "form-label" do %>
+                <%= t("form.profile.role") %>:
+                <span class="asterisk">*</span>
                 <% end %>
 
                 <div class="d-flex gap-4 w-100">
-                    <label class="d-flex align-items-center gap-2">
-                        <input type="radio"
-                                name="user[role]"
-                                value="tenant"
-                                checked>
-                        <%= t('common.role.tenant') %>
-                    </label>
+                <label class="d-flex align-items-center gap-2">
+                    <%= f.radio_button :role, "tenant", checked: true %>
+                    <%= t("common.role.tenant") %>
+                </label>
 
-                    <label class="d-flex align-items-center gap-2">
-                        <input type="radio"
-                                name="user[role]"
-                                value="landlord">
-                        <%= t('common.role.landlord') %>
-                    </label>
+                <label class="d-flex align-items-center gap-2">
+                    <%= f.radio_button :role, "landlord" %>
+                    <%= t("common.role.landlord") %>
+                </label>
                 </div>
             </div>
 
 
             <!-- Tel -->
             <div class="form-group w-100">
-                <label class="form-label">
-                    <%= t('form.profile.tel') + ": " %> 
-                    <span class="asterisk">*</span>
-                </label>
+                <%= f.label :tel, class: "form-label" do %>
+                    <%= t("form.profile.tel") %>:<span class="asterisk">*</span>
+                <% end %>
 
-                <input type="tel"
-                    name="user[tel]"
-                    minlength="10"
-                    maxlength="10"
-                    required
-                    class="form-control"
-                    placeholder="<%= t('form.profile.tel_login_placeholder') %>">
-            </div>           
+                <%= f.telephone_field :tel,
+                    minlength: 10,
+                    maxlength: 10,
+                    required: true,
+                    class: "form-control",
+                    placeholder: t("form.profile.tel_login_placeholder") %>
+            </div>
 
-            <button type="submit" class="mx-auto custom-primary-btn">
-                <%= t("form.profile.send_otp") %>
-            </button>                
-        </form>
+            <%= f.submit t("form.profile.send_otp"), class: "mx-auto custom-primary-btn" %>
+
+        <% end %>
 
         <%= link_to :back, class: "mx-auto d-flex align-items-center forgot-pw link" do%>
             <span class="material-symbols-outlined">arrow_left_alt</span>

@@ -51,8 +51,7 @@
   </div>
 
   <!-- TODO: Addition bar for landlords -->
- <% #if request.path.include?("houses") && !request.path.include?("house-entry") && @house.present? %>
-  <% #render "layouts/shared_components/additional_nav", house: @house %>
-<%# end %>
-  <%= render "layouts/shared_components/additional_nav"%>
+  <% if request.path.include?("houses") && !request.path.include?("house-entry") && @house.present? %>
+    <%= render "layouts/shared_components/additional_nav", house: @house %>
+  <%end %>
 </nav>

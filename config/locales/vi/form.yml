@@ -1,5 +1,7 @@
 vi:
   form:
+    save: "Lưu"
+
     profile:
       role: "Bạn là"
       title: "Đăng Ký Tài Khoản Mới"
