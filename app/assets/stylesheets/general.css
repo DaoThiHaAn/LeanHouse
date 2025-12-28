@@ -9,6 +9,7 @@
   --body-bg-color: #F9F9F9;
   --primary-button-bg: #0087CA;
   --primary-button-hover-bg: #126b95;
+  --primary-text: #164E5D;
   --placeholder: #adb3b8;
   --info-text: #7e7e7e;
   --bs-modal-zindex: 2000;
@@ -55,7 +56,6 @@ body {
 
 main {
   overflow-x: auto;
-  flex: 1;
 }
 
 h1, h2 {
@@ -66,11 +66,12 @@ h1, h2 {
 }
 
 h1 {
-  font-size: 1.8rem;
+  font-size: 1.6rem;
+  margin-bottom: 0;
 }
 
 h2 {
-  font-size: 1.5rem;
+  font-size: 1.4rem;
 }
 
 em {
@@ -83,6 +84,7 @@ button, a {
 
 button {
   border: none;
+  transition: all ease-in 0.2s;
 }
 
 a {
@@ -206,3 +208,15 @@ input {
   overflow: hidden;
 }
 
+.main-container {
+  background-color: white;
+}
+
+.turn-back.link {
+  color: var(--primary-text);
+  width: fit-content
+}
+
+.number.form-control {
+  width: 100px;
+}

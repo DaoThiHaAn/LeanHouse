@@ -8,8 +8,8 @@ class User < ApplicationRecord
   has_secure_password   # 2 virtual attributes: password, password_confirmation
 
   has_one_attached :avatar
-  has_one :landlord, dependent: :destroy
-  has_one :tenant, dependent: :destroy
+  has_one :landlord, foreign_key: :id, primary_key: :id, inverse_of: :user, dependent: :destroy
+  has_one :tenant, foreign_key: :id, primary_key: :id, inverse_of: :user, dependent: :destroy
 
   before_validation :normalize_inputs
 

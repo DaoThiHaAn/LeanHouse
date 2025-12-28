@@ -1,0 +1,28 @@
+.dashboard h1 {
+    font-weight: bold;
+    color: var(--primary-text)
+}
+
+.no-house-text {
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+.add-house-btn {
+    background-color: transparent;
+    color: var(--primary-bg);
+    font-weight: bold;
+    font-size: 1.3rem;
+    border-radius: 10px;
+}
+
+.add-house-btn span {
+    font-size: 1.5rem;
+}
+
+.add-house-btn:hover {
+    background-color: rgb(232, 255, 246);
+    border: 1px solid rgb(196, 247, 227);
+    border-radius: 10px;
+}
+

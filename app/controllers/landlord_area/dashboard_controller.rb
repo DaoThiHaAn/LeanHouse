@@ -1,6 +1,4 @@
-module LandlordArea
-  class DashboardController < ApplicationController
-    def index
-    end
+class LandlordArea::DashboardController < LandlordArea::BaseController
+  def index
   end
 end

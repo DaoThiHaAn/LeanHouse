@@ -1,0 +1,28 @@
+.mode-info {
+    font-weight: 400 !important;
+}
+
+.main-container {
+    max-width: 60%
+}
+
+.house-form .form-group {
+    width: 75%;
+}
+
+.house-form .input-group {
+    width: 45%;
+}
+
+.house-form .input-group .form-control {
+    width: 30%;
+}
+
+.x.btn {
+    height: fit-content;
+    border-radius: 5px !important;
+}
+
+.x.btn span {
+    font-size: 1rem;
+}

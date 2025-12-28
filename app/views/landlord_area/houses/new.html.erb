@@ -1,0 +1,274 @@
+<% content_for :title, "New House" %>
+
+<div class="py-3 my-4 mx-auto main-container">
+  <div class="d-flex align-items-center mb-5 w-100">
+    <%= link_to :back, class: "d-flex align-items-center gap-1 turn-back link" do%>
+              <span class="material-symbols-outlined ms-2">arrow_left_alt</span>
+              <%=t('turn_back')%>
+    <%end%>
+    <h1 class="text-center flex-grow-1"><%=t('form.house.add') %></h1>
+  </div>  
+
+  <%= form_with model: @house, url: landlord_houses_path(@landlord), method: :post, local: true, 
+              class:"house-form d-flex align-items-center flex-column gap-4" do |form| %>
+
+      <!-- Mode selection -->
+      <div data-controller="role-selector" class="form-group gap-2 d-flex flex-column align-items-center mb-2">
+          <%= form.hidden_field :mode, data: { role_selector_target: "input" } %>
+          <%= form.label :mode, class: "form-label" do %>
+              <%= t('form.house.mode') + ": "%> 
+              <span class="asterisk">*</span>
+          <% end %>
+
+          <div class="d-flex gap-3">
+              <div
+                  class="role-option selected d-flex flex-column align-items-center gap-1 px-2 py-1"
+                  data-action="click->role-selector#select"
+                  data-role-selector-value="room"
+              >
+                  <%= image_tag "room-based.png", alt: "Room Icon" %>
+                  <p><%= t('form.house.room') %></p>
+                  <p class="mode-info">(<%= t('form.house.room-based') %>)</p>
+              </div>
+
+              <div
+                  class="role-option d-flex flex-column align-items-center gap-1 px-2 py-1"
+                  data-action="click->role-selector#select"
+                  data-role-selector-value="dorm"
+              >
+                  <%= image_tag "bed-based.png", alt: "Bunk Beds Icon" %>
+                  <p><%= t('form.house.dorm') %></p>
+                  <p class="mode-info">(<%= t('form.house.bed-based') %>)</p>
+              </div>
+          </div>
+      </div>
+
+      <!-- Name -->   
+      <div class="form-group" data-controller="form">
+          <%= form.label :name , class: "form-label d-flex justify-content-between" do%>
+              <div>
+                  <%= t('form.house.name') +  ": "%>
+                  <span class="asterisk">*</span>
+              </div>
+
+              <small class="counter-text">
+                  <span data-form-target="charCount">0</span>
+              </small>
+          <% end %>
+
+          <div class="field-info mb-2 d-flex align-items-center gap-1">
+              <span class="material-symbols-outlined">info</span>
+              <small><%= t('form.profile.zalo') %></small>
+          </div>
+
+          <%= form.text_field :name, minlength: 1, maxlength: 100, class: "mb-1 form-control #{invalid_class(@house, :name)}", 
+              placeholder: t('form.house.name_placeholder'), required: true, autofocus: true,
+              data: {
+                  form_target: "input",
+                  action: "input->form#update"
+              } 
+          %>
+
+          <%= field_error(@house, :name) %>
+      </div>
+
+      
+      <!-- Address -->
+      <%# 2 dropdowns to show locations %>
+      <div class="form-group d-flex gap-4 align-items-center"
+          data-controller="location"
+          data-location-provinces-value="<%= json_escape @provinces.to_json %>"
+          data-location-communes-value="<%= json_escape @communes.to_json %>">
+
+        <p class="form-label m-0" >
+          <%= t('form.house.addr') + ": "%> 
+          <span class="asterisk">*</span>
+        </p>
+
+        <div class="d-flex gap-3 align-items-center">
+
+          <p class="text-nowrap flex-shrink-0">
+            <%= t("form.house.loc.vietnam") %>
+          </p>
+
+          <!-- Province -->
+          <%= form.select :address_l1,
+                [],
+                { prompt: t("form.house.loc.l1") },
+                class: "form-select",
+                required: true,
+                data: {
+                  location_target: "province",
+                  action: "change->location#provinceChanged"
+                } %>
+
+          <!-- Commune -->
+          <%= form.select :address_l2,
+                [],
+                { prompt: t("form.house.loc.l2") },
+                class: "form-select",
+                required: true,
+                disabled: true,
+                data: {
+                  location_target: "commune"
+                } %>
+        </div>
+      </div>
+
+      <!-- Address detail-->
+      <div class="form-group" data-controller="form">
+          <%= form.label :address_l3, class: "form-label d-flex justify-content-between" do%>
+              <div>
+                  <%= t('form.house.detailed_addr') +  ": "%>
+                  <span class="asterisk">*</span>
+              </div>
+
+              <small class="counter-text">
+                  <span data-form-target="charCount">0</span>
+              </small>
+          <% end %>
+
+          <%= form.text_field :address_l3, minlength: 2, maxlength: 100, class: "form-control", 
+              placeholder: t('form.house.detailed_addr_placeholder'), required: true,
+              data: {
+                  form_target: "input",
+                  action: "input->form#update"
+              } 
+          %>
+      </div>
+
+      <!-- Floor count -->
+      <div class="form-group d-flex gap-3 align-items-center">
+          <%= form.label :floors_count, class: "form-label m-0 flex-shrink-0 text-nowrap" do %>
+            <%= t("form.house.floor_num") %>:
+            <span class="asterisk">*</span>
+          <% end %>
+
+          <%= form.number_field :floors_count, value: 1, min: 1, step: 1, required: true, class: "form-control number" %>
+
+          <div class="field-info mb-2 d-flex align-items-center gap-1">
+            <span class="material-symbols-outlined">info</span>
+            <small><%= t('form.house.floor_num_info') %></small>
+          </div>
+      </div>
+
+      <!-- Room per floor -->
+      <div class="form-group d-flex gap-3 align-items-center">
+          <%= form.label :room_per_floors, class: "form-label m-0 flex-shrink-0 text-nowrap" do %>
+            <%= t("form.house.room_per_num") %>:
+            <span class="asterisk">*</span>
+          <% end %>
+
+          <%= form.number_field :rooms_per_floor, value: 1, min: 1, step: 1, required: true, class: "number form-control" %>
+
+          <div class="field-info mb-2 d-flex align-items-center gap-1">
+            <span class="material-symbols-outlined">info</span>
+            <small><%= t('form.house.room_per_num_info') %></small>
+          </div>
+      </div>
+
+      <!-- Room general info -->
+      <div class="form-group">
+        <p class="form-label">
+          <%= t("form.house.detailed_room")+": "%>
+          <span class="asterisk">*</span>
+        </p>
+
+        <div class="field-info d-flex align-items-center gap-1">
+          <span class="material-symbols-outlined">info</span>
+          <small><%= t('form.house.detailed_room_info') %></small>
+        </div>
+      </div>
+      
+      <div class="d-flex px-5 w-75 flex-row justify-content-between gap-4 flex-wrap">
+        <div class="input-group">
+          <span class="input-group-text">
+            <%= t("form.house.area") %> (m²)
+          </span>
+          <%= form.number_field :area,
+                class: "form-control",
+                required: true,
+                placeholder: t("form.house.ex_placeholder", num: 10.1) %>
+        </div>
+
+        <div class="input-group">
+          <span class="input-group-text">
+            <%= t("form.house.rent") %> (đ)
+          </span>
+          <%= form.number_field :rent, min: 1,
+                class: "form-control", placeholder: t("form.house.ex_placeholder", num: 500000),
+                required: true %>
+        </div>
+
+        <div class="input-group">
+          <span class="input-group-text">
+            <%= t("form.house.capacity") %>
+          </span>
+          <%= form.number_field :capacity, min: 1, step: 1,
+                class: "form-control",
+                required: true %>
+        </div>
+
+        <div class="input-group">
+          <span class="input-group-text">
+            <%= t("form.house.deposit") %> (đ)
+          </span>
+          <%= form.number_field :deposit, placeholder: t("form.house.ex_placeholder", num: 500000),
+                class: "form-control", min: 1,
+                required: true %>
+        </div>
+      </div>
+
+      <!--Invoice creation date-->
+      <div class="form-group">
+        <div class="d-flex align-items-center gap-3">
+          <%= form.label :inv_creation_date, class: "form-label m-0 flex-shrink-0 text-nowrap" do %>
+            <%= t("form.house.inv_creation_date") %>:
+            <span class="asterisk">*</span>
+          <% end %>
+
+          <%= form.number_field :inv_creation_date, in: 1..31, step: 1, required: true, class: "number form-control" %>
+        </div>
+        
+        <div class="field-info my-2 d-flex align-items-center gap-1">
+          <span class="material-symbols-outlined">info</span>
+          <small><%= t('form.house.inv_creation_date_info') %></small>
+        </div>
+      </div>
+
+        
+      <!--File (optional) -->
+      <div class="form-group" data-controller="file-input">
+        <div class="d-flex align-items-center gap-3">
+          <%= form.label :regulation_file, class: "form-label m-0 flex-shrink-0 text-nowrap" do %>
+            <%= t("form.house.regulation") %>:
+            <span class="asterisk">*</span>
+          <% end %>
+
+          <div class="position-relative">
+            <div class="input-group w-100">
+              <label class="input-group-text"><%=t("form.house.file_type") + ": .pdf"%></label>
+            
+              <%=form.file_field :regulation_file, class:"form-control", accept: ".pdf",
+                                data: { file_input_target: "input", action: "change->file-input#updateRemoveButton" }%>
+            </div>
+
+            <!-- Hidden remove button (shows only after file selected) -->
+            <button type="button" class="x btn btn-outline-danger position-absolute top-50 end-0 me-1 translate-middle-y d-none p-0 d-flex align-items-center justify-content-center"
+                      data-file-input-target="removeBtn"
+                      data-action="click->file-input#clearFile">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          </div>
+        </div>
+      
+        <div class="field-info my-2 d-flex align-items-center gap-1">
+          <span class="material-symbols-outlined">info</span>
+          <small><%= t('form.house.regulation_num')+": 1"%></small>
+        </div>
+      </div>
+
+      <button type="submit" class="custom-primary-btn"><%= t("form.house.create") %></button>
+  <% end %>
+</div>
+

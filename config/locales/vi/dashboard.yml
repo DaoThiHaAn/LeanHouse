@@ -1,0 +1,16 @@
+vi:
+  dashboard:
+    landlord:
+      title: "BÁO CÁO TỔNG QUAN HOẠT ĐỘNG CỦA TẤT CẢ NHÀ"
+      total_revenue: "Tổng doanh thu tháng này"
+      house_list: "DANH SÁCH NHÀ CỦA BẠN"
+      new_tenants: "khách mới"
+      old_tenants: "khách trả phòng"
+      total_debts: "Tổng số tiền khách nợ"
+      revenue: "Doanh thu tháng này"
+      occupied_rate: "Tỉ lệ lấp chỗ trống"
+      pending_requests: "Yêu cầu chưa xử lý"
+      invoices: "Hợp đồng sắp hết hạn, quá hạn"
+      service_usage: "Mức sử dụng dịch vụ tháng"
+      no_house: "Bạn chưa có nhà nào được ghi nhận!"
+      let_add_house: "Hãy tạo nhà mới để bắt đầu quản lý."

@@ -29,8 +29,8 @@
 
 .role-option {
     border: 1px solid #E8E8E8;
-    width: 120px;
-    height: 100px;
+    width: fit-content;
+    min-width: 120px;
     cursor: pointer;
     background-color: white;
 }

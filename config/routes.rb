@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-  resources :users
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
@@ -40,10 +39,9 @@ Rails.application.routes.draw do
   scope module: "landlord_area" do
     resources :landlords, shallow: true do
       resources :dashboard, :posts
-      resources :houses do
+      resources :houses, shallow: true do
         resources :rooms, :invoices, :vehicles, :contracts
       end
-      get "/houses-entry", to: "houses#entry"
     end
   end
 

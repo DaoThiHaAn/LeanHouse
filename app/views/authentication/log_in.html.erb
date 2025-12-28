@@ -57,7 +57,7 @@
                 <% end %>
 
                 <div class="position-relative">
-                    <%= f.password_field :password, minLength: 8, maxLength: 72, required: true,
+                    <%= f.password_field :password, maxlength: 72, required: true,
                         class: "form-control pe-5 #{invalid_class(@user, :password)}",
                         placeholder: t('form.profile.pw_placeholder'),
                         data: {

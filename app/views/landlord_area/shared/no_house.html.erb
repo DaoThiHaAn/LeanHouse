@@ -1,0 +1,14 @@
+<div class="d-flex v-100 flex-grow-1 flex-column gap-3 align-items-center justify-content-center">
+    <p class="no-house-text">
+        <%=t('dashboard.landlord.no_house')%>
+    </p>
+
+    <p class="no-house-text">
+        <%=t('dashboard.landlord.let_add_house')%>
+    </p>
+
+    <%=link_to new_landlord_house_path(@landlord), class:"add-house-btn d-flex align-items-center gap-2 px-2 py-1" do%>
+        <span class="material-symbols-filled">add_circle</span>
+        <%=t('form.house.add')%>
+    <%end%>
+</div>

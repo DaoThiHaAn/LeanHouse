@@ -2,26 +2,26 @@
     <ul class="navbar-nav me-auto d-flex align-items-center gap-3">
     <%# TODO Authorize and insert the links %>
     <%if !logged_in?%>
-        <%= nav_item t("common.bar.home"), "Home", root_path, icon: "home" %>
-        <%= nav_item t("common.bar.find_rooms"), "Finding Rooms", posts_path, icon: "search" %>
-        <%= nav_item t("common.bar.features"), "Features", features_path%>
-        <%= nav_item t("common.bar.about"), "About", about_path %>
-        <%= nav_item t("common.bar.contact"), "Contact", contact_path %>
+        <%= nav_item t("common.bar.home"), "Home", path: root_path, icon: "home" %>
+        <%= nav_item t("common.bar.find_rooms"), "Finding Rooms", path: posts_path, icon: "search" %>
+        <%= nav_item t("common.bar.features"), "Features", path: features_path%>
+        <%= nav_item t("common.bar.about"), "About", path: about_path %>
+        <%= nav_item t("common.bar.contact"), "Contact", path: contact_path %>
 
     <%elsif current_user.role == "landlord"%>
-        <%= nav_item t("common.bar.dashboard"), "Dashboard", landlord_dashboard_index_path, icon: "insert_chart" %>
-        <%= nav_item t("common.bar.house_mng"), "House Management", landlord_houses_path(current_user.id), is_img: true, img_src: "house-mg.png" %>
-        <%= nav_item t("common.bar.post_mng"), "Post", landlord_posts_path(current_user.id)%>
-        <%= nav_item t("common.bar.request_handle"), "Requests", about_path %>
+        <%= nav_item t("common.bar.dashboard"), "Dashboard", path: landlord_dashboard_index_path, icon: "insert_chart" %>
+        <%= nav_item t("common.bar.house_mng"), "House Management", word: "house", path: landlord_houses_path(current_user.id), is_img: true, img_src: "house-mg.png", img_active_src: "house-mg-white.png" %>
+        <%= nav_item t("common.bar.post_mng"), "Post", path: landlord_posts_path(current_user.id)%>
+        <%= nav_item t("common.bar.request_handle"), "Requests", path: about_path %>
 
     <%elsif current_user.role == "tenant"%>
-        <%= nav_item t("common.bar.dashboard"), "Dashboard", tenant_dashboard_index_path, icon: "insert_chart" %>
+        <%= nav_item t("common.bar.dashboard"), "Dashboard", path: tenant_dashboard_index_path, icon: "insert_chart" %>
         <%= nav_item t("common.bar.my_room"), "My Room", "#", icon: "location_home" %>
         <%= nav_item t("common.bar.my_contract"), "My Contract", "#"%>
         <%= nav_item t("common.bar.applied_services"), "Services", "#"%>
         <%= nav_item t("common.bar.my_invoices"), "My Invoices", "#" %>
         <%= nav_item t("common.bar.my_requests"), "My Requests", "#" %>
-        <%= nav_item t("common.bar.find_rooms"), "Finding Rooms", posts_path, icon: "search" %>
+        <%= nav_item t("common.bar.find_rooms"), "Finding Rooms", path: posts_path, icon: "search" %>
     <%else%>
 
     <%end%>

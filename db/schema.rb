@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_25_105837) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_27_163143) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -42,6 +42,22 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_25_105837) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "houses", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "address_l1", null: false
+    t.string "address_l2", null: false
+    t.string "address_l3", null: false
+    t.integer "floors_count", default: 1, null: false
+    t.integer "rooms_count", default: 1, null: false
+    t.integer "inv_creation_date", default: 1, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.datetime "deleted_at"
+    t.bigint "landlord_id", null: false
+    t.string "mode"
+    t.index ["landlord_id"], name: "index_houses_on_landlord_id"
+  end
+
   create_table "landlords", force: :cascade do |t|
     t.integer "posts_count", default: 0, null: false
     t.integer "houses_count", default: 0, null: false
@@ -71,6 +87,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_25_105837) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "houses", "landlords"
   add_foreign_key "landlords", "users", column: "id"
   add_foreign_key "tenants", "users", column: "id"
 end
