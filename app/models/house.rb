@@ -1,5 +1,6 @@
 class House < ApplicationRecord
-  attr_accessor :rooms_per_floor, :area, :rent, :capacity, :deposit
+  attr_accessor :rooms_per_floor, :area, :rent, :capacity, :deposit, :has_ground_floor,
+                :services, :elec, :elec_price, :elec_unit, :elec_real_time, :water, :wifi, :parking
   has_one_attached :regulation_file
 
   belongs_to :landlord, inverse_of: :houses

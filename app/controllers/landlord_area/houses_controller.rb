@@ -14,6 +14,7 @@
       data = JSON.parse(File.read(Rails.root.join("app/data/vn_locations.json")))
       @provinces = data["province"]
       @communes  = data["commune"]
+      @service_units = ServiceUnit.includes(:service_unit_translations)
     end
 
     def edit

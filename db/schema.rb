@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_27_163143) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_24_072051) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -42,6 +42,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_27_163143) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "floors", force: :cascade do |t|
+    t.bigint "house_id", null: false
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["house_id", "name"], name: "index_floors_on_house_id_and_name", unique: true
+    t.index ["house_id"], name: "index_floors_on_house_id"
+  end
+
   create_table "houses", force: :cascade do |t|
     t.string "name", null: false
     t.string "address_l1", null: false
@@ -61,6 +70,54 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_27_163143) do
   create_table "landlords", force: :cascade do |t|
     t.integer "posts_count", default: 0, null: false
     t.integer "houses_count", default: 0, null: false
+  end
+
+  create_table "room_services", primary_key: ["service_id", "room_id"], force: :cascade do |t|
+    t.integer "fee", null: false
+    t.boolean "is_real_time", default: false, null: false
+    t.bigint "service_id", null: false
+    t.bigint "room_id", null: false
+    t.bigint "service_unit_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["room_id"], name: "index_room_services_on_room_id"
+    t.index ["service_id"], name: "index_room_services_on_service_id"
+    t.index ["service_unit_id"], name: "index_room_services_on_service_unit_id"
+  end
+
+  create_table "rooms", force: :cascade do |t|
+    t.bigint "floor_id", null: false
+    t.string "name", null: false
+    t.integer "tenants_count", default: 0
+    t.integer "max_slots", default: 1
+    t.float "area", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "rent", null: false
+    t.index ["floor_id", "name"], name: "index_rooms_on_floor_id_and_name", unique: true
+    t.index ["floor_id"], name: "index_rooms_on_floor_id"
+  end
+
+  create_table "service_unit_translations", force: :cascade do |t|
+    t.bigint "service_unit_id", null: false
+    t.string "locale", null: false
+    t.string "name", null: false
+    t.index ["service_unit_id", "locale"], name: "index_service_unit_translations_on_service_unit_id_and_locale", unique: true
+    t.index ["service_unit_id"], name: "index_service_unit_translations_on_service_unit_id"
+  end
+
+  create_table "service_units", force: :cascade do |t|
+    t.string "code", null: false
+    t.index ["code"], name: "index_service_units_on_code", unique: true
+  end
+
+  create_table "services", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "note"
+    t.bigint "house_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["house_id"], name: "index_services_on_house_id"
   end
 
   create_table "tenants", force: :cascade do |t|
@@ -87,7 +144,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_27_163143) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "floors", "houses"
   add_foreign_key "houses", "landlords"
-  add_foreign_key "landlords", "users", column: "id"
-  add_foreign_key "tenants", "users", column: "id"
+  add_foreign_key "landlords", "users", column: "id", on_delete: :cascade
+  add_foreign_key "room_services", "rooms", on_delete: :cascade
+  add_foreign_key "room_services", "service_units", on_delete: :cascade
+  add_foreign_key "room_services", "services", on_delete: :cascade
+  add_foreign_key "rooms", "floors"
+  add_foreign_key "service_unit_translations", "service_units", on_delete: :cascade
+  add_foreign_key "services", "houses", on_delete: :cascade
+  add_foreign_key "tenants", "users", column: "id", on_delete: :cascade
 end

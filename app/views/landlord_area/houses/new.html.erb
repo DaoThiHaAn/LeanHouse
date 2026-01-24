@@ -56,11 +56,6 @@
               </small>
           <% end %>
 
-          <div class="field-info mb-2 d-flex align-items-center gap-1">
-              <span class="material-symbols-outlined">info</span>
-              <small><%= t('form.profile.zalo') %></small>
-          </div>
-
           <%= form.text_field :name, minlength: 1, maxlength: 100, class: "mb-1 form-control #{invalid_class(@house, :name)}", 
               placeholder: t('form.house.name_placeholder'), required: true, autofocus: true,
               data: {
@@ -137,19 +132,33 @@
           %>
       </div>
 
+      <!-- has ground floor -->
+      <div class="form-group d-flex gap-2">
+          <%= form.label :has_ground_floor, class: "form-label" do %>
+              <%= t("form.house.has_ground_floor") %>:
+              <span class="asterisk">*</span>
+          <% end %>
+
+          <div class="form-check form-check-inline">
+              <%= form.radio_button :has_ground_floor, "0", class: "form-check-input", required: true %>
+              <%= form.label :has_ground_floor_no, t("form.house.has_ground_floor_no"), class: "form-check-label" %>
+          </div>
+
+          <div class="form-check form-check-inline">
+              <%= form.radio_button :has_ground_floor, "1", class: "form-check-input" %>
+              <%= form.label :has_ground_floor_yes, t("form.house.has_ground_floor_yes"), class: "form-check-label" %>
+          </div>
+      </div>
+
+
       <!-- Floor count -->
       <div class="form-group d-flex gap-3 align-items-center">
           <%= form.label :floors_count, class: "form-label m-0 flex-shrink-0 text-nowrap" do %>
-            <%= t("form.house.floor_num") %>:
+            <%= t("form.house.upper_floor_num") %>:
             <span class="asterisk">*</span>
           <% end %>
 
           <%= form.number_field :floors_count, value: 1, min: 1, step: 1, required: true, class: "form-control number" %>
-
-          <div class="field-info mb-2 d-flex align-items-center gap-1">
-            <span class="material-symbols-outlined">info</span>
-            <small><%= t('form.house.floor_num_info') %></small>
-          </div>
       </div>
 
       <!-- Room per floor -->
@@ -268,7 +277,211 @@
         </div>
       </div>
 
-      <button type="submit" class="custom-primary-btn"><%= t("form.house.create") %></button>
+      <!-- Services -->
+      <div class="form-group">
+        <div class="d-flex flex-column">
+          <%= form.label :services, class: "form-label m-0 flex-shrink-0 text-nowrap" do %>
+            <%= t("form.service.applied_sv") %>:
+            <span class="asterisk">*</span>
+          <% end %>
+
+          <div class="field-info my-2 d-flex align-items-center gap-1">
+            <span class="material-symbols-outlined">info</span>
+            <small><%= t('form.service.info_1') %></small>
+            <small><%= t('form.service.info_2') %></small>
+
+          </div>
+        </div>
+
+        <div class="d-flex flex-column gap-3 mt-2">
+          <!-- Electricity-->
+          <div class="d-flex flex-column gap-2" data-controller="toggle-extra-fields">
+            <div class="form-check">
+              <%= form.check_box :elec_money, data: {
+                action: "toggle-extra-fields#toggle",
+                toggle_extra_fields_target: "checkbox"
+              } 
+              %>
+              <%= form.label :elec_money, t("form.service.elec_money"), class: "form-check-label ms-2" %>
+            </div>
+
+            <!-- Extra fields (hidden by default) -->
+            <div
+              data-toggle-extra-fields-target="extraFields"
+              class="d-none flex-wrap gap-3 px-5"
+            >
+              <div class="form-floating">
+                <%= form.text_field :elec_price, class: "form-control", placeholder: t("form.service.price_placeholder"), required: true %>
+                <%= form.label :elec_price do %>
+                  <%= t("form.service.price") %>:
+                  <span class="asterisk">*</span>
+                <% end %>
+              </div>
+
+              <div class="form-floating">
+                <%= form.select :elec_unit,
+                    @service_units.map { |u|
+                      [u.translated_name, u.code]
+                    },
+                    { prompt: t("form.service.select_unit") },
+                    { class: "form-select", required: true }
+                %>
+
+                <%= form.label :elec_unit do %>
+                  <%= t("form.service.unit") %>:
+                  <span class="asterisk">*</span>
+                <% end %>
+              </div>
+
+              <div class="form-check form-switch">
+                <%= form.check_box :elec_real_time, class: "form-check-input", id: "elec_real_time_switch" %>
+                <%= form.label :elec_real_time, t("form.service.real_time"), class: "form-check-label", for: "elec_real_time_switch" %>
+              </div>
+            </div>
+          </div>
+
+          <!-- Water -->
+          <div class="d-flex flex-column gap-2" data-controller="toggle-extra-fields">
+            <div class="form-check">
+              <%= form.check_box :water_money, data: {
+                action: "toggle-extra-fields#toggle",
+                toggle_extra_fields_target: "checkbox"
+              } 
+              %>
+              <%= form.label :water_money, t("form.service.water_money"), class: "form-check-label ms-2" %>
+            </div>
+
+            <!-- Extra fields (hidden by default) -->
+            <div
+              data-toggle-extra-fields-target="extraFields"
+              class="d-none flex-wrap gap-3 px-5"
+            >
+              <div class="form-floating">
+                <%= form.text_field :water_price, class: "form-control", placeholder: t("form.service.price_placeholder"), required: true %>
+                <%= form.label :water_price do %>
+                  <%= t("form.service.price") %>:
+                  <span class="asterisk">*</span>
+                <% end %>
+              </div>
+
+              <div class="form-floating">
+                <%= form.select :water_unit,
+                    @service_units.map { |u|
+                      [u.translated_name, u.code]
+                    },
+                    { prompt: t("form.service.select_unit") },
+                    { class: "form-select", required: true }
+                %>
+
+                <%= form.label :elec_unit do %>
+                  <%= t("form.service.unit") %>:
+                  <span class="asterisk">*</span>
+                <% end %>
+              </div>
+
+              <div class="form-check form-switch">
+                <%= form.check_box :water_real_time, class: "form-check-input", id: "water_real_time_switch" %>
+                <%= form.label :water_real_time, t("form.service.real_time"), class: "form-check-label", for: "water_real_time_switch" %>
+              </div>
+            </div>
+          </div>
+
+          <!-- Wifi -->
+          <div class="d-flex flex-column gap-2" data-controller="toggle-extra-fields">
+            <div class="form-check">
+              <%= form.check_box :wifi_money, data: {
+                action: "toggle-extra-fields#toggle",
+                toggle_extra_fields_target: "checkbox"
+              } 
+              %>
+              <%= form.label :wifi_money, t("form.service.wifi_money"), class: "form-check-label ms-2" %>
+            </div>
+
+            <!-- Extra fields (hidden by default) -->
+            <div
+              data-toggle-extra-fields-target="extraFields"
+              class="d-none flex-wrap gap-3 px-5"
+            >
+              <div class="form-floating">
+                <%= form.text_field :wifi_price, class: "form-control", placeholder: t("form.service.price_placeholder"), required: true %>
+                <%= form.label :wifi_price do %>
+                  <%= t("form.service.price") %>:
+                  <span class="asterisk">*</span>
+                <% end %>
+              </div>
+
+              <div class="form-floating">
+                <%= form.select :wifi_unit,
+                    @service_units.map { |u|
+                      [u.translated_name, u.code]
+                    },
+                    { prompt: t("form.service.select_unit") },
+                    { class: "form-select", required: true }
+                %>
+
+                <%= form.label :wifi_unit do %>
+                  <%= t("form.service.unit") %>:
+                  <span class="asterisk">*</span>
+                <% end %>
+              </div>
+
+              <div class="form-check form-switch">
+                <%= form.check_box :wifi_real_time, class: "form-check-input", id: "elec_real_time_switch" %>
+                <%= form.label :wifi_real_time, t("form.service.real_time"), class: "form-check-label", for: "elec_real_time_switch" %>
+              </div>
+            </div>
+          </div>
+
+          <!-- Parking -->
+          <div class="d-flex flex-column gap-2" data-controller="toggle-extra-fields">
+            <div class="form-check">
+              <%= form.check_box :parking_money, data: {
+                action: "toggle-extra-fields#toggle",
+                toggle_extra_fields_target: "checkbox"
+              } 
+              %>
+              <%= form.label :parking_money, t("form.service.parking_money"), class: "form-check-label ms-2" %>
+            </div>
+
+            <!-- Extra fields (hidden by default) -->
+            <div
+              data-toggle-extra-fields-target="extraFields"
+              class="d-none flex-wrap gap-3 px-5"
+            >
+              <div class="form-floating">
+                <%= form.text_field :parking_price, class: "form-control", placeholder: t("form.service.price_placeholder"), required: true %>
+                <%= form.label :parking_price do %>
+                  <%= t("form.service.price") %>:
+                  <span class="asterisk">*</span>
+                <% end %>
+              </div>
+
+              <div class="form-floating">
+                <%= form.select :parking_unit,
+                    @service_units.map { |u|
+                      [u.translated_name, u.code]
+                    },
+                    { prompt: t("form.service.select_unit") },
+                    { class: "form-select", required: true }
+                %>
+
+                <%= form.label :parking_unit do %>
+                  <%= t("form.service.unit") %>:
+                  <span class="asterisk">*</span>
+                <% end %>
+              </div>
+
+              <div class="form-check form-switch">
+                <%= form.check_box :parking_real_time, class: "form-check-input", id: "parking_real_time_switch" %>
+                <%= form.label :parking_real_time, t("form.service.real_time"), class: "form-check-label", for: "parking_real_time_switch" %>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+
+      <button type="submit" class="custom-primary-btn main-form"><%= t("form.house.create") %></button>
   <% end %>
 </div>
 

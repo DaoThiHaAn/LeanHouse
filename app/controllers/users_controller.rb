@@ -28,7 +28,7 @@ class UsersController < ApplicationController
       session[:pending_tel]  = result.user.tel
       session[:pending_role] = result.user.role
       session[:is_reset_password] = false
-      format.html { redirect_to login_path, notice: t("messages.reset_pw_success") }
+      redirect_to otp_input_path, notice: t("messages.send_otp")
     else
       @user = result.user
       # flash.now[:alert] = t("errors.signup_failed")
