@@ -1,4 +1,4 @@
-<% content_for :title, "New House" %>
+<% content_for :title, t("page_title.new_house") %>
 
 <div class="py-3 my-4 mx-auto main-container">
   <div class="d-flex align-items-center mb-5 w-100">
@@ -24,7 +24,7 @@
               <div
                   class="role-option selected d-flex flex-column align-items-center gap-1 px-2 py-1"
                   data-action="click->role-selector#select"
-                  data-role-selector-value="room"
+                  data-role-selector-value="<%=House.mode[:room]%>"
               >
                   <%= image_tag "room-based.png", alt: "Room Icon" %>
                   <p><%= t('form.house.room') %></p>
@@ -34,7 +34,7 @@
               <div
                   class="role-option d-flex flex-column align-items-center gap-1 px-2 py-1"
                   data-action="click->role-selector#select"
-                  data-role-selector-value="dorm"
+                  data-role-selector-value="<%=House.mode[:bed]%>"
               >
                   <%= image_tag "bed-based.png", alt: "Bunk Beds Icon" %>
                   <p><%= t('form.house.dorm') %></p>
@@ -213,7 +213,7 @@
           <span class="input-group-text">
             <%= t("form.house.capacity") %>
           </span>
-          <%= form.number_field :capacity, min: 1, step: 1,
+          <%= form.number_field :capacity, min: 1, step: 1, value: 1,
                 class: "form-control",
                 required: true %>
         </div>

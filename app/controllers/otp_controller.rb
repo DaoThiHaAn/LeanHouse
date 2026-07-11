@@ -12,7 +12,7 @@ class OtpController < ApplicationController
   def resend
     verification = PhoneVerification.new(tel: session[:pending_tel], role: session[:pending_role])
     verification.resend_otp
-    flash.now[:notice] = t("messages.resend_success")
+    flash.now[:notice] = t("custom_messages.resend_success")
     render "otp_input", locals: { tel: session[:pending_tel] }
   end
 
@@ -37,7 +37,7 @@ class OtpController < ApplicationController
           clear_session_keys(:pending_role, :pending_tel)
           log_in(result.user)
 
-          flash[:notice] = t("messages.signup_success")
+          flash[:notice] = t("custom_messages.signup_success")
           redirect_to root_path
         end
         return

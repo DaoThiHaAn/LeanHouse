@@ -76,13 +76,13 @@ vi:
     otp_failed: "Xảy ra lỗi khi xác minh OTP! Hãy thử lại."
     signup_failed: "Đăng ký thất bại! Hãy thử lại."
     wrong_pw: "Số điện thoại hoặc mật khẩu bị sai!"
-    unregistered: "Số điện thoại chưa được đăng ký!"
+    tel_unregistered: "Số điện thoại chưa được đăng ký!"
     inactive_acc: |
       Tài khoản bị vô hiệu!
       Hãy liên hệ với chúng tôi để biết thêm chi tiết!
-
+    
   
-  messages:
+  custom_messages:
     send_otp: "Đã gửi OTP!"
     resend_success: "Đã gửi lại mã OTP!"
     signup_success: "Đăng ký thành công!"
@@ -90,3 +90,13 @@ vi:
     logout_success: "Đăng xuất thành công!"
     user_update_success: "Cập nhật thông tin tài khoản thành công!"
     user_update_pw_success: "Cập nhật mật khẩu thành công!"
+
+  page_titles:
+    home: "Trang Chủ"
+    about: "Về Chúng Tôi"
+    features: "Tính Năng"
+    find_rooms: "Tìm Trọ"
+    contact: "Liên Hệ"
+    terms: "Điều Khoản Sử Dụng"
+    privacy: "Chính Sách Bảo Mật"
+    new_house: "Tạo Nhà Mới"

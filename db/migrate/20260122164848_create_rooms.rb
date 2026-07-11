@@ -5,11 +5,12 @@ class CreateRooms < ActiveRecord::Migration[8.0]
       t.string :name, null: false
       t.integer :tenants_count, default: 0
       t.integer :max_slots, default: 1
+      t.integer :rent, null: false
       t.float :area, null: false
 
       t.timestamps
     end
 
-    add_index :rooms, [:floor_id, :name], unique: true
+    add_index :rooms, [ :floor_id, :name ], unique: true
   end
 end

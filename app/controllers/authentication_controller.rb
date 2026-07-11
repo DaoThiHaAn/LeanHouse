@@ -15,7 +15,7 @@ class AuthenticationController < ApplicationController
 
   def log_out
     destroy_session
-    flash[:notice] = t("messages.logout_success")
+    flash[:notice] = t("custom_messages.logout_success")
     redirect_to root_path
   end
 
@@ -41,14 +41,14 @@ class AuthenticationController < ApplicationController
     message = nil
 
     if existing_acc.nil?
-      message = t("errors.unregistered")
+      message = t("errors.tel_unregistered")
     elsif !existing_acc.active?
       message = t("errors.inactive_acc")
     elsif !existing_acc.authenticate(user_params[:password])
       message = t("errors.wrong_pw")
     else
       log_in(existing_acc)
-      flash[:notice] = t("messages.login_success")
+      flash[:notice] = t("custom_messages.login_success")
       # If you want to redirect after login, you can do it here
       return redirect_to root_path
     end
@@ -74,7 +74,7 @@ class AuthenticationController < ApplicationController
     message = nil
 
     if existing_acc.nil?
-      message = t("errors.unregistered")
+      message = t("errors.tel_unregistered")
     elsif !existing_acc.active?
       message = t("errors.inactive_acc")
     else
@@ -87,7 +87,7 @@ class AuthenticationController < ApplicationController
       session[:pending_tel] = existing_acc.tel
       session[:pending_role] = existing_acc.role
       session[:is_reset_pw] = true
-      redirect_to otp_input_path, notice: t("messages.send_otp")
+      redirect_to otp_input_path, notice: t("custom_messages.send_otp")
       return
     end
 

@@ -23,5 +23,11 @@ vi:
             address:
               blank: "Địa chỉ không được để trống!"
 
+      room_service:
+        attributes:
+          base:
+            different_house: "Dịch vụ và phòng không thuộc cùng một tòa nhà!"
+          fee:
+            invalid_fee: "Phí dịch vụ phải là số nguyên dương!"
       messages:
-        record_invalid: "Dữ liệu không hợp lệ"
+        record_invalid: "Dữ liệu không hợp lệ!"
