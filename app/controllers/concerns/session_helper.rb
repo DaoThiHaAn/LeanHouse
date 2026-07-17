@@ -1,5 +1,6 @@
 module SessionHelper
   def log_in(user)
+    # Store user information in the session
     session[:user_id] = user.id
     session[:role] = user.role
 

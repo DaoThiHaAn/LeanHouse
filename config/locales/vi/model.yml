@@ -2,18 +2,19 @@ vi:
   activerecord:
     errors:
       models:
+        # For model-specific error messages
         user:
           attributes:
             fullname:
               invalid_fname: "Họ và tên chỉ được chứa chữ cái và khoảng trắng"
+              blank: "Tên không được để trống!"
             tel:  
               invalid_tel: "Số điện thoại phải bao gồm 10 ký tự số và bắt đầu bằng số 0!"
               blank: "Số điện thoại không được để trống!"
               existed_acc: "Số điện thoại đã được đăng ký cho loại tài khoản này!"
-
-            fullname:
-              invalid_fname: "Tên không được có ký tự số!"
-              blank: "Tên không được để trống!"
+            bday:
+              invalid_bday: "Bạn phải đủ #{min_age} tuổi để đăng ký tài khoản!"
+              blank: "Ngày sinh không được để trống!"
             password:
               invalid_pw: "Mật khẩu không thỏa yêu cầu!"
               blank: "Mật khẩu không được để trống!"
@@ -22,12 +23,27 @@ vi:
               blank: "Mật khẩu không được để trống!"
             address:
               blank: "Địa chỉ không được để trống!"
+            mode:
+             blank: "Loại hình không được để trống!"
 
-      room_service:
-        attributes:
-          base:
-            different_house: "Dịch vụ và phòng không thuộc cùng một tòa nhà!"
-          fee:
-            invalid_fee: "Phí dịch vụ phải là số nguyên dương!"
+        room_service:
+          attributes:
+            base:
+              different_house: "Dịch vụ và phòng không thuộc cùng một tòa nhà!"
+            fee:
+              invalid_fee: "Phí dịch vụ phải là số nguyên dương!"
       messages:
         record_invalid: "Dữ liệu không hợp lệ!"
+
+  # For enum values
+  enums:
+    room_service:
+      unit:
+        per_person: "Người"
+        per_room: "Phòng"
+        per_month: "Tháng"
+        per_item: "Số lượng"
+        per_hour: "Giờ"
+        per_use: "Lần sử dụng"
+        per_kwh: "kWh"
+        per_m3: "m3"

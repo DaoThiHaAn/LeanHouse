@@ -1,4 +1,6 @@
-<% content_for :title, t("page_title.new_house") %>
+<%# Variables: @form, @landlord, @provinces, @commmunes %>
+
+<% content_for :title, t("page_titles.new_house") %>
 
 <div class="py-3 my-4 mx-auto main-container">
   <div class="d-flex align-items-center mb-5 w-100">
@@ -9,8 +11,9 @@
     <h1 class="text-center flex-grow-1"><%=t('form.house.add') %></h1>
   </div>  
 
-  <%= form_with model: @house, url: landlord_houses_path(@landlord), method: :post, local: true, 
-              class:"house-form d-flex align-items-center flex-column gap-4" do |form| %>
+  <%= form_with model: @form, url: landlord_houses_path, method: :post, local: true, 
+              class:"house-form d-flex align-items-center flex-column gap-4" ,
+              data: { action: "submit@document->role-selector#validateForm" } do |form| %>
 
       <!-- Mode selection -->
       <div data-controller="role-selector" class="form-group gap-2 d-flex flex-column align-items-center mb-2">
@@ -24,7 +27,7 @@
               <div
                   class="role-option selected d-flex flex-column align-items-center gap-1 px-2 py-1"
                   data-action="click->role-selector#select"
-                  data-role-selector-value="<%=House.mode[:room]%>"
+                  data-role-selector-value="<%=House.modes[:room]%>"
               >
                   <%= image_tag "room-based.png", alt: "Room Icon" %>
                   <p><%= t('form.house.room') %></p>
@@ -34,12 +37,17 @@
               <div
                   class="role-option d-flex flex-column align-items-center gap-1 px-2 py-1"
                   data-action="click->role-selector#select"
-                  data-role-selector-value="<%=House.mode[:bed]%>"
+                  data-role-selector-value="<%=House.modes[:bed]%>"
               >
                   <%= image_tag "bed-based.png", alt: "Bunk Beds Icon" %>
                   <p><%= t('form.house.dorm') %></p>
                   <p class="mode-info">(<%= t('form.house.bed-based') %>)</p>
               </div>
+          </div>
+
+          <%# Error display %>
+          <div class="invalid-feedback <%= @form.errors[:mode].any? ? 'd-block' : '' %>">
+            <%= @form.errors[:mode].to_sentence if @form.errors[:mode].any? %>
           </div>
       </div>
 
@@ -56,7 +64,7 @@
               </small>
           <% end %>
 
-          <%= form.text_field :name, minlength: 1, maxlength: 100, class: "mb-1 form-control #{invalid_class(@house, :name)}", 
+          <%= form.text_field :name, minlength: 1, maxlength: 100, class: "mb-1 form-control #{invalid_class(@form, :name)}", 
               placeholder: t('form.house.name_placeholder'), required: true, autofocus: true,
               data: {
                   form_target: "input",
@@ -64,7 +72,7 @@
               } 
           %>
 
-          <%= field_error(@house, :name) %>
+          <%= field_error(@form, :name) %>
       </div>
 
       
@@ -154,11 +162,14 @@
       <!-- Floor count -->
       <div class="form-group d-flex gap-3 align-items-center">
           <%= form.label :floors_count, class: "form-label m-0 flex-shrink-0 text-nowrap" do %>
-            <%= t("form.house.upper_floor_num") %>:
+            <%= t("form.house.total_floors") %>:
             <span class="asterisk">*</span>
           <% end %>
 
-          <%= form.number_field :floors_count, value: 1, min: 1, step: 1, required: true, class: "form-control number" %>
+          <%= form.number_field :floors_count, min: 1, max: 50, step: 1, required: true, 
+              placeholder: "1-50",
+              class: "form-control number" 
+          %>
       </div>
 
       <!-- Room per floor -->
@@ -168,7 +179,10 @@
             <span class="asterisk">*</span>
           <% end %>
 
-          <%= form.number_field :rooms_per_floor, value: 1, min: 1, step: 1, required: true, class: "number form-control" %>
+          <%= form.number_field :rooms_per_floor, min: 1, step: 1, required: true, 
+            placeholder: "1-100",
+            class: "number form-control" 
+          %>
 
           <div class="field-info mb-2 d-flex align-items-center gap-1">
             <span class="material-symbols-outlined">info</span>
@@ -196,7 +210,7 @@
           </span>
           <%= form.number_field :area,
                 class: "form-control",
-                required: true,
+                required: true, step: "any",
                 placeholder: t("form.house.ex_placeholder", num: 10.1) %>
         </div>
 
@@ -204,8 +218,8 @@
           <span class="input-group-text">
             <%= t("form.house.rent") %> (đ)
           </span>
-          <%= form.number_field :rent, min: 1,
-                class: "form-control", placeholder: t("form.house.ex_placeholder", num: 500000),
+          <%= form.text_field :rent,
+                class: "form-control", data: {controller: "currency"},
                 required: true %>
         </div>
 
@@ -213,7 +227,7 @@
           <span class="input-group-text">
             <%= t("form.house.capacity") %>
           </span>
-          <%= form.number_field :capacity, min: 1, step: 1, value: 1,
+          <%= form.number_field :capacity, min: 1, max: 30, step: 1, placeholder: "1-30",
                 class: "form-control",
                 required: true %>
         </div>
@@ -222,8 +236,8 @@
           <span class="input-group-text">
             <%= t("form.house.deposit") %> (đ)
           </span>
-          <%= form.number_field :deposit, placeholder: t("form.house.ex_placeholder", num: 500000),
-                class: "form-control", min: 1,
+          <%= form.text_field :deposit,
+                class: "form-control", data: {controller: "currency"},
                 required: true %>
         </div>
       </div>
@@ -236,7 +250,10 @@
             <span class="asterisk">*</span>
           <% end %>
 
-          <%= form.number_field :inv_creation_date, in: 1..31, step: 1, required: true, class: "number form-control" %>
+          <%= form.number_field :inv_creation_date, in: 1..31, step: 1, required: true, 
+              placeholder: "1-31",
+              class: "number form-control" 
+          %>
         </div>
         
         <div class="field-info my-2 d-flex align-items-center gap-1">
@@ -251,7 +268,6 @@
         <div class="d-flex align-items-center gap-3">
           <%= form.label :regulation_file, class: "form-label m-0 flex-shrink-0 text-nowrap" do %>
             <%= t("form.house.regulation") %>:
-            <span class="asterisk">*</span>
           <% end %>
 
           <div class="position-relative">
@@ -277,12 +293,11 @@
         </div>
       </div>
 
-      <!-- Services -->
+      <!-- Services (optional) -->
       <div class="form-group">
         <div class="d-flex flex-column">
           <%= form.label :services, class: "form-label m-0 flex-shrink-0 text-nowrap" do %>
             <%= t("form.service.applied_sv") %>:
-            <span class="asterisk">*</span>
           <% end %>
 
           <div class="field-info my-2 d-flex align-items-center gap-1">
@@ -311,7 +326,9 @@
               class="d-none flex-wrap gap-3 px-5"
             >
               <div class="form-floating">
-                <%= form.text_field :elec_price, class: "form-control", placeholder: t("form.service.price_placeholder"), required: true %>
+                <%= form.text_field :elec_price, class: "form-control", placeholder: t("form.service.price_placeholder"), required: true,
+                    data: {controller: "currency"}
+                %>
                 <%= form.label :elec_price do %>
                   <%= t("form.service.price") %>:
                   <span class="asterisk">*</span>
@@ -320,9 +337,7 @@
 
               <div class="form-floating">
                 <%= form.select :elec_unit,
-                    @service_units.map { |u|
-                      [u.translated_name, u.code]
-                    },
+                    RoomService.unit_options,  # display the units
                     { prompt: t("form.service.select_unit") },
                     { class: "form-select", required: true }
                 %>
@@ -357,7 +372,9 @@
               class="d-none flex-wrap gap-3 px-5"
             >
               <div class="form-floating">
-                <%= form.text_field :water_price, class: "form-control", placeholder: t("form.service.price_placeholder"), required: true %>
+                <%= form.text_field :water_price, class: "form-control", placeholder: t("form.service.price_placeholder"), required: true,
+                    data: {controller: "currency"}
+                %>
                 <%= form.label :water_price do %>
                   <%= t("form.service.price") %>:
                   <span class="asterisk">*</span>
@@ -366,14 +383,12 @@
 
               <div class="form-floating">
                 <%= form.select :water_unit,
-                    @service_units.map { |u|
-                      [u.translated_name, u.code]
-                    },
+                    RoomService.unit_options,
                     { prompt: t("form.service.select_unit") },
                     { class: "form-select", required: true }
                 %>
 
-                <%= form.label :elec_unit do %>
+                <%= form.label :water_unit do %>
                   <%= t("form.service.unit") %>:
                   <span class="asterisk">*</span>
                 <% end %>
@@ -403,7 +418,9 @@
               class="d-none flex-wrap gap-3 px-5"
             >
               <div class="form-floating">
-                <%= form.text_field :wifi_price, class: "form-control", placeholder: t("form.service.price_placeholder"), required: true %>
+                <%= form.text_field :wifi_price, class: "form-control", placeholder: t("form.service.price_placeholder"), required: true,
+                    data: {controller: "currency"}
+                %>
                 <%= form.label :wifi_price do %>
                   <%= t("form.service.price") %>:
                   <span class="asterisk">*</span>
@@ -412,9 +429,7 @@
 
               <div class="form-floating">
                 <%= form.select :wifi_unit,
-                    @service_units.map { |u|
-                      [u.translated_name, u.code]
-                    },
+                    RoomService.unit_options,
                     { prompt: t("form.service.select_unit") },
                     { class: "form-select", required: true }
                 %>
@@ -423,11 +438,6 @@
                   <%= t("form.service.unit") %>:
                   <span class="asterisk">*</span>
                 <% end %>
-              </div>
-
-              <div class="form-check form-switch">
-                <%= form.check_box :wifi_real_time, class: "form-check-input", id: "elec_real_time_switch" %>
-                <%= form.label :wifi_real_time, t("form.service.real_time"), class: "form-check-label", for: "elec_real_time_switch" %>
               </div>
             </div>
           </div>
@@ -449,7 +459,9 @@
               class="d-none flex-wrap gap-3 px-5"
             >
               <div class="form-floating">
-                <%= form.text_field :parking_price, class: "form-control", placeholder: t("form.service.price_placeholder"), required: true %>
+                <%= form.text_field :parking_price, class: "form-control", placeholder: t("form.service.price_placeholder"), required: true,
+                    data: {controller: "currency"}
+                %>
                 <%= form.label :parking_price do %>
                   <%= t("form.service.price") %>:
                   <span class="asterisk">*</span>
@@ -458,9 +470,7 @@
 
               <div class="form-floating">
                 <%= form.select :parking_unit,
-                    @service_units.map { |u|
-                      [u.translated_name, u.code]
-                    },
+                    RoomService.unit_options,
                     { prompt: t("form.service.select_unit") },
                     { class: "form-select", required: true }
                 %>
@@ -469,11 +479,6 @@
                   <%= t("form.service.unit") %>:
                   <span class="asterisk">*</span>
                 <% end %>
-              </div>
-
-              <div class="form-check form-switch">
-                <%= form.check_box :parking_real_time, class: "form-check-input", id: "parking_real_time_switch" %>
-                <%= form.label :parking_real_time, t("form.service.real_time"), class: "form-check-label", for: "parking_real_time_switch" %>
               </div>
             </div>
           </div>

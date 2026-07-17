@@ -25,7 +25,7 @@
                     <div
                         class="role-option selected d-flex flex-column align-items-center gap-1 px-2 py-1"
                         data-action="click->role-selector#select"
-                        data-role-selector-value="tenant"
+                        data-role-selector-value="<%=User.roles[:tenant]%>"
                     >
                         <%= image_tag "tenant-icon.png", alt: "Tenant Icon" %>
                         <p><%= t('common.role.tenant') %></p>
@@ -34,7 +34,7 @@
                     <div
                         class="role-option d-flex flex-column align-items-center gap-1 px-2 py-1"
                         data-action="click->role-selector#select"
-                        data-role-selector-value="landlord"
+                        data-role-selector-value="<%=User.roles[:landlord]%>"
                     >
                         <%= image_tag "landlord-icon.png", alt: "Landlord Icon" %>
                         <p><%= t('common.role.landlord') %></p>
@@ -200,12 +200,12 @@
                 <% end %>
 
                 <div class="form-check form-check-inline">
-                    <%= form.radio_button :sex, "F", class: "form-check-input", required: true %>
+                    <%= form.radio_button :sex, User.sexes[:female], class: "form-check-input", required: true %>
                     <%= form.label :sex_f, t("form.profile.female"), class: "form-check-label" %>
                 </div>
 
                 <div class="form-check form-check-inline">
-                    <%= form.radio_button :sex, "M", class: "form-check-input" %>
+                    <%= form.radio_button :sex, User.sexes[:male], class: "form-check-input" %>
                     <%= form.label :sex_m, t("form.profile.male"), class: "form-check-label" %>
                 </div>
             </div>

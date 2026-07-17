@@ -5,16 +5,20 @@ class Room < ApplicationRecord
   has_many :room_services, inverse_of: :room, dependent: :destroy
   has_many :services, through: :room_services, inverse_of: :rooms
 
-  validates :name, :max_slots, :tenants_count, :area, :rent, presence: true
-  validates :max_slots, :rent, numericality: {
+  validates :name, :max_slots, :tenants_count, :area, presence: true
+  validates :max_slots, numericality: {
     only_integer: true,
-    greater_than_or_equal_to: 1,
-    less_than_or_equal_to: 30
+    greater_than_or_equal_to: 0,
+    less_than_or_equal_to: 20
   }
   validates :tenants_count, numericality: {
     only_integer: true,
     greater_than_or_equal_to: 0,
     less_than_or_equal_to: :max_slots
+  }
+  validates :area, numericality: {
+    greater_than_or_equal_to: 1,
+    less_than_or_equal_to: 500
   }
 
   # Model method

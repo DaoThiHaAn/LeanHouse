@@ -11,6 +11,9 @@ class User < ApplicationRecord
   has_one :landlord, foreign_key: :id, primary_key: :id, inverse_of: :user, dependent: :destroy
   has_one :tenant, foreign_key: :id, primary_key: :id, inverse_of: :user, dependent: :destroy
 
+  enum :role, { landlord: "landlord", tenant: "tenant" } # 2 methods: landlord?, tenant?
+  enum :sex,  { male: "M", female: "F" } # 2 methods: male?, female?
+
   before_validation :normalize_inputs
 
   validates :fullname, :password, :password_confirmation, :tel, :sex, :bday, :address, presence: true
@@ -25,9 +28,12 @@ class User < ApplicationRecord
             on: [ :signup, :change_tel ]
   validates :sex, inclusion: { in: %w[M F] }
   validates :terms_accepted, acceptance: true, on: :create
-
   validates :password, length: { in: 8..72 }
   validates :password_confirmation, length: { in: 8..72 }
+  validates :bday, comparison: {
+    less_than_or_equal_to: -> { MIN_AGE.years.ago.to_date },
+    message: ->(object, data) { I18n.t("activerecord.errors.models.user.attributes.bday.invalid_bday", min_age: MIN_AGE) }
+  }
   validate :pw_complexity, on: [ :signup, :pw_reset ]
   validate :pw_match, on: [ :signup, :pw_reset ]
 

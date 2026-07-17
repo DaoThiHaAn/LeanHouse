@@ -1,3 +1,4 @@
+/* Navigation house card*/
 .mode-info {
     font-weight: 400 !important;
 }
@@ -25,4 +26,74 @@
 
 .x.btn span {
     font-size: 1rem;
+}
+
+/* Detailed house card */
+.detailed-house-card {
+    background-color: var(--detailed-house-card-bg);
+    border-color: var(--detailed-house-card-bd);
+    border-radius: 5px;
+    border-width: 1px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: box-shadow .25s ease;
+}
+
+.detailed-house-card:hover {
+    box-shadow: 0 6px 18px rgba(0,0,0,.15);
+}
+
+.detailed-house-card .title {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.house-content {
+    transition: padding-right .3s ease;
+}
+
+/* Button panel */
+.house-actions {
+    position: absolute;
+    top: 50%;
+    right: 16px;
+
+    transform: translate(40px, -50%);
+    opacity: 0;
+
+    transition:
+        transform .3s ease,
+        opacity .3s ease;
+
+    pointer-events: none;
+}
+
+/* Hover animation */
+.detailed-house-card:hover .house-actions {
+    transform: translate(0, -50%);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.house-btn {
+    border-color:#264155;
+    color: #1b3344;
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.house-btn:hover {
+    border-color: var(--normal-text);
+    color: var(--normal-text)
+}
+
+.house-btn.selected {
+    border-color: white;
+    color: white;
 }

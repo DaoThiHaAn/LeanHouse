@@ -44,6 +44,7 @@ module NavHelper
 
 
   def format_name(full_name)
+    # Format: Lastname M. Firstname
     parts = full_name.strip.split(/\s+/)
 
     return full_name if parts.length < 2

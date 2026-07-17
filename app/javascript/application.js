@@ -2,6 +2,7 @@
 import "@hotwired/turbo-rails"
 import "controllers"
 // import * as bootstrap from "bootstrap"
+import AutoNumeric from "autonumeric"
 
 document.addEventListener("turbo:load", () => {
   const tooltipTriggerList = document.querySelectorAll('[title]')

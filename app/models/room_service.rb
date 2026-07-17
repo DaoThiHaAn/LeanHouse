@@ -4,21 +4,32 @@ class RoomService < ApplicationRecord
   belongs_to :room, inverse_of: :room_services
   belongs_to :service, inverse_of: :room_services
 
-  enum unit: {
+  enum :unit, {
     per_person: "person",
     per_room: "room",
     per_month: "month",
-    per_object: "object",
+    per_item: "item",
     per_hour: "hour",
-    per_time: "time",
+    per_use: "use",
     per_kwh: "kWh",
     per_m3: "m3"
   }
 
-  validates :fee, :unit, :is_real_time, presence: true
+  validates :fee, :unit, presence: true
   validates :fee, numericality: { only_integer: true, greater_than: 0 }
   validates :unit, presence: true, inclusion: { in: units.keys }
   validate :room_and_service_must_belong_to_same_house
+
+
+  def self.unit_options
+    # Used in views to display the unit options in a select dropdown
+    units.keys.map do |unit|
+      [
+        I18n.t("enums.room_service.unit.#{unit}"),
+        unit
+      ]
+    end
+  end
 
 
   private

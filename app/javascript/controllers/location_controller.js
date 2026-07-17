@@ -1,4 +1,3 @@
-// app/javascript/controllers/location_controller.js
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
@@ -15,25 +14,31 @@ export default class extends Controller {
 
   populateProvinces() {
     this.provincesValue.forEach(p => {
-      const option = new Option(p.name, p.idProvince)
+      const option = new Option(p.name, p.name)
+      option.dataset.id = p.idProvince
       this.provinceTarget.add(option)
     })
   }
 
   provinceChanged() {
-    const provinceId = this.provinceTarget.value
+    const selected = this.provinceTarget.selectedOptions[0]
 
-    this.communeTarget.length = 1 // keep prompt
-
-    if (!provinceId) {
+    if (!selected || !selected.dataset.id) {
+      this.communeTarget.length = 1
       this.communeTarget.disabled = true
       return
     }
 
+    const provinceId = selected.dataset.id
+
+    this.communeTarget.length = 1
+
     this.communesValue
       .filter(c => c.idProvince === provinceId)
       .forEach(c => {
-        this.communeTarget.add(new Option(c.name, c.idCommune))
+        const option = new Option(c.name, c.name)
+        option.dataset.id = c.idCommune
+        this.communeTarget.add(option)
       })
 
     this.communeTarget.disabled = false

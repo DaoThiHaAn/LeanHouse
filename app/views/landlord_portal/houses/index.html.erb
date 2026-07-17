@@ -1,0 +1,54 @@
+<%# Variables: @houses, @landlord %>
+
+<% content_for :title, t("page_titles.house_mng") %>
+
+<h1 class="text-center flex-grow-1"> <%= t("form.house.house_list") %> </h1>
+<hr class="my-4">
+
+<%# Search bar %>
+<div class="row mb-4">
+  <div class="col-md-6">
+    <%= form_with url: landlord_houses_path, method: :get,
+                  data: {
+                    controller: "search",
+                    turbo_frame: "house-grid",
+                    turbo_action: "advance"
+                  } do |f| %>
+
+        <div class="input-group">
+            <span class="input-group-text">
+                <span class="material-symbols-outlined">search</span>
+            </span>
+
+            <%= f.search_field :query,
+                value: params[:query],
+                placeholder: "#{t("form.house.search")}...",
+                class: "form-control",
+                data: {
+                    search_target: "input",
+                    action: "input->search#debounce"
+                } 
+            %>
+        </div>
+    <% end %>
+  </div>
+</div>
+
+<!-- Add House Button -->
+<%=link_to new_landlord_house_path, class:"add-house-btn d-flex align-items-center gap-2 px-2 py-1" do%>
+    <span class="material-symbols-filled">add_circle</span>
+    <%=t('form.house.add')%>
+<%end%>
+
+<p><%=t("form.num_house", num: @landlord.houses_count)%></p>
+
+<%# House card grid house %>
+<%= turbo_frame_tag "house-grid" do %>
+  <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-3">
+    <% @houses.each do |house| %>
+      <div class="col">
+        <%= render "landlord_portal/houses/house_card", house: house %>
+      </div>
+    <% end %>
+  </div>
+<% end %>

@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_07_08_131839) do
+ActiveRecord::Schema[8.0].define(version: 2026_07_17_183028) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+  enable_extension "unaccent"
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -108,7 +109,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_08_131839) do
     t.string "name", null: false
     t.integer "tenants_count", default: 0
     t.integer "max_slots", default: 1
-    t.integer "rent", null: false
     t.float "area", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

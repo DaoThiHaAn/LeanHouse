@@ -36,25 +36,20 @@ Rails.application.routes.draw do
   resources :posts, only: [ :index, :show ]
   resources :users
 
-  scope module: "landlord_area" do
-    resources :landlords, shallow: true do
-      resources :dashboard, :posts
-      resources :houses, shallow: true do
-        resources :rooms, :invoices, :vehicles, :contracts
-      end
+  namespace :landlord, module: :landlord_portal do
+    resource :dashboard, only: [ :show ]
+
+    resources :posts
+    resources :houses, shallow: true do
+      resources :rooms, :invoices, :vehicles, :contracts
     end
   end
 
-  scope module: "tenant_area" do
-    resources :tenants, shallow: true do
+  namespace :tenant, module: :tenant_area do
       resources :dashboard, :posts
-    end
   end
 
-  scope module: "admin_area" do
-    resources :admin, shallow: true do
-      resources :dashboard
-      resources :houses
-    end
+  namespace :admin, module: :admin_area do
+    resources :dashboard, :houses
   end
 end

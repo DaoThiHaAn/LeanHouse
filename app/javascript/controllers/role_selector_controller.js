@@ -4,24 +4,27 @@ export default class extends Controller {
   static targets = ["input"]
 
   connect() {
-    // default value (matches "selected" class)
-    this.inputTarget.value = "tenant"
+    this.updateSelection()
     console.log("Role selector connected")
+    console.log("Current hidden value:", this.inputTarget.value)
   }
 
   select(event) {
-    const selected = event.currentTarget.dataset.roleSelectorValue
-    console.log("Selected role:", selected)
+    // Update hidden input
+    this.inputTarget.value = event.currentTarget.dataset.roleSelectorValue
+    console.log("Selected value:", this.inputTarget.value)
+    // Refresh UI
+    this.updateSelection()
+  }
 
-    // remove selected class from all
-    this.element
-      .querySelectorAll(".role-option")
-      .forEach(el => el.classList.remove("selected"))
+  updateSelection() {
+    const selected = this.inputTarget.value
 
-    // add selected class
-    event.currentTarget.classList.add("selected")
-
-    // update hidden field
-    this.inputTarget.value = selected
+    this.element.querySelectorAll(".role-option").forEach((option) => {
+      option.classList.toggle(
+        "selected",
+        option.dataset.roleSelectorValue === selected
+      )
+    })
   }
 }

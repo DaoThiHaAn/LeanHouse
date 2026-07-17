@@ -4,10 +4,7 @@ class AuthenticationController < ApplicationController
   end
 
   def login_form
-    if logged_in?
-      redirect_to root_path
-      return
-    end
+    return redirect_after_login if logged_in?
 
     @user = User.new
     render "authentication/log_in"
@@ -15,7 +12,7 @@ class AuthenticationController < ApplicationController
 
   def log_out
     destroy_session
-    flash[:notice] = t("custom_messages.logout_success")
+    flash[:notice] = t("success_messages.logout")
     redirect_to root_path
   end
 
@@ -38,71 +35,34 @@ class AuthenticationController < ApplicationController
   def handle_log_in
     user_params = login_params
     existing_acc = User.find_acc(user_params[:tel], user_params[:role])
-    message = nil
 
-    if existing_acc.nil?
-      message = t("errors.tel_unregistered")
-    elsif !existing_acc.active?
-      message = t("errors.inactive_acc")
-    elsif !existing_acc.authenticate(user_params[:password])
-      message = t("errors.wrong_pw")
-    else
-      log_in(existing_acc)
-      flash[:notice] = t("custom_messages.login_success")
-      # If you want to redirect after login, you can do it here
-      return redirect_to root_path
-    end
+    return render_login_error(t("errors.tel_unregistered")) unless existing_acc
+    return render_login_error(t("errors.inactive_acc")) unless existing_acc.active?
+    return render_login_error(t("errors.wrong_pw")) unless existing_acc.authenticate(user_params[:password])
 
-    # For invalid login: render flash in current view via Turbo
-    flash.now[:alert] = message
+    log_in(existing_acc)
+    flash[:notice] = t("success_messages.login")
 
-    respond_to do |format|
-      format.turbo_stream do
-        render turbo_stream: turbo_stream.update(
-          "flash",
-          partial: "layouts/shared_components/flash_message"
-        )
-      end
-
-      format.html { render :new } # fallback for non-Turbo requests
-    end
+    redirect_after_login
   end
 
   def handle_forgot_pw
     user_params = login_params
     existing_acc = User.find_acc(user_params[:tel], user_params[:role])
-    message = nil
 
-    if existing_acc.nil?
-      message = t("errors.tel_unregistered")
-    elsif !existing_acc.active?
-      message = t("errors.inactive_acc")
-    else
-      #
-      result = PhoneVerification.new(
-        tel: user_params[:tel],
-        role: user_params[:role]
-      )
-      result.create_otp(existing_acc)
-      session[:pending_tel] = existing_acc.tel
-      session[:pending_role] = existing_acc.role
-      session[:is_reset_pw] = true
-      redirect_to otp_input_path, notice: t("custom_messages.send_otp")
-      return
-    end
+    return render_login_error(t("errors.tel_unregistered")) unless existing_acc
+    return render_login_error(t("errors.inactive_acc")) unless existing_acc.active?
 
-    flash.now[:alert] = message
+    PhoneVerification.new(
+      tel: user_params[:tel],
+      role: user_params[:role]
+    ).create_otp(existing_acc)
 
-    respond_to do |format|
-      format.turbo_stream do
-        render turbo_stream: turbo_stream.update(
-          "flash",
-          partial: "layouts/shared_components/flash_message"
-        )
-      end
+    session[:pending_tel] = existing_acc.tel
+    session[:pending_role] = existing_acc.role
+    session[:is_reset_pw] = true
 
-      format.html { render :new } # fallback for non-Turbo requests
-    end
+    redirect_to otp_input_path, notice: t("success_messages.send_otp")
   end
 
 
@@ -110,5 +70,37 @@ class AuthenticationController < ApplicationController
 
   def login_params
     params.require(:user).permit(:tel, :password, :role)
+  end
+
+
+  def redirect_after_login
+    if current_user.landlord?
+      redirect_to landlord_dashboard_path
+    elsif current_user.tenant?
+      redirect_to tenant_dashboard_index_path(
+        tenant_id: current_user.id
+      )
+    else
+      redirect_to root_path
+    end
+  end
+
+
+  def render_login_error(message)
+    flash.now[:alert] = message
+
+    respond_to do |format|
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.update(
+          "flash",
+          partial: "layouts/shared_components/flash_message"
+        )
+      end
+
+      format.html do
+        @user = User.new
+        render :log_in, status: :unprocessable_entity
+      end
+    end
   end
 end

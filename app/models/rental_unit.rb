@@ -1,9 +1,10 @@
-class RentableUnit < ApplicationRecord
+class RentalUnit < ApplicationRecord
   # look at "rentable_type" to determine whether the rentable is a Room or a Bed
   belongs_to :rentable, polymorphic: true
 
-  enum status: { active: "active", deleted: "deleted" }
+  enum :status, { active: "active", deleted: "deleted" }
 
-  validates :rent, :deposit, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
-  validates :status, presence: true, inclusion: { in: statuses.keys }
+  validates :rent, :deposit, presence: true,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 1000000000 }
+  validates :status, inclusion: { in: statuses.keys }
 end

@@ -58,7 +58,7 @@ vi:
         
       detailed_addr: "Địa chỉ chi tiết"
       detailed_addr_placeholder: "Tên toà nhà, số nhà, tên đường, khóm/đội"
-      upper_floor_num: "Số tầng trên"
+      total_floors: "Tổng số tầng"
       has_ground_floor: "Tầng trệt"
       has_ground_floor_no: "Không"
       has_ground_floor_yes: "Có"
@@ -75,27 +75,23 @@ vi:
       inv_creation_date_info: |
         Đến ngày này hằng tháng, hệ thống sẽ nhắc nhở bạn.
         Nếu tháng đó không có đủ ngày như đã chọn, mặc định hệ thống sẽ nhắc nhở vào ngày cuối cùng của tháng đó.
-      services: "Dịch vụ áp dụng"
-      services_info: |
-        Dưới đây là những dịch vụ cơ bản, tick để chọn dịch vụ bạn muốn.
-        Tất cả dịch vụ được áp dụng như nhau cho tất cả các phòng , bạn có thể tùy chỉnh sau.
-      elec_money: "Tiền điện"
-      water_money: "Tiền nước"
-      wifi_money: "Tiền wifi"
-      parking_money: "Tiền gửi xe"
       regulation: "Nội quy"
       regulation_num: "Số lượng"
       file_type: "Loại tệp cho phép"
       create: "Tạo nhà"
+      house_list: "Danh sách các nhà"
+      num_house: "Bạn đang có #{num} nhà"
+      floor: "Tầng"
+      search: "Tìm tên nhà"
 
     service:
       applied_sv: "Dịch vụ áp dụng"
       info_1: "Dưới đây là những dịch vụ cơ bản, tick để chọn dịch vụ bạn muốn."
       info_2: "Tất cả dịch vụ được áp dụng như nhau cho tất cả các phòng, bạn có thể tùy chỉnh sau."
-      elec_money: "Tiền điện"
-      water_money: "Tiền nước"
-      wifi_money: "Tiền wifi"
-      parking_money: "Tiền gửi xe"
+      elec_money: "Điện"
+      water_money: "Nước"
+      wifi_money: "WiFi"
+      parking_money: "Gửi xe"
       real_time: "Tính theo thực tế (dựa vào đồng hồ đo)"
       price: "Đơn giá (đ)"
       price_placeholder: "Nhập số tiền"
