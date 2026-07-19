@@ -4,11 +4,11 @@ class House < ApplicationRecord
   #               :services, :elec, :elec_price, :elec_unit, :elec_real_time, :water, :wifi, :parking
 
   has_one_attached :regulation_file
-  belongs_to :landlord, inverse_of: :houses
+  belongs_to :landlord, inverse_of: :houses, counter_cache: :houses_count
   has_many :floors, inverse_of: :house, dependent: :destroy
-  has_many :rooms, through: :floors, inverse_of: :house, dependent: :destroy
-  has_many :beds, through: :rooms, inverse_of: :house, dependent: :destroy
-  has_many :room_services, through: :rooms, inverse_of: :house, dependent: :destroy
+  has_many :rooms, through: :floors, dependent: :destroy
+  has_many :beds, through: :rooms, dependent: :destroy
+  has_many :room_services, through: :rooms, dependent: :destroy
   has_many :services, inverse_of: :house, dependent: :destroy
 
   # Rails auto generates helper methods for enum values

@@ -33,41 +33,38 @@
     background-color: var(--detailed-house-card-bg);
     border-color: var(--detailed-house-card-bd);
     border-radius: 5px;
+    border-style: solid;
     border-width: 1px;
     position: relative;
     overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
     transition: box-shadow .25s ease;
+    padding: 10px 50px 10px 20px;
+    width: 90%;
 }
 
 .detailed-house-card:hover {
-    box-shadow: 0 6px 18px rgba(0,0,0,.15);
+    box-shadow: 0 4px 8px rgba(0,0,0,.35);
 }
 
 .detailed-house-card .title {
-    font-size: 1.2rem;
-    font-weight: 600;
+    font-size: 1.1rem;
+    font-weight: 700;
 }
 
 .house-content {
-    transition: padding-right .3s ease;
+    transition: padding-right .5s ease;
 }
 
 /* Button panel */
 .house-actions {
     position: absolute;
     top: 50%;
-    right: 16px;
-
-    transform: translate(40px, -50%);
+    right: 10px;
+    transform: translate(10px, -50%);
     opacity: 0;
-
     transition:
-        transform .3s ease,
-        opacity .3s ease;
-
+        transform .5s ease,
+        opacity .5s ease;
     pointer-events: none;
 }
 
@@ -79,21 +76,40 @@
 }
 
 .house-btn {
-    border-color:#264155;
+    border: 0.9px solid #264155;
+    background-color: transparent;
     color: #1b3344;
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
 }
 
+.house-btn span {
+    font-size: 20px;
+}
+
 .house-btn:hover {
     border-color: var(--normal-text);
-    color: var(--normal-text)
+    color: var(--normal-text);
+    border-width: 1.5px;
 }
 
 .house-btn.selected {
     border-color: white;
     color: white;
+}
+
+.max-house-info {
+    color: var(--info-text);
+}
+
+.text-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* Giới hạn đúng 2 dòng */
+  line-clamp:  2;
+  -webkit-box-orient: vertical;  
+  overflow: hidden;
+  word-break: break-word; /* Tự động ngắt từ nếu từ quá dài */
 }

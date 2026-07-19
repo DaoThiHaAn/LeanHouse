@@ -2,10 +2,10 @@
 
 class HouseCreation
   SERVICES = [
-    { key: :elec,    translation: "service.elec_money" },
-    { key: :water,   translation: "service.water_money" },
-    { key: :wifi,    translation: "service.wifi_money" },
-    { key: :parking, translation: "service.parking_money" }
+    { key: :elec,    translation: "form.service.elec_money" },
+    { key: :water,   translation: "form.service.water_money" },
+    { key: :wifi,    translation: "form.service.wifi_money" },
+    { key: :parking, translation: "form.service.parking_money" }
   ].freeze
 
 

@@ -19,6 +19,10 @@ footer .logo {
     color: var(--normal-text);
 }
 
+.main-links .icon {
+    font-size: 18px;
+}
+
 .muted-text {
     color: #6D96A3;
     font-size: 0.65rem;

@@ -80,9 +80,11 @@ vi:
       file_type: "Loại tệp cho phép"
       create: "Tạo nhà"
       house_list: "Danh sách các nhà"
-      num_house: "Bạn đang có #{num} nhà"
+      num_house: "Bạn đang có %{num} nhà"
       floor: "Tầng"
       search: "Tìm tên nhà"
+      max_house: "Bạn chỉ được sở hữu tối đa 20 ngôi nhà"
+      enter: "Vào nhà"
 
     service:
       applied_sv: "Dịch vụ áp dụng"

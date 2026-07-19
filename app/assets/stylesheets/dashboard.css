@@ -9,10 +9,12 @@
 }
 
 .add-house-btn {
-    background-color: transparent;
     color: var(--primary-bg);
     font-weight: bold;
     font-size: 1.3rem;
+    border-radius: 10px;
+    background-color: rgb(232, 255, 246);
+    border: 1px solid rgb(196, 247, 227);
     border-radius: 10px;
 }
 
@@ -21,8 +23,5 @@
 }
 
 .add-house-btn:hover {
-    background-color: rgb(232, 255, 246);
-    border: 1px solid rgb(196, 247, 227);
-    border-radius: 10px;
+    
 }
-

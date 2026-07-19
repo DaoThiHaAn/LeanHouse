@@ -1,35 +1,35 @@
 <%# Local variables: house %>
 
-<div class="d-flex gap-1 align-items-center px-1 py-2 detailed-house-card">
+<div class="d-flex gap-2 align-items-center detailed-house-card">
     <%# Detail %>
-    <div class="house-content">
-        <div class="d-flex align-item-center justify-content-start gap-1">
-            <span class="material-symbols-outlined">home</span>
-            <p class="title"><%=house.name%></p>
+    <div class="house-content d-flex flex-column gap-2">
+        <div class="d-flex align-items-center justify-content-start gap-1">
+            <span class="material-symbols-filled">location_home</span>
+            <p class="title text-clamp-2"><%=house.name%></p>
         </div>
-        <p class="fst-italic"><%=house_mode(house)%></p>
-        <p class="title"><%=house_address(house)%></p>
-        <div class="d-flex gap-1 align-item-center">
+        <p class="text-clamp-2"><%=house_address(house)%></p>
+        <div class="d-flex gap-1 align-items-center">
             <span class="material-symbols-outlined">group</span>
             <%=occupied_rate_format(house)%>
+            <p class="ms-3 fst-italic text-secondary"><%=house_mode(house)%></p>
         </div>
     </div>
 
     <%# Buttons %>
-    <div class="house-actions d-flex flex-colum align-items-center gap-1">
-        <%= button_to class: "house-btn p-2 rounded-circle border-2"
-                    edit_landlord_house_path(house) do %>
-            <span class="material-symbols-outlined">edit</span>
+    <div class="house-actions d-flex flex-column align-items-center gap-1">
+        <%= button_to edit_landlord_house_path(house),
+                    class: "house-btn p-2 rounded-circle" do %>
+            <span class="material-symbols-filled">edit</span>
         <%end%>
 
-        <%= button_to class: "house-btn p-2 rounded-circle border-2"
-                    landlord_house_path(house), method: :delete  do %>
-            <span class="material-symbols-outlined">delete</span>
+        <%= button_to landlord_house_path(house), method: :delete,
+                    class: "house-btn p-2 rounded-circle" do %>
+            <span class="material-symbols-filled">delete</span>
         <%end%>
 
-        <%= link_to class: "house-btn p-2 rounded-circle border-2"
-                    landlord_house_rooms_path(house), method: :get  do %>
-            <span class="material-symbols-outlined">arrow_right_alt</span>
+        <%= link_to landlord_house_rooms_path(house), data: tooltip("right", "form.house.enter"),
+                    class: "house-btn p-2 rounded-circle d-flex align-items-center justify-content-center" do %>
+            <span class="material-symbols-filled">arrow_right_alt</span>
         <%end%>
     </div>
 </div>

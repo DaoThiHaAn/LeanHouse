@@ -89,6 +89,12 @@ button {
   transition: all ease-in 0.2s;
 }
 
+/*  Override Bootstrap handles the pointer events */
+button.disabled {
+  cursor: not-allowed !important;
+  opacity: 60%;
+}
+
 a {
   text-decoration: none;
   color: var(--normal-text)
@@ -136,6 +142,7 @@ input {
 
 .material-symbols-outlined {
   font-family: 'Material Symbols Outlined';
+  vertical-align: middle;
   font-variation-settings:
     'FILL' 0,
     'wght' 400,
@@ -145,6 +152,8 @@ input {
 
 .material-symbols-filled {
   font-family: 'Material Symbols Outlined';
+  font-size: 25px;
+  vertical-align: middle;
   font-variation-settings:
     'FILL' 1,
     'wght' 400,
@@ -153,8 +162,8 @@ input {
 }
 
 .eye {
-    cursor: pointer;
-    color: var(--info-text)
+  cursor: pointer;
+  color: var(--info-text)
 }
 
 .flash-container {
@@ -234,4 +243,13 @@ input {
 
 .form-floating .form-control:focus::placeholder {
   opacity: 1;
+}
+
+.search-bar {
+  width: 100%;
+}
+
+.custom-tooltip {
+  --bs-tooltip-bg: #ecececf1;
+  --bs-tooltip-color: var(--info-text);
 }
