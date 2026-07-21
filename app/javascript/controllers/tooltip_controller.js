@@ -6,8 +6,8 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   connect() {
-    // Khởi tạo Bootstrap Tooltip ngay khi phần tử này xuất hiện trong DOM
-    this.tooltip = new bootstrap.Tooltip(this.element)
+    // Initialize Bootstrap Tooltip
+    this.tooltip = bootstrap.Tooltip.getOrCreateInstance(this.element)
   }
 
   disconnect() {

@@ -152,18 +152,28 @@
     width: 20px;
 }
 
-.secondary-nav {
+.secondary-nav-wrapper {
     background-color: var(--primary-bg);
     color: white;
     font-weight: 600;
-    overflow-x: auto;
+    overflow: visible;
+}
+
+.secondary-nav .dropdown-menu {
+    font-size: 0.8rem;
+    z-index: 2000
 }
 
 .secondary-nav .card {
     color: white;
     font-size: 0.9rem;
     background-color: rgba(255, 255, 255, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.3)
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: background-color 0.3s ease;
+}
+
+.secondary-nav .card:hover{
+    background-color: rgba(242, 255, 245, 0.407);
 }
 
 .secondary-nav .card .card-text {
@@ -171,26 +181,25 @@
     font-size: 0.75rem;
 }
 
-.more-btn {
-    background-color: rgba(177, 235, 220, 0.3);
-    border: 1px solid #365B4B;
-    color: #365B4B;
-    border-radius: 50%;
+.other-house-btn {
+    color: white;
     transition: all ease 0.1s;
+    background-color: transparent;
 }
 
-.more-btn:hover {
-    background-color: rgba(93, 184, 159, 0.3);
+.other-house-btn:hover {
+    background-color: rgba(182, 233, 220, 0.3);
 }
 
 .house-card {
     width: 200px;
-    height: 80px; 
+    height: 80px;
 }
 
 .other-card {
     width: 100px;
     height: 80px;
+    min-width: 76px;
 }
 
 .other-card .card-title {
@@ -206,3 +215,15 @@
     border: 1px solid #365B4B;  
 }
 
+/* Rotate collapse arrow when closed */
+.toggle-nav-btn {
+    background-color: var(--primary-bg);
+    color: white;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    transition: transform 0.2s;
+}
+
+.toggle-nav-btn[aria-expanded="false"] .toggle-icon {
+  transform: rotate(180deg);
+}

@@ -1,1 +1,9 @@
-ROOM Page
+<%# Variables: @house, @rooms, @landlord %>
+
+<% content_for :title, t("page_titles.rooms") %>
+
+<div class="w-100">
+<%=render "layouts/shared_components/additional_nav", 
+            house_name: @house.name, house_addr: house_address(@house), other_houses: @other_houses%>
+<h1>Rooms</h1>
+</div>

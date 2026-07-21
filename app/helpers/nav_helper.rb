@@ -10,9 +10,9 @@ module NavHelper
 
 
   def get_role
-    return t("common.role.landlord") if current_user.role == "landlord"
-    return t("common.role.tenant") if current_user.role == "tenant"
-    t("common.role.admin")
+    return t("role.landlord") if current_user.role == "landlord"
+    return t("role.tenant") if current_user.role == "tenant"
+    t("role.admin")
   end
 
 

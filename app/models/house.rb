@@ -20,12 +20,12 @@ class House < ApplicationRecord
   validates :mode, inclusion: { in: modes.keys }
   validates :inv_creation_date, numericality: { only_integer: true, greater_than_or_equal_to: 1, less_than_or_equal_to: 31 }
 
-  scope :active, -> { where(is_deleted: false) }
+  default_scope { where(is_deleted: false) }
+  scope :deleted, -> { where(is_deleted: true) }
   scope :sorted, -> { order(name: :asc) }
 
   scope :search, ->(query) do
     return all if query.blank?
-
     query = "%#{sanitize_sql_like(query)}%"
 
     where(

@@ -1,8 +1,6 @@
 footer {
     background-color: var(--bar-bg);
     font-size: 0.8rem;
-    display: flex;
-    flex-direction: column;
     gap: 30px;
 }
 
@@ -44,4 +42,10 @@ footer .logo {
 .reg-bct {
     width: 120px;
     height: auto;
+}
+
+@media only screen and (max-width: 650px) {
+  footer .logo {
+    height: 100px;
+  }
 }

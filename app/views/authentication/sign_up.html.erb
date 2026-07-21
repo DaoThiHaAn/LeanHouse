@@ -4,10 +4,10 @@
     <%=image_tag "signup-bg.png", alt: "Sign Up Background", class: "align-self-stretch signup-bg" %>
     <div class="form-wrapper d-flex flex-column gap-4 align-items-center py-4 flex-fill">
         <div class="greeting">
-            <p class="mb-2 text-center"><%= t('common.welcome.greeting') %></p>
+            <p class="mb-2 text-center"><%= t('welcome.greeting') %></p>
             <p class="text-center">LEANHOUSE !</p>
         </div>
-        <h1><%= t("common.auth.sign_up").upcase %></h1>
+        <h1><%= t("auth.sign_up").upcase %></h1>
 
         <%# Form is handled at user#create %>
         <%= form_with model: @user, local: true, 
@@ -28,7 +28,7 @@
                         data-role-selector-value="<%=User.roles[:tenant]%>"
                     >
                         <%= image_tag "tenant-icon.png", alt: "Tenant Icon" %>
-                        <p><%= t('common.role.tenant') %></p>
+                        <p><%= t('role.tenant') %></p>
                     </div>
 
                     <div
@@ -37,7 +37,7 @@
                         data-role-selector-value="<%=User.roles[:landlord]%>"
                     >
                         <%= image_tag "landlord-icon.png", alt: "Landlord Icon" %>
-                        <p><%= t('common.role.landlord') %></p>
+                        <p><%= t('role.landlord') %></p>
                     </div>
                 </div>
             </div>
@@ -226,9 +226,9 @@
 
                     <%= form.label :terms_accepted, class: "form-check-label" do %>
                         <%= t("form.profile.agree_prefix") %>
-                        <%= link_to t("common.bar.terms"), terms_of_use_path, target: "_blank", rel: "noopener", class: "link" %>
+                        <%= link_to t("bar.terms"), terms_of_use_path, target: "_blank", rel: "noopener", class: "link" %>
                         <%= t("and") %>
-                        <%= link_to t("common.bar.privacy"), privacy_path, target: "_blank", rel: "noopener", class: "link" %>
+                        <%= link_to t("bar.privacy"), privacy_path, target: "_blank", rel: "noopener", class: "link" %>
                     <% end %>
                 </div>
             </div>

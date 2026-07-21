@@ -10,15 +10,15 @@
         </button>
 
         <ul class="dropdown-menu">
-             <li><a class="dropdown-item" href="#"><%=t('common.bar.my_profile')%></a></li>
+             <li><a class="dropdown-item" href="#"><%=t('bar.my_profile')%></a></li>
             <% if current_user.role == "landlord" %>
-                <li><a class="dropdown-item" href="#"><%=t("common.bar.my_bank_acc")%></a></li>
+                <li><a class="dropdown-item" href="#"><%=t("bar.my_bank_acc")%></a></li>
             <%else%>
-                <li><a class="dropdown-item" href="#"><%=t("common.bar.my_vehicle")%></a></li>
-                <li><a class="dropdown-item" href="#"><%=t("common.bar.my_saved_post")%></a></li>
+                <li><a class="dropdown-item" href="#"><%=t("bar.my_vehicle")%></a></li>
+                <li><a class="dropdown-item" href="#"><%=t("bar.my_saved_post")%></a></li>
             <%end%>
             <li><a class="dropdown-item d-flex gap-1 align-items-center" href="<%=logout_path%>">
-                    <%=t("common.auth.log_out")%>
+                    <%=t("auth.log_out")%>
                     <span class="material-symbols-outlined">logout</span>
             </a></li>
         </ul>
@@ -44,10 +44,10 @@
 
 
 <%else%>
-    <%= link_to t("common.auth.sign_up"), signup_path, class: "signup-btn"%>
+    <%= link_to t("auth.sign_up"), signup_path, class: "signup-btn"%>
 
     <%= link_to login_path, class: "login-btn gap-1 d-flex align-items-center" do %>
-        <%= t("common.auth.log_in") %>
+        <%= t("auth.log_in") %>
         <span class="material-symbols-filled">door_open</span>
     <% end %>
 <%end%>

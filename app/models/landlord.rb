@@ -4,4 +4,11 @@ class Landlord < ApplicationRecord
   has_many :houses, dependent: :destroy, inverse_of: :landlord
 
   validates :houses_count, numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 20 }
+
+  # METHODS
+
+  # Return whole other houses except the current house_id
+  def get_other_houses(house_id)
+    houses.where.not(id: house_id)
+  end
 end

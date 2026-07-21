@@ -20,5 +20,10 @@ module LandlordPortal
 
       render "landlord_portal/shared/no_house"
     end
+
+    # Let children controllers use
+    def set_house
+      @house = House.find(params.expect(:house_id))
+    end
   end
 end
