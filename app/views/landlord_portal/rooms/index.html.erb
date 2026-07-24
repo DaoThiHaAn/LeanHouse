@@ -2,8 +2,11 @@
 
 <% content_for :title, t("page_titles.rooms") %>
 
-<div class="w-100">
-<%=render "layouts/shared_components/additional_nav", 
-            house_name: @house.name, house_addr: house_address(@house), other_houses: @other_houses%>
-<h1>Rooms</h1>
+<h1 class="w-50 text-center text-clamp-2 m-auto"><%=@house.name%></h1>
+<div>
+
+</div>
+<p >
+    <%=t("form.house.total_floors"): @house.floors_count%>
+</p>
 </div>

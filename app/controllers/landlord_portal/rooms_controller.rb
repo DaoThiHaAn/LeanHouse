@@ -1,9 +1,11 @@
 class LandlordPortal::RoomsController < LandlordPortal::BaseController
-  before_action :set_house, only: %i[ index new create ]
-  before_action :set_room, only: %i[ show edit update destroy ]
+  layout "house_mngment"
+
+  # before_action :set_room, only: %i[ show edit update destroy ]
+  load_and_authorize_resource :room, through: :house # @rooms, @room are auto loaded
+
 
   def index
-    @other_houses = @landlord.get_other_houses(@house.id).select(:id, :name)
   end
 
   def new
@@ -27,6 +29,7 @@ class LandlordPortal::RoomsController < LandlordPortal::BaseController
 
   private
 
-  def set_room
+  def room_params
+    params.expect(room: [ :name, :floor_id ])
   end
 end

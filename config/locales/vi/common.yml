@@ -50,6 +50,7 @@ vi:
     properties: "Tài sản"
     secondary_toggle_expand: "Hiển thị thanh quản lý"
     secondary_toggle_close: "Đóng thanh quản lý"
+    back_house_index: "Quay về Danh sách Nhà"
 
   auth:
     sign_up: "Đăng Ký"
@@ -67,6 +68,9 @@ vi:
 
   and: "và"
   turn_back: "Quay lại"
+  last_updated: "Cập nhật lần cuối lúc"
+  none: "Không có"
+  view_detail: "Xem chi tiết"
 
   errors:
     session_expired: |

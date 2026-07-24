@@ -41,6 +41,7 @@ Rails.application.routes.draw do
 
     resources :posts
     resources :houses, shallow: true do
+      resources :services
       resources :rooms, :invoices, :vehicles, :contracts
     end
   end

@@ -3,6 +3,7 @@ class RoomService < ApplicationRecord
 
   belongs_to :room, inverse_of: :room_services
   belongs_to :service, inverse_of: :room_services
+  has_one :house, through: :room
 
   enum :unit, {
     per_person: "person",

@@ -1,8 +1,9 @@
 class Bed < ApplicationRecord
   belongs_to :room, inverse_of: :beds, counter_cache: :max_slots
   has_one :rentable_unit, as: :rentable, dependent: :destroy
+  has_one :house, through: :room
 
-  validates :name, :is_available, presence: true
+  validates :name, presence: true
 
   # MODEL METHODS
 

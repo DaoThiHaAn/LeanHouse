@@ -58,8 +58,12 @@ class House < ApplicationRecord
     rooms.sum(:tenants_count)
   end
 
+  def total_rooms
+    floors.sum(:rooms_count)
+  end
+
+  # Soft delete the house
   def deleted
-    # Soft delete the house
   end
 
   private

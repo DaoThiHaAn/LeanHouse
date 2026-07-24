@@ -1,0 +1,15 @@
+<%# Use for House Management pages %>
+<%# Varaibles: @house, @other_houses %>
+
+<% content_for :content do %>
+  <div class="w-100 d-flex flex-column">
+    <%# Additional sub-navigation %>
+    <%= render "layouts/shared_components/additional_nav", house: @house, other_houses: @other_houses %>
+
+    <%# Yields the controller view (e.g., services/index.html.erb) %>
+    <%= yield %>
+  </div>
+<% end %>
+
+<%# Pass this up to application.html.erb %>
+<%= render template: "layouts/application" %>

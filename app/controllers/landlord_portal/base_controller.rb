@@ -1,13 +1,11 @@
 # A Base controller for all controllers in the landlord area.
 # It sets up common functionality and filters that are shared across the landlord controllers.
 
+# app/controllers/landlord_portal/base_controller.rb
 module LandlordPortal
   class BaseController < ApplicationController
-    before_action :authenticate_user! # Devise method to ensure the user is logged in.
-    before_action :set_landlord
-    before_action :require_house # Ensure the landlord has at least one house, except for the show action.
-
-    load_and_authorize_resource # Cancancan method to load and authorize resources based on the current user's abilities.
+    before_action :authenticate_user!
+    before_action :set_landlord, :require_house, :set_house, :set_other_houses
 
     private
 
@@ -15,15 +13,22 @@ module LandlordPortal
       @landlord = current_user.landlord
     end
 
+    # Redirect or render custom view if the landlord doesn't have any houses
     def require_house
-      return if @landlord.houses_count > 0
-
-      render "landlord_portal/shared/no_house"
+      render "landlord_portal/shared/no_house", status: :ok if @landlord.houses_count.zero?
     end
 
-    # Let children controllers use
     def set_house
-      @house = House.find(params.expect(:house_id))
+      # Guard against missing house_id parameter (e.g. root landlord pages)
+      return unless params[:house_id].present?
+
+      @house = House.find(params[:house_id])
+    end
+
+    def set_other_houses
+      return unless @house && @landlord
+
+      @other_houses = @landlord.get_other_houses(@house.id).select(:id, :name)
     end
   end
 end

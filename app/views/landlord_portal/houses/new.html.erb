@@ -24,24 +24,20 @@
           <% end %>
 
           <div class="d-flex gap-3">
-              <div
-                  class="role-option selected d-flex flex-column align-items-center gap-1 px-2 py-1"
+              <div class="role-option selected d-flex flex-column align-items-center gap-1 px-2 py-1"
                   data-action="click->role-selector#select"
-                  data-role-selector-value="<%=House.modes[:room]%>"
-              >
+                  data-role-selector-value="<%=House.modes[:room]%>">
                   <%= image_tag "room-based.png", alt: "Room Icon" %>
-                  <p><%= t('form.house.room') %></p>
-                  <p class="mode-info">(<%= t('form.house.room-based') %>)</p>
+                <p><%= t('form.house.room') %></p>
+                <p class="mode-info">(<%= t('form.house.room-based') %>)</p>
               </div>
 
-              <div
-                  class="role-option d-flex flex-column align-items-center gap-1 px-2 py-1"
+              <div class="role-option d-flex flex-column align-items-center gap-1 px-2 py-1"
                   data-action="click->role-selector#select"
-                  data-role-selector-value="<%=House.modes[:bed]%>"
-              >
+                  data-role-selector-value="<%=House.modes[:bed]%>">
                   <%= image_tag "bed-based.png", alt: "Bunk Beds Icon" %>
-                  <p><%= t('form.house.dorm') %></p>
-                  <p class="mode-info">(<%= t('form.house.bed-based') %>)</p>
+                <p><%= t('form.house.dorm') %></p>
+                <p class="mode-info">(<%= t('form.house.bed-based') %>)</p>
               </div>
           </div>
 

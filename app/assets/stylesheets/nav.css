@@ -156,7 +156,12 @@
     background-color: var(--primary-bg);
     color: white;
     font-weight: 600;
-    overflow: visible;
+}
+
+.secondary-nav.navbar-nav-scroll {
+  overflow-x: auto;
+  overflow-y: visible;
+  max-width: 100%;    /* Ensures container doesn't blow past viewport limits */
 }
 
 .secondary-nav .dropdown-menu {
@@ -227,3 +232,9 @@
 .toggle-nav-btn[aria-expanded="false"] .toggle-icon {
   transform: rotate(180deg);
 }
+
+.back.card {
+    width: 45px;
+    height: 45px;
+}
+

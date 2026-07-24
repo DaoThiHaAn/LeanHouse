@@ -11,4 +11,31 @@ module HousesHelper
   def occupied_rate_format(house)
     "#{house&.occupied_slots} / #{house&.total_slots}"
   end
+
+  # Configuration hash mapping modes to their asset & translation keys
+  HOUSE_MODE_CONFIG = {
+    "room" => {
+      image: "room-based.png",
+      title_key: "form.house.room",
+      info_key: "form.house.room-based"
+    },
+    "bed" => {
+      image: "bed-based.png", # Adjust image names to match your assets
+      title_key: "form.house.bed",
+      info_key: "form.house.bed-based"
+    }
+    # Add other modes here as needed
+  }.freeze
+
+  def house_mode_badge(house, options = {})
+    # Fallback to room config if mode isn't found
+    config = HOUSE_MODE_CONFIG.fetch(house.mode.to_s, HOUSE_MODE_CONFIG["room"])
+
+    content_tag :div,
+                class: "pe-none m-auto role-option d-flex flex-column align-items-center gap-1 px-2 py-1".strip do
+      concat image_tag(config[:image], alt: t(config[:title_key]))
+      concat content_tag(:p, t(config[:title_key]))
+      concat content_tag(:p, "(#{t(config[:info_key])})", class: "mode-info")
+    end
+  end
 end

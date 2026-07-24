@@ -1,52 +1,61 @@
-<%# Local variable: house_name, house_addr, other_houses %>
+<%# Local variable: house, other_houses %>
 
 <div data-controller="secondary-nav">
 <!-- Collapsible Navigation Bar -->
-<nav class="collapse show secondary-nav-wrapper" id="secondaryNavbar" data-secondary-nav-target="navbar">
-    <div class="secondary-nav px-3 py-2 d-flex justify-content-center gap-3 align-items-center">
-        
+<nav class="collapse show secondary-nav-wrapper"
+    id="secondaryNavbar" data-secondary-nav-target="navbar">
+    <div class="secondary-nav px-3 py-2 navbar-nav navbar-nav-scroll
+                d-flex flex-row flex-nowrap justify-content-start justify-content-lg-center gap-3 align-items-center">
+        <%# Back to the House Index %>
+        <%= link_to landlord_houses_path, title: t("bar.back_house_index"),
+            class: "back card rounded-circle flex-shrink-0" do %>
+           <span class="material-symbols-outlined m-auto">arrow_left_alt</span>
+        <% end %>
+
         <!-- House card with Dropdown Menu -->
-        <div class="card active house-card dropdown me-4">
+        <div class="card active house-card dropdown me-4 flex-shrink-0">
             <div class="card-body px-2 py-1 d-flex gap-1 align-items-center">
                 <div>
                     <p class="card-title fw-bold d-flex align-items-center gap-1 mb-0">
                         <span class="material-symbols-outlined">location_home</span>
-                        <%= house_name %>
+                        <%= house.name %>
                     </p>
-                    <p class="card-text line-clamp-2 mb-0"><%= house_addr %></p>
+                    <p class="card-text line-clamp-2 mb-0"><%= house_address(house) %></p>
                 </div>
             
                 <!-- Dropdown Trigger Button -->
-                <button type="button" 
-                        class="other-house-btn d-flex align-items-center rounded-circle" 
-                        data-bs-toggle="dropdown" data-bs-display="static" 
-                        aria-expanded="false"
-                        title="<%= t('bar.other_houses') %>">
-                    <span class="material-symbols-outlined">arrow_drop_down</span>
-                </button>
+                <div>
+                    <button type="button" 
+                            class="other-house-btn d-flex align-items-center rounded-circle" 
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                            title="<%= t('bar.other_houses') %>">
+                        <span class="material-symbols-outlined">arrow_drop_down</span>
+                    </button>
 
-                <!-- Dropdown Menu List -->
-                <ul class="dropdown-menu dropdown-menu-end shadow-sm">
-                    <li><h6 class="dropdown-header"><%= t('bar.other_houses') %></h6></li>
-                    <li><hr class="dropdown-divider"></li>
-                    
-                    <% if other_houses.any? %>
-                        <% other_houses.each do |other_house| %>
-                            <li>
-                                <%= link_to landlord_house_rooms_path(other_house), class: "dropdown-item d-flex flex-column py-2" do %>
-                                    <span class="fw-bold text-dark"><%= other_house.name %></span>
-                                <% end %>
-                            </li>
+                    <!-- Dropdown Menu List -->
+                    <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                        <li><h6 class="dropdown-header"><%= t('bar.other_houses') %></h6></li>
+                        <li><hr class="dropdown-divider"></li>
+                        
+                        <% if other_houses.any? %>
+                            <% other_houses.each do |other_house| %>
+                                <li>
+                                    <%= link_to landlord_house_rooms_path(other_house), class: "dropdown-item d-flex flex-column py-2" do %>
+                                        <span class="fw-bold text-dark"><%= other_house.name %></span>
+                                    <% end %>
+                                </li>
+                            <% end %>
+                        <% else %>
+                            <li><span class="dropdown-item-text text-muted"><%= t('bar.no_other_houses') %></span></li>
                         <% end %>
-                    <% else %>
-                        <li><span class="dropdown-item-text text-muted"><%= t('bar.no_other_houses') %></span></li>
-                    <% end %>
-                </ul>
+                    </ul>
+                </div>
             </div>
         </div>
 
         <!-- Other cards -->
-        <%= link_to "#", class: "card active other-card" do %>
+        <%= link_to landlord_house_rooms_path(house), class: class_names("card", "other-card", active: controller_name == "rooms") do %>
             <div class="card-body p-0 d-flex flex-column gap-1 align-items-center justify-content-center">
                 <%= image_tag "room.png", alt: "Room Icon" %>
                 <h5 class="card-title text-center m-0 d-flex align-items-center ">
@@ -55,7 +64,7 @@
             </div>
         <% end %>
 
-        <%= link_to "#", class: "card other-card" do %>
+        <%= link_to "#", class: class_names("card", "other-card", active: controller_name == "tenants") do %>
             <div class="card-body p-0 d-flex flex-column gap-1 align-items-center justify-content-center">
                 <%= image_tag "human-resources.png", alt: "People Icon" %>
                 <h5 class="m-0 text-center card-title d-flex align-items-center">
@@ -64,7 +73,7 @@
             </div>
         <% end %>
 
-        <%= link_to "#", class: "card other-card" do %>
+        <%= link_to "#", class: class_names("card", "other-card", active: controller_name == "properties") do %>
             <div class="card-body p-0 d-flex flex-column gap-1 align-items-center justify-content-center">
                 <%= image_tag "property.png", alt: "Property Icon" %>
                 <h5 class="m-0 text-center card-title d-flex align-items-center">
@@ -73,7 +82,7 @@
             </div>
         <% end %>
 
-        <%= link_to "#", class: "card other-card" do %>
+        <%= link_to landlord_house_services_path(house), class: class_names("card", "other-card", active: controller_name == "services") do %>
             <div class="card-body p-0 d-flex flex-column gap-1 align-items-center justify-content-center">
                 <%= image_tag "home-services.png", alt: "Home services Icon" %>
                 <h5 class="m-0 text-center card-title d-flex align-items-center">
@@ -82,7 +91,7 @@
             </div>
         <% end %>
 
-        <%= link_to "#", class: "card other-card" do %>
+        <%= link_to "#", class: class_names("card", "other-card", active: controller_name == "contracts") do %>
             <div class="card-body p-0 d-flex flex-column gap-1 align-items-center justify-content-center">
                 <%= image_tag "contracts.png", alt: "Contract Icon" %>
                 <h5 class="m-0 text-center card-title d-flex align-items-center">
@@ -91,7 +100,7 @@
             </div>
         <% end %>
 
-        <%= link_to "#", class: "card other-card" do %>
+        <%= link_to "#", class: class_names("card", "other-card", active: controller_name == "invoices") do %>
             <div class="card-body p-0 d-flex flex-column gap-1 align-items-center justify-content-center">
                 <%= image_tag "expenses.png", alt: "Invoice Icon" %>
                 <h5 class="m-0 text-center card-title d-flex align-items-center">
@@ -100,7 +109,7 @@
             </div>
         <% end %>
 
-        <%= link_to "#", class: "card other-card" do %>
+        <%= link_to "#", class: class_names("card", "other-card", active: controller_name == "vehicles") do %>
             <div class="card-body p-0 d-flex flex-column gap-1 align-items-center justify-content-center">
                 <%= image_tag "car.png", alt: "Car Icon" %>
                 <h5 class="m-0 text-center card-title d-flex align-items-center">

@@ -48,7 +48,11 @@
 
 .detailed-house-card .title {
     font-size: 1.1rem;
-    font-weight: 700;
+    color: var(--normal-text);
+}
+
+.detailed-house-card .title:hover {
+    color: #405c70;
 }
 
 .house-content {
@@ -112,4 +116,8 @@
   -webkit-box-orient: vertical;  
   overflow: hidden;
   word-break: break-word; /* Tự động ngắt từ nếu từ quá dài */
+}
+
+.modal-header .icon {
+    font-size: 2.9rem
 }

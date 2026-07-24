@@ -253,3 +253,16 @@ input {
   --bs-tooltip-bg: #ecececf1;
   --bs-tooltip-color: var(--info-text);
 }
+
+.btn-link {
+  /* Override bootstrap */
+  color: inherit !important;
+}
+
+.modal-footer {
+  font-size: 0.9rem;
+}
+
+.modal-header {
+  color: var(--primary-text)
+}

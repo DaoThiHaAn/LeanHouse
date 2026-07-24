@@ -1,0 +1,84 @@
+<%# Variables: @house, @floors, @services %>
+
+<%= turbo_frame_tag "house_detail_modal" do %>
+  <%# Added data-controller="modal" here %>
+  <div class="modal fade" id="houseDetailModal" tabindex="-1" aria-hidden="true" data-controller="modal">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header py-0">
+          <div class="d-flex align-items-center justify-content-start gap-1">
+            <span class="icon material-symbols-filled">location_home</span>
+            <h1 class="modal-title fs-5" id="houseDetailModalLabel"><%= @house.name %></h1>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+          <%= house_mode_badge(@house) %>
+
+          <div class="d-flex align-items-center gap-2 mt-3">
+            <span class="material-symbols-outlined">location_on</span>
+            <p class="text-clamp-2 mb-0"><%= house_address(@house) %></p>
+          </div>
+
+          <div class="d-flex align-items-center gap-2 mt-3">
+            <h6 class="fw-bold m-0"><%=t("form.house.inv_creation_date") + ": "%></h6>
+            <p class="m-0"><%= @house.inv_creation_date %></p>
+          </div>
+
+          <%# Display Regulation File %>
+          <div class="d-flex align-items-center gap-2">
+            <h6 class="fw-bold m-0"><%=t("form.house.regulation") + ": "%></h6>
+
+            <% if @house.regulation_file.attached? %>
+              <div class="mt-3 pt-3 border-top">
+                <%= link_to rails_blob_path(@house.regulation_file, disposition: "inline"), 
+                            target: "_blank", 
+                            rel: "noopener", 
+                            class: "btn btn-outline-primary d-inline-flex align-items-center gap-2" do %>
+                  <span class="material-symbols-outlined">description</span>
+                  <%= @house.regulation_file.filename.to_s %>
+                  <span class="material-symbols-outlined fs-6">open_in_new</span>
+                <% end %>
+              </div>
+            <% else %>
+              <p class="text-muted fst-italic fs-7"><%= t("none") %></p>
+            <% end %>
+          </div>
+
+          <%# Floors & Rooms %>
+          <div class="mt-3 pt-3 border-top">
+            <h6 class="fw-bold mb-2"><%= t("form.house.floor") + ":" %></h6>
+
+            <% @floors.each do |floor| %>
+              <p class="mb-1"><%= "#{t('form.house.floor')} #{floor.name} - #{floor.rooms_count} #{t('form.room')}" %></p>
+            <% end %>
+          </div>
+
+          <%# Services %>
+          <div class="mt-3 pt-3 border-top">
+            <h6 class="fw-bold mb-2">
+              <%= t("form.service.sv") + ":" %>
+
+              <%= link_to landlord_house_services_path(@house), 
+                data: { turbo_frame: "_top",
+                      **tooltip("right", "view_detail")} do %>
+                <span class="material-symbols-filled">arrow_right_alt</span>
+              <% end %>
+            </h6>
+
+            <% @services.each do |service| %>
+              <p class="mb-1">
+                <%= service.name %><%= " (#{service.note})" if service.note.present? %>
+              </p>
+            <% end %>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <p class="text-secondary fst-italic mb-0"><%= "#{t("last_updated")}: #{l(@house.updated_at, format: :default)}" %></p>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

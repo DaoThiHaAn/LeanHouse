@@ -58,7 +58,8 @@ vi:
         
       detailed_addr: "Địa chỉ chi tiết"
       detailed_addr_placeholder: "Tên toà nhà, số nhà, tên đường, khóm/đội"
-      total_floors: "Tổng số tầng"
+      total_floors: "Số tầng"
+      total_rooms: "Số phòng"
       has_ground_floor: "Tầng trệt"
       has_ground_floor_no: "Không"
       has_ground_floor_yes: "Có"
@@ -85,8 +86,12 @@ vi:
       search: "Tìm tên nhà"
       max_house: "Bạn chỉ được sở hữu tối đa 20 ngôi nhà"
       enter: "Vào nhà"
+      open_modal: "Nhấp để xem chi tiết"
+
+    room: "Phòng"
 
     service:
+      sv: "Dịch vụ"
       applied_sv: "Dịch vụ áp dụng"
       info_1: "Dưới đây là những dịch vụ cơ bản, tick để chọn dịch vụ bạn muốn."
       info_2: "Tất cả dịch vụ được áp dụng như nhau cho tất cả các phòng, bạn có thể tùy chỉnh sau."

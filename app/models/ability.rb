@@ -45,13 +45,19 @@ class Ability
   private
 
   def landlord_abilities(user)
+    id = user.id
     can :read, :dashboard
-    can :manage, House, landlord_id: user.id
-    can :manage, Floor, house: { landlord_id: user.id }
-    can :manage, Room, house: { landlord_id: user.id }
-    can :manage, Bed, room: { house: { landlord_id: user.id } }
-    can :manage, RoomService, room: { house: { landlord_id: user.id } }
-    can :manage, Service, house: { landlord_id: user.id }
+    can :manage, House, landlord_id: id
+    # 2-level relations
+    can :manage, [ Floor, Service ], house: { landlord_id: id }
+    # 3-level relations
+    can :manage, [ Room, Bed, RoomService ], house: { landlord_id: id }
+
+    # can :manage, Floor, house: { landlord_id: id }
+    # can :manage, Room, house: { landlord_id: id }
+    # can :manage, Bed, room: { house: { landlord_id: id } }
+    # can :manage, RoomService, room: { house: { landlord_id: id } }
+    # can :manage, Service, house: { landlord_id: id }
     # can :manage, Invoice, room: { house: { landlord_id: user.id } }
     # can :manage, Vehicle, room: { house: { landlord_id: user.id } }
     # can :manage, Contract, room: { house: { landlord_id: user.id } }
