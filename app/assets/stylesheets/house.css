@@ -121,3 +121,12 @@
 .modal-header .icon {
     font-size: 2.9rem
 }
+
+.floor.table-responsive {
+    max-height: 220px;
+    overflow-y: auto;
+}
+
+.modal .note-icon {
+    width: 20px
+}

@@ -71,6 +71,7 @@ vi:
   last_updated: "Cập nhật lần cuối lúc"
   none: "Không có"
   view_detail: "Xem chi tiết"
+  total: "Tổng"
 
   errors:
     session_expired: |

@@ -10,4 +10,9 @@ class Floor < ApplicationRecord
   def reach_max_rooms?
     rooms_count.to_i == 100
   end
+
+  # Get maximum available slots of each floor
+  def total_slots
+    rooms.sum(:max_slots)
+  end
 end

@@ -22,8 +22,8 @@ class RoomService < ApplicationRecord
   validate :room_and_service_must_belong_to_same_house
 
 
+  # Used in views to display the unit options in a select dropdown
   def self.unit_options
-    # Used in views to display the unit options in a select dropdown
     units.keys.map do |unit|
       [
         I18n.t("enums.room_service.unit.#{unit}"),

@@ -38,4 +38,11 @@ module HousesHelper
       concat content_tag(:p, "(#{t(config[:info_key])})", class: "mode-info")
     end
   end
+
+  # Show general detail of Floor
+  def floor_general_details(floor)
+    "#{t('form.house.floor')} #{floor.name} " +
+    "- #{floor.rooms_count} #{t('form.room')} " +
+    "(#{t("form.floor.total_slots")}: #{floor.total_slots})"
+  end
 end

@@ -26,12 +26,19 @@ vi:
             mode:
              blank: "Loại hình không được để trống!"
 
+        service:
+          attributes:
+            name:
+              taken: "đã tồn tại!"
+
         room_service:
           attributes:
             base:
               different_house: "Dịch vụ và phòng không thuộc cùng một tòa nhà!"
             fee:
               invalid_fee: "Phí dịch vụ phải là số nguyên dương!"
+      
+      # Global messages
       messages:
         record_invalid: "Dữ liệu không hợp lệ!"
 

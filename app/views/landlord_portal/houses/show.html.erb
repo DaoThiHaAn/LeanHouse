@@ -48,32 +48,105 @@
 
           <%# Floors & Rooms %>
           <div class="mt-3 pt-3 border-top">
-            <h6 class="fw-bold mb-2"><%= t("form.house.floor") + ":" %></h6>
+            <div class="d-flex gap-2 align-items-center">
+              <h6 class="fw-bold m-0"><%="#{@house.floors_count} #{t("form.house.floor")}:" %></h6>
 
-            <% @floors.each do |floor| %>
-              <p class="mb-1"><%= "#{t('form.house.floor')} #{floor.name} - #{floor.rooms_count} #{t('form.room')}" %></p>
-            <% end %>
+              <%= link_to landlord_house_rooms_path(@house), class: "d-inline-flex align-items-center",
+                data: { turbo_frame: "_top",
+                      **tooltip("right", "view_detail")} do %>
+                <span class="material-symbols-outlined">arrow_right_alt</span>
+              <% end %>
+            </div>
+
+            <div class="floor table-responsive border rounded mt-2">
+              <table class="table table-bordered table-hover table-sm align-middle mb-0">
+                <thead class="table-light sticky-top">
+                  <tr>
+                    <th><%= t("form.house.floor") %></th>
+                    <th><%= t("form.room") %></th>
+                    <th><%= t("form.floor.total_slots") %></th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <% @floors.each do |floor| %>
+                    <tr>
+                      <td><%= truncate(floor.name, length: 20) %></td>
+                      <td><%= floor.rooms_count %></td>
+                      <td><%= floor.total_slots %></td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
           </div>
 
           <%# Services %>
           <div class="mt-3 pt-3 border-top">
-            <h6 class="fw-bold mb-2">
-              <%= t("form.service.sv") + ":" %>
+            <div class="d-flex gap-2 align-items-center">
+              <h6 class="fw-bold m-0"><%= t("form.service.sv") + ":" %></h6>
 
-              <%= link_to landlord_house_services_path(@house), 
+              <%= link_to landlord_house_services_path(@house), class: "d-inline-flex align-items-center",
                 data: { turbo_frame: "_top",
                       **tooltip("right", "view_detail")} do %>
-                <span class="material-symbols-filled">arrow_right_alt</span>
+                <span class="material-symbols-outlined">arrow_right_alt</span>
               <% end %>
-            </h6>
-
+            </div>
+            
             <% @services.each do |service| %>
-              <p class="mb-1">
-                <%= service.name %><%= " (#{service.note})" if service.note.present? %>
-              </p>
+              <p class="my-1"><%= service.name %></p>
+              <% if service.note.present? %>
+                <%= image_tag "note.png", alt: "Note icon", class: "note-icon" %>
+                <span class="text-secondary fw-light"><%=service.note%></span>
+              <%end%>
+
+              <%# Table of room services %>
+              <div class="floor table-responsive border rounded mt-2">
+                <table class="table table-bordered table-hover table-sm align-middle mb-0">
+                  <thead class="table-light sticky-top">
+                    <tr>
+                      <th><%= t("form.service.price") %></th>
+                      <th><%= t("form.service.unit") %></th>
+                      <th><%= t("form.service.real_time_short") %></th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <% service.all_variants.each do |fee, unit, is_real_time| %>
+                      <tr>
+                        <td><%= fee %></td>
+                        <td><%= t("enums.room_service.unit.#{unit}") %></td>
+                        <td class="text-center align-middle">
+                          <% if is_real_time %>
+                          <span class="material-symbols-outlined d-inline-flex">check_circle</span>
+                          <%end%>
+                        </td>
+                      </tr>
+                    <% end %>
+                  </tbody>
+                </table>
+              </div>
+
             <% end %>
           </div>
+
+          <%# TODO: Properties %>
+          <div class="mt-3 pt-3 border-top">
+            <div class="d-flex gap-2 align-items-center">
+              <h6 class="fw-bold m-0"><%= t("form.property.title") + ":" %></h6>
+
+              <%= link_to "#", class: "d-inline-flex align-items-center",
+                data: { turbo_frame: "_top",
+                      **tooltip("right", "view_detail")} do %>
+                <span class="material-symbols-outlined">arrow_right_alt</span>
+              <% end %>
+            </div>
+            
+          </div>
+
+
         </div>
+
 
         <div class="modal-footer">
           <p class="text-secondary fst-italic mb-0"><%= "#{t("last_updated")}: #{l(@house.updated_at, format: :default)}" %></p>

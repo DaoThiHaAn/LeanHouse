@@ -71,7 +71,6 @@
           <%= field_error(@form, :name) %>
       </div>
 
-      
       <!-- Address -->
       <%# 2 dropdowns to show locations %>
       <div class="form-group d-flex gap-4 align-items-center"
@@ -153,7 +152,6 @@
               <%= form.label :has_ground_floor_yes, t("form.house.has_ground_floor_yes"), class: "form-check-label" %>
           </div>
       </div>
-
 
       <!-- Floor count -->
       <div class="form-group d-flex gap-3 align-items-center">
@@ -257,8 +255,7 @@
           <small><%= t('form.house.inv_creation_date_info') %></small>
         </div>
       </div>
-
-        
+  
       <!--File (optional) -->
       <div class="form-group" data-controller="file-input">
         <div class="d-flex align-items-center gap-3">

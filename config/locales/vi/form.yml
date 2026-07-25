@@ -88,7 +88,13 @@ vi:
       enter: "Vào nhà"
       open_modal: "Nhấp để xem chi tiết"
 
+    floor:
+      total_slots: "Tổng số chỗ"
+
     room: "Phòng"
+
+    property:
+      title: "Tài sản"
 
     service:
       sv: "Dịch vụ"
@@ -100,6 +106,7 @@ vi:
       wifi_money: "WiFi"
       parking_money: "Gửi xe"
       real_time: "Tính theo thực tế (dựa vào đồng hồ đo)"
+      real_time_short: "Tính theo thực tế "
       price: "Đơn giá (đ)"
       price_placeholder: "Nhập số tiền"
       unit: "Đơn vị"
