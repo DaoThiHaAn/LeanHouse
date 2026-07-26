@@ -1,0 +1,51 @@
+.short-house-info {
+  color: var(--primary-text)
+}
+
+.nav-tabs .nav-link {
+  transition: background-color 0.1s ease;
+}
+
+.nav-tabs .nav-link.active {
+  background: linear-gradient(
+    to bottom, 
+    rgb(209, 241, 245) 0%,
+    rgb(245, 251, 252) 100%
+  );
+  border-color: #dee2e6 #dee2e6 rgb(245, 250, 255); 
+}
+
+.room.tab-pane {
+  background-color: rgb(251, 254, 255);
+  border-bottom: 1px solid #ecf0f2;
+  border-left: 1px solid #ecf0f2;
+  border-right: 1px solid #ecf0f2;
+}
+
+.colspan td {
+  background-color: #D7E6EA;
+  color: #3C8BC3;
+  font-weight: 700;
+}
+
+.table-action {
+  color: var(--table-action-icon);
+  background-color: transparent;
+  transition: background-color 0.2s ease;
+  border-radius: 50%;
+}
+
+.table-action:hover {
+  background-color: rgb(216, 215, 215);
+}
+
+.table-action span {
+  font-size: 1.3rem;
+}
+
+.modal .main-btn {
+  font-size: 0.9rem;
+  width: fit-content;
+  padding: 3px 8px;
+  margin: 0;
+}

@@ -5,7 +5,12 @@ module HousesHelper
 
   def house_mode(house)
     return "(#{t("form.house.room-based")})" if house&.room?
-    "(#{t("form.house.bed-based")})" if house&.bed?
+    "(#{t("form.house.bed-based")})"
+  end
+
+  def house_mode_icon(house)
+    return "living" if house&.room?
+    "single_bed"
   end
 
   def occupied_rate_format(house)
@@ -42,7 +47,7 @@ module HousesHelper
   # Show general detail of Floor
   def floor_general_details(floor)
     "#{t('form.house.floor')} #{floor.name} " +
-    "- #{floor.rooms_count} #{t('form.room')} " +
+    "- #{floor.rooms_count} #{t('form.room.self')} " +
     "(#{t("form.floor.total_slots")}: #{floor.total_slots})"
   end
 end

@@ -71,7 +71,15 @@ vi:
   last_updated: "Cập nhật lần cuối lúc"
   none: "Không có"
   view_detail: "Xem chi tiết"
+  edit: "Chỉnh sửa"
+  delete: "Xóa"
   total: "Tổng"
+  all: "Tất cả"
+  actions: "Hành động"
+  prev_page: "Trang trước"
+  next_page: "Trang sau"
+  loading: "Đang tải"
+  
 
   errors:
     session_expired: |

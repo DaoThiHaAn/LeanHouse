@@ -40,9 +40,17 @@ Rails.application.routes.draw do
     resource :dashboard, only: [ :show ]
 
     resources :posts
-    resources :houses, shallow: true do
+    resources :houses do
       resources :services
-      resources :rooms, :invoices, :vehicles, :contracts
+
+      resources :rooms do
+        collection do
+          get :table_bed
+          get :table
+        end
+      end
+
+      resources :invoices, :vehicles, :contracts
     end
   end
 

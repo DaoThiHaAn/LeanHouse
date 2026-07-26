@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_07_17_183028) do
+ActiveRecord::Schema[8.0].define(version: 2026_07_26_101639) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "unaccent"
@@ -47,6 +47,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_17_183028) do
     t.bigint "room_id", null: false
     t.string "name", null: false
     t.boolean "is_available", default: true, null: false
+    t.boolean "deleted", default: false, null: false
     t.index ["room_id"], name: "index_beds_on_room_id"
   end
 
@@ -112,6 +113,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_17_183028) do
     t.float "area", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "deleted", default: false, null: false
     t.index ["floor_id", "name"], name: "index_rooms_on_floor_id_and_name", unique: true
     t.index ["floor_id"], name: "index_rooms_on_floor_id"
   end

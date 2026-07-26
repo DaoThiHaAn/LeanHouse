@@ -8,20 +8,21 @@
     font-weight: 500;
 }
 
-.add-house-btn {
+.main-btn {
     color: var(--primary-bg);
     font-weight: bold;
-    font-size: 1.3rem;
+    font-size: 1.2rem;
     border-radius: 10px;
     background-color: rgb(232, 255, 246);
     border: 1px solid rgb(196, 247, 227);
     border-radius: 10px;
+    transition: background-color .2s ease;
 }
 
-.add-house-btn span {
+.main-btn span {
     font-size: 1.5rem;
 }
 
-.add-house-btn:hover {
-    
+.main-btn:hover {
+    background-color: rgb(210, 249, 234)
 }

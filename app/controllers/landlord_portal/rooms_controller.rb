@@ -1,21 +1,37 @@
 class LandlordPortal::RoomsController < LandlordPortal::BaseController
   layout "house_mngment"
 
-  # before_action :set_room, only: %i[ show edit update destroy ]
-  load_and_authorize_resource :room, through: :house # @rooms, @room are auto loaded
-
+  load_and_authorize_resource :room, through: :house
 
   def index
   end
 
+  # Return the table partial in bed mode
+  def table_bed
+    @rooms = filtered_rooms_bed_mode
+
+    render partial: "room_table_bed",
+           locals: { house: @house, rooms: @rooms }
+  end
+
+  # Return the table partial in room mode
+  def table
+    @rooms = filtered_rooms
+
+    render partial: "room_table_bed",
+           locals: { house: @house, rooms: @rooms }
+  end
+
   def new
+    @room = Room.new
   end
 
   def create
   end
 
   def show
-    render :show
+    @floor = @room.floor
+    @room_services = @room.room_services
   end
 
   def edit
@@ -31,5 +47,41 @@ class LandlordPortal::RoomsController < LandlordPortal::BaseController
 
   def room_params
     params.expect(room: [ :name, :floor_id ])
+  end
+
+
+  def filtered_rooms_bed_mode
+    scope = @house.rooms.includes(:floor)
+
+    case params[:state]
+    when "available"
+      scope = scope.available
+    when "full"
+      scope = scope.full
+    end
+
+    scope.order("floors.name ASC, rooms.name ASC")
+         .page(params[:page])
+         .per(20)
+  end
+
+  # TODO
+  def filtered_rooms
+    scope = @house.rooms.includes(:floor)
+
+    case params[:state]
+    when "available"
+      scope = scope.available
+    when "full"
+      scope = scope.full
+    end
+
+    scope.order("floors.name ASC, rooms.name ASC")
+         .page(params[:page])
+         .per(20)
+  end
+
+  def set_house_from_room
+    @house ||= @room.house
   end
 end

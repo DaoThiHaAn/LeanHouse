@@ -5,6 +5,10 @@ class Bed < ApplicationRecord
 
   validates :name, presence: true
 
+  default_scope { where(deleted: false) }
+  scope :deleted, -> { where(deleted: true) }
+  scope :sorted, -> { order(name: :asc) }
+
   # MODEL METHODS
 
   def available?

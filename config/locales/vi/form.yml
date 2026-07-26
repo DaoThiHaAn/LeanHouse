@@ -82,22 +82,40 @@ vi:
       create: "Tạo nhà"
       house_list: "Danh sách các nhà"
       num_house: "Bạn đang có %{num} nhà"
-      floor: "Tầng"
       search: "Tìm tên nhà"
       max_house: "Bạn chỉ được sở hữu tối đa 20 ngôi nhà"
       enter: "Vào nhà"
       open_modal: "Nhấp để xem chi tiết"
 
     floor:
+      self: "Tầng" 
       total_slots: "Tổng số chỗ"
 
-    room: "Phòng"
+    room:
+      self: "Phòng"
+      name: "Tên phòng"
+      add: "Tạo phòng mới"
+      state: "Tình trạng phòng"
+      available: "Còn chỗ"
+      full: "Hết chỗ"
+      tenants_count: "Số người ở"
+      list: "Danh sách phòng"
+
+    tenant:
+      self: "Người thuê"
+
+    bed:
+      self: "Giường"
+      name: "Tên giường"
+      add: "Tạo giường mới"
+      state: "Tình trạng giường"
+      list: "Danh sách giường"
 
     property:
       title: "Tài sản"
 
     service:
-      sv: "Dịch vụ"
+      self: "Dịch vụ"
       applied_sv: "Dịch vụ áp dụng"
       info_1: "Dưới đây là những dịch vụ cơ bản, tick để chọn dịch vụ bạn muốn."
       info_2: "Tất cả dịch vụ được áp dụng như nhau cho tất cả các phòng, bạn có thể tùy chỉnh sau."

@@ -22,6 +22,13 @@ class Room < ApplicationRecord
     less_than_or_equal_to: 500
   }
 
+  default_scope { where(deleted: false) }
+  scope :deleted, -> { where(deleted: true) }
+  scope :sorted, -> { order(name: :asc) }
+
+  scope :available, -> { where("tenants_count < max_slots") }
+  scope :full,      -> { where("tenants_count = max_slots") }
+
   # Model method
 
   def available?

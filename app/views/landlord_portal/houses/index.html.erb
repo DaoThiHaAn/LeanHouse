@@ -33,7 +33,7 @@
 <div class="d-flex align-items-center gap-2 mb-3">
     <% if @landlord.houses_count >= 20 %>
         <button type="button" 
-                class="add-house-btn px-2 py-1 disabled" aria-disabled="true">
+                class="main-btn px-2 py-1 disabled" aria-disabled="true">
             <div class="d-flex align-items-center gap-2">
                 <span class="material-symbols-filled">add_circle</span>
                 <%= t('form.house.add') %>
@@ -41,7 +41,7 @@
         </button>
     <% else %>
         <!-- Active State  -->
-        <%= link_to new_landlord_house_path, class: "add-house-btn px-2 py-1" do %>
+        <%= link_to new_landlord_house_path, class: "main-btn px-2 py-1" do %>
             <div class="d-flex align-items-center gap-2">
                 <span class="material-symbols-filled">add_circle</span>
                 <%= t('form.house.add') %>

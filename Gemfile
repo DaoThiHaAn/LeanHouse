@@ -67,3 +67,5 @@ group :test do
 end
 
 gem "cancancan", "~> 3.6"
+
+gem "kaminari", "~> 1.2"
