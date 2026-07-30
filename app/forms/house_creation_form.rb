@@ -41,9 +41,11 @@ class HouseCreationForm
   attribute :wifi_money
   attribute :wifi_price
   attribute :wifi_unit
+  attribute :wifi_real_time, :boolean, default: false # not rendered in view
   attribute :parking_money
   attribute :parking_price
   attribute :parking_unit
+  attribute :parking_real_time, :boolean, default: false # not rendered in view
 
   validates :rooms_per_floor,
             numericality: { only_integer: true, greater_than: 0, less_than_or_equal_to: 50 }

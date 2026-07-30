@@ -23,4 +23,8 @@ module ApplicationHelper
       }
     end
   end
+
+  def format_money(num)
+    "#{number_with_delimiter(num, delimiter: ",")} đ"
+  end
 end

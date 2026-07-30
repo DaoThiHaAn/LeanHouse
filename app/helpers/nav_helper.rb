@@ -57,4 +57,9 @@ module NavHelper
 
     "#{first_name} #{middle_initials} #{last_name}"
   end
+
+  def noti_count(num)
+    return "99+" if num > 99
+    num
+  end
 end

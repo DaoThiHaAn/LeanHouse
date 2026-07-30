@@ -3,16 +3,17 @@
     font-weight: 400 !important;
 }
 
-.main-container {
-    max-width: 60%
-}
-
 .house-form .form-group {
     width: 75%;
 }
 
 .house-form .input-group {
     width: 45%;
+}
+
+.room.form-group .input-group {
+    width: 46%;
+    min-width: 250px;
 }
 
 .house-form .input-group .form-control {
@@ -133,4 +134,25 @@
 
 .house-mngment-container {
     background-color: white;
+}
+
+/* Loading animation */
+.house-form.loading {
+    opacity: 0.6;
+    pointer-events: none;
+    transition: opacity .2s ease;
+}
+
+.spin {
+    animation: spin .8s linear infinite;
+    font-size: 20px;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }

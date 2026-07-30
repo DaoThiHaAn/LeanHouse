@@ -37,7 +37,7 @@ module HousesHelper
     config = HOUSE_MODE_CONFIG.fetch(house.mode.to_s, HOUSE_MODE_CONFIG["room"])
 
     content_tag :div,
-                class: "pe-none m-auto role-option d-flex flex-column align-items-center gap-1 px-2 py-1".strip do
+                class: "pe-none m-auto view role-option d-flex flex-column align-items-center gap-1 px-2 py-1".strip do
       concat image_tag(config[:image], alt: t(config[:title_key]))
       concat content_tag(:p, t(config[:title_key]))
       concat content_tag(:p, "(#{t(config[:info_key])})", class: "mode-info")

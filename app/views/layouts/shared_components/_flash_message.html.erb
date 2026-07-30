@@ -6,7 +6,7 @@
       else "alert-info"
       end %>
 
-  <div class="flash-container">
+  <div class="flash-container shadow-sm">
     <div class="alert <%= bootstrap_class %> alert-dismissible fade show" role="alert" id="flash-message-<%= SecureRandom.hex(4) %>">
       <%= message %>
       <button type="button" class="btn-close" data-bs-dismiss="alert"></button>

@@ -2,8 +2,8 @@
 
 <% content_for :title, t("page_titles.new_house") %>
 
-<div class="py-3 my-4 mx-auto main-container">
-  <div class="d-flex align-items-center mb-5 w-100">
+<div class="main-container w-65">
+  <div class="d-flex align-items-center mb-5">
     <%= link_to :back, class: "d-flex align-items-center gap-1 turn-back link" do%>
               <span class="material-symbols-outlined ms-2">arrow_left_alt</span>
               <%=t('turn_back')%>
@@ -13,11 +13,17 @@
 
   <%= form_with model: @form, url: landlord_houses_path, method: :post, local: true, 
               class:"house-form d-flex align-items-center flex-column gap-4" ,
-              data: { action: "submit@document->role-selector#validateForm" } do |form| %>
+              data: { 
+                controller: "loading",
+                loading_text_value: t("creating") + "...",
+                action: "submit->loading#submit"
+              } do |form| %>
 
       <!-- Mode selection -->
       <div data-controller="role-selector" class="form-group gap-2 d-flex flex-column align-items-center mb-2">
-          <%= form.hidden_field :mode, data: { role_selector_target: "input" } %>
+          <%= form.hidden_field :mode,
+                  value: @form.mode.presence || House.modes[:room],
+                  data: { role_selector_target: "input" } %>
           <%= form.label :mode, class: "form-label" do %>
               <%= t('form.house.mode') + ": "%> 
               <span class="asterisk">*</span>
@@ -73,7 +79,7 @@
 
       <!-- Address -->
       <%# 2 dropdowns to show locations %>
-      <div class="form-group d-flex gap-4 align-items-center"
+      <div class="form-group d-flex gap-2 gap-lg-4 align-items-center flex-wrap"
           data-controller="location"
           data-location-provinces-value="<%= json_escape @provinces.to_json %>"
           data-location-communes-value="<%= json_escape @communes.to_json %>">
@@ -167,7 +173,7 @@
       </div>
 
       <!-- Room per floor -->
-      <div class="form-group d-flex gap-3 align-items-center">
+      <div class="form-group d-flex gap-3 align-items-center flex-wrap">
           <%= form.label :room_per_floors, class: "form-label m-0 flex-shrink-0 text-nowrap" do %>
             <%= t("form.house.room_per_num") %>:
             <span class="asterisk">*</span>
@@ -191,16 +197,16 @@
           <span class="asterisk">*</span>
         </p>
 
-        <div class="field-info d-flex align-items-center gap-1">
+        <div class="field-info d-flex align-items-center gap-2">
           <span class="material-symbols-outlined">info</span>
-          <small><%= t('form.house.detailed_room_info') %></small>
+          <small><%= simple_format(t('form.house.detailed_room_info')) %></small>
         </div>
       </div>
       
-      <div class="d-flex px-5 w-75 flex-row justify-content-between gap-4 flex-wrap">
+      <div class="room form-group d-flex flex-column flex-xl-row justify-content-between align-items-center gap-3 flex-wrap">
         <div class="input-group">
           <span class="input-group-text">
-            <%= t("form.house.area") %> (m²)
+            <%= t("form.room.area") %> (m²)
           </span>
           <%= form.number_field :area,
                 class: "form-control",
@@ -210,16 +216,22 @@
 
         <div class="input-group">
           <span class="input-group-text">
-            <%= t("form.house.rent") %> (đ)
+            <%= t("form.room.rent") %> (đ)
           </span>
           <%= form.text_field :rent,
                 class: "form-control", data: {controller: "currency"},
                 required: true %>
         </div>
 
-        <div class="input-group">
-          <span class="input-group-text">
-            <%= t("form.house.capacity") %>
+        <div class="input-group"
+            data-controller="label-capacity"
+            data-action="role-selector:changed@document->label-capacity#updateLabel"
+            data-label-capacity-room-label-value="<%= t('form.room.max_tenants_count') %>"
+            data-label-capacity-bed-label-value="<%= t('form.room.beds_count') %>">
+          
+          <span class="input-group-text" 
+                data-label-capacity-target="label">
+            <%= t("form.room.max_tenants_count") %>
           </span>
           <%= form.number_field :capacity, min: 1, max: 30, step: 1, placeholder: "1-30",
                 class: "form-control",
@@ -228,7 +240,7 @@
 
         <div class="input-group">
           <span class="input-group-text">
-            <%= t("form.house.deposit") %> (đ)
+            <%= t("form.room.deposit") %> (đ)
           </span>
           <%= form.text_field :deposit,
                 class: "form-control", data: {controller: "currency"},
@@ -258,7 +270,7 @@
   
       <!--File (optional) -->
       <div class="form-group" data-controller="file-input">
-        <div class="d-flex align-items-center gap-3">
+        <div class="d-flex align-items-center gap-3 flex-wrap">
           <%= form.label :regulation_file, class: "form-label m-0 flex-shrink-0 text-nowrap" do %>
             <%= t("form.house.regulation") %>:
           <% end %>
@@ -479,7 +491,19 @@
         
       </div>
 
-      <button type="submit" class="custom-primary-btn main-form"><%= t("form.house.create") %></button>
-  <% end %>
-</div>
+      <%# Submit button %>
+      <button type="submit"
+        class="custom-primary-btn main-form d-flex align-items-center justify-content-center gap-2"
+        data-loading-target="button">
 
+        <span data-loading-target="text">
+          <%= t("form.house.create") %>
+        </span>
+
+        <span class="material-symbols-outlined spin d-none"
+          data-loading-target="spinner">
+          progress_activity
+        </span>
+    </button>
+  <%end%>
+</div>

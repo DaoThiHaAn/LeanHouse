@@ -6,11 +6,11 @@
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content">
         <div class="modal-header py-0">
-          <div class="d-flex align-items-center justify-content-start gap-1">
+          <div class="d-flex align-items-center justify-content-start gap-1 mx-auto">
             <span class="icon material-symbols-filled">location_home</span>
             <h1 class="modal-title fs-5" id="houseDetailModalLabel"><%= @house.name %></h1>
           </div>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" class="m-0 btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
 
         <div class="modal-body">
@@ -27,13 +27,13 @@
           </div>
 
           <%# Display Regulation File %>
-          <div class="d-flex align-items-center gap-2">
+          <div class="d-flex align-items-center gap-3 mt-3">
             <h6 class="fw-bold m-0"><%=t("form.house.regulation") + ": "%></h6>
 
             <% if @house.regulation_file.attached? %>
-              <div class="mt-3 pt-3 border-top">
+              <div>
                 <%= link_to rails_blob_path(@house.regulation_file, disposition: "inline"), 
-                            target: "_blank", 
+                            target: "_blank",  title: t("form.file.view"),
                             rel: "noopener", 
                             class: "btn btn-outline-primary d-inline-flex align-items-center gap-2" do %>
                   <span class="material-symbols-outlined">description</span>
@@ -49,7 +49,7 @@
           <%# Floors & Rooms %>
           <div class="mt-3 pt-3 border-top">
             <div class="d-flex gap-2 align-items-center">
-              <h6 class="fw-bold m-0"><%="#{@house.floors_count} #{t("form.house.floor")}:" %></h6>
+              <h6 class="fw-bold m-0"><%="#{@house.floors_count} #{t("form.floor.self")}:" %></h6>
 
               <%= link_to landlord_house_rooms_path(@house), class: "d-inline-flex align-items-center",
                 data: { turbo_frame: "_top",
@@ -63,7 +63,7 @@
                 <thead class="table-light sticky-top">
                   <tr>
                     <th><%= t("form.floor.self") %></th>
-                    <th><%= t("form.room.self") %></th>
+                    <th><%= t("form.room.num") %></th>
                     <th><%= t("form.floor.total_slots") %></th>
                   </tr>
                 </thead>
@@ -93,41 +93,52 @@
               <% end %>
             </div>
             
-            <% @services.each do |service| %>
-              <p class="my-1"><%= service.name %></p>
-              <% if service.note.present? %>
-                <%= image_tag "note.png", alt: "Note icon", class: "note-icon" %>
-                <span class="text-secondary fw-light"><%=service.note%></span>
-              <%end%>
+            <div class="floor table-responsive border rounded mt-2">
+              <table class="table table-bordered table-hover align-middle mb-0">
+                <thead class="table-light sticky-top">
+                  <tr>
+                    <th><%= t("form.service.price") %></th>
+                    <th><%= t("form.service.unit") %></th>
+                    <th class="text-center"><%= t("form.service.real_time_short") %></th>
+                  </tr>
+                </thead>
 
-              <%# Table of room services %>
-              <div class="floor table-responsive border rounded mt-2">
-                <table class="table table-bordered table-hover table-sm align-middle mb-0">
-                  <thead class="table-light sticky-top">
-                    <tr>
-                      <th><%= t("form.service.price") %></th>
-                      <th><%= t("form.service.unit") %></th>
-                      <th><%= t("form.service.real_time_short") %></th>
+                <tbody>
+                  <% @services.each do |service| %>
+
+                    <!-- Service name -->
+                    <tr class="colspan">
+                      <td colspan="3">
+                        <p class="fw-semibold mb-0"><%= service.name %></p>
+
+                        <% if service.note.present? %>
+                          <div class="mt-1">
+                            <%= image_tag "note.png", alt: "Note icon", class: "note-icon" %>
+                            <span class="text-secondary fw-light"><%= service.note %></span>
+                          </div>
+                        <% end %>
+                      </td>
                     </tr>
-                  </thead>
 
-                  <tbody>
+                    <!-- Service variants -->
                     <% service.all_variants.each do |fee, unit, is_real_time| %>
                       <tr>
-                        <td><%= fee %></td>
+                        <td><%= number_with_delimiter(fee, delimiter: ",") %></td>
                         <td><%= t("enums.room_service.unit.#{unit}") %></td>
                         <td class="text-center align-middle">
                           <% if is_real_time %>
-                          <span class="material-symbols-outlined d-inline-flex">check_circle</span>
-                          <%end%>
+                            <span class="material-symbols-outlined d-inline-flex">
+                              check_circle
+                            </span>
+                          <% end %>
                         </td>
                       </tr>
                     <% end %>
-                  </tbody>
-                </table>
-              </div>
 
-            <% end %>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
           </div>
 
           <%# TODO: Properties %>
@@ -146,7 +157,15 @@
         </div>
 
 
-        <div class="modal-footer">
+        <div class="modal-footer d-flex justify-content-between align-items-center">
+          <%# Edit button %>
+          <%= link_to edit_landlord_house_path(@house), 
+                data: { turbo_frame: "_top" }, # force Rails to direct to a new page
+                class: "main-btn d-flex align-items-center justify-content-center gap-1" do %>
+            <span class="material-symbols-filled">edit</span>
+            <%=t("edit")%>
+          <% end %>
+
           <p class="text-secondary fst-italic mb-0"><%= "#{t("last_updated")}: #{l(@house.updated_at, format: :default)}" %></p>
         </div>
       </div>

@@ -13,19 +13,25 @@
                     class: "title text-clamp-2 text-decoration-none fw-bold" %>
       </div>
 
-      <p class="text-clamp-2 mb-0"><%= house_address(house) %></p>
+      <p class="text-clamp-2"><%= house_address(house) %></p>
 
-      <div class="d-flex gap-1 align-items-center">
-        <span class="material-symbols-outlined">group</span>
-        <%= occupied_rate_format(house) %>
-        <p class="ms-3 fst-italic text-secondary mb-0"><%= house_mode(house) %></p>
+      <div class="d-flex flex-column flex-lg-row align-items-lg-center">
+        <div class="d-flex align-items-center text-nowrap gap-1">
+          <span class="material-symbols-outlined">group</span>
+          <%= occupied_rate_format(house) %>
+        </div>
+        <p class="ms-lg-4 mt-1 mt-lg-0 fst-italic text-secondary text-nowrap"><%= house_mode(house) %></p>
       </div>
   </div>
 
   <%# Buttons %>
   <div class="house-actions d-flex flex-column align-items-center gap-1 ms-auto">
-      <%= button_to edit_landlord_house_path(house),
-                class: "house-btn p-2 rounded-circle" do %>
+      <%= link_to edit_landlord_house_path(house),
+            data: { 
+              turbo_frame: "_top", # force Rails to direct to a new page
+              **tooltip("right", "edit") 
+            },
+            class: "house-btn p-2 rounded-circle" do %>
         <span class="material-symbols-filled">edit</span>
       <% end %>
 
@@ -36,8 +42,8 @@
 
       <%= link_to landlord_house_rooms_path(house), 
                 data: { 
-                    turbo_frame: "_top", # force Rails to direct to a new page
-                    **tooltip("right", "form.house.enter") 
+                  turbo_frame: "_top", # force Rails to direct to a new page
+                  **tooltip("right", "form.house.enter") 
                 },
                 class: "house-btn p-2 rounded-circle d-flex align-items-center justify-content-center" do %>
         <span class="material-symbols-filled">arrow_right_alt</span>

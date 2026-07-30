@@ -28,6 +28,10 @@
   font-weight: 700;
 }
 
+.colspan:hover {
+  pointer-events: none;
+}
+
 .table-action {
   color: var(--table-action-icon);
   background-color: transparent;
@@ -49,3 +53,9 @@
   padding: 3px 8px;
   margin: 0;
 }
+
+.info-zone {
+  background-color: var(--primary-text);
+  color: white;
+}
+

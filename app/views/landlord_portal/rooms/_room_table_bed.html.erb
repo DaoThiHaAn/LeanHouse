@@ -39,12 +39,15 @@
                   <span class="material-symbols-filled">visibility</span>
                 <% end %>
 
-                <%= button_to edit_landlord_house_room_path(house, room),
+                <%= link_to edit_landlord_house_room_path(house, room),
+                          data: { turbo_frame: "_top" },
+                          title: t("edit"),
                           class: "table-action" do %>
                   <span class="material-symbols-filled">edit</span>
                 <% end %>
 
                 <%= button_to landlord_house_room_path(house, room), method: :delete,
+                          title: t("delete"),
                           class: "table-action" do %>
                   <span class="material-symbols-filled">delete</span>
                 <% end %>

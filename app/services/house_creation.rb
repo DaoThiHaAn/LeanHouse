@@ -143,7 +143,7 @@ class HouseCreation
           service: parent_service,
           fee: form.public_send("#{key}_price"),
           unit: form.public_send("#{key}_unit"),
-          is_real_time: form.public_send("#{key}_real_time").presence
+          is_real_time: form.public_send("#{key}_real_time")
         )
       end
     end

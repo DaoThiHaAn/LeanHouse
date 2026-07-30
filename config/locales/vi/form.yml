@@ -66,12 +66,10 @@ vi:
       room_per_num: "Số phòng mỗi tầng"
       room_per_num_info: "Mỗi tầng được mặc định có số phòng bằng nhau, bạn có thể tùy chỉnh sau"
       detailed_room: "Thông tin cơ bản về phòng ở"
-      detailed_room_info: "Tất cả các phòng được mặc định giống nhau, bạn có thể tùy chỉnh sau"
-      area: "Diện tích"
+      detailed_room_info: |
+        Tất cả các phòng được mặc định giống nhau, bạn có thể tùy chỉnh sau.
+        Trong kiểu "Thuê theo giường", "Giá thuê" và "Tiền cọc" áp dụng cho đơn vị "1 giường".
       ex_placeholder: "Ví dụ: %{num}"
-      rent: "Giá thuê"
-      capacity: "Số người ở tối đa"
-      deposit: "Tiền cọc"
       inv_creation_date: "Ngày lập hóa đơn hằng tháng"
       inv_creation_date_info: |
         Đến ngày này hằng tháng, hệ thống sẽ nhắc nhở bạn.
@@ -100,6 +98,15 @@ vi:
       full: "Hết chỗ"
       tenants_count: "Số người ở"
       list: "Danh sách phòng"
+      max_tenants_count: "Số người ở tối đa"
+      beds_count: "Số giường"
+      num: "Số phòng"
+      rent: "Giá thuê"
+      deposit: "Tiền cọc"
+      area: "Diện tích"
+      no_tenant: "Chưa ghi nhận"
+
+
 
     tenant:
       self: "Người thuê"
@@ -129,3 +136,6 @@ vi:
       price_placeholder: "Nhập số tiền"
       unit: "Đơn vị"
       select_unit: "Chọn đơn vị"
+
+    file:
+      view: "Xem tệp"

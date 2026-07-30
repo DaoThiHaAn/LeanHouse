@@ -26,5 +26,10 @@ export default class extends Controller {
         option.dataset.roleSelectorValue === selected
       )
     })
+
+    // Notify other controllers
+    this.dispatch("changed", {
+      detail: { mode: selected }
+    })
   }
 }

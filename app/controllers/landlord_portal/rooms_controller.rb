@@ -1,7 +1,8 @@
 class LandlordPortal::RoomsController < LandlordPortal::BaseController
   layout "house_mngment"
 
-  load_and_authorize_resource :room, through: :house
+  load_and_authorize_resource :room, through: :house, except: %i[new create]
+  before_action :authorize_house_for_room_creation, only: %i[new create]
 
   def index
   end
@@ -32,6 +33,12 @@ class LandlordPortal::RoomsController < LandlordPortal::BaseController
   def show
     @floor = @room.floor
     @room_services = @room.room_services
+
+    if @house.bed?
+      render "show_bedmode"
+    else
+      render "show_roommode"
+    end
   end
 
   def edit
@@ -49,6 +56,9 @@ class LandlordPortal::RoomsController < LandlordPortal::BaseController
     params.expect(room: [ :name, :floor_id ])
   end
 
+  def authorize_house_for_room_creation
+    authorize! :update, @house
+  end
 
   def filtered_rooms_bed_mode
     scope = @house.rooms.includes(:floor)

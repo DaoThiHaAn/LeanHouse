@@ -7,8 +7,8 @@
     <%= render "layouts/shared_components/additional_nav", house: @house, other_houses: @other_houses %>
 
     <%# Yields the controller view (e.g., services/index.html.erb) %>
-    <div class="house-mngment-container shadow-sm m-5 mt-3 p-4">
-        <%= yield %>
+    <div class="main-container w-75">
+      <%= yield %>
     </div>
   </div>
 <% end %>
