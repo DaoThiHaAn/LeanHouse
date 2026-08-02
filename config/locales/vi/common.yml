@@ -79,6 +79,11 @@ vi:
   prev_page: "Trang trước"
   next_page: "Trang sau"
   loading: "Đang tải"
+  save: "Lưu"
+  cancel: "Hủy"
+  saving: "Đang lưu"
+  general_info: "Thông tin chung"
+  create: "Tạo mới"
   
 
   errors:
@@ -107,6 +112,10 @@ vi:
     user_updated: "Cập nhật thông tin tài khoản thành công!"
     pw_updated: "Cập nhật mật khẩu thành công!"
     house_created: "Tạo nhà thành công!"
+    house_updated: "Cập nhật thông tin nhà thành công!"
+    floor_created: "Tạo tầng thành công!"
+    floor_updated: "Cập nhật thông tin tầng thành công!"
+    floor_deleted: "Xóa tầng thành công!"
 
   page_titles:
     home: "Trang Chủ"
@@ -116,6 +125,7 @@ vi:
     contact: "Liên Hệ"
     terms: "Điều Khoản Sử Dụng"
     privacy: "Chính Sách Bảo Mật"
-    new_house: "Tạo Nhà Mới"
+    new_house: "Tạo nhà mới"
+    edit_house: "Chỉnh sửa nhà"
     house_mng: "Quản Lý Nhà"
     rooms: "Phòng"

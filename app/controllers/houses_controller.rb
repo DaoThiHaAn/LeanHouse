@@ -36,14 +36,15 @@ class HousesController < ApplicationController
 
   # PATCH/PUT /houses/1 or /houses/1.json
   def update
-    respond_to do |format|
-      if @house.update(house_params)
-        format.html { redirect_to @house, notice: "House was successfully updated.", status: :see_other }
-        format.json { render :show, status: :ok, location: @house }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @house.errors, status: :unprocessable_entity }
-      end
+    if params[:remove_regulation_file] == "1" &&
+      house_params[:regulation_file].blank?
+      @house.regulation_file.purge
+    end
+
+    if @house.update(house_params)
+      redirect_to edit_landlord_house_path(@house), notice: t("house_updated")
+    else
+      render :edit, status: :unprocessable_entity
     end
   end
 
@@ -65,6 +66,12 @@ class HousesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def house_params
-      params.fetch(:house, {})
+      params.require(:house).permit(
+        :name,
+        :address_l1, :address_l2, :address_l3,
+        :inv_creation_date, :mode,
+        :regulation_file,
+        :remove_regulation_file
+      )
     end
 end

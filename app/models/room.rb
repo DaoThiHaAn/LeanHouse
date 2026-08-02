@@ -24,7 +24,10 @@ class Room < ApplicationRecord
 
   default_scope { where(deleted: false) }
   scope :deleted, -> { where(deleted: true) }
-  scope :sorted, -> { order(name: :asc) }
+  # Rooms are grouped by floor in ascending position order, and then by name in ascending order
+  scope :sorted, -> {
+    joins(:floor).order("floors.position ASC, rooms.name ASC")
+  }
 
   scope :available, -> { where("tenants_count < max_slots") }
   scope :full,      -> { where("tenants_count = max_slots") }

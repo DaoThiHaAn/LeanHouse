@@ -64,6 +64,10 @@ body {
   width: 65%;
 }
 
+.w-85 {
+  width: 85%;
+}
+
 main {
   overflow-x: auto;
 }
@@ -235,7 +239,7 @@ input {
 .main-container {
   background-color: white;
   margin: 20px auto;
-  box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.1);
+  box-shadow: 2px 5px 5px 4px rgba(0, 0, 0, 0.15);
   padding: 30px;
 }
 

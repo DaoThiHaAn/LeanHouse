@@ -66,6 +66,10 @@ class House < ApplicationRecord
   def deleted
   end
 
+  def can_delete?
+    !rooms.where("tenants_count > 0").exists?
+  end
+
   private
 
   def validate_regulation_file

@@ -4,12 +4,24 @@ export default class extends Controller {
   static targets = ["province", "commune"]
   static values = {
     provinces: Array,
-    communes: Array
+    communes: Array,
+    selectedProvince: String, // for edit form
+    selectedCommune: String
   }
 
   connect() {
     console.log("Location controller connected!")
+
     this.populateProvinces()
+    
+    if (this.hasSelectedProvinceValue) {
+      this.provinceTarget.value = this.selectedProvinceValue
+      this.provinceChanged()
+    }
+
+    if (this.hasSelectedCommuneValue) {
+      this.communeTarget.value = this.selectedCommuneValue
+    }
   }
 
   populateProvinces() {
@@ -42,5 +54,9 @@ export default class extends Controller {
       })
 
     this.communeTarget.disabled = false
+
+    if (this.hasSelectedCommuneValue) {
+      this.communeTarget.value = this.selectedCommuneValue
+    }
   }
 }

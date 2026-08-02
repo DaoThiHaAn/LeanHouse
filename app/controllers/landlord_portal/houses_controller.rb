@@ -1,6 +1,7 @@
   class LandlordPortal::HousesController < LandlordPortal::BaseController
     skip_before_action :set_house, :set_other_houses, only: [ :new, :create, :index ]
     skip_before_action :require_house, only: [ :new, :create ]
+    before_action :set_location_data, only: [ :new, :edit ]
 
     # override Cancancan's behaviours
     # skip_load_and_authorize_resource only: [ :create ]
@@ -22,14 +23,11 @@
     def new
       # Form model
       @form = HouseCreationForm.new
-      # json data for locations
-      data = JSON.parse(File.read(Rails.root.join("app/data/vn_locations.json")))
-      @provinces = data["province"]
-      @communes  = data["commune"]
     end
 
 
     def edit
+      @floors = @house.floors
     end
 
 
@@ -65,6 +63,12 @@
       end
     end
 
+    def change_mode
+    end
+
+    def check_delete
+      @can_delete = @house.can_delete?
+    end
 
     def destroy
       @house.destroy!
@@ -83,10 +87,17 @@
       @house = House.find(params.expect(:id))
     end
 
+    def set_location_data
+      # json data for locations
+      data = JSON.parse(File.read(Rails.root.join("app/data/vn_locations.json")))
+      @provinces = data["province"]
+      @communes  = data["commune"]
+    end
+
     # Only allow a list of trusted parameters through.
     def house_params
       params.require(:house).permit(
-       :mode, :name,
+        :mode, :name,
         :address_l1, :address_l2, :address_l3,
         :has_ground_floor, :floors_count, :rooms_per_floor,
         :area, :rent, :capacity, :deposit,

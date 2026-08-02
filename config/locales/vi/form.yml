@@ -83,11 +83,26 @@ vi:
       search: "Tìm tên nhà"
       max_house: "Bạn chỉ được sở hữu tối đa 20 ngôi nhà"
       enter: "Vào nhà"
+      delete: "Xóa nhà"
       open_modal: "Nhấp để xem chi tiết"
+      change_mode: "Thay đổi loại hình"
+      general_info: "Thông tin chung"
+      floor_map: "Sơ đồ tầng"
+      remove_regulation: "Xóa tệp nội quy"
+      remove_regulation_cf: "Bạn có chắc muốn xóa file nội quy hiện tại không?"
+      change_mode_cf: "Bạn có chắc muốn thay đổi loại hình nhà?"
+      change_mode_info_1: "Nếu nhà vẫn còn khách thuê, khi chuyển sang loại hình Giường, hệ thống sẽ tự động tạo các giường và phân bổ ngẫu nhiên khách thuê hiện tại vào các giường mới trong từng phòng tương ứng."
+      change_mode_info_2: "Nếu nhà vẫn còn khách thuê, khi chuyển sang loại hình Phòng, hệ thống sẽ xóa các giường hiện có trong từng phòng và chuyển toàn bộ khách thuê vào phòng tương ứng."
+      change_mode_info_3: "Bạn có thể tùy chỉnh tên phòng hoặc tên giường sau khi chuyển đổi."   
 
     floor:
       self: "Tầng" 
       total_slots: "Tổng số chỗ"
+      input: "Nhập tên tầng"
+      create: "Tạo tầng mới"
+      name: "Tên tầng"
+      name_placeholder: "Nhập tên tầng"
+      rooms_count: "Số phòng"
 
     room:
       self: "Phòng"

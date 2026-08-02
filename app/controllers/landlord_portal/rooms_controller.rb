@@ -77,7 +77,7 @@ class LandlordPortal::RoomsController < LandlordPortal::BaseController
 
   # TODO
   def filtered_rooms
-    scope = @house.rooms.includes(:floor)
+    scope = @house.rooms.sorted.includes(:floor)
 
     case params[:state]
     when "available"
@@ -86,9 +86,7 @@ class LandlordPortal::RoomsController < LandlordPortal::BaseController
       scope = scope.full
     end
 
-    scope.order("floors.name ASC, rooms.name ASC")
-         .page(params[:page])
-         .per(20)
+    scope.page(params[:page]).per(20)
   end
 
   def set_house_from_room

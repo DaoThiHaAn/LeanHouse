@@ -1,6 +1,7 @@
 class RentalUnit < ApplicationRecord
   # look at "rentable_type" to determine whether the rentable is a Room or a Bed
   belongs_to :rentable, polymorphic: true
+  has_many :tenant_stays, inverse_of: :rental_unit, dependent: :destroy
 
   enum :status, { active: "active", deleted: "deleted" }
 

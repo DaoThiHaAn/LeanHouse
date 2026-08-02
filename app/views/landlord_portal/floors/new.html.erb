@@ -1,0 +1,77 @@
+<%# Variables: @floor %>
+
+<%= turbo_frame_tag "new_floor_modal" do %>
+  <div class="modal fade" id="newFloorModal" tabindex="-1" aria-labelledby="newFloorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <%= form_with model: [:landlord, @house, @floor],
+                  data: { 
+                      controller: "loading",
+                      loading_text_value: t("creating") + "...",
+                      action: "submit->loading#submit"
+                    }  do |f| %>
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="newFloorModalLabel">
+              <%= t("form.floor.create") %>
+            </h1>
+
+            <button type="button" class="btn-close"
+                    data-bs-dismiss="modal" aria-label="Close">
+            </button>
+          </div>
+
+          <div class="modal-body">
+            <div class="form-group" data-controller="form">
+                <%= f.label :name , class: "form-label d-flex justify-content-between" do%>
+                    <div>
+                      <%= t('form.floor.name') +  ": "%>
+                      <span class="asterisk">*</span>
+                    </div>
+
+                    <small class="counter-text">
+                      <span data-form-target="charCount">0</span>
+                    </small>
+                <% end %>
+
+                <%= f.text_field :name, minlength: 1, maxlength: 100, class: "mb-1 form-control #{invalid_class(@floor, :name)}", 
+                    placeholder: t('form.floor.name_placeholder'), required: true, autofocus: true,
+                    data: {
+                        form_target: "input",
+                        action: "input->form#update"
+                    } 
+                %>
+            </div>
+
+            <div class="mb-3">
+              <%= f.label :rooms_count, t("form.floor.rooms_count"), class: "form-label" %>
+              <%= f.number_field :rooms_count, required: true,
+                    class: "form-control", placeholder: "1-100",
+                    min: 1, max: 100, step: 1 %>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary"
+                    data-bs-dismiss="modal">
+              <%= t("cancel") %>
+            </button>
+
+            <%= f.submit t("create"), 
+                class: "custom-primary-btn main-form d-flex align-items-center justify-content-center gap-2",
+                data: {loading_target: "button"} do%>
+                <span data-loading-target="text"><%= t("create") %></span>
+
+                <span class="material-symbols-outlined spin d-none"
+                  data-loading-target="spinner">
+                  progress_activity
+                </span>
+            <%end%>
+          </div>
+
+        <% end %>
+
+      </div>
+    </div>
+  </div>
+<% end %>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_07_26_101639) do
+ActiveRecord::Schema[8.0].define(version: 2026_08_02_115041) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "unaccent"
@@ -57,7 +57,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_26_101639) do
     t.integer "rooms_count", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "position", null: false
     t.index ["house_id", "name"], name: "index_floors_on_house_id_and_name", unique: true
+    t.index ["house_id", "position"], name: "index_floors_on_house_id_and_position", unique: true
     t.index ["house_id"], name: "index_floors_on_house_id"
   end
 
@@ -127,6 +129,23 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_26_101639) do
     t.index ["house_id"], name: "index_services_on_house_id"
   end
 
+  create_table "tenant_stays", force: :cascade do |t|
+    t.bigint "tenant_id", null: false
+    t.bigint "rental_unit_id", null: false
+    t.datetime "check_in", null: false
+    t.datetime "check_out"
+    t.boolean "has_contract", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["rental_unit_id", "check_in"], name: "index_tenant_stays_on_rental_unit_id_and_check_in"
+    t.index ["rental_unit_id"], name: "index_tenant_stays_on_active_rental_unit", unique: true, where: "(check_out IS NULL)"
+    t.index ["rental_unit_id"], name: "index_tenant_stays_on_rental_unit_id"
+    t.index ["tenant_id", "check_in"], name: "index_tenant_stays_on_tenant_id_and_check_in"
+    t.index ["tenant_id"], name: "index_tenant_stays_on_active_tenant", unique: true, where: "(check_out IS NULL)"
+    t.index ["tenant_id"], name: "index_tenant_stays_on_tenant_id"
+    t.check_constraint "check_out IS NULL OR check_out >= check_in", name: "tenant_stays_valid_dates"
+  end
+
   create_table "tenants", force: :cascade do |t|
     t.integer "saved_posts_count", default: 0, null: false
   end
@@ -159,5 +178,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_26_101639) do
   add_foreign_key "room_services", "services", on_delete: :cascade
   add_foreign_key "rooms", "floors"
   add_foreign_key "services", "houses", on_delete: :cascade
+  add_foreign_key "tenant_stays", "rental_units"
+  add_foreign_key "tenant_stays", "tenants"
   add_foreign_key "tenants", "users", column: "id", on_delete: :cascade
 end

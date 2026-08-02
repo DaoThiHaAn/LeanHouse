@@ -4,6 +4,8 @@ class Floor < ApplicationRecord
 
   validates :name, :rooms_count, presence: true
   validates :rooms_count, numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 100 }
+  validates :position, numericality: { only_integer: true, greater_than_or_equal_to: 1, less_than_or_equal_to: 50 }
+  default_scope { order(:position) }
 
   # MODEL METHODS
 
@@ -14,5 +16,10 @@ class Floor < ApplicationRecord
   # Get maximum available slots of each floor
   def total_slots
     rooms.sum(:max_slots)
+  end
+
+  def can_delete?
+    # All rooms must be empty
+    !rooms.where("tenants_count > 0").exists?
   end
 end

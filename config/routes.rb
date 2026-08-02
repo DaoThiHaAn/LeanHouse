@@ -41,12 +41,27 @@ Rails.application.routes.draw do
 
     resources :posts
     resources :houses do
+      member do # act on 1 single record
+        patch :change_mode
+        get :check_delete
+      end
+
       resources :services
 
       resources :rooms do
-        collection do
+        collection do # act on the collection of records
           get :table_bed
           get :table
+        end
+      end
+
+      resources :floors, only: [ :update, :destroy, :new, :create ] do
+        member do
+          get :check_delete
+        end
+
+        collection do
+          patch :sort
         end
       end
 

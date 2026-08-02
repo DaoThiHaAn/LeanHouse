@@ -57,12 +57,12 @@
       <div class="form-group" data-controller="form">
           <%= form.label :name , class: "form-label d-flex justify-content-between" do%>
               <div>
-                  <%= t('form.house.name') +  ": "%>
-                  <span class="asterisk">*</span>
+                <%= t('form.house.name') +  ": "%>
+                <span class="asterisk">*</span>
               </div>
 
               <small class="counter-text">
-                  <span data-form-target="charCount">0</span>
+                <span data-form-target="charCount">0</span>
               </small>
           <% end %>
 
@@ -504,6 +504,6 @@
           data-loading-target="spinner">
           progress_activity
         </span>
-    </button>
+      </button>
   <%end%>
 </div>
