@@ -8,17 +8,61 @@ class LandlordPortal::FloorsController < LandlordPortal::BaseController
   end
 
   def create
+    @floor = @house.floors.new(floor_params)
+    requested_rooms = params[:floor][:rooms_count].to_i
+
+    Floor.transaction do
+      @floor.save!
+
+      if @house.room?
+        @floor.generate_rooms_in_room_mode!(
+          count: requested_rooms
+        )
+      end
+    end
+
+    redirect edit_landlord_house_path(@house), notice: t("success_messages.floor_created")
+
+  rescue ActiveRecord::RecordInvalid
+    render turbo_stream: [
+        turbo_stream.replace(
+          "new_floor_modal",
+          partial: "landlord_portal/floors/new",
+          locals: {
+            floor: @floor,
+            house: @house
+          }),
+        turbo_stream.update(
+          "flash",
+          partial: "layouts/shared_components/flash_message"
+        ) ],
+        status: :unprocessable_entity
   end
 
 
   def update
+    # The request comes from inside a turbo frame
+
     if @floor.update(floor_params)
-      redirect_to edit_landlord_house_path(@house),
-                  notice: t("success_messages.floor_updated")
+        flash.now[:notice] = t("success_messages.floor_updated")
     else
-      redirect_to edit_landlord_house_path(@house),
-                  alert: @floor.errors.full_messages.to_sentence
+        flash.now[:alert] = @floor.errors[:name].to_sentence
     end
+
+    render turbo_stream: [
+      turbo_stream.replace(
+        helpers.dom_id(@floor),
+        partial: "landlord_portal/floors/floor",
+        locals: {
+          floor: @floor,
+          house: @house,
+          index: @floor.position - 1
+        }),
+      turbo_stream.update(
+        "flash",
+        partial: "layouts/shared_components/flash_message"
+      ) ],
+    status: (@floor.errors.any? ? :unprocessable_entity : :ok)
   end
 
   def destroy

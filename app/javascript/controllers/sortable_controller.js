@@ -2,44 +2,63 @@ import { Controller } from "@hotwired/stimulus"
 import Sortable from "sortablejs"
 
 export default class extends Controller {
-
   static values = {
     url: String
   }
+  static targets = ["saveOrderBtn"]
 
   connect() {
     console.log("Sortable controller connected!")
 
-    Sortable.create(this.element, {
+    this.hasChanges = false
+
+    this.sortable = Sortable.create(this.element, {
       handle: ".drag-handle",
       animation: 150,
-      onEnd: this.update.bind(this)
+      onEnd: this.reordered.bind(this)
     })
   }
 
-  async update() {
-    const ids = [...this.element.children].map(e => e.dataset.id)
+  reordered() {
+    this.hasChanges = true
+    this.updateNumbers()
+    this.saveOrderBtnTarget.disabled = false 
+  }
 
-    // Send the new positions to the server via AJAX
+  updateNumbers() {
+    this.element.querySelectorAll(".floor-row").forEach((row, index) => {
+      row.querySelector(".fw-bold").textContent = `${index + 1}.`
+    })
+  }
+
+  async saveOrder() {
+    if (!this.hasChanges) return
+
+    const ids = [...this.element.querySelectorAll(".floor-row")].map(
+      e => e.dataset.id
+    )
+
     const response = await fetch(this.urlValue, {
       method: "PATCH",
       headers: {
-        "Accept": "text/vnd.turbo-stream.html",  // expect a turbo stream
+        "Accept": "text/vnd.turbo-stream.html", // request turbo stream
         "Content-Type": "application/json",
         "X-CSRF-Token":
           document.querySelector("[name=csrf-token]").content
       },
-
       body: JSON.stringify({
         floor_ids: ids
       })
     })
 
-    console.log("Updated order sent to server:", ids)
-
     if (response.ok) {
       Turbo.renderStreamMessage(await response.text())
+      this.hasChanges = false
+      this.saveOrderBtnTarget.disabled = true
     }
+  }
 
+  disconnect() {
+    this.sortable?.destroy()
   }
 }

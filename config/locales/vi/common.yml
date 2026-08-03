@@ -85,6 +85,7 @@ vi:
   general_info: "Thông tin chung"
   create: "Tạo mới"
   close: "Đóng"
+  save_order: "Lưu thứ tự"
   
 
   errors:

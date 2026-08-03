@@ -104,7 +104,7 @@ button {
 }
 
 /*  Override Bootstrap handles the pointer events */
-button.disabled {
+button.disabled, button:disabled {
   cursor: not-allowed !important;
   opacity: 60%;
 }

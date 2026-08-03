@@ -22,9 +22,9 @@
             </button>
           </div>
 
-          <div class="modal-body">
+          <div class="modal-body d-flex flex-column align-items-center">
             <%# Floor name %>
-            <div class="form-group mb-3" data-controller="form">
+            <div class="w-75 form-group mb-3" data-controller="form">
                 <%= f.label :name , class: "form-label d-flex justify-content-between" do%>
                     <div>
                       <%= t('form.floor.name') +  ": "%>
@@ -36,7 +36,7 @@
                     </small>
                 <% end %>
 
-                <%= f.text_field :name, minlength: 1, maxlength: 100, class: "mb-1 form-control #{invalid_class(@floor, :name)}", 
+                <%= f.text_field :name, minlength: 1, maxlength: 50, class: "mb-1 form-control #{invalid_class(@floor, :name)}", 
                     placeholder: t('form.floor.name_placeholder'), required: true, autofocus: true,
                     data: {
                         form_target: "input",
@@ -46,9 +46,13 @@
             </div>
 
             <%# Rooms count %>
-            <div class="form-group mb-3">
-              <%= f.label :rooms_count, t("form.floor.rooms_count") + ":", class: "form-label" %>
-              <%= f.number_field :rooms_count, required: true,
+            <div class="w-75 form-group mb-3">
+              <%= f.label :rooms_count, class: "form-label d-flex gap-1" do %>
+                  <%= t('form.floor.rooms_count') +  ": "%>
+                  <span class="asterisk">*</span>
+              <%end %>
+
+              <%= f.number_field :rooms_count, required: true, value: 1,
                     class: "form-control", placeholder: "1-100",
                     min: 1, max: 100, step: 1 %>
             </div>
@@ -60,9 +64,10 @@
               <%= t("cancel") %>
             </button>
 
-            <%= f.submit t("create"), 
+            <%= f.button :submit, 
                 class: "custom-primary-btn main-form d-flex align-items-center justify-content-center gap-2",
-                data: {loading_target: "button"} do%>
+                data: { loading_target: "button",
+                        turbo_frame: "_top" } do%>
                 <span data-loading-target="text"><%= t("create") %></span>
 
                 <span class="material-symbols-outlined spin d-none"

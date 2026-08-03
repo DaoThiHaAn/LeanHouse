@@ -31,7 +31,7 @@
 
       # For cancel button
       if turbo_frame_request?
-        render partial: "_general_info_form",
+        render partial: "general_info_form",
                 locals: { house: @house, provinces: @provinces, communes: @communes }
       end
     end

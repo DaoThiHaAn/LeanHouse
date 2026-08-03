@@ -37,7 +37,12 @@ vi:
               different_house: "Dịch vụ và phòng không thuộc cùng một tòa nhà!"
             fee:
               invalid_fee: "Phí dịch vụ phải là số nguyên dương!"
-      
+
+        floor:
+          attributes:
+            name:
+              taken: "Tầng %{value} đã tồn tại trong nhà này!"
+
       # Global messages
       messages:
         record_invalid: "Dữ liệu không hợp lệ!"
