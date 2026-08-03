@@ -1,0 +1,207 @@
+<%# Local varaible: house, provinces, communes %>
+
+<%= form_with model: house, url: landlord_houses_path( house), local: true, 
+        class:"house-form d-flex align-items-center flex-column gap-4" ,
+        data: { 
+          controller: "loading",
+          loading_text_value: t("saving") + "...",
+          action: "submit->loading#submit"
+        } do |f| %>
+
+  <!-- Name -->   
+  <div class="form-group" data-controller="form">
+      <%= f.label :name , class: "form-label d-flex justify-content-between",
+                  value: house.name do%>
+          <div>
+            <%= t('form.house.name') +  ": "%>
+            <span class="asterisk">*</span>
+          </div>
+
+          <small class="counter-text">
+            <span data-form-target="charCount">0</span>
+          </small>
+      <% end %>
+
+      <%= f.text_field :name, minlength: 1, maxlength: 100, class: "mb-1 form-control #{invalid_class( house, :name)}", 
+          placeholder: t('form.house.name_placeholder'), required: true,
+          data: {
+              form_target: "input",
+              action: "input->form#update"
+          } 
+      %>
+
+      <%= field_error(house, :name) %>
+  </div>
+
+  <!-- Address -->
+  <%# 2 dropdowns to show locations %>
+  <div class="form-group d-flex flex-column flex-wrap"
+      data-controller="location"
+      data-location-provinces-value="<%= json_escape  provinces.to_json %>"
+      data-location-communes-value="<%= json_escape  communes.to_json %>"
+      data-location-selected-province-value="<%=  house.address_l1 %>"
+      data-location-selected-commune-value="<%=  house.address_l2 %>">
+    <p class="form-label" >
+      <%= t('form.house.addr') + ": "%> 
+      <span class="asterisk">*</span>
+    </p>
+
+    <div class="d-flex gap-3 align-items-center">
+      <p class="text-nowrap flex-shrink-0">
+        <%= t("form.house.loc.vietnam") %>
+      </p>
+
+      <!-- Province -->
+      <%= f.select :address_l1,
+            [],
+            { prompt: t("form.house.loc.l1") },
+            class: "form-select", required: true,
+            data: {
+              location_target: "province",
+              action: "change->location#provinceChanged"
+            } %>
+
+      <!-- Commune -->
+      <%= f.select :address_l2,
+            [],
+            { prompt: t("form.house.loc.l2") },
+            class: "form-select", required: true,
+            disabled: true,
+            data: {
+              location_target: "commune"
+            } %>
+    </div>
+  </div>
+
+  <!-- Address detail-->
+  <div class="form-group" data-controller="form">
+      <%= f.label :address_l3, class: "form-label d-flex justify-content-between" do%>
+          <div>
+              <%= t('form.house.detailed_addr') +  ": "%>
+              <span class="asterisk">*</span>
+          </div>
+
+          <small class="counter-text">
+              <span data-form-target="charCount">0</span>
+          </small>
+      <% end %>
+
+      <%= f.text_field :address_l3, minlength: 2, maxlength: 100, class: "form-control", 
+          value:  house.address_l3,
+          placeholder: t('form.house.detailed_addr_placeholder'), required: true,
+          data: {
+              form_target: "input",
+              action: "input->form#update"
+          } 
+      %>
+  </div>
+
+  <!--Invoice creation date-->
+  <div class="form-group">
+    <div class="d-flex align-items-center gap-3 flex-wrap">
+      <%= f.label :inv_creation_date, class: "form-label m-0 flex-shrink-0 text-nowrap" do %>
+        <%= t("form.house.inv_creation_date") %>:
+        <span class="asterisk">*</span>
+      <% end %>
+
+      <%= f.number_field :inv_creation_date, in: 1..31, step: 1, required: true, 
+          placeholder: "1-31", value:  house.inv_creation_date,
+          class: "number form-control" 
+      %>
+    </div>
+    
+    <div class="field-info my-2 d-flex align-items-center gap-1">
+      <span class="material-symbols-outlined">info</span>
+      <small><%= t('form.house.inv_creation_date_info') %></small>
+    </div>
+  </div>
+
+  <!-- Regulation file -->
+  <div class="form-group" data-controller="file-input"
+        data-file-input-confirm-message-value="<%= t('form.house.remove_regulation_cf') %>">
+    <div class="d-flex align-items-center gap-3 flex-wrap">
+      <%= f.label :regulation_file, class: "form-label m-0 flex-shrink-0 text-nowrap" do %>
+        <%= t("form.house.regulation") %>:
+      <% end %>
+
+      <div class="flex-grow-1">
+
+        <% if  house.regulation_file.attached? %>
+          <div class="position-relative"
+              data-file-input-target="currentFile">
+
+            <div class="input-group w-100">
+              <label class="input-group-text">
+                <%= t("form.house.file_type") %>: .pdf
+              </label>
+
+              <%= link_to  house.regulation_file.filename,
+                    rails_blob_path( house.regulation_file, disposition: :inline),
+                    target: "_blank",
+                    class: "form-control text-decoration-none" %>
+            </div>
+
+            <button type="button"
+                    class="btn btn-outline-danger position-absolute top-50 end-0 me-1 translate-middle-y p-0 d-flex align-items-center justify-content-center"
+                    data-action="click->file-input#removeExistingFile">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          </div>
+        <% end %>
+
+        <div class="<%= 'd-none' if  house.regulation_file.attached? %>"
+            data-file-input-target="fileInput">
+
+          <div class="position-relative">
+            <div class="input-group w-100">
+              <label class="input-group-text">
+                <%= t("form.house.file_type") %>: .pdf
+              </label>
+
+              <%= f.file_field :regulation_file,
+                    class: "form-control",
+                    accept: ".pdf",
+                    data: {
+                      file_input_target: "input",
+                      action: "change->file-input#updateRemoveButton"
+                    } %>
+            </div>
+
+            <button type="button"
+                    class="btn btn-outline-danger position-absolute top-50 end-0 me-1 translate-middle-y d-none p-0 d-flex align-items-center justify-content-center"
+                    data-file-input-target="removeBtn"
+                    data-action="click->file-input#clearFile">
+
+              <span class="material-symbols-outlined">
+                close
+              </span>
+            </button>
+          </div>
+        </div>
+
+        <%= f.hidden_field :remove_regulation_file, value: 0,
+            data: { file_input_target: "removeExistingInput" } %>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex align-items-center gap-4">
+    <%# Cancel button %>
+    <%= link_to t("cancel"), edit_landlord_house_path(@house),
+        class: "d-block cancel-btn",
+        data: { turbo_frame: "general_info_form" } %>
+    
+    <%# Submit button %>
+    <%= f.button type: :submit,
+          class: "custom-primary-btn main-form d-flex align-items-center justify-content-center gap-2",
+          data: {loading_target: "button"} do%>
+          <span data-loading-target="text"><%= t("save") %></span>
+
+          <span class="material-symbols-outlined spin d-none"
+            data-loading-target="spinner">
+            progress_activity
+          </span>
+    <%end%>
+  </div>
+<%end%>

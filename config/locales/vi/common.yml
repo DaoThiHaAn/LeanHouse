@@ -84,6 +84,7 @@ vi:
   saving: "Đang lưu"
   general_info: "Thông tin chung"
   create: "Tạo mới"
+  close: "Đóng"
   
 
   errors:
@@ -116,6 +117,7 @@ vi:
     floor_created: "Tạo tầng thành công!"
     floor_updated: "Cập nhật thông tin tầng thành công!"
     floor_deleted: "Xóa tầng thành công!"
+    floor_sorted: "Sắp xếp tầng thành công!"
 
   page_titles:
     home: "Trang Chủ"

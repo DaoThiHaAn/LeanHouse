@@ -34,12 +34,21 @@ class LandlordPortal::FloorsController < LandlordPortal::BaseController
 
   def sort
     Floor.transaction do
+      offset = @house.floors.count + 100 # Bypass the unique constraint
+
+      @house.floors.update_all("position = position + #{offset}")
+
       params[:floor_ids].each_with_index do |id, index|
-        @house.floors.find(id).update_columns(position: index + 1)
+        @house.floors.where(id: id).update_all(position: index + 1)
       end
     end
 
-    head :ok
+    flash.now[:notice] = t("success_messages.floor_sorted")
+
+    render turbo_stream: turbo_stream.update(
+      "flash",
+      partial: "layouts/shared_components/flash_message"
+    )
   end
 
   private

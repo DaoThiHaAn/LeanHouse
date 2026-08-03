@@ -1,6 +1,8 @@
 module ApplicationHelper
   # Generate syntax for tooltip
-  def tooltip(pos, i18n_key, html = false)
+  def tooltip(pos, *i18n_keys, html: false)
+    title = i18n_keys.map { |key| t(key) }.join("<br><br>")
+
     if html
       options = {
         data: {
@@ -8,18 +10,20 @@ module ApplicationHelper
           bs_toggle: "tooltip",
           bs_custom_class: "custom-tooltip",
           bs_placement: pos,
-          bs_title: t(i18n_key)
+          bs_html: true,
+          bs_title: title
         }
       }
 
-       tag.attributes(options).to_s.html_safe
+      tag.attributes(options).to_s.html_safe
     else
       {
         controller: "tooltip",
         bs_toggle: "tooltip",
         bs_custom_class: "custom-tooltip",
         bs_placement: pos,
-        bs_title: t(i18n_key) # I18n
+        bs_html: true,
+        bs_title: title
       }
     end
   end
