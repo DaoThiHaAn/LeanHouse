@@ -157,19 +157,6 @@
     }
 }
 
-.floor-bar {
-    border-radius: 5px;
-    transition: border .1s ease;
-}
-
-.floor-bar:hover {
-    border: 1px solid var(--normal-text);
-}
-
-.floor-bar:active {
-    background-color: whitesmoke;
-}
-
 .title-toc {
     color: rgb(196, 196, 196);
     transition: scale .1s ease;
@@ -209,4 +196,12 @@
 
 .floor-bar-save span {
     color: var(--table-action-icon);
+}
+
+.pos {
+    width: 30px;
+}
+
+.floor-bar .icon:hover {
+    background-color: rgb(238, 238, 238);
 }

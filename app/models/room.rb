@@ -1,5 +1,5 @@
 class Room < ApplicationRecord
-  belongs_to :floor, inverse_of: :rooms, counter_cache: :rooms_count
+  belongs_to :floor, inverse_of: :rooms, counter_cache: :rooms_count, touch: true
   has_one :house, through: :floor
   has_one :rental_unit, as: :rentable, dependent: :destroy
   has_many :beds, inverse_of: :room, dependent: :destroy

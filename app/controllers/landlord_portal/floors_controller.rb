@@ -24,19 +24,7 @@ class LandlordPortal::FloorsController < LandlordPortal::BaseController
     redirect edit_landlord_house_path(@house), notice: t("success_messages.floor_created")
 
   rescue ActiveRecord::RecordInvalid
-    render turbo_stream: [
-        turbo_stream.replace(
-          "new_floor_modal",
-          partial: "landlord_portal/floors/new",
-          locals: {
-            floor: @floor,
-            house: @house
-          }),
-        turbo_stream.update(
-          "flash",
-          partial: "layouts/shared_components/flash_message"
-        ) ],
-        status: :unprocessable_entity
+    render :new, status: :unprocessable_entity
   end
 
 
@@ -44,25 +32,34 @@ class LandlordPortal::FloorsController < LandlordPortal::BaseController
     # The request comes from inside a turbo frame
 
     if @floor.update(floor_params)
-        flash.now[:notice] = t("success_messages.floor_updated")
-    else
-        flash.now[:alert] = @floor.errors[:name].to_sentence
-    end
+      flash.now[:notice] = t("success_messages.floor_updated")
 
-    render turbo_stream: [
-      turbo_stream.replace(
-        helpers.dom_id(@floor),
-        partial: "landlord_portal/floors/floor",
-        locals: {
-          floor: @floor,
-          house: @house,
-          index: @floor.position - 1
-        }),
-      turbo_stream.update(
-        "flash",
-        partial: "layouts/shared_components/flash_message"
-      ) ],
-    status: (@floor.errors.any? ? :unprocessable_entity : :ok)
+      render turbo_stream: [
+        turbo_stream.replace(
+          helpers.dom_id(@floor),
+          partial: "landlord_portal/floors/floor",
+          locals: {
+            floor: @floor,
+            house: @house,
+            index: @floor.position - 1
+          }),
+        turbo_stream.update(
+          "flash",
+          partial: "layouts/shared_components/flash_message"
+        ) ],
+      status: :ok
+    else
+      render turbo_stream:
+              turbo_stream.replace(
+                helpers.dom_id(@floor),
+                partial: "landlord_portal/floors/floor",
+                locals: {
+                  floor: @floor,
+                  house: @house,
+                  index: @floor.position - 1
+                }),
+              stautus: :unprocessable_entity
+    end
   end
 
   def destroy

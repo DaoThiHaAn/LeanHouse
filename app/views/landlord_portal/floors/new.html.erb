@@ -9,7 +9,7 @@
         <%= form_with model: [:landlord, @house, @floor],
                   data: { 
                       controller: "loading",
-                      loading_text_value: t("creating") + "...",
+                      loading_text_value: t("saving") + "...",
                       action: "submit->loading#submit"
                     }  do |f| %>
           <div class="modal-header">
@@ -23,6 +23,11 @@
           </div>
 
           <div class="modal-body d-flex flex-column align-items-center">
+            <%= field_info(
+              [ t("form.floor.create_info_1"),
+              t("form.floor.create_info_2") ],
+              extra_classes: "mb-3 gap-2")  %>
+
             <%# Floor name %>
             <div class="w-75 form-group mb-3" data-controller="form">
                 <%= f.label :name , class: "form-label d-flex justify-content-between" do%>
@@ -43,6 +48,8 @@
                         action: "input->form#update"
                     } 
                 %>
+
+                <%= field_error(@floor, :name)%>
             </div>
 
             <%# Rooms count %>
@@ -76,9 +83,7 @@
                 </span>
             <%end%>
           </div>
-
         <% end %>
-
       </div>
     </div>
   </div>

@@ -45,7 +45,10 @@ vi:
 
       # Global messages
       messages:
-        record_invalid: "Dữ liệu không hợp lệ!"
+        blank: "Không được để trống!"
+        # taken: "Đã tồn tại!"
+        not_a_number: "Phải là một số!"
+        greater_than: "Phải lớn hơn %{count}!"
 
   # For enum values
   enums:

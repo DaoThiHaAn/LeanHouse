@@ -1,8 +1,10 @@
 class Floor < ApplicationRecord
-  belongs_to :house, inverse_of: :floors, counter_cache: true
+  belongs_to :house, inverse_of: :floors, counter_cache: true, touch: true
   has_many :rooms, inverse_of: :floor, dependent: :destroy
 
   before_validation :normalize_name
+  before_validation :assign_position, on: :create
+
 
   validates :name, :rooms_count, presence: true
   validates :rooms_count, numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 100 }
@@ -50,6 +52,15 @@ class Floor < ApplicationRecord
           deposit: deposit
         )
       end
+
+      house.touch # Update house's updated_at
     end
+  end
+
+  def assign_position
+    return if position.present?
+
+    # In manual creation, the position is at the highest order
+    self.position = house.floors_count + 1
   end
 end

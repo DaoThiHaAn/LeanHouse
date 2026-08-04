@@ -26,7 +26,7 @@ export default class extends Controller {
   }
 
   updateNumbers() {
-    this.element.querySelectorAll(".floor-row").forEach((row, index) => {
+    this.element.querySelectorAll(".floor-bar").forEach((row, index) => {
       row.querySelector(".fw-bold").textContent = `${index + 1}.`
     })
   }
@@ -34,7 +34,7 @@ export default class extends Controller {
   async saveOrder() {
     if (!this.hasChanges) return
 
-    const ids = [...this.element.querySelectorAll(".floor-row")].map(
+    const ids = [...this.element.querySelectorAll(".floor-bar")].map(
       e => e.dataset.id
     )
 

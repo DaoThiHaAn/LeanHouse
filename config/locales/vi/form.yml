@@ -106,7 +106,8 @@ vi:
       add: "Thêm tầng"
       drag: "Nhấn giữ để kéo thả sắp xếp lại thứ tự các tầng"
       order: "Thứ tự tầng: Từ thấp đến cao"
-      drag_info: "Luư ý: Sau khi kéo thả 1 tầng"
+      create_info_1: "Tầng mới sẽ được thêm vào trên cùng của tòa nhà."
+      create_info_2: "Tất cả tầng trong cùng 1 tòa nhà phải có tên khác nhau."
 
     room:
       self: "Phòng"

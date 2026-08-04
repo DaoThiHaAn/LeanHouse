@@ -47,10 +47,7 @@
               </div>
           </div>
 
-          <%# Error display %>
-          <div class="invalid-feedback <%= @form.errors[:mode].any? ? 'd-block' : '' %>">
-            <%= @form.errors[:mode].to_sentence if @form.errors[:mode].any? %>
-          </div>
+          <%= field_error(@form, :role) %>
       </div>
 
       <!-- Name -->   
@@ -184,10 +181,9 @@
             class: "number form-control" 
           %>
 
-          <div class="field-info mb-2 d-flex align-items-center gap-1">
-            <span class="material-symbols-outlined">info</span>
-            <small><%= t('form.house.room_per_num_info') %></small>
-          </div>
+          <%= field_info(
+              [t('form.house.room_per_num_info')],
+              extra_classes: "mb-2 gap-1")%>
       </div>
 
       <!-- Room general info -->
@@ -197,10 +193,9 @@
           <span class="asterisk">*</span>
         </p>
 
-        <div class="field-info d-flex align-items-center gap-2">
-          <span class="material-symbols-outlined">info</span>
-          <small><%= simple_format(t('form.house.detailed_room_info')) %></small>
-        </div>
+        <%= field_info(
+            [ simple_format(t('form.house.detailed_room_info')) ],
+              extra_classes: "gap-2") %>
       </div>
       
       <div class="room form-group d-flex flex-column flex-xl-row justify-content-between align-items-center gap-3 flex-wrap">
@@ -261,11 +256,10 @@
               class: "number form-control" 
           %>
         </div>
-        
-        <div class="field-info my-2 d-flex align-items-center gap-1">
-          <span class="material-symbols-outlined">info</span>
-          <small><%= t('form.house.inv_creation_date_info') %></small>
-        </div>
+
+        <%= field_info(
+            [ t("form.house.inv_creation_date_info") ],
+              extra_classes: "mt-3 mb-2 gap-1") %>
       </div>
   
       <!--File (optional) -->
@@ -291,11 +285,10 @@
             </button>
           </div>
         </div>
-      
-        <div class="field-info my-2 d-flex align-items-center gap-1">
-          <span class="material-symbols-outlined">info</span>
-          <small><%= t('form.house.regulation_num')+": 1"%></small>
-        </div>
+
+        <%=field_info(
+          [t('form.house.regulation_num')+": 1"],
+          extra_classes: "my-2 gap-1")%>
       </div>
 
       <!-- Services (optional) -->
@@ -305,12 +298,9 @@
             <%= t("form.service.applied_sv") %>:
           <% end %>
 
-          <div class="field-info my-2 d-flex align-items-center gap-1">
-            <span class="material-symbols-outlined">info</span>
-            <small><%= t('form.service.info_1') %></small>
-            <small><%= t('form.service.info_2') %></small>
-
-          </div>
+          <%= field_info(
+            [ t("form.service.info_1"), t("form.service.info_2") ],
+              extra_classes: "my-2 gap-1") %>
         </div>
 
         <div class="d-flex flex-column gap-3 mt-2">

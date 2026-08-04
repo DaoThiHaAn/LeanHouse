@@ -1,39 +1,48 @@
 <%# Local variables: floor, house, index  %>
 
 <%= turbo_frame_tag dom_id(floor) do %>
-<div class="border rounded p-3 mb-3 d-flex align-items-center gap-3 floor-row"
-  data-id="<%= floor.id %>">
+<div class="border rounded floor-bar p-3 mb-3 d-flex flex-column"
+      data-id="<%= floor.id %>">
+  <div class="d-flex align-items-center gap-2">
+    <!-- Position -->
+    <div class="fw-bold text-secondary pos">
+      <%= index + 1 %>.
+    </div>
 
-  <!-- Position -->
-  <div class="fw-bold text-secondary" style="width:40px;">
-    <%= index + 1 %>.
-  </div>
+    <!-- Drag handle -->
+    <button class="rounded-circle p-1">
+      <span class="material-symbols-outlined drag-handle" title="<%=t("form.floor.drag")%>">drag_indicator</span>
+    </button>
 
-  <!-- Drag handle -->
-  <span class="material-symbols-outlined drag-handle" title="<%=t("form.floor.drag")%>">drag_indicator</span>
-
-  <!-- Floor name -->
+    <!-- Floor name -->
     <%= form_with model: floor,
                   url: landlord_house_floor_path(house, floor),
                   method: :patch,
-                  class: " d-flex align-items-center gap-3 flex-grow-1" do |f| %>
-      <%= f.text_field :name, class: "form-control", placeholder: t("form.floor.name_placeholder"),
-            maxlength: 50, required: true,
-            id: "floor_#{floor.id}_name" %>
+                  class: "d-flex align-items-center flex-grow-1 gap-2 position-relative" do |f| %>
 
-      <%= f.button type: :submit, class: "floor-bar-save p-1",
-                  title: t("save")  do %>
-        <span class="material-symbols-filled fs-4">save</span>
-      <%end%>
+        <%= f.text_field :name, placeholder: t("form.floor.name_placeholder"),
+              class: "form-control #{invalid_class(floor, :name)}",
+              maxlength: 50, required: true,
+              id: "floor_#{floor.id}_name" %>
+        
+        <%# Save btn %>
+        <%= f.button type: :submit, class: "icon rounded-circle floor-bar-save p-1",
+                    title: t("save")  do %>
+          <span class="material-symbols-filled fs-4">save</span>
+        <%end%>
     <% end %>
 
-  <!-- Delete Floor -->
-  <%= link_to check_delete_landlord_house_floor_path(house, floor),
-              data: { turbo_frame: "floor_delete_modal" },
-              title: t("delete"),
-              class: "p-1" do %>
-    <span class="material-symbols-filled text-danger fs-4">delete</span>
-  <% end %>
+    <!-- Delete Floor -->
+    <%= link_to check_delete_landlord_house_floor_path(house, floor),
+                data: { turbo_frame: "floor_delete_modal" },
+                title: t("delete"),
+                class: "icon p-1 d-block rounded-circle" do %>
+      <span class="material-symbols-filled text-danger fs-4">delete</span>
+    <% end %>
+  </div>
 
+  <div class="mx-auto w-50">
+    <%= field_error(floor, :name) %>
+  </div>
 </div>
 <% end %>

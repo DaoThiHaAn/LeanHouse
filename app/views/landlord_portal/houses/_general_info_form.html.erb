@@ -1,7 +1,7 @@
 <%# Local varaible: house, provinces, communes %>
 
 <%= form_with model: house, url: landlord_houses_path( house), local: true, 
-        class:"house-form d-flex align-items-center flex-column gap-4" ,
+        class:"px-5 d-flex align-items-center flex-column gap-4" ,
         data: { 
           controller: "loading",
           loading_text_value: t("saving") + "...",
@@ -109,11 +109,10 @@
           class: "number form-control" 
       %>
     </div>
-    
-    <div class="field-info my-2 d-flex align-items-center gap-1">
-      <span class="material-symbols-outlined">info</span>
-      <small><%= t('form.house.inv_creation_date_info') %></small>
-    </div>
+
+    <%= field_info(
+        [ t("form.house.inv_creation_date_info") ],
+          extra_classes: "mt-3 gap-2") %>
   </div>
 
   <!-- Regulation file -->
