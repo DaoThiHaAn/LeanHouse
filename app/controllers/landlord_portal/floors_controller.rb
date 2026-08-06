@@ -1,13 +1,17 @@
 class LandlordPortal::FloorsController < LandlordPortal::BaseController
   load_and_authorize_resource :floor, through: :house, except: %i[new create]
   before_action :authorize_house_for_floor_creation, only: %i[new create]
+  before_action :check_max_floors, only: [ :new ]
 
+  MAX_FLOORS = 50
 
   def new
     @floor = Floor.new
   end
 
   def create
+    # Request comes from a turbo frame
+
     @floor = @house.floors.new(floor_params)
     requested_rooms = params[:floor][:rooms_count].to_i
 
@@ -21,7 +25,28 @@ class LandlordPortal::FloorsController < LandlordPortal::BaseController
       end
     end
 
-    redirect edit_landlord_house_path(@house), notice: t("success_messages.floor_created")
+    flash.now[:notice] = t("success_messages.floor_created")
+    render turbo_stream: [
+        turbo_stream.replace(
+          "floor_list",
+          partial: "landlord_portal/floors/floor_list",
+          locals: {
+            floors: @house.floors,
+            house: @house
+          }),
+        turbo_stream.update(
+          "flash",
+          partial: "layouts/shared_components/flash_message"
+        ),
+        # Close the modal of new form
+        turbo_stream.append(
+            "events",
+            partial: "layouts/shared_components/event",
+            locals: {
+              event: "close-modal"
+            }
+          ) ],
+      status: :ok
 
   rescue ActiveRecord::RecordInvalid
     render :new, status: :unprocessable_entity
@@ -58,7 +83,7 @@ class LandlordPortal::FloorsController < LandlordPortal::BaseController
                   house: @house,
                   index: @floor.position - 1
                 }),
-              stautus: :unprocessable_entity
+              status: :unprocessable_entity
     end
   end
 
@@ -101,5 +126,15 @@ class LandlordPortal::FloorsController < LandlordPortal::BaseController
   def authorize_house_for_floor_creation
     authorize! :update, @house
     authorize! :create, Floor
+  end
+
+  def check_max_floors
+    return if @house.floors_count < MAX_FLOORS
+    flash.now[:alert] = t("form.floor.reach_max")
+
+    render turbo_stream: turbo_stream.update(
+          "flash",
+          partial: "layouts/shared_components/flash_message"
+        )
   end
 end

@@ -33,6 +33,13 @@ class HousesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "edit page disables turbo prefetch for modal links" do
+    get edit_house_url(@house)
+
+    assert_response :success
+    assert_select "a[href='#{new_landlord_house_floor_path(@house)}'][data-turbo-prefetch='false']"
+  end
+
   test "should update house" do
     patch house_url(@house), params: { house: {} }
     assert_redirected_to house_url(@house)

@@ -108,6 +108,8 @@ vi:
       order: "Thứ tự tầng: Từ thấp đến cao"
       create_info_1: "Tầng mới sẽ được thêm vào trên cùng của tòa nhà."
       create_info_2: "Tất cả tầng trong cùng 1 tòa nhà phải có tên khác nhau."
+      create_info_3: "1 toà nhà chỉ có tối đa %{num} tầng."
+      reach_max: "Đã đạt tối đa 50 tầng! Không thể thêm tầng mới!"
 
     room:
       self: "Phòng"

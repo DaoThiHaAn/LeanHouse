@@ -79,7 +79,7 @@
           <%# Add floor button %>
           <%= link_to new_landlord_house_floor_path(@house),
                       class: "main-btn d-flex align-items-center gap-2 px-2 py-1",
-                      data: { turbo_frame: "new_floor_modal" } do %>
+                      data: { turbo_frame: "new_floor_modal", turbo_prefetch: false } do %>
             <span class="material-symbols-outlined">add</span>
             <%= t("form.floor.add") %>
           <% end %>
@@ -92,7 +92,8 @@
 
         <%= field_info(
             [ t("form.floor.create_info_1"),
-            t("form.floor.create_info_2") ],
+            t("form.floor.create_info_2"),
+            t("form.floor.create_info_3", num: 50)  ],
             extra_classes: "my-3 gap-2")  %>
 
         <div data-controller="sortable"
@@ -100,12 +101,14 @@
           class="px-5">
 
           <%# Floor items %>
-          <% @floors.each_with_index do |floor, index| %>
-            <%= render "landlord_portal/floors/floor",
-                  floor: floor,
-                  house: @house,
-                  index: index %>
-          <% end %>
+          <%= turbo_frame_tag "floor_list" do %>
+            <% @floors.each_with_index do |floor, index| %>
+              <%= render "landlord_portal/floors/floor",
+                    floor: floor,
+                    house: @house,
+                    index: index %>
+            <% end %>
+          <%end%>
 
           <%# Save order button %>
           <div class="d-flex justify-content-center mt-4">
@@ -129,3 +132,6 @@
 <%= turbo_frame_tag "house_delete_modal" %>
 
 <%= turbo_frame_tag "new_floor_modal" %>
+
+<%# To close the modal automatically %>
+<div id="events"></div>

@@ -1,0 +1,10 @@
+<%# Local variables: house, floors %>
+
+<%= turbo_frame_tag "floor_list" do %>
+  <% floors.each_with_index do |floor, index| %>
+    <%= render "landlord_portal/floors/floor",
+          floor: floor,
+          house: house,
+          index: index %>
+  <% end %>
+<%end%>

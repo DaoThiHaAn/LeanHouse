@@ -1,0 +1,6 @@
+<%# Local variables: event %>
+<div
+  data-controller="event"
+  data-event-name-value="<%= event %>"
+  data-event-detail-value="<%= (local_assigns[:detail] || {}).to_json %>">
+</div>

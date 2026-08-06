@@ -25,7 +25,8 @@
           <div class="modal-body d-flex flex-column align-items-center">
             <%= field_info(
               [ t("form.floor.create_info_1"),
-              t("form.floor.create_info_2") ],
+              t("form.floor.create_info_2"),
+              t("form.floor.create_info_3", num: 50) ],
               extra_classes: "mb-3 gap-2")  %>
 
             <%# Floor name %>
@@ -73,8 +74,7 @@
 
             <%= f.button :submit, 
                 class: "custom-primary-btn main-form d-flex align-items-center justify-content-center gap-2",
-                data: { loading_target: "button",
-                        turbo_frame: "_top" } do%>
+                data: { loading_target: "button" } do%>
                 <span data-loading-target="text"><%= t("create") %></span>
 
                 <span class="material-symbols-outlined spin d-none"
