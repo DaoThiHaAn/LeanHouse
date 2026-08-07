@@ -26,17 +26,34 @@
 
     <!-- TODO: Notification -->
     <div class="dropdown notification-dropdown">
-        <button class="dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <div class="position-relative">
-                <span class="material-symbols-filled">notifications</span>
-                <div class="notification-badge"><%=noti_count(3)%></div>
-            </div>
-        </button>
+			<button class="dropdown-toggle" type="button" data-bs-toggle="dropdown"
+							aria-expanded="false" title="<%= t("click_open")%>">
+				<div class="position-relative">
+					<span class="noti material-symbols-filled">notifications</span>
+					<div class="notification-badge"><%=noti_count(3)%></div>
+				</div>
+			</button>
 
 
-        <ul class="dropdown-menu dropdown-menu-end">
-            <li><a class="dropdown-item" href="#">Notification 1</a></li>
-            <li><a class="dropdown-item" href="#">Notification 2</a></li>
+        <ul class="dropdown-menu dropdown-menu-end p-0">
+					<%# Mark as read %>
+					<li class="py-2 px-3 d-flex justify-content-end">
+						<%= link_to "#", class: "text-danger fw-medium fst-italic mark-as-read" do %>
+							<span class="text-danger material-symbols-outlined">done_all</span>
+							<%= t("form.noti.mark_as_read") %>
+						<% end %>
+					</li>
+					<li class="read py-2 px-3 d-flex flex-column gap-2">
+						<p class="fw-semibold text-clamp-1"> <%= "NOTIFICATION TITLE" %></p>
+						<p class="noti-content text-clamp-2"> <%= "Detiai klsf fklf fnkls kjsflsk klfsjfdl fnksf kjsfnsk laf alkfalkf flf" %></p>
+						<div class="noti-footer d-flex justify-content-between text-muted">
+							<p><%= "11:00:23 1/12/2025" %></p>
+							<p><%= "Xem chi tiet" %></p>
+						</div>
+					</li>
+					<li>
+						<a class="dropdown-item" href="#">Notification 2</a>
+					</li>
         </ul>
     </div>
 

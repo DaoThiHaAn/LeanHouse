@@ -1,7 +1,5 @@
 vi:
   form:
-    save: "Lưu"
-
     profile:
       role: "Bạn là"
       title: "Đăng Ký Tài Khoản Mới"
@@ -170,3 +168,7 @@ vi:
 
     file:
       view: "Xem tệp"
+
+    noti:
+     self: "Thông báo"
+     mark_as_read: "Đánh dấu tất cả đã đọc"

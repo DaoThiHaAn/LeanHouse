@@ -16,9 +16,8 @@
     def show
       # Render a modal
       @floors = @house.floors.select(:id, :house_id, :name, :rooms_count)
-      @services = @house.services.select(:id, :house_id, :name, :note)
+      @services = @house.services.includes(:service_variants)
     end
-
 
     def new
       # Form model

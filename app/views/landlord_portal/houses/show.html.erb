@@ -120,12 +120,12 @@
                     </tr>
 
                     <!-- Service variants -->
-                    <% service.all_variants.each do |fee, unit, is_real_time| %>
+                    <% service.service_variants.each do |variant| %>
                       <tr>
-                        <td><%= number_with_delimiter(fee, delimiter: ",") %></td>
-                        <td><%= t("enums.room_service.unit.#{unit}") %></td>
+                        <td><%= number_with_delimiter(variant.fee, delimiter: ",") %></td>
+                        <td><%= t("enums.room_service.unit.#{variant.unit}") %></td>
                         <td class="text-center align-middle">
-                          <% if is_real_time %>
+                          <% if variant.is_real_time %>
                             <span class="material-symbols-outlined d-inline-flex">
                               check_circle
                             </span>
@@ -133,7 +133,6 @@
                         </td>
                       </tr>
                     <% end %>
-
                   <% end %>
                 </tbody>
               </table>

@@ -26,7 +26,7 @@ class LandlordPortal::RoomsController < LandlordPortal::BaseController
   def new
     @room = Room.new
     @floors = @house.floors.available
-    @services = @house.services.includes(:room_services)
+    @services = @house.services.includes(:service_variants)
   end
 
   def create
@@ -34,7 +34,7 @@ class LandlordPortal::RoomsController < LandlordPortal::BaseController
 
   def show
     @floor = @room.floor
-    @room_services = @room.room_services
+  @room_services = @room.room_services.includes(service_variant: :service)
 
     if @house.bed?
       render "show_bedmode"

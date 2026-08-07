@@ -4,7 +4,8 @@ class Room < ApplicationRecord
   has_one :rental_unit, as: :rentable, dependent: :destroy
   has_many :beds, inverse_of: :room, dependent: :destroy
   has_many :room_services, inverse_of: :room, dependent: :destroy
-  has_many :services, through: :room_services, inverse_of: :rooms
+  has_many :service_variants, through: :room_services, inverse_of: :rooms
+  has_many :services, through: :service_variants, inverse_of: :rooms
 
   validates :name, :max_slots, :tenants_count, :area, presence: true
   validates :name, uniqueness: {

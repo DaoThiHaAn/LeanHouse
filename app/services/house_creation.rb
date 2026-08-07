@@ -1,12 +1,12 @@
 # Create a House based on the HouseCreationForm form model
 
 class HouseCreation
-  SERVICES = [
-    { key: :elec,    translation: "form.service.elec_money" },
-    { key: :water,   translation: "form.service.water_money" },
-    { key: :wifi,    translation: "form.service.wifi_money" },
-    { key: :parking, translation: "form.service.parking_money" }
-  ].freeze
+  SERVICES = {
+    elec: "form.service.elec_money",
+    water: "form.service.water_money",
+    wifi: "form.service.wifi_money",
+    parking: "form.service.parking_money"
+  }.freeze
 
 
   def initialize(landlord:, form:)
@@ -17,17 +17,12 @@ class HouseCreation
   def call
     ActiveRecord::Base.transaction do
       house = create_house
-      bed_mode = house.bed?
 
       # create floors, rooms, beds, and services based on the created house
-      floors = create_floors(house)
-      rooms = create_rooms(floors, bed_mode)
-      if bed_mode
-        create_beds(rooms)
-      end
-      create_services(house, rooms)
+      create_rental_units(house)
+      create_services(house)
 
-      return house
+      house
     end
   end
 
@@ -50,110 +45,78 @@ class HouseCreation
     house
   end
 
-  def create_floors(house)
-    floor_name = []
+  def build_floor_names
+    floor_names = []
     total_floors = form.floors_count.to_i
 
-    # build floor name array
     if form.has_ground_floor == "1"
-      floor_name << "Trệt"
+      floor_names << "Trệt"
       total_floors -= 1
     end
 
     total_floors.times do |i|
-      floor_name << "#{i + 1}"
+      floor_names << "#{i + 1}"
     end
 
+    floor_names
+  end
+
+  def create_rental_units(house)
+    floor_names =  build_floor_names
+    mode = house.bed? ? :bed : :room
+
     # create floors -> auto update floors_count in house
-    floors = []
-    floor_name.each do |name|
-      floors << house.floors.create!(
+    floor_names.each do |name|
+      floor =  house.floors.create!(
         name: name,
         rooms_count: 0
       )
-    end
-
-    floors
-  end
-
-  def create_rooms(floors, bed_mode)
-    rooms = []
-    max_slots = bed_mode ? 0 : form.capacity.to_i # creating beds auto update the counter cache
-
-    floors.each do |floor|
-      # Each floor has the same number of rooms
-      form.rooms_per_floor.to_i.times do |i|
-        new_room = floor.rooms.create!(
-          name: "#{i + 1}",
-          max_slots: max_slots,
-          tenants_count: 0,
-          area: form.area.to_f
-        )
-
-        unless bed_mode
-          create_rental_unit(new_room)
-        end
-
-        rooms << new_room
-      end
-    end
-
-    rooms
-  end
-
-  def create_beds(rooms)
-    max_slots = form.capacity.to_i
-
-    rooms.each do |room|
-      max_slots.times do |i|
-        bed = room.beds.create!( # auto update tenants_count in room
-          name: "#{i + 1}",
-          is_available: true
-        )
-
-        create_rental_unit(bed)
-      end
+      floor.generate_rooms!(
+        mode: mode,
+        count: form.rooms_per_floor.to_i,
+        max_slots: form.capacity.to_i,
+        rent: form.rent,
+        deposit: form.deposit,
+        area: form.area.to_f
+      )
     end
   end
 
-  def create_services(house, rooms)
+  def create_services(house)
     # Services for the whole house and are applied for all rooms
 
     # House services
-    house_services = {}
-    SERVICES.each do |service|
-      next unless form.public_send("#{service[:key]}_money") == "1"
+    variants = []
 
-      house_services[service[:key]] = house.services.create!(
-        name: I18n.t(service[:translation])
+    SERVICES.each do |key, translation|
+      next unless form.public_send("#{key}_money") == "1"
+
+      parent_service = house.services.create!(
+        name: I18n.t(translation)
       )
+
+      variant = parent_service.service_variants.create!(
+        fee: form.public_send("#{key}_price"),
+        unit: form.public_send("#{key}_unit"),
+        is_real_time: form.public_send("#{key}_real_time"))
+
+      variants << variant
     end
+
+    return if variants.empty?
 
     # Room services
-    rooms.each do |room|
-      SERVICES.each do |service|
-        key = service[:key]
-        next unless form.public_send("#{key}_money").present?
+    now = Time.current
 
-        # Look up the parent service created in step 1
-        parent_service = house_services[key]
-        next unless parent_service.present?
+    rows = house.rooms.flat_map do |room|
+            variants.map do |variant| {
+              room_id: room.id,
+              service_variant_id: variant.id,
+              created_at: now,
+              updated_at: now }
+            end
+          end
 
-        room.room_services.create!(
-          service: parent_service,
-          fee: form.public_send("#{key}_price"),
-          unit: form.public_send("#{key}_unit"),
-          is_real_time: form.public_send("#{key}_real_time")
-        )
-      end
-    end
-  end
-
-  def create_rental_unit(rentable_object)
-    RentalUnit.create!(
-      rentable: rentable_object, # Rails automatically extracts rentable_type & rentable_id
-      rent: form.rent,
-      deposit: form.deposit
-    )
+    RoomService.insert_all!(rows) # execute all SQL at once
   end
 end

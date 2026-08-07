@@ -20,23 +20,24 @@
 
           <tbody>
             <% room_services.each do |r_service, index| 
-              h_service = r_service.service
+              variant = r_service.service_variant
+              service = variant.service
             %>
               <tr class="colspan">
                 <td colspan="100" >
-                    <p class="fw-semibold"><%= h_service.name %></p>
-                    <% if h_service.note.present? %>
+                    <p class="fw-semibold"><%= service.name %></p>
+                    <% if service.note.present? %>
                       <%= image_tag "note.png", alt: "Note icon", class: "note-icon" %>
-                      <span class="text-secondary fw-light"><%=h_service.note%></span>
+                      <span class="text-secondary fw-light"><%=service.note%></span>
                     <%end%>
                 </td>
               </tr>
 
               <tr>
-                <td><%= number_with_delimiter(r_service.fee, delimiter: ",") %></td>
-                <td><%= t("enums.room_service.unit.#{r_service.unit}") %></td>
+                <td><%= number_with_delimiter(variant.fee, delimiter: ",") %></td>
+                <td><%= t("enums.room_service.unit.#{variant.unit}") %></td>
                 <td class="text-center align-middle">
-                  <% if r_service.is_real_time %>
+                  <% if variant.is_real_time %>
                   <span class="material-symbols-outlined d-inline-flex">check_circle</span>
                   <%end%>
                 </td>

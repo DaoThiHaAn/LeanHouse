@@ -1,50 +1,24 @@
 class RoomService < ApplicationRecord
-  self.primary_key = [ :service_id, :room_id ]
-
-  belongs_to :room, inverse_of: :room_services
-  belongs_to :service, inverse_of: :room_services
+  belongs_to :room, inverse_of: :room_services, touch: true
+  belongs_to :service_variant, inverse_of: :room_services, touch: true
   has_one :house, through: :room
+  has_one :service, through: :service_variant
 
-  enum :unit, {
-    per_person: "person",
-    per_room: "room",
-    per_month: "month",
-    per_item: "item",
-    per_hour: "hour",
-    per_use: "use",
-    per_kwh: "kWh",
-    per_m3: "m3"
-  }
+  validates :room_id, uniqueness: { scope: :service_variant_id, message: :already_applied }
 
-  validates :fee, :unit, presence: true
-  validates :fee, numericality: { only_integer: true, greater_than: 0 }
-  validates :unit, presence: true, inclusion: { in: units.keys }
-  validate :room_and_service_must_belong_to_same_house
-
-
-  # Used in views to display the unit options in a select dropdown
-  def self.unit_options
-    units.keys.map do |unit|
-      [
-        I18n.t("enums.room_service.unit.#{unit}"),
-        unit
-      ]
-    end
-  end
-
+  validate :room_and_service_variant_must_belong_to_same_house
 
   private
 
-  def room_and_service_must_belong_to_same_house
-    cur_room = self.room
-    cur_service = self.service
-    return unless cur_room && cur_service  # return when either room or service is nil
+  def room_and_service_variant_must_belong_to_same_house
+    return unless room && service_variant
 
-    house_id_of_room = cur_room.floor&.house_id # in validation case, can't
-    house_id_of_service = cur_service.house_id
+    room_house_id = room.floor&.house_id
+    service_house_id = service_variant.service&.house_id
 
-    if house_id_of_room != house_id_of_service
-      errors.add(:base, :different_house)
-    end
+    return if room_house_id.nil? || service_house_id.nil?
+    return if room_house_id == service_house_id
+
+    errors.add(:base, :different_house)
   end
 end

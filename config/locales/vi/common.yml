@@ -71,6 +71,7 @@ vi:
   last_updated: "Cập nhật lần cuối lúc"
   none: "Không có"
   view_detail: "Xem chi tiết"
+  view_all: "Xem tất cả"
   edit: "Chỉnh sửa"
   delete: "Xóa"
   total: "Tổng"
@@ -86,6 +87,7 @@ vi:
   create: "Tạo mới"
   close: "Đóng"
   save_order: "Lưu thứ tự"
+  click_open: "Nhấp để mở thông báo"
   
 
   errors:

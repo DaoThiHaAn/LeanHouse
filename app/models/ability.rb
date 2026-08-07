@@ -51,7 +51,7 @@ class Ability
     # 2-level relations
     can :manage, [ Floor, Service ], house: { landlord_id: id }
     # 3-level relations
-    can :manage, [ Room, Bed, RoomService ], house: { landlord_id: id }
+    can :manage, [ Room, Bed, ServiceVariant, RoomService ], house: { landlord_id: id }
 
     # can :manage, Floor, house: { landlord_id: id }
     # can :manage, Room, house: { landlord_id: id }

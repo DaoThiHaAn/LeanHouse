@@ -42,6 +42,7 @@ class Floor < ApplicationRecord
     self.name = name&.squish
   end
 
+  # Variables: mode: [:room, :bed]
   def generate_rooms!(
     mode:, count:,
     max_slots: 1, rent: 0, deposit: 0, area: 1)
