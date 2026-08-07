@@ -12,7 +12,10 @@ export default class extends Controller {
 
     this.hasChanges = false
 
-    this.sortable = Sortable.create(this.element, {
+    const list = document.getElementById("floor_list")
+
+    this.sortable = Sortable.create(list, {
+      draggable: "turbo-frame",
       handle: ".drag-handle",
       animation: 150,
       onEnd: this.reordered.bind(this)

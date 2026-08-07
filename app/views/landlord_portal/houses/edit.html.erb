@@ -90,25 +90,21 @@
           <%= t("form.floor.order") %>
         </div>
 
-        <%= field_info(
-            [ t("form.floor.create_info_1"),
-            t("form.floor.create_info_2"),
-            t("form.floor.create_info_3", num: 50)  ],
-            extra_classes: "my-3 gap-2")  %>
+        <div class="info-container px-4 py-1 my-3 mx-auto">
+          <%= field_info(
+              [ t("form.floor.create_info_1"),
+              t("form.floor.create_info_2"),
+              t("form.floor.create_info_3", num: 50),
+              t("form.floor.create_info_4_html") ],
+              extra_classes: "my-3 gap-2")  %>
+        </div>
 
         <div data-controller="sortable"
           data-sortable-url-value="<%= sort_landlord_house_floors_path(@house) %>"
           class="px-5">
 
           <%# Floor items %>
-          <%= turbo_frame_tag "floor_list" do %>
-            <% @floors.each_with_index do |floor, index| %>
-              <%= render "landlord_portal/floors/floor",
-                    floor: floor,
-                    house: @house,
-                    index: index %>
-            <% end %>
-          <%end%>
+          <%= render "landlord_portal/floors/floor_list", floors: @floors, house: @house %>
 
           <%# Save order button %>
           <div class="d-flex justify-content-center mt-4">

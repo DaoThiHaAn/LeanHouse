@@ -43,6 +43,11 @@ vi:
             name:
               taken: "Tầng %{value} đã tồn tại trong nhà này!"
 
+        room:
+          attributes:
+            name:
+              taken: "Phòng %{value} đã tồn tại trong tầng được chọn!"
+
       # Global messages
       messages:
         blank: "Không được để trống!"

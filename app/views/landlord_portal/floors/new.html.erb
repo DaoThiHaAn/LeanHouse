@@ -13,21 +13,24 @@
                       action: "submit->loading#submit"
                     }  do |f| %>
           <div class="modal-header">
-            <h1 class="modal-title fs-5" id="newFloorModalLabel">
+            <h1 class="modal-title fs-5 mx-auto" id="newFloorModalLabel">
               <%= t("form.floor.create") %>
             </h1>
 
-            <button type="button" class="btn-close"
+            <button type="button" class="btn-close m-0"
                     data-bs-dismiss="modal" aria-label="Close">
             </button>
           </div>
 
           <div class="modal-body d-flex flex-column align-items-center">
-            <%= field_info(
-              [ t("form.floor.create_info_1"),
-              t("form.floor.create_info_2"),
-              t("form.floor.create_info_3", num: 50) ],
-              extra_classes: "mb-3 gap-2")  %>
+            <div class="info-container px-3 py-2 my-3 mx-auto">
+              <%= field_info(
+                [ t("form.floor.create_info_1"),
+                t("form.floor.create_info_2"),
+                t("form.floor.create_info_3", num: 50),
+                t("form.floor.create_info_5") ],
+                extra_classes: "gap-2")  %>
+            </div>
 
             <%# Floor name %>
             <div class="w-75 form-group mb-3" data-controller="form">
@@ -54,15 +57,66 @@
             </div>
 
             <%# Rooms count %>
-            <div class="w-75 form-group mb-3">
-              <%= f.label :rooms_count, class: "form-label d-flex gap-1" do %>
+            <div class="w-75 form-group d-flex align-items-center gap-3 mb-3">
+              <%= f.label :rooms_count, class: "form-label flex-shrink-0 d-flex gap-1" do %>
                   <%= t('form.floor.rooms_count') +  ": "%>
                   <span class="asterisk">*</span>
               <%end %>
 
               <%= f.number_field :rooms_count, required: true, value: 1,
-                    class: "form-control", placeholder: "1-100",
+                    class: "form-control w-auto", placeholder: "1-100",
                     min: 1, max: 100, step: 1 %>
+            </div>
+
+            <div class="form-label w-75 flex-shrink-0 d-flex gap-1 my-3">
+              <%= t('form.house.detailed_room') +  ": "%>
+              <span class="asterisk">*</span>
+            </div>
+
+            <div class="form-group d-flex flex-column justify-content-between align-items-center gap-3 flex-wrap">
+              <div class="input-group w-60">
+                <span class="input-group-text">
+                  <%= t("form.room.area") %> (m²)
+                </span>
+                <%= f.number_field :room_area,
+                      class: "form-control",
+                      required: true, step: "any",
+                      placeholder: t("form.house.ex_placeholder", num: 10.1) %>
+              </div>
+
+              <div class="input-group w-60">
+                <span class="input-group-text" 
+                      data-label-capacity-target="label">
+                  <%= bed_field_title(@house) %>
+                </span>
+                <%= f.number_field :room_capacity, min: 1, max: 20, step: 1, placeholder: "1-20",
+                      class: "form-control",
+                      required: true %>
+              </div>
+
+              <div class="input-group w-75">
+                <span class="input-group-text">
+                  <%= t("form.room.rent") %> (đ)
+                </span>
+                <%= f.text_field :room_rent,
+                      class: "form-control", data: {controller: "currency"},
+                      required: true %>
+                <% if @house.bed?  %>
+                  <span class="input-group-text"> <%= t("form.room.per_bed") %> </span>
+                <% end %>
+              </div>
+
+              <div class="input-group w-75">
+                <span class="input-group-text">
+                  <%= t("form.room.deposit") %> (đ)
+                </span>
+                <%= f.text_field :room_deposit,
+                      class: "form-control", data: {controller: "currency"},
+                      required: true %>
+                <% if @house.bed?  %>
+                  <span class="input-group-text"> <%= t("form.room.per_bed") %> </span>
+                <% end %>           
+              </div>
             </div>
           </div>
 

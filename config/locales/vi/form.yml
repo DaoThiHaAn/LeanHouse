@@ -109,11 +109,14 @@ vi:
       create_info_1: "Tầng mới sẽ được thêm vào trên cùng của tòa nhà."
       create_info_2: "Tất cả tầng trong cùng 1 tòa nhà phải có tên khác nhau."
       create_info_3: "1 toà nhà chỉ có tối đa %{num} tầng."
+      create_info_4_html: "Trong loại hình Thuê theo <span class='fw-bold'>Giường</span>, các phòng được tạo ra mặc định có 1 giường."
+      create_info_5: "Các phòng được tạo ra giống nhau và bạn có thể tùy chỉnh sau"
       reach_max: "Đã đạt tối đa 50 tầng! Không thể thêm tầng mới!"
 
     room:
       self: "Phòng"
       name: "Tên phòng"
+      input: "Nhập tên phòng"
       add: "Tạo phòng mới"
       state: "Tình trạng phòng"
       available: "Còn chỗ"
@@ -127,6 +130,12 @@ vi:
       deposit: "Tiền cọc"
       area: "Diện tích"
       no_tenant: "Chưa ghi nhận"
+      beds_count: "Số giường"
+      per_bed: "/ giường"
+      create_info_1: "Phòng mới chỉ được thêm vào các tầng đang có ít hơn 100 phòng."
+      create_info_2: "Tất cả phòng trong cùng 1 tầng phải có tên khác nhau."
+      select_floor: "Chọn tầng"
+
 
 
 

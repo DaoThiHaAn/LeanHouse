@@ -31,4 +31,9 @@ module FormHelper
       ])
     end
   end
+
+  def bed_field_title(house)
+    return t("form.room.max_tenants_count") if house.room?
+    t("form.room.beds_count")
+  end
 end

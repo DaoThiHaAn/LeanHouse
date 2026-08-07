@@ -25,6 +25,8 @@ class LandlordPortal::RoomsController < LandlordPortal::BaseController
 
   def new
     @room = Room.new
+    @floors = @house.floors.available
+    @services = @house.services.includes(:room_services)
   end
 
   def create

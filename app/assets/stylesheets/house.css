@@ -205,3 +205,10 @@
 .floor-bar .icon:hover {
     background-color: rgb(238, 238, 238);
 }
+
+.info-container {
+    background-color: rgb(255, 255, 228);
+    width: fit-content;
+    border: 1px solid rgb(225, 225, 182);
+    border-left-width: 3px;
+}

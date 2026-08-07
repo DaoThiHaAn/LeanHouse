@@ -1,1 +1,133 @@
-ROOM NEW FORM
+<%# Variables: @room, @landlord, @provinces, @commmunes %>
+
+<% content_for :title, t("page_titles.new_room") %>
+
+<% provide :container_width, "new-room w-50" %> <%# Change the main container's width %>
+
+<div class="d-flex align-items-center mb-4">
+  <%= link_to :back, class: "d-flex align-items-center gap-1 turn-back link" do%>
+            <span class="material-symbols-outlined ms-2">arrow_left_alt</span>
+            <%=t('turn_back')%>
+  <%end%>
+  <h1 class="text-center flex-grow-1">
+    <%=t('page_titles.new_room') %> - <%= @house.name %>
+  </h1>
+</div>  
+
+<div class="info-container px-3 py-2 mb-4 mx-auto">
+  <%= field_info(
+    [ t("form.room.create_info_1"),
+    t("form.room.create_info_2") ],
+    extra_classes: "gap-2")  %>
+</div>
+
+  <%= form_with model: @room, url: landlord_house_rooms_path(@house, @room), method: :post,
+        class:"d-flex flex-column gap-4 px-3 mx-auto" ,
+        data: { 
+          controller: "loading",
+          loading_text_value: t("creating") + "...",
+          action: "submit->loading#submit"
+        } do |f| %>
+
+    <%# Floor name %>
+    <div class="form-group">
+      <div class="d-flex align-items-center gap-3" data-controller="form">
+        <%= f.label :name, class: "form-label flex-shrink-0" do%>
+              <%= t('form.room.name') +  ": "%>
+              <span class="asterisk">*</span>
+        <% end %>
+
+        <%= f.text_field :name, minlength: 1, maxlength: 50, class: "mb-1 form-control #{invalid_class(@room, :name)}", 
+            placeholder: t('form.room.input'), required: true, autofocus: true,
+            data: {
+                form_target: "input",
+                action: "input->form#update"
+            } 
+        %>
+
+        <small class="counter-text">
+          <span data-form-target="charCount">0</span>
+        </small>
+      </div>
+
+
+      <%= field_error(@room, :name)%>
+    </div>
+
+    <%# Floor %>
+    <div class="form-group d-flex gap-3 align-items-center">
+      <%= f.label :floor_id , class: "form-label flex-shrink-0" do%>
+        <%= t('form.floor.self') +  ": "%>
+        <span class="asterisk">*</span>
+      <% end %>
+
+      <%= f.collection_select :floor_id,
+        @floors,
+        :id,
+        :name,
+        { prompt: t("form.room.select_floor") },
+        { class: "form-select w-auto #{invalid_class(@room, :floor_id)}", required: true } %>
+    </div>
+
+    <div class="room form-group d-flex flex-column gap-3">
+      <div class="form-label flex-shrink-0 d-flex gap-1 ">
+        <%= t('form.house.detailed_room') +  ": "%>
+        <span class="asterisk">*</span>
+      </div>
+
+      <div class="ms-4 input-group w-50">
+        <span class="input-group-text">
+          <%= t("form.room.area") %> (m²)
+        </span>
+        <%= f.number_field :area,
+              class: "form-control",
+              required: true, step: "any" %>
+      </div>
+
+      <div class="ms-4 input-group w-50">
+        <span class="input-group-text" 
+              data-label-capacity-target="label">
+          <%= bed_field_title(@house) %>
+        </span>
+        <%= f.number_field :capacity, min: 1, max: 20, step: 1, placeholder: "1-20",
+              class: "form-control",
+              required: true %>
+      </div>
+
+      <div class="ms-4 input-group w-75">
+        <span class="input-group-text">
+          <%= t("form.room.rent") %> (đ)
+        </span>
+        <%= f.text_field :rent,
+              class: "form-control", data: {controller: "currency"},
+              required: true %>
+        <% if @house.bed?  %>
+          <span class="input-group-text"> <%= t("form.room.per_bed") %> </span>
+        <% end %>
+      </div>
+
+      <div class="ms-4 input-group w-75">
+        <span class="input-group-text">
+          <%= t("form.room.deposit") %> (đ)
+        </span>
+        <%= f.text_field :deposit,
+              class: "form-control", data: {controller: "currency"},
+              required: true %>
+        <% if @house.bed?  %>
+          <span class="input-group-text"> <%= t("form.room.per_bed") %> </span>
+        <% end %>           
+      </div>
+    </div>
+
+    <%= f.button :submit, 
+      class: "custom-primary-btn mx-auto main-form d-flex align-items-center justify-content-center gap-2",
+      data: { loading_target: "button" } do%>
+      <span data-loading-target="text"><%= t("create") %></span>
+
+      <span class="material-symbols-outlined spin d-none"
+        data-loading-target="spinner">
+        progress_activity
+      </span>
+    <%end%>
+
+  <% end %>

@@ -5,6 +5,10 @@ class Floor < ApplicationRecord
   before_validation :normalize_name
   before_validation :assign_position, on: :create
 
+  attr_accessor :room_area,
+                :room_rent,
+                :room_capacity,
+                :room_deposit
 
   validates :name, :rooms_count, presence: true
   validates :rooms_count, numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 100 }
@@ -16,6 +20,7 @@ class Floor < ApplicationRecord
   }
 
   default_scope { order(:position) }
+  scope :available, -> { where("rooms_count < ?", 100) }
 
   # MODEL METHODS
 
@@ -37,23 +42,34 @@ class Floor < ApplicationRecord
     self.name = name&.squish
   end
 
-  def generate_rooms_in_room_mode!(count:, max_slots: 1, rent: 0, deposit: 0, area: 1)
+  def generate_rooms!(
+    mode:, count:,
+    max_slots: 1, rent: 0, deposit: 0, area: 1)
+    room_max_slots = mode == :room ? max_slots : 0
+
     transaction do
       count.times do |i|
         room = rooms.create!(
           name: (i + 1).to_s,
-          max_slots: max_slots,
+          max_slots: room_max_slots,
           tenants_count: 0,
           area: area
         )
 
-        room.create_rental_unit!(
-          rent: rent,
-          deposit: deposit
-        )
+        case mode
+        when :room
+          room.create_rental_unit!(
+            rent: rent, deposit: deposit
+          )
+
+        when :bed
+          room.create_beds(
+            count: max_slots, rent: rent, deposit: deposit
+          )
+        end
       end
 
-      house.touch # Update house's updated_at
+      house.touch
     end
   end
 

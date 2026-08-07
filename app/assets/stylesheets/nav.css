@@ -127,6 +127,11 @@
     font-size: 0.8rem;
 }
 
+.house.dropdown-menu .dropdown-item {
+    font-size: 1rem;
+    font-weight: 400;
+}
+
 .nav-avatar {
     width: 40px;
 }

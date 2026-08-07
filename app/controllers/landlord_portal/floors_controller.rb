@@ -7,22 +7,25 @@ class LandlordPortal::FloorsController < LandlordPortal::BaseController
 
   def new
     @floor = Floor.new
+    @floor.rooms.build
   end
 
   def create
     # Request comes from a turbo frame
 
     @floor = @house.floors.new(floor_params)
-    requested_rooms = params[:floor][:rooms_count].to_i
 
     Floor.transaction do
       @floor.save!
 
-      if @house.room?
-        @floor.generate_rooms_in_room_mode!(
-          count: requested_rooms
-        )
-      end
+      @floor.generate_rooms!(
+        mode: @house.room? ? :room : :bed,
+        count: params[:floor][:rooms_count].to_i,
+        area: params[:floor][:room_area].to_f,
+        max_slots: params[:floor][:room_capacity].to_i,
+        rent: params[:floor][:room_rent].to_i,
+        deposit: params[:floor][:room_deposit].to_i
+      )
     end
 
     flash.now[:notice] = t("success_messages.floor_created")
@@ -120,7 +123,16 @@ class LandlordPortal::FloorsController < LandlordPortal::BaseController
   private
 
   def floor_params
-    params.expect(floor: [ :name ])
+    params.require(:floor).permit(:name)
+  end
+
+  def room_generation_params
+    params.require(:floor).permit(
+      :room_area,
+      :room_rent,
+      :room_capacity,
+      :room_deposit
+    )
   end
 
   def authorize_house_for_floor_creation
