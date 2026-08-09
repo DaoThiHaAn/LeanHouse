@@ -1,6 +1,8 @@
 <%# Local variables: house, rooms %>
 
-<%= turbo_frame_tag "room_table_bed", data: { controller: "pagination-sync", action: "turbo:frame-load->pagination-sync#updateUrl" } do %>
+<%= turbo_frame_tag "room_table_bed" do %>
+
+<span hidden data-pagination-total-pages="<%= rooms.total_pages %>"></span>
 
 <h2 class="table-caption"><%= t("form.room.list") %></h2>
 

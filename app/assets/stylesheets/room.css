@@ -1,5 +1,10 @@
 .short-house-info {
-  color: var(--primary-text)
+  color: white;
+  background-color: var(--primary-text);
+}
+
+.short-house-info h1 {
+  color: white
 }
 
 .nav-tabs .nav-link {

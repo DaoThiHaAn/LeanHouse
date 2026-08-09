@@ -19,15 +19,23 @@
 				[[t("all"), ""],
 					[t("form.room.available"), "available"],
 					[t("form.room.full"), "full"]],
-				{},
+				{ selected: params[:state] },
 				class: "form-select w-auto",
 				onchange: "this.form.requestSubmit()" %>
 	</div>
 <% end %>
 
 <%= turbo_frame_tag "room_table_bed",
-      src: table_bed_landlord_house_rooms_path(house),
-      loading: :lazy do %>
+      src: table_bed_landlord_house_rooms_path(house, params.permit(:page, :state)),
+      loading: :lazy,
+      data: {
+        controller: "pagination-sync",
+        pagination_sync_canonical_url_value: landlord_house_rooms_path(house),
+        pagination_sync_default_params_value: { state: "all" }.to_json,
+        pagination_sync_query_params_value: ["state"].to_json,
+        pagination_sync_total_pages_selector_value: "[data-pagination-total-pages]",
+        action: "turbo:frame-load->pagination-sync#updateUrl"
+      } do %>
 		<!-- Loading icon -->
     <div class="d-flex justify-content-center align-items-center p-5">
 			<div class="spinner-border text-primary" role="status">
