@@ -3,13 +3,13 @@ module FormHelper
     object.errors[field].any? ? "is-invalid" : ""
   end
 
-  def field_error(object, field)
+  def field_error(object, field, classes: "mt-1")
     return unless object.errors[field].any?
 
-    content_tag :div, class: "invalid-feedback d-block mt-1" do
+    content_tag :div, class: "invalid-feedback d-block #{classes}" do
       safe_join(
         object.errors[field].map do |message|
-          content_tag(:div, message)
+          content_tag(:p, message)
         end
       )
     end

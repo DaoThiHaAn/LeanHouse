@@ -22,6 +22,10 @@
   border-right: 1px solid #ecf0f2;
 }
 
+.custom.table-responsive {
+  min-width: 400px;
+}
+
 .colspan td {
   background-color: #D7E6EA;
   color: #3C8BC3;
@@ -65,4 +69,20 @@
 
 .new-room.main-container .room .input-group {
   min-width: 150px;
+}
+
+.room.input-group {
+  min-width: 270px;
+}
+
+.service.dropdown-menu .dropdown-item:hover {
+  background-color: aliceblue;
+}
+
+.dropdown.btn:hover, .dropdown.btn:checked, .dropdown.show  {
+  background-color: rgb(65, 100, 130);
+}
+
+.room-name.form-group .field_with_errors{
+  width: fit-content
 }

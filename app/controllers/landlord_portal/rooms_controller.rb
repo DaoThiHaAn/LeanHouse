@@ -30,11 +30,47 @@ class LandlordPortal::RoomsController < LandlordPortal::BaseController
   end
 
   def create
+    @room = @house.rooms.build(room_params)
+    @room.max_slots = 0 if @house.bed?
+    @room.service_selections = service_selections
+
+    unless @room.valid?(:service_selection)
+      @floors = @house.floors.available
+      @services = @house.services.includes(:service_variants)
+      flash.now[:alert] = t("errors.unprocessable_entity")
+      return render :new,
+            status: :unprocessable_entity
+    end
+
+    ActiveRecord::Base.transaction do
+      @room.save!
+
+      if @house.room?
+        @room.create_rental_unit!(
+          rent: rental_params[:rent],
+          deposit: rental_params[:deposit]
+        )
+      else
+        @room.create_beds(
+          count: room_params[:max_slots].to_i,
+          rent: rental_params[:rent],
+          deposit: rental_params[:deposit]
+        )
+      end
+
+      @room.add_services(
+        house: @house,
+        selections: service_selections
+      )
+    end
+
+    redirect_to landlord_house_rooms_path(@house),
+                notice: t("success_messages.room_created")
   end
 
   def show
     @floor = @room.floor
-  @room_services = @room.room_services.includes(service_variant: :service)
+    @room_services = @room.room_services.includes(service_variant: :service)
 
     if @house.bed?
       render "show_bedmode"
@@ -55,7 +91,27 @@ class LandlordPortal::RoomsController < LandlordPortal::BaseController
   private
 
   def room_params
-    params.expect(room: [ :name, :floor_id ])
+    params.expect(room: [
+      :name,
+      :floor_id,
+      :area,
+      :max_slots
+    ])
+  end
+
+  def rental_params
+    params.expect(room: [
+      :rent,
+      :deposit
+    ])
+  end
+
+  def service_selections
+    params.expect(
+      room: [
+        service_selections: {}
+      ]
+    )[:service_selections]
   end
 
   def authorize_house_for_room_creation

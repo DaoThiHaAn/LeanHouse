@@ -1,6 +1,6 @@
 <%# Local variables: house, rooms %>
 
-<%= turbo_frame_tag "room_table_bed", data: { controller: "pagination-sync", action: "turbo:frame-load->pagination-sync#updateUrl" } do %>
+<%= turbo_frame_tag "room_table" do %>
 
 <h2 class="table-caption"><%= t("form.room.list") %></h2>
 
@@ -9,8 +9,8 @@
 	<%= t("form.floor.order") %>
 </div>
 
-<div class="custom table-responsive border rounded w-75 m-auto">
-  <table class="table table-bordered table-hover align-middle mb-0">
+<div class="table-responsive border rounded w-75 m-auto">
+  <table class="table table-bordered table-hover tablse-sm align-middle mb-0">
     <thead class="table-light">
       <tr>
         <th><%=t("form.room.name")%></th>

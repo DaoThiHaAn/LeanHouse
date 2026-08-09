@@ -17,7 +17,7 @@
 <%# Main section %>
 <div class="w-100 p-5">
 	<% if @house.room?%>
-		<%= render "room_section" %>
+		<%= render "room_section", house: @house  %>
 	<%else%>
 		<%# 2 tabs: Rooms (active by default), Beds %>
 		<ul class="nav nav-tabs nav-justified" id="houseTabs" role="tablist">

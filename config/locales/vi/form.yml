@@ -132,9 +132,8 @@ vi:
       per_bed: "/ giường"
       create_info_1: "Phòng mới chỉ được thêm vào các tầng đang có ít hơn 100 phòng."
       create_info_2: "Tất cả phòng trong cùng 1 tầng phải có tên khác nhau."
+      create_info_3: "Mỗi phòng chỉ được áp dụng một phiên bản cho mỗi loại dịch vụ."
       select_floor: "Chọn tầng"
-
-
 
 
     tenant:
@@ -165,6 +164,7 @@ vi:
       price_placeholder: "Nhập số tiền"
       unit: "Đơn vị"
       select_unit: "Chọn đơn vị"
+      select_variant: "Chọn phiên bản"
 
     file:
       view: "Xem tệp"

@@ -77,8 +77,6 @@ vi:
   total: "Tổng"
   all: "Tất cả"
   actions: "Hành động"
-  prev_page: "Trang trước"
-  next_page: "Trang sau"
   loading: "Đang tải"
   save: "Lưu"
   cancel: "Hủy"
@@ -105,7 +103,8 @@ vi:
       Tài khoản bị vô hiệu!
       Hãy liên hệ với chúng tôi để biết thêm chi tiết!
     login_required: "Bạn cần đăng nhập để thực hiện hành động này!"
-    
+    unprocessable_entity: "Dữ liệu không hợp lệ. Vui lòng kiểm tra lại!"
+    service_variant_required: "Chọn 1 phiên bản của dịch vụ này!"
   
   success_messages:
     send_otp: "Đã gửi OTP!"
@@ -121,6 +120,7 @@ vi:
     floor_updated: "Cập nhật thông tin tầng thành công!"
     floor_deleted: "Xóa tầng thành công!"
     floor_sorted: "Sắp xếp tầng thành công!"
+    room_created: "Tạo phòng thành công!"
 
   page_titles:
     home: "Trang Chủ"
@@ -135,3 +135,9 @@ vi:
     edit_house: "Chỉnh sửa nhà"
     house_mng: "Quản Lý Nhà"
     rooms: "Phòng"
+
+  pagination:
+    first: "Trang đầu"
+    last: "Trang cuối"
+    prev: "Trang trước"
+    next: "Trang sau"

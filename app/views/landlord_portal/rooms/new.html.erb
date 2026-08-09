@@ -17,7 +17,8 @@
 <div class="info-container px-3 py-2 mb-4 mx-auto">
   <%= field_info(
     [ t("form.room.create_info_1"),
-    t("form.room.create_info_2") ],
+    t("form.room.create_info_2"),
+    t("form.room.create_info_3") ],
     extra_classes: "gap-2")  %>
 </div>
 
@@ -25,19 +26,19 @@
         class:"d-flex flex-column gap-4 px-3 mx-auto" ,
         data: { 
           controller: "loading",
-          loading_text_value: t("creating") + "...",
+          loading_text_value: t("saving") + "...",
           action: "submit->loading#submit"
         } do |f| %>
 
     <%# Floor name %>
-    <div class="form-group">
+    <div class="room-name form-group">
       <div class="d-flex align-items-center gap-3" data-controller="form">
         <%= f.label :name, class: "form-label flex-shrink-0" do%>
               <%= t('form.room.name') +  ": "%>
               <span class="asterisk">*</span>
         <% end %>
 
-        <%= f.text_field :name, minlength: 1, maxlength: 50, class: "mb-1 form-control #{invalid_class(@room, :name)}", 
+        <%= f.text_field :name, minlength: 1, maxlength: 50, class: "mb-1 form-control w-50 #{invalid_class(@room, :name)}", 
             placeholder: t('form.room.input'), required: true, autofocus: true,
             data: {
                 form_target: "input",
@@ -50,8 +51,7 @@
         </small>
       </div>
 
-
-      <%= field_error(@room, :name)%>
+      <%= field_error(@room, :name, classes: "ms-2 mt-2")%>
     </div>
 
     <%# Floor %>
@@ -69,7 +69,8 @@
         { class: "form-select w-auto #{invalid_class(@room, :floor_id)}", required: true } %>
     </div>
 
-    <div class="room form-group d-flex flex-column gap-3">
+    <%# Room detail %>
+    <div class="form-group d-flex flex-column gap-3">
       <div class="form-label flex-shrink-0 d-flex gap-1 ">
         <%= t('form.house.detailed_room') +  ": "%>
         <span class="asterisk">*</span>
@@ -89,12 +90,12 @@
               data-label-capacity-target="label">
           <%= bed_field_title(@house) %>
         </span>
-        <%= f.number_field :capacity, min: 1, max: 20, step: 1, placeholder: "1-20",
+        <%= f.number_field :max_slots, min: 1, max: 20, step: 1, placeholder: "1-20",
               class: "form-control",
               required: true %>
       </div>
 
-      <div class="ms-4 input-group w-75">
+      <div class="ms-4 room input-group w-65">
         <span class="input-group-text">
           <%= t("form.room.rent") %> (đ)
         </span>
@@ -106,7 +107,7 @@
         <% end %>
       </div>
 
-      <div class="ms-4 input-group w-75">
+      <div class="ms-4 room input-group w-65">
         <span class="input-group-text">
           <%= t("form.room.deposit") %> (đ)
         </span>
@@ -119,10 +120,97 @@
       </div>
     </div>
 
+    <%# Services %>
+    <div>
+      <div class="form-label"><%= t('form.service.self')%>:</div>
+
+      <% @services.each do |service| %>
+        <div class="mb-4">
+          <div class="service-row d-flex align-items-center gap-3"
+                data-controller="service-selection">
+            <div class="form-check">
+              <%= check_box_tag(
+                  "room[service_selections][#{service.id}][selected]",
+                  "1",
+                  false,
+                  class: "service-checkbox",
+                  id: "service_#{service.id}",
+                  data: {
+                    service_selection_target: "checkbox",
+                    service_id: service.id,
+                    action: "service-selection#toggle"
+                  })
+              %>
+
+              <%= label_tag(
+                  "service_#{service.id}",
+                  service.name,
+                  class: "form-check-label ms-2") 
+              %>
+            </div>
+
+            <%# Variant dropdown %>
+            <div class="dropdown">
+              <%# Actual value submitted to Rails %>
+              <%= hidden_field_tag(
+                    "room[service_selections][#{service.id}][variant_id]",
+                    "",
+                    data: {
+                      service_selection_target: "variantInput"
+                    }
+                  ) %>
+
+              <%# Dropdown button %>
+              <button type="button"
+                class="d-flex align-items-center dropdown btn btn-outline-secondary dropdown-toggle"
+                disabled
+                data-service-selection-target="dropdown"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                <div class="d-flex align-items-center"
+                    data-service-selection-target="variantLabel"
+                    data-placeholder="<%= t("form.service.select_variant") %>">
+                  <%= t("form.service.select_variant") %>
+                </div>
+              </button>
+
+              <%# Variant options %>
+              <ul class="service divided dropdown-menu">
+                <% service.service_variants.each do |variant| %>
+                  <li>
+                    <button type="button" class="dropdown-item d-flex align-items-center"
+                      data-action="service-selection#selectVariant"
+                      data-variant-id="<%= variant.id %>"
+                    >
+                      <span class="material-symbols-filled me-2">payments</span>
+                      <%= "#{number_with_delimiter(variant.fee)} đ / #{t("enums.room_service.unit.#{variant.unit}")}" %>
+                      <% if variant.is_real_time %>
+                        <div class="ms-2" title="<%= t('form.service.real_time_short')%>">
+                          -
+                          <span class="material-symbols-filled">speed</span>
+                        </div>
+                      <% end %>
+                    </button>
+                  </li>
+                <% end %>
+              </ul>
+            </div>
+          </div>
+
+          <%= field_error(
+            @room,
+            :"service_#{service.id}",
+            classes: "mt-2 ms-5"
+          ) %>
+        </div>
+      <% end %>
+    </div>
+
     <%= f.button :submit, 
       class: "custom-primary-btn mx-auto main-form d-flex align-items-center justify-content-center gap-2",
       data: { loading_target: "button" } do%>
-      <span data-loading-target="text"><%= t("create") %></span>
+      <span data-loading-target="text"><%= t("save") %></span>
 
       <span class="material-symbols-outlined spin d-none"
         data-loading-target="spinner">

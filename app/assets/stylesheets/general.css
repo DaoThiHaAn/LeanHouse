@@ -319,3 +319,8 @@ input {
 .cancel-btn:hover {
   background-color: rgb(210, 210, 210);
 }
+
+/* Separated divider in dropdown list */
+.divided.dropdown-menu li:not(:last-child) {
+  border-bottom: 1px solid #7D96A5;
+}

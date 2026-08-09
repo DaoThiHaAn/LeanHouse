@@ -1,4 +1,6 @@
 class Room < ApplicationRecord
+  attr_accessor :service_selections
+
   belongs_to :floor, inverse_of: :rooms, counter_cache: :rooms_count, touch: true
   has_one :house, through: :floor
   has_one :rental_unit, as: :rentable, dependent: :destroy
@@ -26,6 +28,7 @@ class Room < ApplicationRecord
     greater_than_or_equal_to: 1,
     less_than_or_equal_to: 500
   }
+  validate :selected_services_have_variants, on: :service_selection
 
   default_scope { where(deleted: false) }
   scope :deleted, -> { where(deleted: true) }
@@ -61,6 +64,57 @@ class Room < ApplicationRecord
       end
 
       touch
+    end
+  end
+
+  # @param house [House] the house object
+  # @param selections [Hash<Hash>] the list of selected services
+  # @option selections [Hash] :service_id The ID of the service as a string key
+  #   * :selected [String] "1" or "0" indicating if selected
+  #   * :variant_id [String] The ID of the specific variant
+  def add_services(house:, selections:)
+    # Get only selected selections from form
+    selected_selections =
+      selections.select do |_service_id, selection|
+        selection["selected"].to_s == "1"
+      end
+
+    return if selected_selections.empty?
+
+    # All selected variant_ids of selected services
+    variant_ids =
+      selected_selections.values.map do |selection|
+        selection["variant_id"]
+      end
+
+    variants = house.service_variants
+                    .where(id: variant_ids)
+                    .index_by { |variant| variant.id.to_s } # make a hash
+
+    selected_selections.each do |_service_id, selection|
+      room_services.create!(
+        service_variant: variants.fetch(selection["variant_id"].to_s)
+      )
+    end
+
+    touch
+  end
+
+  private
+
+  def real_max_slots
+    house_context.room? ? max_slots : 0
+  end
+
+  def selected_services_have_variants
+    return if service_selections.blank?
+
+    service_selections.each do |service_id, selection|
+      next unless selection["selected"].to_s == "1"
+
+      if selection["variant_id"].blank?
+        errors.add(:"service_#{service_id}", I18n.t("errors.service_variant_required"))
+      end
     end
   end
 end

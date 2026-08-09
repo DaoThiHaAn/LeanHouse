@@ -3,17 +3,29 @@
   justify-content: center;
   gap: 8px;
   align-items: center;
+  font-size: 0.9rem;
 }
 
-.pagination a, .pagination span {
-  width: 36px;
-  height: 36px;
+.pagination .page, .prev, .next {
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
   text-decoration: none;
-  color: #333;
+}
+
+.pagination span, .pagination a {
+  color: var(--info-text)
+}
+
+.page:hover, .prev:hover, .next:hover {
+  background-color: whitesmoke;
+}
+
+.pagination a:hover {
+  color: rgb(56, 56, 56);
 }
 
 .pagination .current {
@@ -23,4 +35,9 @@
 
 .pagination .gap {
   border: none;
+}
+
+.first a, .last a {
+  width: fit-content !important;
+  font-weight: 600;
 }

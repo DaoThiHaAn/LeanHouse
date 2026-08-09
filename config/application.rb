@@ -33,5 +33,8 @@ module LeanHouse
 
     config.time_zone = "Asia/Ho_Chi_Minh"
     config.active_record.default_timezone = :utc
+
+    # Rails wont wrap error fields in <div class="field_with_errors"></div>
+    config.action_view.field_error_proc = proc { |html_tag, _instance| html_tag.html_safe }
   end
 end
