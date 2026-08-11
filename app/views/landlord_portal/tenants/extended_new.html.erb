@@ -34,6 +34,7 @@
   <%= form_with url: landlord_house_tenants_path(@house), method: :post,
         class:"px-3 py-2 mx-auto" ,
         data: { 
+          turbo_frame: "_top",
           controller: "loading",
           loading_text_value: t("adding") + "...",
           action: "submit->loading#submit"

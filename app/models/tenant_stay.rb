@@ -6,7 +6,7 @@ class TenantStay < ApplicationRecord
 
   # Create an active stay for a tenant and an available unit in the given house.
   def self.link!(house:, tenant_id:, rental_unit_id:)
-    transaction do
+    tenant_stay = transaction do
       # Prevent race condition
       tenant = Tenant.lock.find(tenant_id)
       rental_unit = house.available_rental_units.find(rental_unit_id)
@@ -24,5 +24,18 @@ class TenantStay < ApplicationRecord
 
       create!(tenant: tenant, rental_unit: rental_unit, check_in: Time.current)
     end
+
+    # Send notification
+    rentable = tenant_stay.rental_unit.rentable
+    room = rentable.is_a?(Bed) ? rentable.room : rentable
+
+    TenantAddedNotifier.with(
+      tenant_stay: tenant_stay,
+      house: house.name,
+      floor: room.floor.name,
+      rental_unit: rentable.name
+    ).deliver_later(tenant_stay.tenant.user)
+
+    tenant_stay
   end
 end

@@ -11,6 +11,7 @@ class LandlordPortal::TenantsController < LandlordPortal::BaseController
   def index
     return render :no_tenant if @house.occupied_slots.zero?
 
+    @tenants = @house.all_linked_tenants
     render :index
   end
 

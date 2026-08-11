@@ -100,6 +100,18 @@ class House < ApplicationRecord
     end
   end
 
+  # Return all linked tenants
+  def all_linked_tenants
+    rentable_records = room? ? rooms : beds
+    rental_units = RentalUnit.where(rentable: rentable_records)
+
+    Tenant.includes(:user)
+          .joins(:tenant_stays)
+          .where(tenant_stays: { rental_unit_id: rental_units, check_out: nil })
+          .name_sorted
+          .distinct
+  end
+
   private
 
   def validate_regulation_file

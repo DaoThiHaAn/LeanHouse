@@ -77,9 +77,7 @@ class AuthenticationController < ApplicationController
     if current_user.landlord?
       redirect_to landlord_dashboard_path
     elsif current_user.tenant?
-      redirect_to tenant_dashboard_index_path(
-        tenant_id: current_user.id
-      )
+      redirect_to tenant_dashboard_path
     else
       redirect_to root_path
     end

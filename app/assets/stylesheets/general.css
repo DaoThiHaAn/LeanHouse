@@ -46,7 +46,36 @@
 
 html {
   font-size: 14px;
+  /* Scroll */
   scroll-behavior: smooth;
+  scrollbar-color: #1a4e5c transparent;
+  /* Firefox  */
+  scrollbar-width: thin
+}
+
+::-webkit-scrollbar {
+  width: 1px;
+  height: 1px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c5c9ce;
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a9bbd0;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
 }
 
 body {

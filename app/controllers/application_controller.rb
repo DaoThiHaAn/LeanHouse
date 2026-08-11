@@ -8,6 +8,9 @@ class ApplicationController < ActionController::Base
   # Set locale from params or default locale
   around_action :switch_locale
 
+  # Retreive notifications of current user
+  before_action :set_notifications
+
   def switch_locale(&action)
     locale = params[:lang] || I18n.default_locale
     I18n.with_locale(locale, &action)
@@ -33,5 +36,15 @@ class ApplicationController < ActionController::Base
     return if logged_in?
 
     redirect_to login_path, alert: t("errors.login_required")
+  end
+
+  def set_notifications
+    return unless current_user
+
+    @notifications = current_user.notifications
+                                  .order(created_at: :desc)
+                                  .limit(10)
+
+    @unread_count = current_user.notifications.unread.count
   end
 end

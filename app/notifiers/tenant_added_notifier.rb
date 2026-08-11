@@ -32,24 +32,18 @@ class TenantAddedNotifier < ApplicationNotifier
 
   notification_methods do
     def title
-      "You have been added to a rental"
+      t("noti.titles.tenant_added")
     end
 
     def message
-      t("noti.tenant_added",
+      t("noti.messages.tenant_added",
         house: params[:house],
         floor: params[:floor],
         rental_unit:  params[:rental_unit])
     end
 
     def url
-      tenant_stay_path(params[:tenant_stay])
-    end
-
-    private
-
-    def rental_unit_name
-      params[:tenant_stay].rental_unit.name
+      tenant_room_path
     end
   end
 end

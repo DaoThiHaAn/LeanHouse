@@ -141,13 +141,17 @@ vi:
     tenant:
       self: "Khách thuê"
       tel: "Số điện thoại khách thuê"
-      no: "Chưa ghi nhận khách thuê!"
       link: "Liên kết với khách thuê"
       create_and_link: "Tạo tài khoản và Liên kết với khách thuê"
       create_link_info: "Trong trường hợp khách thuê chưa có tài khoản, bạn có thể tạo tài khoản cho khách thuê và liên kết sau đó."
       ready: "Tài khoản sẵn sàng kết nối"
       select_unit: "Vị trí thuê"
       select_unit_info: "Màn hình chỉ hiển thị các vị trí còn trống."
+      none: "Chưa ghi nhận khách thuê!"
+
+
+      no_house: "Bạn chưa được kết nối với Nhà nào!"
+      let_link: "Hãy liên hệ với chủ nhà để bắt đầu nhận phòng và theo dõi quá trình lưu trú của bạn ở đây."
 
     bed:
       self: "Giường"
@@ -182,3 +186,4 @@ vi:
     noti:
      self: "Thông báo"
      mark_as_read: "Đánh dấu tất cả đã đọc"
+     empty: "Không có thông báo."

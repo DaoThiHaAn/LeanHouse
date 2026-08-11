@@ -1,4 +1,8 @@
 vi:
   noti:
-    tenant_added: "Bạn đã được thêm vào %{house}, tầng %{floor}, %{rental_unit}"
-    tenant_removed: "Chủ nhà đã xóa bạn ra khỏi %{house}, tầng %{floor}, %{rental_unit}"
+    titles:
+      tenant_added: "Bạn đã được thêm vào nhà"
+
+    messages:
+      tenant_added: "Bạn đã được thêm vào %{house}, tầng %{floor}, %{rental_unit}"
+      tenant_removed: "Chủ nhà đã xóa bạn ra khỏi %{house}, tầng %{floor}, %{rental_unit}"

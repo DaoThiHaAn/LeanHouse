@@ -1,4 +1,4 @@
-<div class="collapse navbar-collapse" id="navbarSupportedContent">
+<div class="overflow-x-auto collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav d-flex align-items-center gap-3">
     <%# TODO Authorize and insert the links %>
     <%if !logged_in?%>
@@ -15,12 +15,12 @@
         <%= nav_item t("bar.request_handle"), "Requests", path: about_path %>
 
     <%elsif current_user.tenant?%>
-        <%= nav_item t("bar.dashboard"), "Dashboard", path: tenant_dashboard_index_path(current_user.id), icon: "insert_chart" %>
-        <%= nav_item t("bar.my_room"), "My Room", "#", icon: "location_home" %>
-        <%= nav_item t("bar.my_contract"), "My Contract", path: "#"%>
-        <%= nav_item t("bar.applied_services"), "Services", path: "#"%>
-        <%= nav_item t("bar.my_invoices"), "My Invoices", path: "#" %>
-        <%= nav_item t("bar.my_requests"), "My Requests", path: "#" %>
+        <%= nav_item t("bar.dashboard"), "Dashboard", path: tenant_dashboard_path, icon: "insert_chart" %>
+        <%= nav_item t("bar.my_room"), "My Room", path: tenant_room_path, icon: "location_home" %>
+        <%= nav_item t("bar.my_contract"), "My Contract", path: tenant_contract_path%>
+        <%= nav_item t("bar.applied_services"), "Services", path: tenant_services_path%>
+        <%= nav_item t("bar.my_invoices"), "My Invoices", path: tenant_invoices_path %>
+        <%= nav_item t("bar.my_requests"), "My Requests", path: tenant_requests_path %>
         <%= nav_item t("bar.find_rooms"), "Finding Rooms", path: posts_path, icon: "search" %>
     <%else%>
 

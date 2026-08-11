@@ -81,8 +81,15 @@ Rails.application.routes.draw do
     end
   end
 
-  namespace :tenant, module: :tenant_area do
-      resources :dashboard, :posts
+  namespace :tenant, module: :tenant_portal do
+    get "/dashboard", to: "dashboard#show", as: :dashboard
+    get "/room", to: "room#show", as: :room
+    get "/contract", to: "contract#show", as: :contract
+    get "/services", to: "services#show", as: :services
+
+    resources :posts
+    resources :invoices, only: [ :show, :index ]
+    resources :requests
   end
 
   namespace :admin, module: :admin_area do
