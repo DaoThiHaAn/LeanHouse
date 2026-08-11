@@ -3,9 +3,13 @@ class RentalUnit < ApplicationRecord
   belongs_to :rentable, polymorphic: true
   has_many :tenant_stays, inverse_of: :rental_unit, dependent: :destroy
 
-  enum :status, { active: "active", deleted: "deleted" }
-
   validates :rent, :deposit, presence: true,
             numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 1000000000 }
-  validates :status, inclusion: { in: statuses.keys }
+
+  # MODEL METHODS
+
+  # Check a bed or a room is available for rent
+  def available?
+    rentable.active? && rentable.available?
+  end
 end

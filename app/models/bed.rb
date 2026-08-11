@@ -5,13 +5,17 @@ class Bed < ApplicationRecord
 
   validates :name, presence: true
 
-  default_scope { where(deleted: false) }
+  scope :active, -> { where(deleted: false) }
   scope :deleted, -> { where(deleted: true) }
   scope :sorted, -> { order(name: :asc) }
 
   # MODEL METHODS
 
   def available?
+    is_available
+  end
+
+  def available__for?(rental_unit)
     is_available
   end
 end

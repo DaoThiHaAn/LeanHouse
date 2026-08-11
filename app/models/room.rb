@@ -30,7 +30,7 @@ class Room < ApplicationRecord
   }
   validate :selected_services_have_variants, on: :service_selection
 
-  default_scope { where(deleted: false) }
+  scope :active, -> { where(deleted: false) }
   scope :deleted, -> { where(deleted: true) }
   # Rooms are grouped by floor in ascending position order, and then by name in ascending order
   scope :sorted, -> {
@@ -42,6 +42,7 @@ class Room < ApplicationRecord
 
   # Model method
 
+  # Can be rented
   def available?
     tenants_count < max_slots
   end

@@ -1,0 +1,52 @@
+<%# Variables: @form, @disabled %>
+
+<%= turbo_frame_tag "new_tenant_modal" do %>
+  <div class="modal fade" id="newTenanrModal" tabindex="-1" aria-hidden="true" data-controller="modal">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+
+      <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5 flex-grow-1 text-center" id="newTenantModalLabel"><%= t("form.tenant.link") %></h1>
+            <button type="button" class="m-0 btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+
+          <div class="modal-body d-flex flex-column align-items-center">
+            <%= turbo_frame_tag "tenant_form" do %>
+              <%= form_with model: @form, url: landlord_house_tenant_available_path(@house), method: :get,
+                  class:"my-2 d-flex flex-column align-items-center gap-2" ,
+                  data: { 
+                    controller: "loading",
+                    loading_text_value: t("checking") + "...",
+                    action: "submit->loading#submit"
+                  } do |f|%>
+
+                  <%= f.label :tel, class: "form-label flex-shrink-0" do%>
+                      <%= t('form.tenant.tel') +  ": "%>
+                      <span class="asterisk">*</span>
+                  <% end %>
+
+                  <div class="input-group w-75">
+                    <%= f.telephone_field :tel, placeholder: "0xxxxxxxxx",
+                          class: "form-control  #{invalid_class(@form, :tel)}",
+                          required: true %>
+                    
+                    <%= f.button :submit, 
+                      class: "add-tenant custom-primary-btn mx-auto main-form d-flex align-items-center justify-content-center gap-2",
+                      data: { loading_target: "button" } do%>
+                      <span data-loading-target="text"><%= t("check") %></span>
+
+                      <span class="material-symbols-outlined spin d-none"
+                        data-loading-target="spinner">
+                        progress_activity
+                      </span>
+                    <%end%>
+                  </div>
+
+                <%= field_error(@form, :tel, classes: "mt-2 ms-4")%>
+              <% end %>
+            <% end %>
+          </div>
+      </div>
+    </div>
+  </div>
+<% end %>

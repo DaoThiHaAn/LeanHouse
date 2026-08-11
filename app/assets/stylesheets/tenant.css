@@ -1,0 +1,50 @@
+.create-link-info {
+  min-width: 250px;
+}
+
+.add-tenant.custom-primary-btn {
+  border-top-right-radius: 7px;
+  border-bottom-right-radius: 7px;
+  padding: 5px 20px
+}
+
+.ready-info {
+  color: #00831C;
+}
+
+.close-btn {
+  background-color: rgb(177, 0, 0);
+
+  /* Position it slightly outside the top-right corner */
+  top: -12px;
+  right: -12px;
+  
+  /* Set explicit dimensions for a perfect circle */
+  width: 25px;
+  height: 25px;
+  z-index: 10; /* Ensures it sits on top of other elements */
+  
+  /* Center the inner link/icon */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+
+  transition: all 0.1s ease;
+  /* base ouline */
+  outline: 0px solid rgba(255, 0, 0, 0);  
+  border: 1px solid #dee2e6;
+}
+
+.close-btn span {
+  color: white;
+}
+
+.close-btn:hover {
+  border-color: rgb(255, 200, 200);
+  outline: 1px solid rgb(255, 200, 200);
+}
+
+.tenant-info-container {
+  background-color: #f0fffc;
+}

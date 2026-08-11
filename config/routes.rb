@@ -65,6 +65,18 @@ Rails.application.routes.draw do
         end
       end
 
+      get "/tenants/create_new", to: "tenants#create_new", as: :create_new_tenant
+      get "/tenants/available", to: "tenants#available", as: :tenant_available
+
+      # resources :rental_unit, only: [] do
+      #   resources :tenants, only: [ :create ]
+      # end
+      resources :tenants, only: [ :index, :show, :new, :create ] do
+        member do
+          get :link
+        end
+      end
+
       resources :invoices, :vehicles, :contracts
     end
   end

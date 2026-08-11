@@ -20,7 +20,7 @@ class House < ApplicationRecord
   validates :mode, inclusion: { in: modes.keys }
   validates :inv_creation_date, numericality: { only_integer: true, greater_than_or_equal_to: 1, less_than_or_equal_to: 31 }
 
-  default_scope { where(is_deleted: false) }
+  scope :active, -> { where(is_deleted: false) }
   scope :deleted, -> { where(is_deleted: true) }
   scope :sorted, -> { order(name: :asc) }
 
@@ -68,6 +68,36 @@ class House < ApplicationRecord
 
   def can_delete?
     !rooms.where("tenants_count > 0").exists?
+  end
+
+  # Returns active, available rental units with their location preloaded.
+  #
+  # Room mode: rental_unit.rentable.floor
+  # Bed mode:  rental_unit.rentable.room.floor
+  def available_rental_units
+    if room?
+      RentalUnit
+        .where(rentable_type: "Room")
+        .joins("INNER JOIN rooms ON rooms.id = rental_units.rentable_id")
+        .joins("INNER JOIN floors ON floors.id = rooms.floor_id")
+        .where(floors: { house_id: id }, rooms: { deleted: false })
+        .where("rooms.tenants_count < rooms.max_slots")
+        .joins("LEFT JOIN tenant_stays ON tenant_stays.rental_unit_id = rental_units.id AND tenant_stays.check_out IS NULL")
+        .where(tenant_stays: { id: nil })
+        .includes(rentable: :floor)
+        .order("floors.position ASC, rooms.name ASC")
+    else
+      RentalUnit
+        .where(rentable_type: "Bed")
+        .joins("INNER JOIN beds ON beds.id = rental_units.rentable_id")
+        .joins("INNER JOIN rooms ON rooms.id = beds.room_id")
+        .joins("INNER JOIN floors ON floors.id = rooms.floor_id")
+        .where(floors: { house_id: id }, rooms: { deleted: false }, beds: { deleted: false, is_available: true })
+        .joins("LEFT JOIN tenant_stays ON tenant_stays.rental_unit_id = rental_units.id AND tenant_stays.check_out IS NULL")
+        .where(tenant_stays: { id: nil })
+        .includes(rentable: { room: :floor })
+        .order("floors.position ASC, rooms.name ASC, beds.name ASC")
+    end
   end
 
   private

@@ -1,0 +1,28 @@
+class TenantStay < ApplicationRecord
+  belongs_to :tenant, inverse_of: :tenant_stays
+  belongs_to :rental_unit, inverse_of: :tenant_stays
+
+  validates :check_out, comparison: { greater_than_or_equal_to: :check_in }, allow_nil: true
+
+  # Create an active stay for a tenant and an available unit in the given house.
+  def self.link!(house:, tenant_id:, rental_unit_id:)
+    transaction do
+      # Prevent race condition
+      tenant = Tenant.lock.find(tenant_id)
+      rental_unit = house.available_rental_units.find(rental_unit_id)
+      rental_unit.lock!
+
+      raise ActiveRecord::RecordInvalid, tenant if tenant.linked?
+      raise ActiveRecord::RecordInvalid, rental_unit if rental_unit.tenant_stays.exists?(check_out: nil)
+
+      # Update tenants_count in Room or "is_available" in Bed
+      rental_unit.rentable.with_lock do
+        room = rental_unit.rentable.is_a?(Bed) ? rental_unit.rentable.room : rental_unit.rentable
+        room.increment!(:tenants_count)
+        rental_unit.rentable.update!(is_available: false) if rental_unit.rentable.is_a?(Bed)
+      end
+
+      create!(tenant: tenant, rental_unit: rental_unit, check_in: Time.current)
+    end
+  end
+end

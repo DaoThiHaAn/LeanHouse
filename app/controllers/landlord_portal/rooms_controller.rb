@@ -119,7 +119,7 @@ class LandlordPortal::RoomsController < LandlordPortal::BaseController
   end
 
   def filtered_rooms_bed_mode
-    scope = @house.rooms.includes(:floor)
+    scope = @house.rooms.active.includes(:floor)
 
     case params[:state]
     when "available"
@@ -135,7 +135,7 @@ class LandlordPortal::RoomsController < LandlordPortal::BaseController
 
   # TODO
   def filtered_rooms
-    scope = @house.rooms.sorted.includes(:floor)
+    scope = @house.rooms.active.sorted.includes(:floor)
 
     case params[:state]
     when "available"

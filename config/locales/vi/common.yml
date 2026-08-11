@@ -81,9 +81,15 @@ vi:
   save: "Lưu"
   cancel: "Hủy"
   saving: "Đang lưu"
+  checking: "Đang kiểm tra"
+  check: "Kiểm tra"
+  add: "Thêm"
+  adding: "Đang thêm"
   general_info: "Thông tin chung"
   create: "Tạo mới"
   close: "Đóng"
+  extract: "Loại"
+  select_another: "Chọn tài khoản khác"
   save_order: "Lưu thứ tự"
   click_open: "Nhấp để mở thông báo"
   
@@ -92,7 +98,7 @@ vi:
     session_expired: |
       Không tìm thấy số điện thoại đã xác nhận!
       Hãy gửi lại OTP.
-    user_not_found: "Không tìm thấy tài khoản!"
+    tenant_tel_unregistered: "Số điện thoại này chưa được đăng ký tài khoản Khách thuê!"
     wrong_otp: "Mã OTP không đúng!"
     expired_otp: "Mã OTP đã hết hiệu lực!"
     otp_failed: "Xảy ra lỗi khi xác minh OTP! Hãy thử lại."
@@ -105,8 +111,11 @@ vi:
     login_required: "Bạn cần đăng nhập để thực hiện hành động này!"
     unprocessable_entity: "Dữ liệu không hợp lệ. Vui lòng kiểm tra lại!"
     service_variant_required: "Chọn 1 phiên bản của dịch vụ này!"
+    tel_linked: "Tài khoản này đang được liên kết với Nhà khác"
+    rental_unit_unavailable: "Vị trí thuê này không còn trống. Vui lòng chọn lại."
   
   success_messages:
+    tenant_linked: "Đã liên kết khách thuê thành công"
     send_otp: "Đã gửi OTP!"
     resend_otp: "Đã gửi lại mã OTP!"
     signup: "Đăng ký thành công!"
@@ -121,6 +130,7 @@ vi:
     floor_deleted: "Xóa tầng thành công!"
     floor_sorted: "Sắp xếp tầng thành công!"
     room_created: "Tạo phòng thành công!"
+    tenant_linked: "Liên kết thành công!"
 
   page_titles:
     home: "Trang Chủ"
@@ -135,6 +145,8 @@ vi:
     edit_house: "Chỉnh sửa nhà"
     house_mng: "Quản Lý Nhà"
     rooms: "Phòng"
+    tenant_mng: "Quản lý khách thuê"
+
 
   pagination:
     first: "Trang đầu"

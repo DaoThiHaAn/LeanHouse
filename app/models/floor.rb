@@ -19,8 +19,8 @@ class Floor < ApplicationRecord
     case_sensitive: false
   }
 
-  default_scope { order(:position) }
-  scope :available, -> { where("rooms_count < ?", 100) }
+  scope :pos_order, -> { order(:position) }
+  scope :available, -> { where("rooms_count < ?", 100) } # A floor can add new rooms
 
   # MODEL METHODS
 

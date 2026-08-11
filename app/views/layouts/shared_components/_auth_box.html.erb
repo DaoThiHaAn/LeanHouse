@@ -1,7 +1,7 @@
 <% if logged_in?%>
     <!--TODO Profile -->
     <div class="dropdown profile-dropdown">
-        <button class="dropdown-toggle d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <button class="py-1 dropdown-toggle d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
             <%= display_avatar %>
             <div class="d-flex flex-column align-items-start">
                 <p class="fw-bold fullname"><%=format_name(current_user.fullname) %></p>
@@ -30,7 +30,13 @@
 							aria-expanded="false" title="<%= t("click_open")%>">
 				<div class="position-relative">
 					<span class="noti material-symbols-filled">notifications</span>
-					<div class="notification-badge"><%=noti_count(3)%></div>
+					<% unread_count = current_user.notifications.unread.count %>
+
+					<% if unread_count > 0 %>
+						<span class="notification-badge">
+							<%= noti_count(unread_count) %>
+						</span>
+					<% end %>
 				</div>
 			</button>
 

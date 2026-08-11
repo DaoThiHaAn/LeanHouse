@@ -10,6 +10,10 @@ class User < ApplicationRecord
   has_one_attached :avatar
   has_one :landlord, foreign_key: :id, primary_key: :id, inverse_of: :user, dependent: :destroy
   has_one :tenant, foreign_key: :id, primary_key: :id, inverse_of: :user, dependent: :destroy
+  has_many :notifications,
+    as: :recipient,
+    dependent: :destroy,
+    class_name: "Noticed::Notification"
 
   enum :role, { landlord: "landlord", tenant: "tenant" } # 2 methods: landlord?, tenant?
   enum :sex,  { male: "M", female: "F" } # 2 methods: male?, female?
@@ -48,6 +52,7 @@ class User < ApplicationRecord
     update!(discarded_at: Time.current)
   end
 
+  # @param role ["landlord", "tenant"]
   def self.find_acc(tel, role)
     registered.find_by(tel: tel, role: role)
   end

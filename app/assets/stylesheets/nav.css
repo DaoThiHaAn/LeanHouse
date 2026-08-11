@@ -243,12 +243,19 @@
     height: 45px;
 }
 
-
 .notification-dropdown .dropdown-menu {
     width: 300px;
 		max-height: 500px;
 		overflow-y: scroll;
-} 
+}
+
+.notification-dropdown button:hover, .profile-dropdown button:hover {
+	background-color: rgba(0, 0, 0, 0.1);
+}
+
+.profile-dropdown .dropdown-item:hover {
+	background-color: var(--dropdown-link-hover-bg);
+}
 
 .notification-dropdown .read {
 	background-color: #edefee;

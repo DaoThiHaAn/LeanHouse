@@ -34,7 +34,7 @@ class LandlordPortal::FloorsController < LandlordPortal::BaseController
           "floor_list",
           partial: "landlord_portal/floors/floor_list",
           locals: {
-            floors: @house.floors,
+            floors: @house.floors.pos_order,
             house: @house
           }),
         turbo_stream.update(

@@ -91,7 +91,9 @@ vi:
       change_mode_cf: "Bạn có chắc muốn thay đổi loại hình nhà?"
       change_mode_info_1: "Nếu nhà vẫn còn khách thuê, khi chuyển sang loại hình Giường, hệ thống sẽ tự động tạo các giường và phân bổ ngẫu nhiên khách thuê hiện tại vào các giường mới trong từng phòng tương ứng."
       change_mode_info_2: "Nếu nhà vẫn còn khách thuê, khi chuyển sang loại hình Phòng, hệ thống sẽ xóa các giường hiện có trong từng phòng và chuyển toàn bộ khách thuê vào phòng tương ứng."
-      change_mode_info_3: "Bạn có thể tùy chỉnh tên phòng hoặc tên giường sau khi chuyển đổi."   
+      change_mode_info_3: "Bạn có thể tùy chỉnh tên phòng hoặc tên giường sau khi chuyển đổi."
+      no: "Bạn chưa có nhà nào được ghi nhận!"
+      let_add: "Hãy tạo nhà mới để bắt đầu quản lý."   
 
     floor:
       self: "Tầng" 
@@ -108,7 +110,7 @@ vi:
       create_info_2: "Tất cả tầng trong cùng 1 tòa nhà phải có tên khác nhau."
       create_info_3: "1 toà nhà chỉ có tối đa %{num} tầng."
       create_info_4_html: "Trong loại hình Thuê theo <span class='fw-bold'>Giường</span>, các phòng được tạo ra mặc định có 1 giường."
-      create_info_5: "Các phòng được tạo ra giống nhau và bạn có thể tùy chỉnh sau"
+      create_info_ 5: "Các phòng được tạo ra giống nhau và bạn có thể tùy chỉnh sau"
       reach_max: "Đã đạt tối đa 50 tầng! Không thể thêm tầng mới!"
 
     room:
@@ -137,7 +139,15 @@ vi:
 
 
     tenant:
-      self: "Người thuê"
+      self: "Khách thuê"
+      tel: "Số điện thoại khách thuê"
+      no: "Chưa ghi nhận khách thuê!"
+      link: "Liên kết với khách thuê"
+      create_and_link: "Tạo tài khoản và Liên kết với khách thuê"
+      create_link_info: "Trong trường hợp khách thuê chưa có tài khoản, bạn có thể tạo tài khoản cho khách thuê và liên kết sau đó."
+      ready: "Tài khoản sẵn sàng kết nối"
+      select_unit: "Vị trí thuê"
+      select_unit_info: "Màn hình chỉ hiển thị các vị trí còn trống."
 
     bed:
       self: "Giường"

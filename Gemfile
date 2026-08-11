@@ -69,3 +69,5 @@ end
 gem "cancancan", "~> 3.6"
 
 gem "kaminari", "~> 1.2"
+
+gem "noticed", "~> 3.0"

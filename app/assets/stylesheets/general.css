@@ -8,7 +8,7 @@
   --border: #A6BBC6;
   --body-bg-color: #ededed;
   --primary-button-bg: #0087CA;
-  --primary-button-hover-bg: #126b95;
+  --primary-button-hover-bg: #176850;
   --primary-text: #164E5D;
   --placeholder: #adb3b8;
   --info-text: #7e7e7e;
@@ -17,6 +17,7 @@
   --table-action-icon: #0D8395;
   --bs-modal-zindex: 2000;
   --bs-backdrop-zindex: 1990;
+  --dropdown-link-hover-bg: #ecf6ff;
 }
 
 @font-face {
@@ -59,6 +60,10 @@ body {
 
 .w-70 {
   width: 70%;
+}
+
+.w-40 {
+  width: 40%;
 }
 
 .w-65 {
@@ -323,4 +328,23 @@ input {
 /* Separated divider in dropdown list */
 .divided.dropdown-menu li:not(:last-child) {
   border-bottom: 1px solid #7D96A5;
+}
+
+.subtle.main-btn {
+  background-color: transparent;
+  font-weight: 500;
+  font-size: 1.1rem;
+  width:fit-content;
+  color: rgb(90, 158, 133);
+  border-color: rgb(148, 196, 178) ;
+  transition: all 0.2s ease;
+}
+
+.subtle.main-btn:hover {
+  color: #297072;
+  border-color: #297072;
+}
+
+.subtle.main-btn:checked {
+  background-color: rgb(232, 232, 232);
 }

@@ -3,7 +3,7 @@ class HousesController < ApplicationController
 
   # GET /houses or /houses.json
   def index
-    @houses = House.sorted
+    @houses = House.active.sorted
   end
 
   # GET /houses/1 or /houses/1.json
@@ -61,7 +61,7 @@ class HousesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_house
-      @house = House.find(params.expect(:id))
+      @house = House.active.find(params.expect(:id))
     end
 
     # Only allow a list of trusted parameters through.
