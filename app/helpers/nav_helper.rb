@@ -17,8 +17,8 @@ module NavHelper
 
 
   def nav_item(real_text, label, word: nil, path: nil, icon: nil, is_img: false, img_src: nil, img_active_src: nil)
-    li_classes = [ "flex-shrink-0 nav-item custom d-lg-flex align-items-center align-self-center" ]
-    a_classes  = [ "nav-link text-center d-flex align-items-center px-2 flex-wrap justify-content-center" ]
+    li_classes = [ "flex-shrink-0 nav-item custom d-lg-flex align-items-center" ]
+    a_classes  = [ "nav-link text-center d-flex align-items-center px-2 flex-wrap justify-content-md-center" ]
 
     is_current_page = word.present? ? request.path.include?(word) :current_page?(path)
     if is_current_page

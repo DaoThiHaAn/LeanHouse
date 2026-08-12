@@ -31,7 +31,6 @@ class User < ApplicationRecord
               message: :existed_acc
             },
             on: [ :signup, :change_tel ]
-  validates :sex, inclusion: { in: %w[M F] }
   validates :terms_accepted, acceptance: true, on: :create
   validates :password, length: { in: 8..72 }
   validates :password_confirmation, length: { in: 8..72 }

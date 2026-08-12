@@ -1,4 +1,5 @@
 <% flash.each do |type, message| %>
+  <% next if type.to_sym == :development_otp %>
   <% bootstrap_class =
       case type.to_sym
       when :notice then "alert-success"

@@ -1,10 +1,23 @@
-<nav class="navbar sticky-top navbar-expand-lg navbar-light py-0">
+<nav class="navbar sticky-top navbar-expand-md navbar-light py-0">
   <div class="container-fluid px-4">
 
-    <!-- Logo -->
-    <%= link_to root_path, class: "navbar-brand" do %>
-      <%= image_tag "logo.png", alt: "LeanHouse Logo" %>
-    <% end %>
+    <div class="d-flex gap-3">
+      <!-- Mobile toggle -->
+      <button class="navbar-toggler align-self-center"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#navbarSupportedContent"
+              aria-controls="navbarSupportedContent"
+              aria-expanded="false"
+              aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <!-- Logo -->
+      <%= link_to root_path, class: "navbar-brand" do %>
+        <%= image_tag "logo.png", alt: "LeanHouse Logo" %>
+      <% end %>
+    </div>
 
     <!-- Nav links -->
     <%= render "layouts/shared_components/nav_link" %>
@@ -35,16 +48,5 @@
         </ul>
       </div>
     </div>
-
-    <!-- Mobile toggle -->
-    <button class="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent"
-            aria-expanded="false"
-            aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
   </div>  
 </nav>

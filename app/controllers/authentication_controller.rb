@@ -53,7 +53,7 @@ class AuthenticationController < ApplicationController
     return render_login_error(t("errors.tel_unregistered")) unless existing_acc
     return render_login_error(t("errors.inactive_acc")) unless existing_acc.active?
 
-    PhoneVerification.new(
+    result = PhoneVerification.new(
       tel: user_params[:tel],
       role: user_params[:role]
     ).create_otp(existing_acc)
@@ -61,6 +61,7 @@ class AuthenticationController < ApplicationController
     session[:pending_tel] = existing_acc.tel
     session[:pending_role] = existing_acc.role
     session[:is_reset_pw] = true
+    flash[:development_otp] = result.otp if Rails.env.development?
 
     redirect_to otp_input_path, notice: t("success_messages.send_otp")
   end

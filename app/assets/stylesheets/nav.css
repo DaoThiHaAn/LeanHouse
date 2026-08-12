@@ -269,3 +269,33 @@
 .noti-content {
 	font-size: 0.9rem;
 }
+
+#navbarSupportedContent {
+  background:
+    /* 1. Left Shadow Cover (Hides left shadow when scrolled to start) */
+    linear-gradient(to right, #d7e6ea 30%, rgba(215, 230, 234, 0)),
+    
+    /* 2. Right Shadow Cover (Hides right shadow when not shrunk/overflowing) */
+    linear-gradient(to left, #d7e6ea 30%, rgba(215, 230, 234, 0)) 100% 0,
+
+    /* 3. Left Shadow */
+    linear-gradient(to right, rgba(0, 0, 0, 0.1), transparent),
+
+    /* 4. Right Shadow */
+    linear-gradient(to left, rgba(0, 0, 0, 0.1), transparent) 100% 0;
+
+  background-repeat: no-repeat;
+  background-color: #d7e6ea;
+  background-size: 40px 100%, 40px 100%, 14px 100%, 14px 100%;
+  
+  /* CRITICAL: 'local' moves covers with content; 'scroll' keeps shadows fixed */
+  background-attachment: local, local, scroll, scroll;
+}
+
+
+@media screen and (max-width: 768px) {
+    .navbar-nav {
+        background-color: rgb(201, 217, 222);
+        padding: 10px 20px;
+    }
+}

@@ -1,5 +1,5 @@
 class PhoneVerification
-  Result = Struct.new(:user, :status)
+  Result = Struct.new(:user, :status, :otp)
 
   def initialize(user_params = {})
     @params = user_params.to_h.symbolize_keys
@@ -20,7 +20,8 @@ class PhoneVerification
 
    create_otp(user)
 
-  rescue ActiveRecord::RecordInvalid
+  rescue ActiveRecord::RecordInvalid => e
+    Rails.logger.error "Signup validation failed: #{e.record.errors.full_messages}"
     Result.new(user, :invalid)
   end
 
@@ -28,7 +29,7 @@ class PhoneVerification
     otp = user.generate_otp!
     Rails.logger.info "OTP for #{@tel}: #{otp}, role: #{user.role}, created_at #{user.otp_sent_at}"
 
-    Result.new(user, :otp_sent)
+    Result.new(user, :otp_sent, otp)
   end
 
   def resend_otp

@@ -1,3 +1,9 @@
+<% if Rails.env.development? && flash[:development_otp].present? %>
+  <div class="alert alert-danger position-fixed top-0 end-0 m-3 shadow development-otp" role="status">
+    <strong>Development OTP:</strong> <%= flash[:development_otp] %>
+  </div>
+<% end %>
+
 <div class="custom card my-5 mx-auto px-5 py-4">
     <div class="card-body d-flex align-items-center flex-column gap-3">
         <h1 class="card-title text-center"><%=t('form.profile.otp_title').upcase %></h1>

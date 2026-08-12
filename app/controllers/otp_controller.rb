@@ -11,8 +11,11 @@ class OtpController < ApplicationController
 
   def resend
     verification = PhoneVerification.new(tel: session[:pending_tel], role: session[:pending_role])
-    verification.resend_otp
+    result = verification.resend_otp
     flash.now[:notice] = t("success_messages.resend_otp")
+    # Show sent otp in development env
+    flash.now[:development_otp] = result.otp if Rails.env.development?
+
     render "otp_input", locals: { tel: session[:pending_tel] }
   end
 
