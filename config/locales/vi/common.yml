@@ -93,6 +93,7 @@ vi:
   save_order: "Lưu thứ tự"
   click_open: "Nhấp để mở thông báo"
   ago: "Trước"
+  send: "Gửi"
   
 
   errors:
@@ -147,6 +148,7 @@ vi:
     house_mng: "Quản Lý Nhà"
     rooms: "Phòng"
     tenant_mng: "Quản lý khách thuê"
+    issue_report: "Báo cáo sự cố"
 
 
   pagination:
@@ -208,3 +210,25 @@ vi:
       almost_x_years:
         one: "gần 1 năm"
         other: "gần %{count} năm"
+
+  new_tel_owner:
+    self: "Trợ giúp xác minh số điện thoại"
+    title: "Xác minh số điện thoại"
+    content_1: "Trong trường hợp bạn là chủ sở hữu số điện thoại nhưng hệ thống thông báo đã ghi nhận đã được sử dụng, hãy làm theo các bước sau:"
+    content_2_html: "<em>Bước 1</em>: Gửi tin nhắn đến số  <strong>1414</strong> (Số tổng đài miễn phí của các nhà mạng viễn thông tại Việt Nam) với cú pháp <strong>TTTB [Số CMND/CCCD]</strong>"
+    content_3_html: "<em>Bước 2</em>: Chụp màn hình tin nhắn gửi và tin nhắn phản hồi như ảnh."
+    content_4_html: "<em>Bước 3</em>: Gửi email đến chúng tôi qua <a class='text-decoration-underline' target='_blank' rel='noopener noreferrer' href='mailto:customerservice@leanhouse.com?subject=Trợ giúp xác nhận số điện thoại'>customerservice@leanhouse.com</a>. Trong email, hãy chèn ảnh chụp màn hình ở bước 2."
+    content_4_1_html: "(<strong>Lưu ý</strong>: số điện thoại và số CCCD/CMND phải được hiển thị rõ ràng. Mọi thông tin cá nhân được cung cấp sẽ được bảo mật, chỉ dành cho mục đích xem xét minh chứng sở hữu số điện thoại và không được chia sẻ với bên thứ ba.)"
+    fig_caption: "Hình ảnh minh họa tin nhắn và phản hồi xác thực số điện thoại chính chủ thành công"
+    content_5: "Số điện thoại được xác nhận chính là số điện thoại được nhà mạng phản hồi lại trong tin nhắn đến."
+    content_6: "Chúng tôi sẽ xử lý và phản hồi lại trong 1-2 ngày làm việc, không tính thứ bảy, chủ nhật và ngày lễ. Trong trường hợp chưa nhận được email, vui lòng kiểm tra thư mục Spam hoặc Thư rác."
+
+  incident_reports:
+    email: "Email"
+    email_placeholder: "email@gmail.com"
+
+    subject: "Tiêu đề"
+    subject_placeholder: "Tiêu đề ngắn gọn"
+
+    description: "Mô tả sự cố"
+    description_placeholder: "Nhập mô tả ở đây..."

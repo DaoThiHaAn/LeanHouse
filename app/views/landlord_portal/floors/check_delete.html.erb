@@ -1,9 +1,10 @@
 <%#  Variables: @floor  %>
 
 <%= turbo_frame_tag "floor_delete_modal" do %>
-  <div class="modal fade" id="floorCheckDeleteModal" tabindex="-1" aria-hidden="true" data-controller="modal">
+  <div class="modal fade" id="floorCheckDeleteModal" tabindex="-1" aria-hidden="true"
+        data-controller="modal" data-modal-auto-open-value="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-      <div class="modal-content">
+      <div class="modal-content px-2">
         <div class="modal-header d-flex">
           <h1 class="modal-title fs-5 flex-grow-1 text-center" id="houseDetailModalLabel"><%= "#{t("form.floor.self")}: #{@floor.name}" %></h1>
           <button type="button" class="m-0 btn-close" data-bs-dismiss="modal" aria-label="Close"></button>

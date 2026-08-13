@@ -6,10 +6,10 @@ vi:
         user:
           attributes:
             fullname:
-              invalid_fname: "Họ và tên chỉ được chứa chữ cái và khoảng trắng"
+              invalid: "Họ và tên chỉ được chứa chữ cái và khoảng trắng"
               blank: "Tên không được để trống!"
             tel:  
-              invalid_tel: "Số điện thoại phải bao gồm 10 ký tự số và bắt đầu bằng số 0!"
+              invalid: "Số điện thoại phải bao gồm 10 ký tự số và bắt đầu bằng số 0!"
               blank: "Số điện thoại không được để trống!"
               existed_acc: "Số điện thoại đã được đăng ký cho loại tài khoản này!"
             bday:
@@ -24,7 +24,10 @@ vi:
             address:
               blank: "Địa chỉ không được để trống!"
             mode:
-             blank: "Loại hình không được để trống!"
+              blank: "Loại hình không được để trống!"
+            role:
+              blank: "Chọn 1 vai trò!"
+
 
         service:
           attributes:

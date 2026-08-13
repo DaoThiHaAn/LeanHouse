@@ -21,25 +21,32 @@ class User < ApplicationRecord
 
   before_validation :normalize_inputs
 
-  validates :fullname, :password, :password_confirmation, :tel, :sex, :bday, :address, presence: true
-  validates :fullname, format: { with: /\A[\p{L}\s]+\z/, message: :invalid_fname }
-  validates :tel, length: { is: 10 },
-            format: { with: /\A0\d{9}\z/, message: :invalid_tel },
-            uniqueness: {
+  validates :fullname, :password_confirmation, :tel, :sex, :bday, :address, presence: true,  on: [ :create, :update ]
+  validates :fullname, format: { with: /\A[\p{L}\s]+\z/, message: :invalid }, on: [ :create, :update ]
+  validates :password, presence: true, on: [ :create, :pw_reset, :login ]
+
+  validates :tel,
+            format: { with: /\A0\d{9}\z/, message: :invalid },
+            on: [ :create, :change_tel, :login ]
+  validates :tel, uniqueness: {
               scope: :role,
               conditions: -> { where(discarded_at: nil).where.not(tel_verified_at: nil) },
               message: :existed_acc
             },
-            on: [ :signup, :change_tel ]
+            on: [ :create, :change_tel ]
+
+  validates :role, presence: true, on: [ :login, :create ]
+
   validates :terms_accepted, acceptance: true, on: :create
-  validates :password, length: { in: 8..72 }
-  validates :password_confirmation, length: { in: 8..72 }
+
+  validates :password, length: { in: 8..72 }, on: [ :create, :pw_reset ]
+  validates :password_confirmation, length: { in: 8..72 },  on: [ :create, :pw_reset ]
   validates :bday, comparison: {
     less_than_or_equal_to: -> { MIN_AGE.years.ago.to_date },
     message: ->(object, data) { I18n.t("activerecord.errors.models.user.attributes.bday.invalid_bday", min_age: MIN_AGE) }
-  }
-  validate :pw_complexity, on: [ :signup, :pw_reset ]
-  validate :pw_match, on: [ :signup, :pw_reset ]
+  },  on: [ :create, :update ]
+  validate :pw_complexity, on: [ :create, :pw_reset ]
+  validate :pw_match, on: [ :create, :pw_reset ]
 
   # Interface for controller
   include Otp
@@ -73,8 +80,8 @@ class User < ApplicationRecord
 
   def normalize_inputs
     # Remove leading/trailing whitespace from string fields
-    self.fullname = fullname.strip if fullname.present?
-    self.tel = tel.strip if tel.present?
-    self.address = address.strip if address.present?
+    self.fullname = fullname&.squish
+    self.tel = tel&.squish
+    self.address = address&.squish
   end
 end

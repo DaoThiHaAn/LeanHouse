@@ -1,6 +1,8 @@
-.signup-bg {
-    width: 50%;
-    object-fit: cover;
+.signup-container {
+    background-image: url("/signup-bg.png");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
 }
 
 .greeting p {
@@ -18,11 +20,18 @@
 }
 
 .form-wrapper {
-    height: 100vh;
+    max-height: 80vh;
     overflow-y: scroll;
-    width: 50%;
+    width: 75%;
+    max-width: 450px;
+    background-color: #f9f9f9b5;
+    transition: background-color 0.5s ease-in-out;
+    border-radius: 10px
 }
 
+.form-wrapper:hover {
+    background-color: #f9f9f9f3;
+}
 .form-wrapper h1 {
     color: var(--primary-button-bg);
 }
@@ -66,10 +75,15 @@
 
 .signup-form .form-group {
     width: 50%;
+    min-width: 250px;
 }
 
 .forgot-pw.link {
     color: var(--info-text);
     font-style: italic;
     font-weight: 400
+}
+
+.pw.form-group .form-control.is-invalid + span {
+    margin-right: 30px !important;
 }

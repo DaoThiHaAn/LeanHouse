@@ -1,9 +1,15 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
+  static values = {
+    autoOpen: Boolean // default is Fasle, set to True to make modal auto-opened
+  }
+
   connect() {
     this.modal = new bootstrap.Modal(this.element)
-    this.modal.show()
+    if (this.autoOpenValue) {
+      this.modal.show()
+    }
 
     this.closeHandler = () => this.modal.hide()
 

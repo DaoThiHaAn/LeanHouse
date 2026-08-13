@@ -15,7 +15,8 @@ class PhoneVerification
       user.update!(@params)
     else
       user = User.new(@params)
-      user.save!(context: :signup)
+      # user.save!(context: :signup)
+      user.save!
     end
 
    create_otp(user)

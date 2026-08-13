@@ -1,0 +1,76 @@
+vi:
+  privacy_policy:
+    title: "Chính sách bảo mật - LEANHOUSE"
+
+    last_updated: "Cập nhật lần cuối: %{date}"
+
+    introduction: "LeanHouse cam kết bảo vệ dữ liệu cá nhân của người dùng. Chính sách này giải thích cách LeanHouse thu thập, sử dụng, lưu trữ và bảo vệ thông tin."
+
+    collection:
+      title: "1. Thông tin chúng tôi thu thập"
+      content: "LeanHouse thu thập các loại thông tin sau:"
+
+      user_provided:
+        title: "1.1. Thông tin do người dùng cung cấp"
+        content_1: "Họ tên, số điện thoại, số căn cước công dân"
+        content_2: "Thông tin phòng trọ và hợp đồng"
+        content_3: "Hình ảnh giấy tờ (nếu người dùng tải lên)"
+
+      technical:
+        title: "1.2. Thông tin kỹ thuật tự động thu thập"
+        content_1: "Địa chỉ IP"
+        content_2: "Thiết bị và trình duyệt"
+        content_3: "Lịch sử truy cập để tối ưu trải nghiệm"
+
+    usage:
+      title: "2. Mục đích sử dụng thông tin"
+      content: "Thông tin thu thập được sử dụng cho:"
+      content_1: "Quản lý tài khoản và dữ liệu người thuê/phòng trọ"
+      content_2: "Hiển thị hợp đồng, hóa đơn, yêu cầu dịch vụ"
+      content_3: "Nâng cấp tính năng và đảm bảo an toàn hệ thống"
+      content_4: "Liên hệ hỗ trợ khi cần thiết"
+      content_5: "LeanHouse không sử dụng thông tin cho mục đích thương mại hóa hoặc gửi quảng cáo không mong muốn"
+
+    sharing:
+      title: "3. Chia sẻ thông tin"
+      content: "LeanHouse không chia sẻ thông tin cá nhân cho bên thứ ba, trừ khi:"
+      content_1: "Có sự đồng ý của người dùng"
+      content_2: "Có yêu cầu của cơ quan chức năng theo quy định pháp luật"
+      content_3: "Cần thiết để vận hành hệ thống (ví dụ: dịch vụ lưu trữ dữ liệu)"
+      content_4: "Các đối tác kỹ thuật chỉ được tiếp cận thông tin ở mức tối thiểu cần thiết"
+
+    security:
+      title: "4. Lưu trữ và bảo mật dữ liệu"
+      content: "LeanHouse áp dụng các biện pháp bảo mật gồm:"
+      content_1: "Mã hóa dữ liệu trong quá trình truyền tải"
+      content_2: "Hạn chế truy cập nội bộ theo phân quyền"
+      content_3: "Sao lưu dữ liệu định kỳ"
+      content_4: "Sử dụng nền tảng lưu trữ an toàn"
+
+      user_responsibility: "Tuy nhiên, không hệ thống nào đảm bảo bảo mật tuyệt đối. Người dùng cũng cần:"
+      user_responsibility_1: "Bảo vệ thông tin đăng nhập"
+      user_responsibility_2: "Không chia sẻ mật khẩu với người khác"
+
+    user_rights:
+      title: "5. Quyền của người dùng"
+      content: "Bạn có quyền:"
+      content_1: "Xem và cập nhật thông tin cá nhân"
+      content_2: "Yêu cầu xóa dữ liệu (nếu không trái luật hoặc không ảnh hưởng vận hành)"
+      content_3: "Yêu cầu xuất dữ liệu cá nhân"
+      content_4: "Khiếu nại nếu nghi ngờ thông tin bị lạm dụng"
+
+    cookies:
+      title: "6. Cookie và công nghệ theo dõi"
+      content: "LeanHouse có thể sử dụng:"
+      content_1: "Cookie phiên hoạt động"
+      content_2: "Cookie cải thiện trải nghiệm giao diện"
+      content_3: "Cookie không được dùng để theo dõi ngoài phạm vi hệ thống"
+
+    external_links:
+      title: "7. Liên kết bên ngoài"
+      content: "Nếu LeanHouse dẫn đến website của bên thứ ba, chúng tôi không chịu trách nhiệm về nội dung hoặc chính sách bảo mật của các bên đó."
+
+    changes:
+      title: "8. Thay đổi chính sách bảo mật"
+      content: "LeanHouse có quyền điều chỉnh chính sách để phù hợp với quy định mới hoặc nhu cầu vận hành. Mọi thay đổi sẽ được thông báo trên hệ thống."
+      

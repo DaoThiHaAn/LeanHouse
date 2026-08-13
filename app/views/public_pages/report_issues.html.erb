@@ -1,0 +1,66 @@
+<%= content_for :title, t("page_titles.issue_report") %>
+
+<div class="main-container w-50 py-4">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6">
+
+      <h1 class="text-center fw-bold mb-4">
+        <%= t("incident_reports.new.title").upcase %>
+      </h1>
+
+      <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-body p-4 p-md-5">
+
+          <%= form_with model: @incident_report do |form| %>
+
+            <% if @incident_report.errors.any? %>
+              <div class="alert alert-danger" role="alert">
+                <h2 class="h6 fw-bold">
+                  <%= t("errors.messages.form_invalid") %>
+                </h2>
+
+                <ul class="mb-0">
+                  <% @incident_report.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
+
+            <div class="mb-4">
+              <%= form.label :email, t("incident_reports.new.email"), class: "form-label fw-semibold" %>
+
+              <%= form.email_field :email,
+                  class: "form-control",
+                  placeholder: t("incident_reports.new.email_placeholder"),
+                  autocomplete: "email" %>
+            </div>
+
+            <div class="mb-4">
+              <%= form.label :title, t("incident_reports.new.subject"), class: "form-label fw-semibold" %>
+
+              <%= form.text_field :title,
+                  class: "form-control",
+                  placeholder: t("incident_reports.new.subject_placeholder") %>
+            </div>
+
+            <div class="mb-4">
+              <%= form.label :description, t("incident_reports.new.description"), class: "form-label fw-semibold" %>
+
+              <%= form.text_area :description,
+                  class: "form-control",
+                  rows: 5,
+                  placeholder: t("incident_reports.new.description_placeholder") %>
+            </div>
+
+            <div class="d-flex justify-content-center">
+              <%= form.submit t("submit"),
+                  class: "btn btn-primary px-5 rounded-pill" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

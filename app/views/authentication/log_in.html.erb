@@ -1,13 +1,12 @@
-<% content_for :title, "Login" %>
+<% content_for :title, t("auth.log_in") %>
 
-<div class="d-flex w-100 h-100 signup-container">
-    <%=image_tag "signup-bg.png", alt: "Sign Up Background", class: "align-self-stretch signup-bg" %>
-    <div class="form-wrapper d-flex flex-column gap-4 align-items-center py-4 flex-fill">
+<div class="w-100 signup-container">
+    <div class="form-wrapper d-flex flex-column gap-4 align-items-center py-4 mx-auto my-5">
         <div class="greeting">
             <p class="mb-2 text-center"><%= t('welcome.back') %></p>
             <p class="text-center">LEANHOUSE !</p>
         </div>
-        <h1><%= t("auth.sign_up").upcase %></h1>
+        <h1><%= t("auth.log_in").upcase %></h1>
 
         <%= form_with(model: @user, url: handle_login_path, method: :post, class: "signup-form w-100 d-flex align-items-center justify-content-center flex-column gap-4") do |f| %>
 
@@ -38,19 +37,23 @@
                         <p><%= t('role.landlord') %></p>
                     </div>
                 </div>
+
+                <%= field_error(@user, :role, classes: "mt-1 w-auto") %>
             </div>
 
             <!-- Tel -->
             <div class="form-group">
                 <%= f.label :tel, t('form.profile.tel') + ":", class: "form-label" %> <span class="asterisk">*</span>
                 <%= f.telephone_field :tel, 
-                    class: "form-control", 
+                    class: "form-control #{invalid_class(@user, :tel)}", 
                     placeholder: t('form.profile.tel_login_placeholder'), 
-                    minlength: 10, maxlength: 10, required: true, autofocus: true %>
+                    required: true, autofocus: true %>
+
+                <%= field_error(@user, :tel, classes: "mt-2") %>
             </div>
 
             <!-- Password -->
-            <div class="form-group" data-controller="form">
+            <div class="pw form-group" data-controller="form">
                 <%= f.label :password, class: "form-label" do%>
                         <%= t('form.profile.password') +  ": "%>
                         <span class="asterisk">*</span>
@@ -81,7 +84,7 @@
 
         <div class="d-flex flex-wrap gap-2"> 
             <%= t('form.profile.not_have_acc')%> 
-            <%= link_to t('form.profile.reg_now'), login_path, class: "fw-bold link" %> 
+            <%= link_to t('form.profile.reg_now'), signup_path, class: "fw-bold link" %> 
         </div>
     </div>
 </div>

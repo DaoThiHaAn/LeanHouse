@@ -1,0 +1,48 @@
+<div>
+  <button type="button" class="fw-bold text-muted text-decoration-underline bg-transparent" data-bs-toggle="modal" data-bs-target="#telVerifyHelpModal">
+    <%= t("new_tel_owner.self") %>
+  </button>
+
+  <%# Modal %>
+  <div class="modal fade" id="telVerifyHelpModal" tabindex="-1" aria-hidden="true" data-controller="modal">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content px-2">
+        <div class="modal-header">
+          <div class="d-flex align-items-center justify-content-start gap-1 mx-auto">
+            <span class="material-symbols-outlined">help</span>
+            <h2 class="modal-title fs-5" id="telVerifyHelpModalLabel"><%= t("new_tel_owner.self") %></h2>
+          </div>
+          <button type="button" class="m-0 btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="help modal-body px-4">
+          <p><%= t("new_tel_owner.content_1")%></p>
+          <ul class="my-3">
+            <li>
+              <p><%= t("new_tel_owner.content_2_html")%></p>
+            </li>
+            <li>
+              <p><%= t("new_tel_owner.content_3_html")%></p>
+              <figure class="d-flex flex-column align-items-center">
+                <%= image_tag "mess-example.png", alt: "Phone screenshot", width: "200px", height: "auto", class: "my-2" %>
+                <figcaption class="text-center fst-italic text-muted">
+                  <%= t("new_tel_owner.fig_caption")%>
+                </figcaption>
+              </figure>
+            </li>
+            <li>
+              <p><%= t("new_tel_owner.content_4_html")%></p>
+              <p><%= t("new_tel_owner.content_4_1_html")%></p>
+            </li>
+          </ul>
+
+          <p><%= t("new_tel_owner.content_5")%></p>
+          <p><%= t("new_tel_owner.content_6")%></p>
+        </div>
+
+      <div class="modal-footer">
+        <button type="button" class="custom-primary-btn" data-bs-dismiss="modal">OK</button>
+      </div>
+    </div>
+  <div>
+</div>

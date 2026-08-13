@@ -1,10 +1,11 @@
 <%# Variables: @form, @disabled %>
 
 <%= turbo_frame_tag "new_tenant_modal" do %>
-  <div class="modal fade" id="newTenanrModal" tabindex="-1" aria-hidden="true" data-controller="modal">
+  <div class="modal fade" id="newTenanrModal" tabindex="-1" aria-hidden="true"
+        data-controller="modal" data-modal-auto-open-value="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
 
-      <div class="modal-content">
+      <div class="modal-content px-2">
           <div class="modal-header">
             <h1 class="modal-title fs-5 flex-grow-1 text-center" id="newTenantModalLabel"><%= t("form.tenant.link") %></h1>
             <button type="button" class="m-0 btn-close" data-bs-dismiss="modal" aria-label="Close"></button>

@@ -82,7 +82,7 @@ body {
   font-family: "Nunito Sans", system-ui, sans-serif;
   color: var(--normal-text);
   background-color: var(--body-bg-color);
-  min-width: 700px;
+  /* min-width: 700px; */
   font-size: 1rem;
   min-height: 100vh;
 }
@@ -249,7 +249,7 @@ input {
 }
 
 .custom-primary-btn:hover {
-  background-color: var(--primary-button-hover-bg);
+  background-color: #006ca2;
 }
 
 .custom-secondary-btn {
@@ -376,4 +376,16 @@ input {
 
 .subtle.main-btn:checked {
   background-color: rgb(232, 232, 232);
+}
+
+.help.modal-body p {
+  text-align: justify;
+}
+
+figcaption {
+  font-size: 0.9rem
+}
+
+ul li {
+  margin: 10px
 }

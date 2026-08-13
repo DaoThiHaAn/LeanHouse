@@ -2,9 +2,9 @@
 
 <%= turbo_frame_tag "new_floor_modal" do %>
   <div class="modal fade" id="newFloorModal" tabindex="-1" aria-labelledby="newFloorModalLabel" 
-              data-controller="modal" aria-hidden="true">
+              data-controller="modal" data-modal-auto-open-value="true" aria-hidden="true">
     <div class="modal-dialog">
-      <div class="modal-content">
+      <div class="modal-content px-2">
 
         <%= form_with model: [:landlord, @house, @floor],
                   data: { 

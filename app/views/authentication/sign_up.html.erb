@@ -1,8 +1,7 @@
-<% content_for :title, "Sign Up" %>
+<% content_for :title, t("auth.sign_up") %>
 
-<div class="d-flex w-100 h-100 signup-container">
-    <%=image_tag "signup-bg.png", alt: "Sign Up Background", class: "align-self-stretch signup-bg" %>
-    <div class="form-wrapper d-flex flex-column gap-4 align-items-center py-4 flex-fill">
+<div class="w-100 signup-container">
+    <div class="form-wrapper d-flex flex-column gap-4 align-items-center py-4 mx-auto my-5">
         <div class="greeting">
             <p class="mb-2 text-center"><%= t('welcome.greeting') %></p>
             <p class="text-center">LEANHOUSE !</p>
@@ -194,7 +193,7 @@
 
             <!-- Sex -->
             <div class="form-group d-flex gap-2">
-                <%= form.label :sex, class: "form-label" do %>
+                <%= form.label :sex, class: "form-label flex-shrink-0" do %>
                     <%= t("form.profile.sex") %>:
                     <span class="asterisk">*</span>
                 <% end %>
@@ -212,7 +211,7 @@
 
             <!-- Birthday -->
             <div class="form-group d-flex align-items-center gap-3">
-                <%= form.label :bday, class: "form-label" do%>
+                <%= form.label :bday, class: "form-label flex-shrink-0" do%>
                         <%= t('form.profile.bday') +  ": "%>
                         <span class="asterisk">*</span>
                 <% end %>
@@ -235,5 +234,7 @@
 
             <button type="submit" class="custom-primary-btn"><%= t("form.profile.create_acc") %></button>
         <% end %>
+
+        <%= render "layouts/shared_components/new_tel_owner" %>
     </div>
 </div>

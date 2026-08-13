@@ -1,0 +1,79 @@
+vi:
+  terms:
+    title: "Điều khoản sử dụng - LEANHOUSE"
+
+    last_updated: "Cập nhật lần cuối: %{date}"
+
+    introduction_html: >
+      Chào mừng bạn đến với
+      <strong>LeanHouse</strong>
+      – hệ thống hỗ trợ quản lý phòng trọ và ký túc xá.
+      Khi sử dụng trang web hoặc đăng ký tài khoản, bạn cần phải đồng ý
+      với các Điều khoản Sử dụng sau đây. Vui lòng đọc kỹ trước khi tiếp tục.
+
+    scope:
+      title: "1. Phạm vi dịch vụ"
+      content: "LeanHouse cung cấp nền tảng quản lý phòng trọ/ký túc xá, bao gồm:"
+      content_1: "Quản lý phòng và người thuê"
+      content_2: "Lưu trữ hồ sơ, hợp đồng, hóa đơn"
+      content_3: "Theo dõi yêu cầu, dịch vụ và tình trạng phòng"
+      content_4: "Hệ thống chỉ có chức năng hỗ trợ, không thay thế cho các giấy tờ hoặc thỏa thuận pháp lý chính thức."
+
+    accounts:
+      title: "2. Tài khoản người dùng"
+
+      responsibilities:
+        title: "2.1. Trách nhiệm"
+        content: "Người dùng cam kết:"
+        content_1: "Cung cấp thông tin chính xác khi đăng ký"
+        content_2: "Bảo mật tài khoản và chịu trách nhiệm cho mọi hoạt động trong tài khoản"
+        content_3: "Không sử dụng tài khoản của người khác nếu không được cho phép"
+
+      leanhouse_rights:
+        title: "2.2. Quyền hạn của LeanHouse"
+        content: "LeanHouse có quyền:"
+        content_1: "Tạm ngưng hoặc khóa tài khoản vi phạm"
+        content_2: "Yêu cầu xác minh bổ sung nếu phát hiện dấu hiệu bất thường"
+
+    user_data:
+      title: "3. Dữ liệu và nội dung người dùng"
+      content: "Mọi dữ liệu nhập vào hệ thống do người dùng tự chịu trách nhiệm."
+      content_1: "Người dùng không được đăng tải nội dung:"
+      content_2: "Vi phạm pháp luật, bản quyền, đạo đức"
+      content_3: "Chứa mã độc hoặc ảnh hưởng đến hệ thống"
+      content_4: "LeanHouse có quyền xóa các nội dung vi phạm mà không cần thông báo"
+
+    accuracy:
+      title: "4. Tính chính xác của thông tin"
+      content: "LeanHouse nỗ lực duy trì dữ liệu và tính năng chính xác, nhưng:"
+      content_1: "Không đảm bảo mọi thông tin do người dùng nhập hoàn toàn đúng"
+      content_2: "Không chịu trách nhiệm cho các sai sót phát sinh từ nhập liệu sai, gián đoạn mạng hoặc dịch vụ bên thứ ba"
+
+    contracts:
+      title: "5. Hợp đồng và giá trị pháp lý"
+      content: "Các nội dung hiển thị trong LeanHouse chỉ phục vụ mục đích quản lý."
+      content_1: "Hợp đồng ký bằng văn bản giấy mới là tài liệu pháp lý chính thức."
+      content_2: "LeanHouse không tham gia và không chịu trách nhiệm về tranh chấp giữa chủ trọ và người thuê."
+
+    payments:
+      title: "6. Hóa đơn và thanh toán"
+      content: "Hệ thống chỉ hỗ trợ ghi nhận, không xử lý giao dịch tài chính."
+      content_1: "Mọi khoản phí, nợ hoặc thanh toán là thỏa thuận giữa các bên liên quan."
+
+    liability:
+      title: "7. Giới hạn trách nhiệm"
+      content: "LeanHouse không chịu trách nhiệm cho:"
+      content_1: "Mất mát dữ liệu do lỗi thiết bị cá nhân"
+      content_2: "Thiệt hại gián tiếp, trở ngại kinh doanh hoặc mất lợi nhuận"
+      content_3: "Hành vi vi phạm pháp luật của người dùng"
+
+    prohibited:
+      title: "8. Hành vi bị nghiêm cấm"
+      content_1: "Xâm nhập trái phép hệ thống"
+      content_2: "Sử dụng LeanHouse cho hoạt động gian lận, lừa đảo"
+      content_3: "Lạm dụng dữ liệu người dùng khác"
+      content_4: "Gây gián đoạn hoặc thử phá hoại hệ thống"
+
+    changes:
+      title: "9. Thay đổi điều khoản"
+      content: "LeanHouse có thể cập nhật điều khoản theo nhu cầu vận hành. Bằng cách tiếp tục sử dụng dịch vụ, bạn đồng ý với các thay đổi mới nhất."

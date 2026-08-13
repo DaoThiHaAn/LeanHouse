@@ -34,6 +34,16 @@ class AuthenticationController < ApplicationController
 
   def handle_log_in
     user_params = login_params
+
+    @user = User.new(
+      user_params
+    )
+
+    unless @user.valid?(:login)
+      # Rails.logger.debug "LOGIN VALIDATION ERRORS: #{@user.errors.full_messages}"
+      return render "authentication/log_in", status: :unprocessable_entity
+    end
+
     existing_acc = User.find_acc(user_params[:tel], user_params[:role])
 
     return render_login_error(t("errors.tel_unregistered")) unless existing_acc
