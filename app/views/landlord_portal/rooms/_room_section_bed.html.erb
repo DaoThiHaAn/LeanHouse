@@ -9,7 +9,7 @@
 </div>
 
 <%# query: state=? %>
-<%= form_with url: table_bed_landlord_house_rooms_path(house),
+<%= form_with url: filtered_table_landlord_house_rooms_path(house),
               method: :get,
               data: {turbo_frame: "room_table_bed"} do |f| %>
 	<div class="d-flex align-items-center gap-2 mb-5">
@@ -26,7 +26,7 @@
 <% end %>
 
 <%= turbo_frame_tag "room_table_bed",
-      src: table_bed_landlord_house_rooms_path(house, params.permit(:page, :state)),
+      src: filtered_table_landlord_house_rooms_path(house, params.permit(:page, :state)),
       loading: :lazy,
       data: {
         controller: "pagination-sync",

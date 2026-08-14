@@ -5,6 +5,9 @@ class Room < ApplicationRecord
   has_one :house, through: :floor
   has_one :rental_unit, as: :rentable, dependent: :destroy
   has_many :beds, inverse_of: :room, dependent: :destroy
+  has_many :tenant_stays, through: :rental_unit
+  has_many :tenants, through: :tenant_stays
+  has_many :bed_rental_units, through: :beds, source: :rental_unit
   has_many :room_services, inverse_of: :room, dependent: :destroy
   has_many :service_variants, through: :room_services, inverse_of: :rooms
   has_many :services, through: :service_variants, inverse_of: :rooms
@@ -99,6 +102,26 @@ class Room < ApplicationRecord
     end
 
     touch
+  end
+
+  # Return all tenants currently staying in a room
+  def all_staying_tenants
+    tenant_stays.staying.includes(tenant: :user).map(&:tenant)
+  end
+
+  # Tenants renting individual beds in the room
+  # @return [{tenant: ..., bed: ...}, ...]
+  def all_staying_bed_tenants
+    beds.includes(
+      rental_unit: { tenant_stays: { tenant: :user } }
+    ).flat_map do |bed|
+      bed.rental_unit.tenant_stays.staying.map do |stay|
+        {
+          tenant: stay.tenant,
+          bed: bed
+        }
+      end
+    end
   end
 
   private

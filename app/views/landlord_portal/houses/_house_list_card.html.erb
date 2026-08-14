@@ -1,0 +1,20 @@
+<%# Local variables: house, url %>
+
+<div class="card house-card-list flex-shrink-0">
+  <div class="card-body px-2 py-1 d-flex gap-1 align-items-center">
+    <%= link_to url, class: "house-card-link", data: {turbo_frame: "_top"} do %>
+      <p class="card-title fw-bold d-flex align-items-center gap-1 mb-0">
+        <span class="material-symbols-filled">roofing</span>
+        <%= house.name %>
+      </p>
+
+      <p class="card-text text-clamp-2 mb-0">
+        <%= house_address(house) %>
+      </p>
+
+      <span class="material-symbols-outlined house-card-arrow">
+        keyboard_double_arrow_right
+      </span>
+    <% end %>
+  </div>
+</div>

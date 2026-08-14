@@ -47,7 +47,7 @@
                 <% end %>
 
                 <%= link_to edit_landlord_house_room_path(house, room),
-                          data: { turbo_frame: "_top" },
+                          data: { turbo_frame: "edit_room_modal" },
                           title: t("edit"),
                           class: "table-action" do %>
                   <span class="material-symbols-filled">edit</span>

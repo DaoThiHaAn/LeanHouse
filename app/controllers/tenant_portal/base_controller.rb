@@ -5,10 +5,14 @@ module TenantPortal
 
     private
 
+    # To retrieve:
+    # room: @tenant_stay.rental_unit.room
+    # bed: @tenant_stay.rental_unit.bed&
+    # floor: @tenant_stay.rental_unit.floor
     def set_tenant_and_house
       @tenant = current_user.tenant
       @tenant_stay = @tenant.tenant_stays
-                            .where(check_out: nil)
+                            .where(checkout_at: nil)
                             .includes(rental_unit: :rentable)
                             .first
 

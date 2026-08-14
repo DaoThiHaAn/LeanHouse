@@ -1,7 +1,7 @@
 <%# Local varaible: house, provinces, communes %>
 
 <%= form_with model: house, url: landlord_houses_path( house), local: true, 
-        class:"px-5 d-flex align-items-center flex-column gap-4" ,
+        class:"px-5 d-flex flex-column gap-4" ,
         data: { 
           controller: "loading",
           loading_text_value: t("saving") + "...",
@@ -185,7 +185,7 @@
     </div>
   </div>
 
-  <div class="d-flex align-items-center gap-4">
+  <div class="d-flex justify-content-center gap-4">
     <%# Cancel button %>
     <%= link_to t("cancel"), edit_landlord_house_path(@house),
         class: "d-block cancel-btn",

@@ -7,20 +7,17 @@ class LandlordPortal::RoomsController < LandlordPortal::BaseController
   def index
   end
 
-  # Return the table partial in bed mode
-  def table_bed
-    @rooms = filtered_rooms_bed_mode
-
-    render partial: "room_table_bed",
-           locals: { house: @house, rooms: @rooms }
-  end
-
-  # Return the table partial in room mode
-  def table
+  # Return the filtered table partial
+  def filtered_table
     @rooms = filtered_rooms
 
-    render partial: "room_table_bed",
+    if @house.room?
+      render partial: "room_table",
+            locals: { house: @house, rooms: @rooms }
+    else
+      render partial: "room_table_bed",
            locals: { house: @house, rooms: @rooms }
+    end
   end
 
   def new
@@ -73,13 +70,16 @@ class LandlordPortal::RoomsController < LandlordPortal::BaseController
     @room_services = @room.room_services.includes(service_variant: :service)
 
     if @house.bed?
+      @tenants = @room.all_staying_bed_tenants
       render "show_bedmode"
     else
+      @tenants = @room.all_staying_tenants
       render "show_roommode"
     end
   end
 
   def edit
+    @services = @house.services.includes(:service_variants)
   end
 
   def update
@@ -118,7 +118,7 @@ class LandlordPortal::RoomsController < LandlordPortal::BaseController
     authorize! :update, @house
   end
 
-  def filtered_rooms_bed_mode
+  def filtered_rooms
     scope = @house.rooms.active.includes(:floor)
 
     case params[:state]
@@ -134,17 +134,7 @@ class LandlordPortal::RoomsController < LandlordPortal::BaseController
   end
 
   # TODO
-  def filtered_rooms
-    scope = @house.rooms.active.sorted.includes(:floor)
-
-    case params[:state]
-    when "available"
-      scope = scope.available
-    when "full"
-      scope = scope.full
-    end
-
-    scope.page(params[:page]).per(20)
+  def filtered_beds
   end
 
   def set_house_from_room

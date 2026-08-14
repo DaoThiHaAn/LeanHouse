@@ -10,7 +10,7 @@ module HousesHelper
 
   def house_mode_icon(house)
     return "living" if house&.room?
-    "single_bed"
+    "bed"
   end
 
   def occupied_rate_format(house)

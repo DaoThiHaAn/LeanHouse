@@ -1,5 +1,5 @@
   class LandlordPortal::HousesController < LandlordPortal::BaseController
-    skip_before_action :set_house, :set_other_houses, only: [ :new, :create, :index ]
+    skip_before_action :set_house, only: [ :new, :create, :index ]
     skip_before_action :require_house, only: [ :new, :create ]
     before_action :set_location_data, only: [ :new, :edit ]
 
@@ -82,6 +82,11 @@
         format.html { redirect_to houses_path, notice: "House was successfully destroyed.", status: :see_other }
         format.json { head :no_content }
       end
+    end
+
+    def other_houses
+      @other_houses = @landlord.get_other_houses(@house.id).select(:id, :name, :address_l1, :address_l2, :address_l3)
+      render "house_list_modal"
     end
 
 

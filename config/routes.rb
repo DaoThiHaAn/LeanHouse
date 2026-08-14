@@ -40,8 +40,10 @@ Rails.application.routes.draw do
     resource :dashboard, only: [ :show ]
 
     resources :posts
+
     resources :houses do
       member do # act on 1 single record
+        get "/other-houses", to: "houses#other_houses", as: :other_houses
         patch :change_mode
         get :check_delete
       end
@@ -50,8 +52,7 @@ Rails.application.routes.draw do
 
       resources :rooms do
         collection do # act on the collection of records
-          get :table_bed
-          get :table
+          get :filtered_table
         end
       end
 

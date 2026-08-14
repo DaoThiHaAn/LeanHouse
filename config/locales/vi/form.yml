@@ -118,6 +118,7 @@ vi:
       name: "Tên phòng"
       input: "Nhập tên phòng"
       add: "Tạo phòng mới"
+      edit: "Chỉnh sửa phòng"
       state: "Tình trạng phòng"
       available: "Còn chỗ"
       full: "Hết chỗ"
@@ -148,6 +149,7 @@ vi:
       select_unit: "Vị trí thuê"
       select_unit_info: "Màn hình chỉ hiển thị các vị trí còn trống."
       none: "Chưa ghi nhận khách thuê!"
+      checkin_at: "Ngày vào ở"
 
 
       no_house: "Bạn chưa được kết nối với Nhà nào!"

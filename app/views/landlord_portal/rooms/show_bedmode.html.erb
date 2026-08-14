@@ -34,7 +34,30 @@
             <% if @room.tenants_count == 0 %>
               <p class="mt-1"><%= t("none") %></p>
             <% else %>
+              <div class="floor table-responsive border rounded mt-2">
+                <table class="table table-bordered table-hover align-middle mb-0">
+                  <thead class="table-light sticky-top">
+                    <tr>
+                      <th><%= t("form.profile.fullname") %></th>
+                      <th><%= t("form.profile.tel") %></th>
+                      <th><%= t("form.bed.self") %></th>
+                    </tr>
+                  </thead>
 
+                  <tbody>
+                    <% @tenants.each do |item| 
+                      tenant = item[:tenant]
+                      bed = item[:bed]
+                    %>
+                      <tr>
+                        <td><%= tenant.user.fullname %></td>
+                        <td><%= tenant.user.tel %></td>
+                        <td><%= bed.name %></td>
+                      </tr>
+                    <% end %>
+                  </tbody>
+                </table>
+              </div>
             <% end %>
           </div>
 
@@ -44,7 +67,10 @@
         <div class="modal-footer d-flex justify-content-between align-items-center">
           <%# Edit button %>
           <%= link_to edit_landlord_house_room_path(@house, @room), 
-                data: { turbo_frame: "_top" }, # force Rails to direct to a new page
+                data: { 
+                  turbo_frame: "edit_room_modal",
+                  action: "click->modal#close"
+                },
                 class: "main-btn d-flex align-items-center justify-content-center gap-1" do %>
             <span class="material-symbols-filled">edit</span>
             <%=t("edit")%>

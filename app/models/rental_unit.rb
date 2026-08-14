@@ -12,4 +12,25 @@ class RentalUnit < ApplicationRecord
   def available?
     rentable.active? && rentable.available?
   end
+
+  def bed
+    rentable if rentable_type == "Bed"
+  end
+
+  def room
+    case rentable
+    when Room
+      rentable
+    when Bed
+      rentable.room
+    end
+  end
+
+  def floor
+    room&.floor
+  end
+
+  def house
+    room&.house
+  end
 end

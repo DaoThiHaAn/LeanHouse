@@ -47,35 +47,26 @@
 							notifications_off
 						</span>
 
-						<p class="mb-0">
-							<%= t("form.noti.empty") %>
-						</p>
+						<p class="mb-0"><%= t("form.noti.empty") %></p>
 					</li>
 
 				<% else %>
-					<li class="py-2 px-3 d-flex justify-content-end">
+					<div class="py-1 px-3 d-flex justify-content-end border-bottom">
 						<%= link_to "#", class: "text-danger fw-medium fst-italic mark-as-read" do %>
-							<span class="text-danger material-symbols-outlined">
-								done_all
-							</span>
+							<span class="text-danger material-symbols-outlined">done_all</span>
 							<%= t("form.noti.mark_as_read") %>
 						<% end %>
-					</li>
+					</div>
 
 					<% @notifications.each do |notification| %>
 						<li class="py-2 px-3 d-flex flex-column gap-2 <%= "unread" unless notification.read? %>">
+							<p class="fw-bold title text-clamp-1"><%= notification.title %></p>
 
-							<p class="fw-semibold text-clamp-1">
-								<%= notification.title %>
-							</p>
+							<p class="noti-content text-clamp-2"><%= notification.message %></p>
 
-							<p class="noti-content text-clamp-2">
-								<%= notification.message %>
-							</p>
-
-							<div class="noti-footer d-flex justify-content-between text-muted">
+							<div class="noti-footer mt-2 d-flex justify-content-between text-muted">
 								<p>
-									<%= time_ago_in_words(notification.created_at) + t("ago").downcase %>
+									<%= time_ago_in_words(notification.created_at) + " " + t("ago").downcase %>
 								</p>
 
 								<%= link_to t("view_detail"), notification.url %>
@@ -90,7 +81,7 @@
 <%else%>
     <%= link_to t("auth.sign_up"), signup_path, class: "signup-btn"%>
 
-    <%= link_to login_path, class: "login-btn gap-1 d-flex align-items-center" do %>
+    <%= link_to login_path, class: "login-btn gap-1 d-flex align-items-center flex-shrink-0" do %>
         <%= t("auth.log_in") %>
         <span class="material-symbols-filled">door_open</span>
     <% end %>

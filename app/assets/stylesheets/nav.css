@@ -245,8 +245,8 @@
 
 .notification-dropdown .dropdown-menu {
     width: 300px;
-		max-height: 500px;
-		overflow-y: scroll;
+    max-height: 500px;
+    overflow-y: auto;
 }
 
 .notification-dropdown button:hover, .profile-dropdown button:hover {
@@ -257,17 +257,29 @@
 	background-color: var(--dropdown-link-hover-bg);
 }
 
-.notification-dropdown .read {
-	background-color: #edefee;
+.notification-dropdown li {
+	margin: 0;
 }
 
-.noti-footer {
+.notification-dropdown .unread {
+    background-color: #eff6f9;
+}
+
+.notification-dropdown li:hover {
+    background-color: whitesmoke;
+}
+
+.notification-dropdown .title {
+    font-size: 0.9rem
+}
+
+.noti-footer, .noti-footer a {
 	font-size: 0.8rem;
 	font-style: italic;
 }
 
 .noti-content {
-	font-size: 0.9rem;
+	font-size: 0.85rem;
 }
 
 #navbarSupportedContent {

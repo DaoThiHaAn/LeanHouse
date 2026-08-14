@@ -1,5 +1,6 @@
 vi:
   dashboard:
+    self: "Tổng quan"
     landlord:
       title: "BÁO CÁO TỔNG QUAN HOẠT ĐỘNG CỦA TẤT CẢ NHÀ"
       total_revenue: "Tổng doanh thu tháng này"
@@ -12,4 +13,7 @@ vi:
       pending_requests: "Yêu cầu chưa xử lý"
       invoices: "Hợp đồng sắp hết hạn, quá hạn"
       service_usage: "Mức sử dụng dịch vụ tháng"
+
+    tenant:
+      title: 
 

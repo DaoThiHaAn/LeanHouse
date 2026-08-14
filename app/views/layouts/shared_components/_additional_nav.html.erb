@@ -12,45 +12,25 @@
            <span class="material-symbols-outlined m-auto">arrow_left_alt</span>
         <% end %>
 
-        <!-- House card with Dropdown Menu -->
+        <!-- House card with change btn -->
         <div class="card active house-card dropdown me-4 flex-shrink-0">
             <div class="card-body px-2 py-1 d-flex gap-1 align-items-center">
                 <div>
                     <p class="card-title fw-bold d-flex align-items-center gap-1 mb-0">
-                        <span class="material-symbols-outlined">location_home</span>
+                        <span class="material-symbols-filled">roofing</span>
                         <%= house.name %>
                     </p>
                     <p class="card-text text-clamp-2 mb-0"><%= house_address(house) %></p>
                 </div>
             
-                <!-- Dropdown Trigger Button -->
-                <div>
-                    <button type="button" 
-                            class="other-house-btn d-flex align-items-center rounded-circle" 
-                            data-bs-toggle="dropdown"
-                            aria-expanded="false"
-                            title="<%= t('bar.other_houses') %>">
-                        <span class="material-symbols-outlined">arrow_drop_down</span>
-                    </button>
-
-                    <!-- Dropdown Menu List -->
-                    <ul class="house dropdown-menu dropdown-menu-end shadow-sm">
-                        <li><h6 class="dropdown-header"><%= t('bar.other_houses') %></h6></li>
-                        <li><hr class="dropdown-divider"></li>
-                        
-                        <% if other_houses.any? %>
-                            <% other_houses.each do |other_house| %>
-                                <li>
-                                    <%= link_to landlord_house_rooms_path(other_house), class: "dropdown-item d-flex flex-column py-2" do %>
-                                        <span class="fw-bold text-dark"><%= other_house.name %></span>
-                                    <% end %>
-                                </li>
-                            <% end %>
-                        <% else %>
-                            <li><span class="dropdown-item-text text-muted"><%= t('bar.no_other_houses') %></span></li>
-                        <% end %>
-                    </ul>
-                </div>
+                <!-- Change house Button -->
+                <button type="button" 
+                        class="other-house-btn d-flex align-items-center rounded-circle" 
+                        title="<%= t('bar.other_houses') %>">
+                    <%= link_to other_houses_landlord_house_path(@house), data: {turbo_frame: "other_houses"} do%>
+                        <span class="material-symbols-outlined">more_vert</span>
+                    <% end %>
+                </button>
             </div>
         </div>
 
@@ -137,5 +117,4 @@
       chevron_line_up
     </span>
   </button>
-
 </div>

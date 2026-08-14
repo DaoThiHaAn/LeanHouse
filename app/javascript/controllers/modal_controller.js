@@ -20,4 +20,8 @@ export default class extends Controller {
     window.removeEventListener("close-modal", this.closeHandler)
     this.modal.dispose()
   }
+
+  close() {
+    this.modal.hide()
+  }
 }

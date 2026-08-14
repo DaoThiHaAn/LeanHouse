@@ -11,6 +11,9 @@
       <%= yield %>
     </div>
   </div>
+
+  <%# House list modal %>
+  <%= turbo_frame_tag "other_houses" %>
 <% end %>
 
 <%# Pass this up to application.html.erb %>

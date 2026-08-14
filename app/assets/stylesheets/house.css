@@ -203,3 +203,43 @@
     border: 1px solid rgb(225, 225, 182);
     border-left-width: 3px;
 }
+
+.house-card-list {
+    width: 250px;
+    background-color: #ebfbfb;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.house-card-list:hover {
+    background-color: #d4edee;
+}
+
+.house-card-list {
+  position: relative;
+  overflow: visible;
+}
+
+.house-card-arrow {
+  position: absolute;
+  top: 50%;
+  right: -0.5rem;
+  opacity: 0;
+  transform: translate(-0.5rem, -50%);
+  transition: opacity 0.5s ease;
+}
+
+.house-card-list:hover .house-card-arrow {
+  opacity: 0.7;
+  animation: arrow-slide 1.5s ease-in-out infinite;
+}
+
+@keyframes arrow-slide {
+  0%,
+  100% {
+    transform: translate(-0.5rem, -50%);
+  }
+
+  50% {
+    transform: translate(0.4rem, -50%);
+  }
+}

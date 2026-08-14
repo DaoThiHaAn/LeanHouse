@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_08_11_084101) do
+ActiveRecord::Schema[8.0].define(version: 2026_08_13_192646) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "unaccent"
@@ -163,18 +163,16 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_11_084101) do
   create_table "tenant_stays", force: :cascade do |t|
     t.bigint "tenant_id", null: false
     t.bigint "rental_unit_id", null: false
-    t.datetime "check_in", null: false
-    t.datetime "check_out"
+    t.datetime "checkin_at", null: false
+    t.datetime "checkout_at"
     t.boolean "has_contract", default: false, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["rental_unit_id", "check_in"], name: "index_tenant_stays_on_rental_unit_id_and_check_in"
-    t.index ["rental_unit_id"], name: "index_tenant_stays_on_active_rental_unit", unique: true, where: "(check_out IS NULL)"
+    t.index ["rental_unit_id", "checkin_at"], name: "index_tenant_stays_on_rental_unit_id_and_checkin_at"
+    t.index ["rental_unit_id"], name: "index_tenant_stays_on_active_rental_unit", unique: true, where: "(checkout_at IS NULL)"
     t.index ["rental_unit_id"], name: "index_tenant_stays_on_rental_unit_id"
-    t.index ["tenant_id", "check_in"], name: "index_tenant_stays_on_tenant_id_and_check_in"
-    t.index ["tenant_id"], name: "index_tenant_stays_on_active_tenant", unique: true, where: "(check_out IS NULL)"
+    t.index ["tenant_id", "checkin_at"], name: "index_tenant_stays_on_tenant_id_and_checkin_at"
+    t.index ["tenant_id"], name: "index_tenant_stays_on_active_tenant", unique: true, where: "(checkout_at IS NULL)"
     t.index ["tenant_id"], name: "index_tenant_stays_on_tenant_id"
-    t.check_constraint "check_out IS NULL OR check_out >= check_in", name: "tenant_stays_valid_dates"
+    t.check_constraint "checkout_at IS NULL OR checkout_at >= checkin_at", name: "tenant_stays_valid_dates"
   end
 
   create_table "tenants", force: :cascade do |t|

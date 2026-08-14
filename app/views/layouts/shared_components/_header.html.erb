@@ -22,14 +22,14 @@
     <!-- Nav links -->
     <%= render "layouts/shared_components/nav_link" %>
 
-    <div class="d-flex gap-3 align-items-center">
+    <div class="d-flex gap-2 align-items-center">
         <%# User authentication links %>
       <%= render "layouts/shared_components/auth_box" %>
 
       <%# Language selector%>
       <div class="nav-item dropdown lang-switcher">
         <a class="nav-link lang-btn dropdown-toggle d-flex justify-content-center align-items-center gap-1"
-            type="button"
+            type="button" title="<%= t("bar.lang_switch")%>"
             id="langDropdown"
             data-bs-toggle="dropdown"
             aria-expanded="false">

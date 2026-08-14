@@ -51,6 +51,7 @@ vi:
     secondary_toggle_expand: "Hiển thị thanh quản lý"
     secondary_toggle_close: "Đóng thanh quản lý"
     back_house_index: "Quay về Danh sách Nhà"
+    lang_switch: "Chuyển đổi ngôn ngữ"
 
   auth:
     sign_up: "Đăng Ký"

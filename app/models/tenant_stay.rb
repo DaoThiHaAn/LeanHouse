@@ -2,7 +2,11 @@ class TenantStay < ApplicationRecord
   belongs_to :tenant, inverse_of: :tenant_stays
   belongs_to :rental_unit, inverse_of: :tenant_stays
 
-  validates :check_out, comparison: { greater_than_or_equal_to: :check_in }, allow_nil: true
+  validates :checkout_at, comparison: { greater_than_or_equal_to: :checkin_at }, allow_nil: true
+
+  scope :staying, -> { where(checkout_at: nil) }
+
+  # MODEL METHODS
 
   # Create an active stay for a tenant and an available unit in the given house.
   def self.link!(house:, tenant_id:, rental_unit_id:)
@@ -22,7 +26,7 @@ class TenantStay < ApplicationRecord
         rental_unit.rentable.update!(is_available: false) if rental_unit.rentable.is_a?(Bed)
       end
 
-      create!(tenant: tenant, rental_unit: rental_unit, check_in: Time.current)
+      create!(tenant: tenant, rental_unit: rental_unit, checkin_at: Time.current)
     end
 
     # Send notification

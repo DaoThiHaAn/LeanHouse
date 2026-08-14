@@ -1,1 +1,28 @@
-TENANT DASHBOARD
+<%# Variables: @tenant, @tenant_stay, @house %>
+<% content_for :title, t("dashboard.self") %>
+
+<div class="tenant-dashboard main-container w-75">
+  <h1 class="text-center mb-4"><%=  t("dashboard.self") %> </h1>
+
+  <div class="info-zone py-3 ps-1 pe-4 d-flex">
+    <span class="material-symbols-filled location align-self-center">location_home</span>
+    <div class="d-flex flex-column gap-1">
+      <p class="title fs-4"><%= @house.name %>
+      <p>
+        <% if @house.bed? %>
+          <%= t("form.bed.self") + " " + @tenant_stay.rental_unit.bed&.name + " - " %>
+        <% end%>
+        <%= "#{t("form.room.self")} #{@tenant_stay.rental_unit.room.name}, #{t("form.floor.self")} #{@tenant_stay.rental_unit.floor.name}"%>   
+      </p>
+
+      <p>
+        <span class="material-symbols-outlined">location_on</span>
+        <%= house_address(@house) %>
+      </p>
+      <p class="checkin mt-1">
+        <%= t("form.tenant.checkin_at") + ": "%>
+        <%= @tenant_stay.checkin_at.strftime("%d/%m/%Y")  %>
+      </p>
+    </div>
+  </div>
+</div>

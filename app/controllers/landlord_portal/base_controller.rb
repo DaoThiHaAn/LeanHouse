@@ -5,7 +5,7 @@
 module LandlordPortal
   class BaseController < ApplicationController
     before_action :authenticate_user!
-    before_action :set_landlord, :require_house, :set_house, :set_other_houses
+    before_action :set_landlord, :require_house, :set_house
 
     private
 
@@ -23,12 +23,6 @@ module LandlordPortal
       return unless params[:house_id].present?
 
       @house = House.find(params[:house_id])
-    end
-
-    def set_other_houses
-      return unless @house && @landlord
-
-      @other_houses = @landlord.get_other_houses(@house.id).select(:id, :name)
     end
   end
 end

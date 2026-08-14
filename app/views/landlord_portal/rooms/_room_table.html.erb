@@ -9,12 +9,14 @@
 	<%= t("form.floor.order") %>
 </div>
 
-<div class="table-responsive border rounded w-75 m-auto">
+<div class="table-responsive border rounded w-85 m-auto">
   <table class="table table-bordered table-hover tablse-sm align-middle mb-0">
     <thead class="table-light">
       <tr>
         <th><%=t("form.room.name")%></th>
         <th><%=t("form.room.tenants_count")%></th>
+        <th><%="#{t("form.room.rent")} (đ)"%></th>
+        <th><%="#{t("form.room.deposit")} (đ)"%></th>
         <th class="text-center"><%=t("actions")%></th>
       </tr>
     </thead>
@@ -27,12 +29,16 @@
           </td>
         </tr>
 
-        <% floor_rooms.each do |room| %>
+        <% floor_rooms.each do |room|
+          rental_unit = room.rental_unit
+        %>
           <tr>
             <td><%= "#{t("form.room.self")} #{room.name}" %></td>
             <td>
               <%= room.tenants_count %> / <%= room.max_slots %>
             </td>
+            <td><%= number_with_delimiter(rental_unit.rent) %></td>
+            <td><%= number_with_delimiter(rental_unit.deposit) %></td>
 
             <%# Actions %>
             <td>
@@ -45,7 +51,7 @@
                 <% end %>
 
                 <%= link_to edit_landlord_house_room_path(house, room),
-                          data: { turbo_frame: "_top" },
+                          data: { turbo_frame: "edit_room_modal" },
                           title: t("edit"),
                           class: "table-action" do %>
                   <span class="material-symbols-filled">edit</span>
