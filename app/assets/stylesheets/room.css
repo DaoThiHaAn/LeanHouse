@@ -91,3 +91,8 @@
 .room-name.form-group .field_with_errors{
   width: fit-content
 }
+
+.room.colspan td {
+  background-color: #eff9f4;
+  color: #0d8395;
+}

@@ -1,5 +1,5 @@
 class Room < ApplicationRecord
-  attr_accessor :service_selections
+  attr_accessor :service_selections, :rent, :deposit
 
   belongs_to :floor, inverse_of: :rooms, counter_cache: :rooms_count, touch: true
   has_one :house, through: :floor
@@ -11,6 +11,8 @@ class Room < ApplicationRecord
   has_many :room_services, inverse_of: :room, dependent: :destroy
   has_many :service_variants, through: :room_services, inverse_of: :rooms
   has_many :services, through: :service_variants, inverse_of: :rooms
+
+  before_validation :normalize_name
 
   validates :name, :max_slots, :tenants_count, :area, presence: true
   validates :name, uniqueness: {
@@ -54,11 +56,11 @@ class Room < ApplicationRecord
     tenants_count.zero?
   end
 
-  def create_beds(count:, rent: 0, deposit: 0)
+  def create_beds(count:, rent: 0, deposit: 0, start_at: 0)
     transaction do
       count.times do |i|
         bed = beds.create!(
-          name: (i + 1).to_s,
+          name: (start_at + i + 1).to_s,
         )
 
         bed.create_rental_unit!(
@@ -140,5 +142,9 @@ class Room < ApplicationRecord
         errors.add(:"service_#{service_id}", I18n.t("errors.service_variant_required"))
       end
     end
+  end
+
+  def normalize_name
+    self.name = name&.squish
   end
 end

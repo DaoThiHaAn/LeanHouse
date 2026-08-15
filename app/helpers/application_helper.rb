@@ -31,4 +31,23 @@ module ApplicationHelper
   def format_money(num)
     "#{number_with_delimiter(num, delimiter: ",")} đ"
   end
+
+  # Render the loading spinner
+  def loading_spinner
+    content_tag(
+      :div,
+      class: "d-flex justify-content-center align-items-center p-5"
+    ) do
+      content_tag(
+        :div,
+        content_tag(
+          :span,
+          "#{t("loading")}...",
+          class: "visually-hidden"
+        ),
+        class: "spinner-border text-primary",
+        role: "status"
+      )
+    end
+  end
 end

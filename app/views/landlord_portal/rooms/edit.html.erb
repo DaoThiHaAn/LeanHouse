@@ -6,7 +6,12 @@
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content px-2">
         <div class="modal-header py-2">
-          <h2 class="modal-title fs-5 w-100 text-center" id="editRoomModal"><%= t("form.room.edit") %></h2>
+          <div class="w-100">
+            <h1 class="modal-title fs-5 text-center mb-2" id="editRoomModal"><%= t("form.room.edit") %></h1>
+            <p class="fs-5 fw-semibold text-center">
+              <%= "#{t("form.room.self")} #{@room.name_was}"%> - <%= "#{t("form.floor.self")} #{@room.floor.name}"%>
+            </p>
+          </div>
           <button type="button" class="m-0 btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
 
@@ -18,7 +23,7 @@
               extra_classes: "gap-2")  %>
           </div>
 
-          <%= form_with model: @room, url: landlord_house_rooms_path(@house, @room),
+          <%= form_with model: @room, url: landlord_house_room_path(@house, @room),
               class:"d-flex flex-column gap-4 px-3 mx-auto" ,
               data: { 
                 controller: "loading",
@@ -106,6 +111,7 @@
             <div class="form-label"><%= t('form.service.self')%>:</div>
 
             <% @services.each do |service| %>
+              <% applied_variant = @applied_service_variants_by_service_id[service.id] %>
               <div class="mb-4">
                 <div class="service-row d-flex align-items-center gap-3"
                       data-controller="service-selection">
@@ -113,7 +119,7 @@
                     <%= check_box_tag(
                         "room[service_selections][#{service.id}][selected]",
                         "1",
-                        false,
+                        applied_variant.present?,
                         class: "service-checkbox",
                         id: "service_#{service.id}",
                         data: {
@@ -135,7 +141,7 @@
                     <%# Actual value submitted to Rails %>
                     <%= hidden_field_tag(
                           "room[service_selections][#{service.id}][variant_id]",
-                          "",
+                          applied_variant&.id,
                           data: {
                             service_selection_target: "variantInput"
                           }
@@ -144,7 +150,7 @@
                     <%# Dropdown button %>
                     <button type="button"
                       class="d-flex align-items-center dropdown btn btn-outline-secondary dropdown-toggle"
-                      disabled
+                      <%= "disabled" if applied_variant.blank? %>
                       data-service-selection-target="dropdown"
                       data-bs-toggle="dropdown"
                       aria-expanded="false"
@@ -152,7 +158,11 @@
                       <div class="d-flex align-items-center"
                           data-service-selection-target="variantLabel"
                           data-placeholder="<%= t("form.service.select_variant") %>">
-                        <%= t("form.service.select_variant") %>
+                        <% if applied_variant %>
+                          <%= "#{number_with_delimiter(applied_variant.fee)} đ / #{t("enums.room_service.unit.#{applied_variant.unit}")}" %>
+                        <% else %>
+                          <%= t("form.service.select_variant") %>
+                        <% end %>
                       </div>
                     </button>
 

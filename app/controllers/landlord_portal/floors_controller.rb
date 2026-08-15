@@ -1,6 +1,6 @@
 class LandlordPortal::FloorsController < LandlordPortal::BaseController
   load_and_authorize_resource :floor, through: :house, except: %i[new create]
-  before_action :authorize_house_for_floor_creation, only: %i[new create]
+  # before_action :authorize_house_for_floor_creation, only: %i[new create]
   before_action :check_max_floors, only: [ :new ]
 
   MAX_FLOORS = 50

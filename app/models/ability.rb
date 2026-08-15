@@ -49,7 +49,7 @@ class Ability
     can :read, :dashboard
     can :manage, House, landlord_id: id
     # 2-level relations
-    can :manage, [ Floor, Service, Tenant ], house: { landlord_id: id }
+    can :manage, [ Floor, Service, Tenant, Contract ], house: { landlord_id: id }
     # 3-level relations
     can :manage, [ Room, Bed, ServiceVariant, RoomService ], house: { landlord_id: id }
 
@@ -72,7 +72,7 @@ class Ability
     can :read, Service
     # can :read, Invoice
     # can :read, Vehicle
-    # can :read, Contract
+    can :read, Contract
   end
 
   # def guest_abilities

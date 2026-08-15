@@ -1,5 +1,74 @@
-<%# Variables: @tenants %>
+<%# Variables: @signed_tenants, @unsigned_tenants @house %>
 
 <% content_for :title, t("form.tenant.self") %>
 
-TENANTS
+<% provide :container_width, "tenant-container" %> 
+<h1> <%=t("page_titles.tenant_mng") %></h1>
+
+<div class="d-flex gap-3">
+	<%# Unsigned tenants %>
+	<% unless @unsigned_tenants.empty? %>
+		<div class="unsigned card px-1 flex-1 h-50">
+			 <h2 class="card-header">Featured</h2>
+
+			  <div class="card-body overflow-y-auto d-flex flex-column gap-2 align-items-center">
+					<% @unsigned_tenants.each do |tenant| %>
+						<div class="card">
+							<%= link_to %>
+						</div>
+				</div>
+		</div>
+	<% end %>
+
+	<%# Main tenant table container (contract signed) %>
+	<% unless @signed_tenants.empty? %>
+		<div class="flex-2">
+			<div class="d-flex">
+				<%# Search bar: name/tel %>
+				<div class="row mb-4 search-bar w-50">
+					<%= form_with url: landlord_house_tenant_path(@house), method: :get,
+												data: { controller: "search", turbo_frame: "house-grid", turbo_action: "advance"
+					} do |f| %>
+
+							<div class="input-group">
+								<span class="input-group-text">
+										<span class="material-symbols-outlined">search</span>
+								</span>
+
+								<%= f.search_field :query,
+										value: params[:query],
+										placeholder: "#{t("form.tenant.name_tel")}...",
+										class: "form-control",
+										data: {
+												search_target: "input",
+												action: "input->search#debounce"
+										} 
+								%>
+							</div>
+						<% end %>
+				</div>
+
+			</div>
+
+			<%= form_with url: filtered_table_landlord_house_rooms_path(house),
+										method: :get,
+										data: {turbo_frame: "room_table"} do |f| %>
+				<div class="d-flex align-items-center gap-2 mb-5">
+					<%= f.label :state, t("form.room.state"), class:"fw-semibold" %>
+
+					<%= f.select :state,
+							[[t("all"), ""],
+								[t("form.room.available"), "available"],
+								[t("form.room.full"), "full"]],
+							{ selected: params[:state] },
+							class: "form-select w-auto",
+							onchange: "this.form.requestSubmit()" %>
+				</div>
+			<% end %>
+		</div>
+	<% end %>
+
+
+
+</div>
+<%= turbo_frame_tag "" %>

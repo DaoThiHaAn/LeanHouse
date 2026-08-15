@@ -1,8 +1,4 @@
 class House < ApplicationRecord
-  # fields that are not stored in the database, but are used for form submission and validation
-  # attr_accessor :rooms_per_floor, :area, :rent, :capacity, :deposit, :has_ground_floor,
-  #               :services, :elec, :elec_price, :elec_unit, :elec_real_time, :water, :wifi, :parking
-
   has_one_attached :regulation_file
   belongs_to :landlord, inverse_of: :houses, counter_cache: :houses_count
   has_many :floors, inverse_of: :house, dependent: :destroy
@@ -100,16 +96,21 @@ class House < ApplicationRecord
     end
   end
 
-  # Return all linked tenants
-  def all_linked_tenants
+  # Return all linked tenants with/without signing contracts
+  def all_linked_tenants(signed_contract:)
     rentable_records = room? ? rooms : beds
     rental_units = RentalUnit.where(rentable: rentable_records)
 
-    Tenant.includes(:user)
-          .joins(:tenant_stays)
-          .where(tenant_stays: { rental_unit_id: rental_units, check_out: nil })
-          .name_sorted
-          .distinct
+    Tenant
+      .includes(:user)
+      .joins(:tenant_stays)
+      .where(tenant_stays: {
+        rental_unit_id: rental_units,
+        checkout_at: nil,
+        has_contract: signed_contract
+      })
+      .name_sorted
+      .distinct
   end
 
   private

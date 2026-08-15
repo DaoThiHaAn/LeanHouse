@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_08_13_192646) do
+ActiveRecord::Schema[8.0].define(version: 2026_08_15_104446) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "unaccent"
@@ -49,6 +49,23 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_13_192646) do
     t.boolean "is_available", default: true, null: false
     t.boolean "deleted", default: false, null: false
     t.index ["room_id"], name: "index_beds_on_room_id"
+  end
+
+  create_table "contracts", force: :cascade do |t|
+    t.bigint "tenant_id", null: false
+    t.bigint "landlord_id", null: false
+    t.bigint "house_id", null: false
+    t.string "citizen_id", null: false
+    t.boolean "temp_resid_registered", default: false
+    t.date "temp_resid_due_date"
+    t.date "start_date", null: false
+    t.date "due_date", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["house_id"], name: "index_contracts_on_house_id"
+    t.index ["landlord_id"], name: "index_contracts_on_landlord_id"
+    t.index ["tenant_id"], name: "index_contracts_on_tenant_id"
+    t.check_constraint "due_date > start_date", name: "contracts_due_date_after_start_date"
   end
 
   create_table "floors", force: :cascade do |t|
@@ -200,6 +217,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_13_192646) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "beds", "rooms"
+  add_foreign_key "contracts", "houses", on_delete: :cascade
+  add_foreign_key "contracts", "landlords", on_delete: :cascade
+  add_foreign_key "contracts", "tenants", on_delete: :cascade
   add_foreign_key "floors", "houses"
   add_foreign_key "houses", "landlords"
   add_foreign_key "landlords", "users", column: "id", on_delete: :cascade

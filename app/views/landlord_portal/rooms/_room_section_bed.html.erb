@@ -1,19 +1,12 @@
 <%# Variables: house %>
 
-<div class="d-flex justify-content-end">
-	<!-- Add Room Button -->
-	<%=link_to new_landlord_house_room_path(house), class:"main-btn d-flex align-items-center gap-2 px-2 py-1" do%>
-		<span class="material-symbols-filled">add_circle</span>
-		<%=t('form.room.add')%>
-	<%end%>
-</div>
-
-<%# query: state=? %>
-<%= form_with url: filtered_table_landlord_house_rooms_path(house),
-              method: :get,
-              data: {turbo_frame: "room_table_bed"} do |f| %>
-	<div class="d-flex align-items-center gap-2 mb-5">
-		<%= f.label :state, t("form.room.state"), class:"fw-semibold" %>
+<div class="d-flex justify-content-between mb-5 align-items-center">
+	<%# query: state=? %>
+	<%= form_with url: filtered_table_landlord_house_rooms_path(house),
+								method: :get,
+								data: {turbo_frame: "room_table_bed"} do |f| %>
+		<div class="d-flex align-items-center gap-2">
+			<%= f.label :state, t("form.room.state"), class:"fw-semibold" %>
 
 		<%= f.select :state,
 				[[t("all"), ""],
@@ -22,8 +15,16 @@
 				{ selected: params[:state] },
 				class: "form-select w-auto",
 				onchange: "this.form.requestSubmit()" %>
-	</div>
-<% end %>
+		</div>
+	<% end %>
+
+	<!-- Add Room Button -->
+	<%=link_to new_landlord_house_room_path(house), class:"main-btn d-flex align-items-center gap-2 px-2 py-1" do%>
+		<span class="material-symbols-filled">add_circle</span>
+		<%=t('form.room.add')%>
+	<%end%>
+</div>
+
 
 <%= turbo_frame_tag "room_table_bed",
       src: filtered_table_landlord_house_rooms_path(house, params.permit(:page, :state)),
@@ -37,9 +38,5 @@
         action: "turbo:frame-load->pagination-sync#updateUrl"
       } do %>
 		<!-- Loading icon -->
-	<div class="d-flex justify-content-center align-items-center p-5">
-		<div class="spinner-border text-primary" role="status">
-			<span class="visually-hidden"><%=t("loading")%>...</span>
-		</div>
-  </div>
+	<%= loading_spinner %>
 <% end %>

@@ -48,3 +48,16 @@
 .tenant-info-container {
   background-color: #f0fffc;
 }
+
+.tenant-info-container {
+  width: fit-content;
+}
+
+.tenant-containter {
+  height: 90vh
+}
+
+.unsigned.card {
+  background-color: rgb(255, 240, 154);
+  border: 1px solid rgb(225, 212, 137)
+}

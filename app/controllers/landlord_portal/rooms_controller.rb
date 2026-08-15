@@ -2,7 +2,7 @@ class LandlordPortal::RoomsController < LandlordPortal::BaseController
   layout "house_mngment"
 
   load_and_authorize_resource :room, through: :house, except: %i[new create]
-  before_action :authorize_house_for_room_creation, only: %i[new create]
+  # before_action :authorize_house_for_room_creation, only: %i[new create]
 
   def index
   end
@@ -79,10 +79,29 @@ class LandlordPortal::RoomsController < LandlordPortal::BaseController
   end
 
   def edit
-    @services = @house.services.includes(:service_variants)
+    prepare_edit_form
   end
 
   def update
+    updater = RoomUpdate.new(
+      room: @room,
+      house: @house,
+      room_attributes: room_params,
+      rental_attributes: rental_params,
+      service_selections: service_selections
+    )
+
+    if updater.call
+      redirect_to landlord_house_rooms_path(@house),
+                  notice: t("success_messages.room_updated")
+    else
+      prepare_edit_form(service_selections: service_selections)
+      flash.now[:alert] = t("errors.unprocessable_entity")
+      render turbo_stream: turbo_stream.replace(
+        "edit_room_modal",
+        template: "landlord_portal/rooms/edit"
+      ), status: :unprocessable_entity
+    end
   end
 
   def destroy
@@ -114,8 +133,26 @@ class LandlordPortal::RoomsController < LandlordPortal::BaseController
     )[:service_selections]
   end
 
-  def authorize_house_for_room_creation
-    authorize! :update, @house
+  def prepare_edit_form(service_selections: nil)
+    @services = @house.services.includes(:service_variants)
+    @applied_service_variants_by_service_id = if service_selections
+      selected_variant_ids = service_selections.to_h.filter_map do |_service_id, selection|
+        selection["variant_id"] if selection["selected"].to_s == "1"
+      end
+      @house.service_variants.where(id: selected_variant_ids).index_by(&:service_id)
+    else
+      @room.room_services.includes(:service_variant).index_by do |room_service|
+        room_service.service_variant.service_id
+      end.transform_values(&:service_variant)
+    end
+
+    rental_unit = if @house.bed?
+      @room.beds.active.includes(:rental_unit).first&.rental_unit
+    else
+      @room.rental_unit
+    end
+    @room.rent ||= rental_unit&.rent
+    @room.deposit ||= rental_unit&.deposit
   end
 
   def filtered_rooms
@@ -133,9 +170,6 @@ class LandlordPortal::RoomsController < LandlordPortal::BaseController
          .per(20)
   end
 
-  # TODO
-  def filtered_beds
-  end
 
   def set_house_from_room
     @house ||= @room.house

@@ -78,6 +78,12 @@ Rails.application.routes.draw do
         end
       end
 
+      resources :beds do
+        collection do # act on the collection of records
+          get :filtered_table
+        end
+      end
+
       resources :invoices, :vehicles, :contracts
     end
   end

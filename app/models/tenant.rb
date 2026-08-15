@@ -7,6 +7,6 @@ class Tenant < ApplicationRecord
   # MODEL METHOD
 
   def linked?
-    tenant_stays.exists?(check_out: nil)
+    tenant_stays.exists?(checkout_at: nil)
   end
 end

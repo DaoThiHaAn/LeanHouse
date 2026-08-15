@@ -38,10 +38,6 @@ class Floor < ApplicationRecord
     !rooms.where("tenants_count > 0").exists?
   end
 
-  def normalize_name
-    self.name = name&.squish
-  end
-
   # @param mode [[:room, :bed]] house mode
   def generate_rooms!(
     mode:, count:,
@@ -72,6 +68,13 @@ class Floor < ApplicationRecord
 
       house.touch
     end
+  end
+
+
+  private
+
+  def normalize_name
+    self.name = name&.squish
   end
 
   def assign_position

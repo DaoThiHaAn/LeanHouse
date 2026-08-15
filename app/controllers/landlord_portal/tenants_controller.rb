@@ -1,7 +1,8 @@
 class LandlordPortal::TenantsController < LandlordPortal::BaseController
   layout "house_mngment"
 
-  before_action :authorize_house_update!
+  before_action :authorize_house!
+  # before_action :authorize_house_update!, only: [ :new, :create, :destroy ]
 
 
   def show
@@ -11,7 +12,8 @@ class LandlordPortal::TenantsController < LandlordPortal::BaseController
   def index
     return render :no_tenant if @house.occupied_slots.zero?
 
-    @tenants = @house.all_linked_tenants
+    @signed_tenants = @house.all_linked_tenants(signed_contract: true)
+    @unsigned_tenants = @house.all_linked_tenants(signed_contract: false)
     render :index
   end
 

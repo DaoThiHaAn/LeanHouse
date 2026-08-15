@@ -1,0 +1,79 @@
+<%# Local variables: house, beds %>
+
+<%= turbo_frame_tag "bed_table" do %>
+
+<span hidden data-pagination-total-pages="<%= beds.total_pages %>"></span>
+
+<h2 class="table-caption"><%= t("form.bed.list") %></h2>
+
+<div class="table-responsive border rounded w-85 m-auto">
+  <table class="table table-bordered table-hover align-middle mb-0">
+    <thead class="table-light">
+      <tr>
+        <th><%=t("form.bed.name")%></th>
+        <th><%=t("form.tenant.self")%></th>
+        <th><%="#{t("form.room.rent")} (đ)"%></th>
+        <th><%="#{t("form.room.deposit")} (đ)"%></th>
+        <th class="text-center"><%=t("actions")%></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% beds.group_by { |bed| bed.room.floor }.each do |floor, floor_beds| %>
+        <tr class="colspan">
+          <td colspan="100" class="fs-5">
+            <%= "#{t("form.floor.self")} #{floor.name}" %>
+          </td>
+        </tr>
+
+        <% floor_beds.group_by(&:room).each do |room, room_beds| %>
+          <tr class="room colspan">
+            <td colspan="100" class="text-center">
+              <%= "#{t("form.room.self")} #{room.name}" %>
+            </td>
+          </tr>
+
+          <% room_beds.each do |bed| %>
+            <% rental_unit = bed.rental_unit %>
+            <tr>
+              <td><%= "#{t("form.bed.self")} #{bed.name}" %></td>
+              <td>
+                <% fullname = bed.staying_tenant&.user&.fullname %>
+                <% if fullname.present? %>
+                  <%= fullname %>
+                <% else %>
+                  <p class="text-center">-</p>
+                <% end %>
+              </td>
+              <td><%= number_with_delimiter(rental_unit&.rent || 0) %></td>
+              <td><%= number_with_delimiter(rental_unit&.deposit || 0) %></td>
+
+              <%# Actions %>
+              <td>
+                <div class="d-flex align-items-center justify-content-center gap-2">
+                  <%= link_to edit_landlord_house_bed_path(house, bed),
+                            data: { turbo_frame: "edit_bed_modal" },
+                            title: t("edit"),
+                            class: "table-action" do %>
+                    <span class="material-symbols-filled">edit</span>
+                  <% end %>
+
+                  <%= button_to landlord_house_bed_path(house, bed), method: :delete,
+                            title: t("delete"),
+                            class: "table-action" do %>
+                    <span class="material-symbols-filled">delete</span>
+                  <% end %>
+                </div>
+              </td>
+            </tr>
+          <% end %>
+        <% end %>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<div class="mt-3">
+  <%= paginate beds, params: {state: params[:state]} %>
+</div>
+<% end %>

@@ -6,6 +6,7 @@ module LandlordPortal
   class BaseController < ApplicationController
     before_action :authenticate_user!
     before_action :set_landlord, :require_house, :set_house
+    before_action :authorize_house
 
     private
 
@@ -23,6 +24,11 @@ module LandlordPortal
       return unless params[:house_id].present?
 
       @house = House.find(params[:house_id])
+    end
+
+    def authorize_house
+      return unless @house
+      authorize! :manage, @house
     end
   end
 end

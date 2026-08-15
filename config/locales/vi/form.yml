@@ -150,6 +150,8 @@ vi:
       select_unit_info: "Màn hình chỉ hiển thị các vị trí còn trống."
       none: "Chưa ghi nhận khách thuê!"
       checkin_at: "Ngày vào ở"
+      name_tel: "Nhập tên / số điện thoại"
+      unsigned_list: "Danh sách người thuê chưa ký "
 
 
       no_house: "Bạn chưa được kết nối với Nhà nào!"

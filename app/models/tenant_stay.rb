@@ -5,6 +5,9 @@ class TenantStay < ApplicationRecord
   validates :checkout_at, comparison: { greater_than_or_equal_to: :checkin_at }, allow_nil: true
 
   scope :staying, -> { where(checkout_at: nil) }
+  scope :without_contract, -> { where(has_contract: false) }
+  scope :with_contract, -> { where(has_contract: true) }
+
 
   # MODEL METHODS
 
@@ -17,7 +20,7 @@ class TenantStay < ApplicationRecord
       rental_unit.lock!
 
       raise ActiveRecord::RecordInvalid, tenant if tenant.linked?
-      raise ActiveRecord::RecordInvalid, rental_unit if rental_unit.tenant_stays.exists?(check_out: nil)
+      raise ActiveRecord::RecordInvalid, rental_unit if rental_unit.tenant_stays.exists?(checkout_at: nil)
 
       # Update tenants_count in Room or "is_available" in Bed
       rental_unit.rentable.with_lock do

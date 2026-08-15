@@ -133,6 +133,7 @@ vi:
     floor_deleted: "Xóa tầng thành công!"
     floor_sorted: "Sắp xếp tầng thành công!"
     room_created: "Tạo phòng thành công!"
+    room_updated: "Cập nhật phòng thành công!"
     tenant_linked: "Liên kết thành công!"
 
   page_titles:
@@ -146,9 +147,10 @@ vi:
     new_house: "Tạo nhà mới"
     new_room: "Tạo phòng mới"
     edit_house: "Chỉnh sửa nhà"
-    house_mng: "Quản Lý Nhà"
-    rooms: "Phòng"
-    tenant_mng: "Quản lý khách thuê"
+    house_mng: "Quản lý Nhà"
+    tenant_mng: "Quản lý Khách thuê"
+    room_mng: "Quản lý Phòng"
+    bed_mng: "Quản lý Giường"
     issue_report: "Báo cáo sự cố"
 
 
