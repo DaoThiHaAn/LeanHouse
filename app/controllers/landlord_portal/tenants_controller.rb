@@ -1,7 +1,6 @@
 class LandlordPortal::TenantsController < LandlordPortal::BaseController
   layout "house_mngment"
 
-  before_action :authorize_house!
   # before_action :authorize_house_update!, only: [ :new, :create, :destroy ]
 
 

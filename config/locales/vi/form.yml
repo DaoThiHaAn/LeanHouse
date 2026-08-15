@@ -38,6 +38,7 @@ vi:
       not_have_acc: "Bạn chưa có tài khoản?"
       reg_now: "Đăng ký ngay"
       reset_pw: "Đặt mật khẩu mới"
+      change_avatar: "Đổi ảnh đại diện"
  
     house:
       add: "Tạo nhà mới"
@@ -163,6 +164,8 @@ vi:
       add: "Tạo giường mới"
       state: "Tình trạng giường"
       list: "Danh sách giường"
+      add_info_1: "1 phòng chỉ có tối đa 20 giường"
+      add_info_2: "Các giường mới tạo ra sẽ có tên mặc định dựa vào thứ tự tiếp theo trong phòng"
 
     property:
       title: "Tài sản"

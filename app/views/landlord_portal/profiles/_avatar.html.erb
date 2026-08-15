@@ -1,0 +1,33 @@
+<%= turbo_frame_tag "profile_avatar" do %>
+  <%= form_with(
+    model: user,
+    url: update_avatar_landlord_profile_path,
+    method: :patch,
+    data: {
+      controller: "avatar"
+    }
+  ) do |f| %>
+
+    <div class="position-relative">
+      <%= f.file_field :avatar,
+        accept: "image/png,image/jpeg,image/webp",
+        class: "d-none",
+        data: {
+          avatar_target: "input",
+          action: "change->avatar#submit"
+        } %>
+
+        <%= display_avatar %>
+
+      <button type="button"
+          class="avatar-btn position-absolute bottom-0 start-50 translate-middle-x
+          d-flex align-items-center justify-content-center gap-1"
+          data-action="click->avatar#open">
+        <span class="material-symbols-outlined">edit</span>
+        <%= t("form.profile.change_avatar") %>
+      </button>
+
+    </div>
+
+  <% end %>
+<% end %>

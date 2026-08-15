@@ -45,7 +45,7 @@
     opacity: 50%;
 }
 
-.role-option p {
+.role-option p, .avatar-container p {
     color: #2F5692;
     font-weight: 800;
 }

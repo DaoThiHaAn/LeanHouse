@@ -121,6 +121,7 @@ GEM
       activesupport (>= 6.1)
     i18n (1.14.7)
       concurrent-ruby (~> 1.0)
+    image_processing (2.0.3)
     importmap-rails (2.2.2)
       actionpack (>= 6.0.0)
       activesupport (>= 6.0.0)
@@ -391,6 +392,7 @@ DEPENDENCIES
   capybara
   cssbundling-rails
   debug
+  image_processing (~> 2.0)
   importmap-rails
   jbuilder
   kamal

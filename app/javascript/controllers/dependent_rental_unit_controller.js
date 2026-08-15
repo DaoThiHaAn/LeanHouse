@@ -5,23 +5,43 @@ export default class extends Controller {
   static values = { rooms: Array, beds: Array, bedMode: Boolean }
 
   connect() {
-    this.floorChanged()
+    if (this.hasFloorTarget) {
+      this.floorChanged()
+    }
   }
 
   floorChanged() {
+    if (!this.hasRoomTarget) return
+
     const rooms = this.roomsValue.filter((room) => String(room.floorId) === this.floorTarget.value)
     this.replaceOptions(this.roomTarget, rooms, "Phòng")
 
     if (this.bedModeValue) {
-      this.roomChanged()
-    } else {
+      if (this.hasRentalUnitTarget) {
+        this.rentalUnitTarget.value = ""
+      }
+      return
+    }
+
+    if (this.hasRentalUnitTarget) {
       this.rentalUnitTarget.value = this.roomTarget.selectedOptions[0]?.dataset.rentalUnitId || ""
     }
   }
 
   roomChanged() {
+    if (!this.hasRoomTarget) return
+
     if (!this.bedModeValue) {
-      this.rentalUnitTarget.value = this.roomTarget.selectedOptions[0]?.dataset.rentalUnitId || ""
+      if (this.hasRentalUnitTarget) {
+        this.rentalUnitTarget.value = this.roomTarget.selectedOptions[0]?.dataset.rentalUnitId || ""
+      }
+      return
+    }
+
+    if (!this.hasBedTarget) {
+      if (this.hasRentalUnitTarget) {
+        this.rentalUnitTarget.value = ""
+      }
       return
     }
 
@@ -31,6 +51,7 @@ export default class extends Controller {
   }
 
   bedChanged() {
+    if (!this.hasBedTarget || !this.hasRentalUnitTarget) return
     this.rentalUnitTarget.value = this.bedTarget.selectedOptions[0]?.dataset.rentalUnitId || ""
   }
 
@@ -39,7 +60,7 @@ export default class extends Controller {
 
     options.forEach((option) => {
       const element = new Option(option.name, option.id)
-      element.dataset.rentalUnitId = option.rentalUnitId
+      element.dataset.rentalUnitId = option.rentalUnitId || ""
       select.add(element)
     })
 

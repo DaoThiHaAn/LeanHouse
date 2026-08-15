@@ -37,6 +37,10 @@ Rails.application.routes.draw do
   resources :users
 
   namespace :landlord, module: :landlord_portal do
+    resource :profile, only: [ :show, :edit, :update ] do
+      patch :update_avatar
+    end
+
     resource :dashboard, only: [ :show ]
 
     resources :posts

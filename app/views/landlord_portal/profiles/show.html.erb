@@ -1,0 +1,24 @@
+<% content_for :title, t("bar.my_profile") %>
+
+<div class="main-container w-85">
+  <h1 class="w-100 text-center mb-5"> <%=  t("bar.my_profile") %> </h1>
+
+  <div class="d-flex gap-2">
+    <%# Sidebar %>
+    <div class="flex-1">
+      <%# Avatar %>
+      <div class="avatar-container d-flex flex-column align-items-center gap-3 p-3 pb-2">
+        <%= render "avatar", user: @user %>
+        <p><%= t('role.landlord') %></p>
+      </div>
+    
+    </div>
+
+    <%# Main section %>
+    <div class="flex-3 overflow-y-auto h-100">
+
+    </div>
+
+  </div>
+
+</div>

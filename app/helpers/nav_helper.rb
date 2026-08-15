@@ -1,10 +1,10 @@
 module NavHelper
-  def display_avatar
+  def display_avatar(default_anomy_size: 128)
     if current_user.avatar.attached?
       image_tag current_user.avatar_thumb, alt: "Avatar"
     else
       name = ERB::Util.url_encode(current_user.fullname)
-      image_tag "https://ui-avatars.com/api/?background=1F6274&name=#{name}&color=ffffff&bold=true&rounded=true&size=128", alt: "Avatar", class: "nav-avatar"
+      image_tag "https://ui-avatars.com/api/?background=1F6274&name=#{name}&color=ffffff&bold=true&rounded=true&size=#{default_anomy_size}", alt: "Avatar", class: "nav-avatar"
     end
   end
 

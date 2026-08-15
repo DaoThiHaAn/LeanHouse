@@ -64,6 +64,17 @@ class User < ApplicationRecord
     registered.find_by(tel: tel, role: role)
   end
 
+  # Resize avatar
+  def avatar_thumb
+    avatar.variant(
+      resize_to_fill: [ 128, 128 ],
+      format: :webp,
+      saver: {
+        quality: 80
+      }
+    )
+  end
+
   private
 
   def pw_complexity

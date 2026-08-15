@@ -95,6 +95,7 @@ vi:
   click_open: "Nhấp để mở thông báo"
   ago: "Trước"
   send: "Gửi"
+  min: "Tối thiểu %{val}"
   
 
   errors:
@@ -116,6 +117,7 @@ vi:
     service_variant_required: "Chọn 1 phiên bản của dịch vụ này!"
     tel_linked: "Tài khoản này đang được liên kết với Nhà khác"
     rental_unit_unavailable: "Vị trí thuê này không còn trống. Vui lòng chọn lại."
+    not_bed_mode: "Nhà này không thuộc loại hình Thuê theo Giường!"
   
   success_messages:
     tenant_linked: "Đã liên kết khách thuê thành công"

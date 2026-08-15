@@ -1,4 +1,4 @@
-<%# Variables: @house %>
+<%# Variables: @house, @active_tab (bed mode) %>
 
 <% content_for :title, t("page_titles.room_mng") %>
 
@@ -20,29 +20,31 @@
 		<%= render "room_section", house: @house  %>
 	<%else%>
 		<%# 2 tabs: Rooms (active by default), Beds %>
+		<% active_tab = local_assigns[:active_tab] || @active_tab || :rooms %>
+
 		<ul class="nav nav-tabs nav-justified" id="houseTabs" role="tablist">
 			<li class="nav-item">
-				<button type="button" class="nav-link active fs-5 fw-bold"
-				data-bs-toggle="tab" data-bs-target="#rooms-pane">
-					<%=t("form.room.self")%>
+				<button type="button" class="nav-link <%= 'active' if active_tab == :rooms %> fs-5 fw-bold"
+								data-bs-toggle="tab" data-bs-target="#rooms-pane"
+								onclick="history.pushState({}, '', '<%= landlord_house_rooms_path(@house) %>')">
+					<%= t("form.room.self") %>
 				</button>
 			</li>
 
 			<li class="nav-item">
-				<button type="button" class="nav-link fs-5 fw-bold"
+				<button type="button" class="nav-link <%= 'active' if active_tab == :beds %> fs-5 fw-bold"
 								data-bs-toggle="tab" data-bs-target="#beds-pane">
 					<%= t("form.bed.self") %>
 				</button>
 			</li>
 		</ul>
 
-		<%# Tab content %>
 		<div class="tab-content">
-			<div class="room tab-pane fade show active pt-5 pb-4 px-4" id="rooms-pane">
-				<%= render "room_section_bed", house: @house %>
+			<div class="room tab-pane fade <%= 'show active' if active_tab == :rooms %> pt-5 pb-4 px-4" id="rooms-pane">
+				<%= render "landlord_portal/rooms/room_section_bed", house: @house %>
 			</div>
 
-			<div class="room tab-pane fade pt-5 pb-4 px-4" id="beds-pane">
+			<div class="room tab-pane fade <%= 'show active' if active_tab == :beds %> pt-5 pb-4 px-4" id="beds-pane">
 				<%= turbo_frame_tag "beds_index",
 							src: landlord_house_beds_path(@house),
 							loading: :lazy,
@@ -51,7 +53,6 @@
 				<% end %>
 			</div>
 		</div>
-
 	<% end %>
 </div>
 

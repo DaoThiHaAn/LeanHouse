@@ -11,6 +11,79 @@
         </div>
 
         <div class="modal-body">
+          <div class="info-container px-3 py-2 mb-4 mx-auto">
+            <%= field_info(
+              [ t("form.bed.add_info_1"), t("form.bed.add_info_2") ],
+              extra_classes: "gap-2")  %>
+          </div>
+
+            <%= form_with model: @form, url: landlord_house_beds_path(@house), method: :post,
+                class:"d-flex flex-column gap-4 px-3 mx-auto" ,
+                data: { 
+                  controller: "loading",
+                  loading_text_value: t("saving") + "...",
+                  action: "submit->loading#submit"
+                } do |f| %>
+
+              <%# Beds_count %>
+              <div class="form-group d-flex gap-3 align-items-center">
+                <%= f.label :beds_count, class: "form-label m-0 flex-shrink-0 text-nowrap" do %>
+                  <%= t("form.room.beds_count") %>:
+                  <span class="asterisk">*</span>
+                <% end %>
+
+                <%= f.number_field :beds_count, min: 1, max: 20, step: 1, required: true,
+                    placeholder: t("min", val: 1),
+                    class: "form-control number #{invalid_class(@form, :beds_count)}" 
+                %>
+              </div>
+              <%= field_error(@form, :beds_count) %>
+
+              <div data-controller="dependent-rental-unit"
+                  data-dependent-rental-unit-rooms-value="<%= @room_options.to_json %>"
+                  data-dependent-rental-unit-bed-mode-value="true">
+                <%# Floor %>
+                <div class="input-group mb-3">
+                  <%= f.label :floor_id, class: "input-group-text" do %>
+                    <%= t("form.floor.self") + ":"%><span class="ms-1 asterisk">*</span>
+                  <% end %>
+                  <%= f.select :floor_id,
+                        [[t("form.room.select_floor"), ""]] + @floors.map { |floor| [floor.name, floor.id] },
+                        {},
+                        class: "form-select", required: true,
+                        data: { 
+                          dependent_rental_unit_target: "floor",
+                          action: "change->dependent-rental-unit#floorChanged" 
+                        } %>
+                </div>
+                <%= field_error(@form, :floor_id) %>
+
+                <%# Room %>
+                <div class="input-group mb-3">
+                  <%= f.label :room_id, class: "input-group-text" do%>
+                    <%= t("form.room.self") + ":"%><span class="ms-1 asterisk">*</span>
+                  <% end %>
+
+                  <%= f.select :room_id, options_for_select([]), {}, class: "form-select", required: true,
+                        data: { 
+                          dependent_rental_unit_target: "room", 
+                          action: "change->dependent-rental-unit#roomChanged" 
+                        } %>
+                </div>
+                <%= field_error(@form, :room_id) %>
+              </div>
+
+              <%= f.button :submit,
+                class: "custom-primary-btn mx-auto main-form d-flex align-items-center justify-content-center gap-2",
+                data: { loading_target: "button" } do%>
+                <span data-loading-target="text"><%= t("save") %></span>
+
+                <span class="material-symbols-outlined spin d-none"
+                  data-loading-target="spinner">
+                  progress_activity
+                </span>
+              <%end%>
+            <% end %>
         </div>
       </div>
     </div>
