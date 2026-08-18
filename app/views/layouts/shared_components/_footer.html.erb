@@ -13,8 +13,8 @@
 									<span class="icon material-symbols-filled">home</span>
 									<%= t('bar.home') %>
                 <% end %>
-                <%= link_to t('bar.about'), about_path %>
-                <%= link_to t('bar.features'), features_path %>
+                <%= link_to t('bar.about'), root_path(anchor: "about-us") %>
+                <%= link_to t('bar.features'), root_path(anchor: "features") %>
                 <%= link_to t('bar.report_issues'), report_issues_path %>
             </div>
 
@@ -33,8 +33,8 @@
                 <p><%= t('bar.company_name').upcase %></p>
                 <p><%= t('bar.working_hours') %></p>
                 <p class="d-flex align-items-center gap-1">
-                <span class="material-symbols-filled">call</span>
-                (+84) 123 456 789
+                    <span class="material-symbols-filled">call</span>
+                    <a href="tel:+84123456789">(+84) 123 456 789</a>
                 </p>
                 <p class="d-flex align-items-center gap-1">
                 <span class="material-symbols-filled">location_on</span>

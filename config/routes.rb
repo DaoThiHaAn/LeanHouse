@@ -1,4 +1,17 @@
 Rails.application.routes.draw do
+  namespace :tenant_portal do
+    get "services/show"
+    get "contract/show"
+  end
+  namespace :landlord_portal do
+    get "assets/index"
+    get "assets/show"
+    get "assets/new"
+    get "assets/edit"
+    get "assets/create"
+    get "assets/update"
+    get "assets/destroy"
+  end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
@@ -10,9 +23,6 @@ Rails.application.routes.draw do
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
   root "public_pages#main_home"
 
-  get "/about", to: "public_pages#about"
-  get "/contact", to: "public_pages#contact"
-  get "/features", to: "public_pages#features"
   get "/privacy", to: "public_pages#privacy"
   get "/terms-of-use", to: "public_pages#terms"
   get "/report-issues", to: "public_pages#report_issues"
@@ -36,6 +46,7 @@ Rails.application.routes.draw do
   resources :posts, only: [ :index, :show ]
   resources :users
 
+  # LANDLORD
   namespace :landlord, module: :landlord_portal do
     resource :profile, only: [ :show, :edit, :update ] do
       patch :update_avatar
@@ -88,18 +99,28 @@ Rails.application.routes.draw do
         end
       end
 
+      resources :assets, except: [ :show ] do
+        resource :repair_history
+      end
+
       resources :invoices, :vehicles, :contracts
     end
   end
 
+  # TENANT
   namespace :tenant, module: :tenant_portal do
     get "/dashboard", to: "dashboard#show", as: :dashboard
-    get "/room", to: "room#show", as: :room
-    get "/contract", to: "contract#show", as: :contract
-    get "/services", to: "services#show", as: :services
 
-    resources :posts
+    resource :profile, only: [ :show, :edit, :update ] do
+      patch :update_avatar
+    end
+
     resources :invoices, only: [ :show, :index ]
+    resource :contract, only: [ :show ]
+    resource :room, only: [ :show ]
+    resources :services, only: [ :index ]
+
+
     resources :requests
   end
 

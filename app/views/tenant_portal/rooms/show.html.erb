@@ -1,0 +1,140 @@
+<%# Variables: @landlord, @assets, @roommates %>
+
+<% content_for :title, t("page_titles.my_room") %>
+
+<div class="tenant-room main-container w-75">
+  <h1 class="w-100 text-center mb-3"><%=  t("page_titles.room_info") %> </h1>
+  <%= render "tenant_portal/shared/room_info_zone" %>
+
+  <div class="d-flex flex-column mt-3 gap-3 px-3">
+    <%# Landlord info %>
+    <div class="d-flex gap-3 pb-2 border-bottom align-items-center">
+      <h2 class="fw-bold m-0"><%= t("role.landlord").capitalize %>:</h2>
+
+      <p><%= vn_name(@landlord.fullname) %></p>
+      <p>-</p>
+      <div class="d-flex gap-1 align-items-center">
+        <span class="material-symbols-filled call-icon">call</span>
+        <a href="tel:<%=@landlord.tel%>"><%= @landlord.tel%></a>
+      </div>
+    </div>
+
+    <%# Detail %>
+    <div class="d-flex flex-column gap-2 pb-3 border-bottom">
+      <h2 class="fw-bold mb-2"><%= t("detail_info").capitalize %>:</h2>
+
+      <%# Room rent info %>
+      <div class="d-flex justify-content-between flex-column flex-sm-row">
+        <p>
+          <span class="fw-bold"> <%= t("form.room.area")%>: </span>
+          <%= @room.area %> m²
+        </p>
+        <p>
+          <span class="fw-bold"><%= t("form.room.rent")%>:</span>
+          <%= format_money(@rental_unit.rent) %> / tháng
+        </p>
+        <p>
+          <span class="fw-bold"><%= t("form.room.deposit")%>: </span>
+          <%= format_money(@rental_unit.deposit) %>
+        </p>
+      </div>
+      <p>
+        <span class="fw-bold"><%= t("form.house.inv_creation_date")%>: </span>
+        <%= @house.inv_creation_date %>
+      </p>
+
+      <%# Display Regulation File %>
+      <div class="d-flex align-items-center gap-3 mt-1">
+        <p class="fw-bold m-0"><%=t("form.house.regulation") + ": "%></p>
+
+        <% if @house.regulation_file.attached? %>
+          <div>
+            <%= link_to rails_blob_path(@house.regulation_file, disposition: "inline"), 
+                        target: "_blank",  title: t("form.file.view"),
+                        rel: "noopener", 
+                        class: "btn btn-outline-primary d-inline-flex align-items-center gap-2" do %>
+              <span class="material-symbols-outlined">description</span>
+              <%= @house.regulation_file.filename.to_s %>
+              <span class="material-symbols-outlined fs-6">open_in_new</span>
+            <% end %>
+          </div>
+        <% else %>
+          <p class="text-muted fst-italic fs-7"><%= t("none") %></p>
+        <% end %>
+      </div>
+
+      <%# Assets %>
+      <h3 class="fw-bold mt-2 ms-3"><%= t("form.asset.in_room")%>:</h3>
+      <% if @assets.empty? %>
+        <p class="text-muted ms-3"><%= t("none")%></p>
+      <% else %>
+        <div class="table-responsive border rounded mt-2">
+          <table class="table table-bordered table-hover align-middle mb-0">
+            <thead class="table-light sticky-top">
+              <tr>
+                <th><%= t("form.asset.cat") %></th>
+                <th><%= t("form.asset.price") %></th>
+                <th><%= t("form.asset.brand") %></th>
+                <th><%= t("form.asset.model") %></th>
+                <th><%= t("form.asset.purchase_date") %></th>
+                <th><%= t("note") %></th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <% @assets.each do |asset| %>
+                <tr>
+                  <td><%= asset_category_label(asset.category) %></td>
+                  <td><%= number_with_delimiter(asset.price) %></td>
+                  <td><%= asset.brand %></td>
+                  <td><%= asset.model %></td>
+                  <td><%= asset.purchased_at %></td>
+                  <td><%= asset.note %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      <% end %>
+    </div>
+
+    <%# Roomates %>
+    <div class="d-flex flex-column gap-3 pb-2">
+      <h2 class="fw-bold m-0"><%= t("form.roommates") %>:</h2>
+
+      <% if @roommates.empty? %>
+        <p class="text-muted"><%= t("none")%></p>
+      <% else %>
+        <div class="table-responsive border rounded mt-2">
+          <table class="table table-bordered table-hover align-middle mb-0">
+            <thead class="table-light sticky-top">
+              <tr>
+                <th><%= t("form.profile.fullname") %></th>
+                <th><%= t("form.profile.tel") %></th>
+                <% if @house.bed? %>
+                  <th><%= t("form.bed.self") %></th>
+                <% end %>
+              </tr>
+            </thead>
+
+            <tbody>
+              <% @roommates.each do |roommate| %>
+                <tr>
+                  <td><%= vn_mese(roommate[:user].fullname) %></td>
+                  <td>
+                    <a href="tel:<%= roommate[:user].tel %>">
+                      <%= roommate[:user].tel %>
+                    </a>
+                  </td>
+                  <% if @house.bed? %>
+                    <td><%= roommate[:bed_name] %></td>
+                  <% end %>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

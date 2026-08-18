@@ -18,12 +18,7 @@ class RentalUnit < ApplicationRecord
   end
 
   def room
-    case rentable
-    when Room
-      rentable
-    when Bed
-      rentable.room
-    end
+    rentable.is_a?(Room) ? rentable : rentable&.room
   end
 
   def floor

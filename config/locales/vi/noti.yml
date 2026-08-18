@@ -1,8 +1,21 @@
 vi:
   noti:
+    self: "Thông báo"
+    mark_as_read: "Đánh dấu tất cả đã đọc"
+    empty: "Không có thông báo."
+
     titles:
-      tenant_added: "Bạn đã được thêm vào nhà"
+      linked_to_house: "Bạn đã được thêm vào nhà"
+      rem_from_house: "Bạn đã rời khỏi nhà"
+      contract_signed: "Chủ nhà đã tạo hợp đồng mới"
+      contract_extended: "Hợp đồng được gia hạn"
+      contract_closed: "Hợp đồng đã kết thúc"
+
 
     messages:
-      tenant_added: "Bạn đã được thêm vào %{house}, tầng %{floor}, %{rental_unit}"
-      tenant_removed: "Chủ nhà đã xóa bạn ra khỏi %{house}, tầng %{floor}, %{rental_unit}"
+      tenant_added: "Bạn đã được thêm vào %{house}, tầng %{floor}, %{rental_unit}."
+      tenant_removed: "Chủ nhà đã xóa bạn ra khỏi %{house}, tầng %{floor}, %{rental_unit}."
+      contract_signed: "Chủ nhà đã tạo %{contract_name}."
+      contract_extended: "%{contract_name} được gia hạn đến %{date}."
+      contract_closed_overdue: "%{contract_name} đã kết thúc do quá hạn."
+      contract_closed_overdue: "{contract_name} đã kết thúc trước thời hạn."

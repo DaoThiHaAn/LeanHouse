@@ -12,17 +12,18 @@
         </button>
 
         <ul class="dropdown-menu">
-             <li><a class="dropdown-item" href="<%= landlord_profile_path %>"><%=t('bar.my_profile')%></a></li>
-            <% if current_user.role == "landlord" %>
-                <li><a class="dropdown-item" href="<%= landlord_profile_path %>"><%=t("bar.my_bank_acc")%></a></li>
-            <%else%>
-                <li><a class="dropdown-item" href="#"><%=t("bar.my_vehicle")%></a></li>
-                <li><a class="dropdown-item" href="#"><%=t("bar.my_saved_post")%></a></li>
-            <%end%>
-            <li><a class="dropdown-item d-flex gap-1 align-items-center" href="<%=logout_path%>">
-                    <%=t("auth.log_out")%>
-                    <span class="material-symbols-outlined">logout</span>
-            </a></li>
+					<% if current_user.role == "landlord" %>
+						<li><a class="dropdown-item" href="<%= landlord_profile_path %>"><%=t('bar.my_profile')%></a></li>
+						<li><a class="dropdown-item" href="<%= landlord_profile_path %>"><%=t("bar.my_bank_acc")%></a></li>
+					<%else%>
+						<li><a class="dropdown-item" href="<%= tenant_profile_path %>"><%=t('bar.my_profile')%></a></li>
+						<li><a class="dropdown-item" href="#"><%=t("bar.my_vehicle")%></a></li>
+						<li><a class="dropdown-item" href="#"><%=t("bar.my_saved_post")%></a></li>
+					<%end%>
+					<li><a class="dropdown-item d-flex gap-1 align-items-center" href="<%=logout_path%>">
+						<%=t("auth.log_out")%>
+						<span class="material-symbols-outlined">logout</span>
+					</a></li>
         </ul>
     </div>
 

@@ -1,0 +1,2 @@
+module TenantPortal::ServicesHelper
+end

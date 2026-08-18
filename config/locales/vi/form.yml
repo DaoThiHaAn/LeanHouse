@@ -188,9 +188,24 @@ vi:
       select_variant: "Chọn phiên bản"
 
     file:
-      view: "Xem tệp"
+      view: "Xem tệp"      
 
-    noti:
-     self: "Thông báo"
-     mark_as_read: "Đánh dấu tất cả đã đọc"
-     empty: "Không có thông báo."
+    asset:
+      self: "Tài sản"
+      in_room: "Tài sản trong phòng"
+      cat: "Loại"
+      brand: "Thương hiệu"
+      model: "Mẫu"
+      purchase_date: "Ngày mua"
+      price: "Giá tiền (đ)"
+
+    roommates: "Bạn cùng phòng"
+
+    contract:
+      self: "Hợp đồng"
+      none: "Hệ thống chưa ghi nhận hợp đồng giữa bạn và chủ nhà!"
+      landlord_create: "Khi chủ nhà tạo 1 hợp đồng mới, thông tin hợp đồng sẽ được hiển thị ở đây."
+      note: "Dữ liệu hợp đồng được hiển thị chỉ phục vụ mục đích quản lý trên hệ thống, không thay thế cho hợp đồng giấy và không có giá trị pháp lý."
+      sign: "Ký hợp đồng"
+      extend: "Gia hạn"
+      close: "Kết thúc"

@@ -4,15 +4,6 @@ class PublicPagesController < ApplicationController
     render "public_pages/main_home"
   end
 
-  def about
-  end
-
-  def features
-    render "public_pages/main_home"
-  end
-
-  def contact
-  end
 
   def privacy
   end

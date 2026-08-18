@@ -1,0 +1,52 @@
+<%# @@room_services %>
+
+<% content_for :title, t("page_titles.used_sv") %>
+
+<div class="tenant-contract main-container w-75">
+  <h1 class="w-100 text-center mb-5"><%= t("page_titles.used_sv") %></h1>
+
+  <%# Table of applied services %>
+  <% if @room_services.empty? %>
+    <p class="mt-1"><%= t("none") %></p>
+  <% else %>
+    <div class="floor table-responsive border rounded mt-2">
+      <table class="table table-bordered table-hover align-middle mb-0">
+        <thead class="table-light sticky-top">
+          <tr>
+            <th><%= t("form.service.price") %></th>
+            <th><%= t("form.service.unit") %></th>
+            <th class="text-center"><%= t("form.service.real_time_short") %></th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% @room_services.each do |r_service, index| 
+            variant = r_service.service_variant
+            service = variant.service
+          %>
+            <tr class="colspan">
+              <td colspan="100" >
+                  <p class="fw-semibold"><%= service.name %></p>
+                  <% if service.note.present? %>
+                    <%= image_tag "note.png", alt: "Note icon", class: "note-icon" %>
+                    <span class="text-secondary fw-light"><%=service.note%></span>
+                  <%end%>
+              </td>
+            </tr>
+
+            <tr>
+              <td><%= number_with_delimiter(variant.fee, delimiter: ",") %></td>
+              <td><%= t("enums.room_service.unit.#{variant.unit}") %></td>
+              <td class="text-center align-middle">
+                <% if variant.is_real_time %>
+                <span class="material-symbols-outlined d-inline-flex">check_circle</span>
+                <%end%>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <%end%>
+</div>
+

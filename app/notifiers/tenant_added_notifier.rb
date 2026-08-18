@@ -32,7 +32,7 @@ class TenantAddedNotifier < ApplicationNotifier
 
   notification_methods do
     def title
-      t("noti.titles.tenant_added")
+      t("noti.titles.linked_to_house")
     end
 
     def message

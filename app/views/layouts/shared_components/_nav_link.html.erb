@@ -4,9 +4,9 @@
     <%if !logged_in?%>
         <%= nav_item t("bar.home"), "Home", path: root_path, icon: "home" %>
         <%= nav_item t("bar.find_rooms"), "Finding Rooms", path: posts_path, icon: "search" %>
-        <%= nav_item t("bar.features"), "Features", path: features_path%>
-        <%= nav_item t("bar.about"), "About", path: about_path %>
-        <%= nav_item t("bar.contact"), "Contact", path: contact_path %>
+        <%= nav_item t("bar.features"), "Features", path: root_path(anchor: "features")%>
+        <%= nav_item t("bar.about"), "About", path: root_path(anchor: "about-us") %>
+        <%= nav_item t("bar.contact"), "Contact", path: root_path(anchor: "contact") %>
 
     <%elsif current_user.landlord?%>
         <%= nav_item t("bar.dashboard"), "Dashboard", path: landlord_dashboard_path, icon: "insert_chart" %>

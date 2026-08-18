@@ -70,3 +70,15 @@ vi:
         per_use: "Lần sử dụng"
         per_kwh: "kWh"
         per_m3: "m3"
+
+    asset:
+      categories:
+        fridge: "Tủ lạnh"
+        air_con: "Máy lạnh"
+        camera: "Camera"
+        elec_stove: "Bếp điện"
+        wash_mach: "Máy giặt"
+        dryer: "Máy sấy"
+        smart_door: "Cửa thông minh"
+        water_heater: "Máy nước nóng"
+        tv: "Tivi"

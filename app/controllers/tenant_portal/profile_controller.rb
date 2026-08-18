@@ -1,4 +1,4 @@
-class LandlordPortal::ProfilesController < LandlordPortal::BaseController
+class TenantPortal::ProfilesController < TenantPortal::BaseController
   before_action :set_user
 
   def show

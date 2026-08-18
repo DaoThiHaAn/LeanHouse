@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_08_15_104446) do
+ActiveRecord::Schema[8.0].define(version: 2026_08_18_093021) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "unaccent"
@@ -41,6 +41,19 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_15_104446) do
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "assets", force: :cascade do |t|
+    t.bigint "room_id", null: false
+    t.integer "price", null: false
+    t.date "purchased_at"
+    t.string "brand"
+    t.string "model"
+    t.string "category", null: false
+    t.string "note"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["room_id"], name: "index_assets_on_room_id"
   end
 
   create_table "beds", force: :cascade do |t|
@@ -216,6 +229,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_15_104446) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "assets", "rooms", on_delete: :cascade
   add_foreign_key "beds", "rooms"
   add_foreign_key "contracts", "houses", on_delete: :cascade
   add_foreign_key "contracts", "landlords", on_delete: :cascade

@@ -87,6 +87,7 @@ vi:
   add: "Thêm"
   adding: "Đang thêm"
   general_info: "Thông tin chung"
+  detail_info: "Thông tin chi tiết"
   create: "Tạo mới"
   close: "Đóng"
   extract: "Loại"
@@ -96,6 +97,7 @@ vi:
   ago: "Trước"
   send: "Gửi"
   min: "Tối thiểu %{val}"
+  note: "Ghi chú"
   
 
   errors:
@@ -154,6 +156,10 @@ vi:
     room_mng: "Quản lý Phòng"
     bed_mng: "Quản lý Giường"
     issue_report: "Báo cáo sự cố"
+    my_room: "Phòng của tôi"
+    room_info: "Thông tin phòng ở"
+    my_contract: "Hợp đồng của tôi"
+    used_sv: "Dịch vụ sử dụng"
 
 
   pagination:

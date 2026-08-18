@@ -11,6 +11,7 @@ class Room < ApplicationRecord
   has_many :room_services, inverse_of: :room, dependent: :destroy
   has_many :service_variants, through: :room_services, inverse_of: :rooms
   has_many :services, through: :service_variants, inverse_of: :rooms
+  has_many :assets, dependent: :destroy
 
   before_validation :normalize_name
 
@@ -107,9 +108,11 @@ class Room < ApplicationRecord
   end
 
   # Return all tenants currently staying in a room
+  # @return [Array<Tenant>]
   def all_staying_tenants
     tenant_stays.staying.includes(tenant: :user).map(&:tenant)
   end
+
 
   # Tenants renting individual beds in the room
   # @return [{tenant: ..., bed: ...}, ...]
@@ -125,6 +128,35 @@ class Room < ApplicationRecord
       end
     end
   end
+
+
+  # Unify the data structure to use in view
+  # @param house [House]: the current house
+  # @param stayer_id [int]
+  def formatted_roommates(house, stayer_id)
+    if house.bed?
+      beds.includes(
+        rental_unit: { tenant_stays: { tenant: :user } }
+      ).flat_map do |bed|
+        bed.rental_unit.tenant_stays.staying
+          .where.not(tenant_id: stayer_id)
+          .map { |stay| {
+            user: stay.tenant.user,
+            bed_name: bed.name }
+          }
+      end
+
+    else
+      tenant_stays.staying
+        .where.not(tenant_id: stayer_id)
+        .includes(tenant: :user)
+        .map { |stay| {
+          user: stay.tenant.user,
+          bed_name: nil }
+        }
+    end
+  end
+
 
   private
 

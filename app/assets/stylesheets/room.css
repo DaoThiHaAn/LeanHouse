@@ -63,11 +63,6 @@
   margin: 0;
 }
 
-.info-zone {
-  background-color: var(--primary-text);
-  color: white;
-}
-
 .new-room.main-container {
   min-width: 450px;
 }
@@ -95,4 +90,52 @@
 .room.colspan td {
   background-color: #eff9f4;
   color: #0d8395;
+}
+
+/* Tenant View */
+.tenant-room .border-bottom {
+  border-color: #6E8BA0
+}
+
+.tenant-room h2 {
+  font-size: 1.2rem
+}
+
+.room-info-zone {
+  background-color: var(--primary-text);
+  color: white;
+}
+
+.room-info-zone .room-name {
+  color: #74e6ee;
+  background-color: #2e788d;
+  width: fit-content;
+}
+
+.room-info-zone .location {
+    font-size: 8rem;
+    display:block;
+    line-height: .9;
+}
+
+.room-info-zone .title {
+    color: #53e6b7;
+    font-weight: 800;
+}
+
+.room-info-zone .checkin {
+    color: rgb(196, 196, 196)
+}
+
+.tenant-room .call-icon {
+  font-size: 1.4rem;
+}
+
+.tenant-room h3 {
+  font-size: 1.2rem;
+  color: #2e6878
+}
+
+.tenant-room .table-responsive {
+  max-height: 400px
 }

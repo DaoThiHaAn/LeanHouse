@@ -27,17 +27,3 @@
     background-color: rgb(210, 249, 234)
 }
 
-.tenant-dashboard .info-zone .location {
-    font-size: 8rem;
-    display:block;
-    line-height: .9;
-}
-
-.tenant-dashboard .info-zone .title {
-    color: #57f784;
-    font-weight: 800;
-}
-
-.tenant-dashboard .info-zone .checkin {
-    color: rgb(218, 218, 218)
-}

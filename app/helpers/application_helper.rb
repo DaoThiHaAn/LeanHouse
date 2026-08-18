@@ -50,4 +50,9 @@ module ApplicationHelper
       )
     end
   end
+
+  # Format vietnamese name
+  def vn_name(fullname)
+    fullname.mb_chars.downcase.titleize.to_s
+  end
 end
