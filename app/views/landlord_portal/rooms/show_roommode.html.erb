@@ -1,4 +1,4 @@
-<%# Variables: @room, @floor, @room_services, @tenants %>
+<%# Variables: @room, @floor, @room_services, @tenants, @assets %>
 
 <%= turbo_frame_tag "room_detail_modal" do %>
   <div class="modal fade" id="roomDetailModal" tabindex="-1" aria-hidden="true"
@@ -79,7 +79,7 @@
             <% end %>
           </div>
 
-          <%= render "services_properties", room_services: @room_services %>
+          <%= render "services_properties", room_services: @room_services, assets: @assets %>
         </div>
 
 

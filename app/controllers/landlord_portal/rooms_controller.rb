@@ -70,6 +70,7 @@ class LandlordPortal::RoomsController < LandlordPortal::BaseController
   def show
     @floor = @room.floor
     @room_services = @room.room_services.includes(service_variant: :service)
+    @assets = @room.assets.sorted
 
     if @house.bed?
       @tenants = @room.all_staying_bed_tenants

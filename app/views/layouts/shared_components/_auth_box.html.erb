@@ -17,7 +17,7 @@
 						<li><a class="dropdown-item" href="<%= landlord_profile_path %>"><%=t("bar.my_bank_acc")%></a></li>
 					<%else%>
 						<li><a class="dropdown-item" href="<%= tenant_profile_path %>"><%=t('bar.my_profile')%></a></li>
-						<li><a class="dropdown-item" href="#"><%=t("bar.my_vehicle")%></a></li>
+						<li><a class="dropdown-item" href="<%= tenant_vehicles_path %>"><%=t("bar.my_vehicle")%></a></li>
 						<li><a class="dropdown-item" href="#"><%=t("bar.my_saved_post")%></a></li>
 					<%end%>
 					<li><a class="dropdown-item d-flex gap-1 align-items-center" href="<%=logout_path%>">

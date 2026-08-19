@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+  namespace :landlord_portals do
+    get "requests/show"
+    get "requests/index"
+  end
   namespace :tenant_portal do
     get "services/show"
     get "contract/show"
@@ -55,6 +59,8 @@ Rails.application.routes.draw do
     resource :dashboard, only: [ :show ]
 
     resources :posts
+
+    resources :requests
 
     resources :houses do
       member do # act on 1 single record
@@ -122,6 +128,7 @@ Rails.application.routes.draw do
 
 
     resources :requests
+    resources :vehicles
   end
 
   namespace :admin, module: :admin_area do

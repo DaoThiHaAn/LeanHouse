@@ -1,6 +1,6 @@
-<div class="d-flex v-100 flex-grow-1 flex-column gap-3 align-items-center justify-content-center">
-    <p class="no-house-text">
-        <%=t('form.house.no')%>
+<div class="main-container d-flex w-75 flex-column gap-3 align-items-center justify-content-center">
+    <p class="no-house-text fs-4 fw-bold">
+        <%=t('form.house.none')%>
     </p>
 
     <p class="no-house-text">
@@ -12,4 +12,6 @@
         <span class="material-symbols-filled">add_circle</span>
         <%=t('form.house.add')%>
     <%end%>
+    <%= image_tag 'house-website.gif', alt: "House website icon", width: "200px",
+        class: "d-blokck mx-auto" %>
 </div>

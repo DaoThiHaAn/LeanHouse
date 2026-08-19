@@ -12,7 +12,7 @@
         <%= nav_item t("bar.dashboard"), "Dashboard", path: landlord_dashboard_path, icon: "insert_chart" %>
         <%= nav_item t("bar.house_mng"), "House Management", word: "house", path: landlord_houses_path, is_img: true, img_src: "house-mg.png", img_active_src: "house-mg-white.png" %>
         <%= nav_item t("bar.post_mng"), "Post", path: landlord_posts_path()%>
-        <%= nav_item t("bar.request_handle"), "Requests", path: about_path %>
+        <%= nav_item t("bar.request_handle"), "Requests", path: landlord_requests_path %>
 
     <%elsif current_user.tenant?%>
         <%= nav_item t("bar.dashboard"), "Dashboard", path: tenant_dashboard_path, icon: "insert_chart" %>
