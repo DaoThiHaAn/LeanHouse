@@ -35,8 +35,9 @@
         <span class="material-symbols-filled">edit</span>
       <% end %>
 
-      <%= button_to landlord_house_path(house), method: :delete,
-                class: "house-btn p-2 rounded-circle" do %>
+      <%= link_to check_deletion_landlord_house_path(house),
+                class: "house-btn p-2 rounded-circle",
+                data: {turbo_frame: "house_delete_modal"} do %>
         <span class="material-symbols-filled">delete</span>
       <% end %>
 
@@ -50,3 +51,5 @@
       <% end %>
   </div>
 </div>
+
+<%= turbo_frame_tag "house_delete_modal" %>

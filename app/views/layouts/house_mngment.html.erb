@@ -1,12 +1,13 @@
 <%# Use for House Management pages %>
 <%# Varaibles: @house, @other_houses %>
 
+<!-- Pass the width to the :container_width, otherwise "w-75" -->
 <% content_for :content do %>
   <div class="w-100 d-flex flex-column">
     <%# Additional sub-navigation %>
     <%= render "layouts/shared_components/additional_nav", house: @house, other_houses: @other_houses %>
 
-    <%# Yields the controller view (e.g., services/index.html.erb) %>
+    <%# Yields the controller view %>
     <div class="main-container <%= content_for(:container_width).presence || "w-75" %>">
       <%= yield %>
     </div>

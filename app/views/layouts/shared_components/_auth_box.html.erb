@@ -1,89 +1,92 @@
-<%# Local varianles %>
+<%# Local varianles: unread_count, notifications %>
 
-<% if logged_in?%>
+<% if logged_in? %>
     <!--TODO Profile -->
     <div class="dropdown profile-dropdown">
         <button class="py-1 dropdown-toggle d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
             <%= display_avatar %>
             <div class="d-flex flex-column align-items-start">
-                <p class="fw-bold fullname"><%=format_name(current_user.fullname) %></p>
-                <p class="role"><%=get_role%></p>
+                <p class="fw-bold fullname"><%= format_name(current_user.fullname) %></p>
+                <p class="role"><%= get_role %></p>
             </div>
         </button>
 
         <ul class="dropdown-menu">
-					<% if current_user.role == "landlord" %>
-						<li><a class="dropdown-item" href="<%= landlord_profile_path %>"><%=t('bar.my_profile')%></a></li>
-						<li><a class="dropdown-item" href="<%= landlord_profile_path %>"><%=t("bar.my_bank_acc")%></a></li>
-					<%else%>
-						<li><a class="dropdown-item" href="<%= tenant_profile_path %>"><%=t('bar.my_profile')%></a></li>
-						<li><a class="dropdown-item" href="<%= tenant_vehicles_path %>"><%=t("bar.my_vehicle")%></a></li>
-						<li><a class="dropdown-item" href="#"><%=t("bar.my_saved_post")%></a></li>
-					<%end%>
-					<li><a class="dropdown-item d-flex gap-1 align-items-center" href="<%=logout_path%>">
-						<%=t("auth.log_out")%>
-						<span class="material-symbols-outlined">logout</span>
-					</a></li>
+          <% if current_user.role == "landlord" %>
+            <li><a class="dropdown-item" href="<%= landlord_profile_path %>"><%= t('bar.my_profile') %></a></li>
+            <li><a class="dropdown-item" href="<%= landlord_profile_path %>"><%= t("bar.my_bank_acc") %></a></li>
+          <% else %>
+            <li><a class="dropdown-item" href="<%= tenant_profile_path %>"><%= t('bar.my_profile') %></a></li>
+            <li><a class="dropdown-item" href="<%= tenant_vehicles_path %>"><%= t("bar.my_vehicle") %></a></li>
+            <li><a class="dropdown-item" href="#"><%= t("bar.my_saved_post") %></a></li>
+          <% end %>
+          <li><a class="dropdown-item d-flex gap-1 align-items-center" href="<%= logout_path %>">
+            <%= t("auth.log_out") %>
+            <span class="material-symbols-outlined">logout</span>
+          </a></li>
         </ul>
     </div>
 
     <!-- TODO: Notification -->
     <div class="dropdown notification-dropdown">
-			<button class="dropdown-toggle" type="button" data-bs-toggle="dropdown"
-							aria-expanded="false" title="<%= t("click_open")%>">
-				<div class="position-relative">
-					<span class="noti material-symbols-filled">notifications</span>
-					<% if @unread_count > 0 %>
-						<span class="notification-badge">
-							<%= noti_count(@unread_count) %>
-						</span>
-					<% end %>
-				</div>
-			</button>
+      <button class="dropdown-toggle" type="button" data-bs-toggle="dropdown"
+              aria-expanded="false" title="<%= t("click_open") %>">
+        <div class="position-relative">
+          <span class="noti material-symbols-filled">notifications</span>
+          <% if unread_count > 0 %>
+            <span class="notification-badge">
+              <%= noti_count(unread_count) %>
+            </span>
+          <% end %>
+        </div>
+      </button>
 
-			<ul class="divided dropdown-menu dropdown-menu-end p-0">
-				<% if @notifications.empty? %>
-					<li class="py-3 text-center text-muted">
-						<span class="material-symbols-outlined d-block mb-2">
-							notifications_off
-						</span>
+      <ul class="divided dropdown-menu dropdown-menu-end p-0">
+        <% if notifications.empty? %>
+          <li class="py-3 text-center text-muted">
+            <span class="material-symbols-outlined d-block mb-2">
+              notifications_off
+            </span>
 
-						<p class="mb-0"><%= t("form.noti.empty") %></p>
-					</li>
+            <p class="mb-0"><%= t("form.noti.empty") %></p>
+          </li>
 
-				<% else %>
-					<div class="py-1 px-3 d-flex justify-content-end border-bottom">
-						<%= link_to "#", class: "text-danger fw-medium fst-italic mark-as-read" do %>
-							<span class="text-danger material-symbols-outlined">done_all</span>
-							<%= t("form.noti.mark_as_read") %>
-						<% end %>
-					</div>
+        <% else %>
+          <div class="py-1 px-3 d-flex justify-content-end border-bottom">
+            <%= link_to "#", class: "text-danger fw-medium fst-italic mark-as-read" do %>
+              <span class="text-danger material-symbols-outlined">done_all</span>
+              <%= t("noti.mark_as_read") %>
+            <% end %>
+          </div>
 
-					<% @notifications.each do |notification| %>
-						<li class="py-2 px-3 d-flex flex-column gap-2 <%= "unread" unless notification.read? %>">
-							<p class="fw-bold title text-clamp-1"><%= notification.title %></p>
+          <% notifications.each do |notification| %>
+            <li class="py-2 px-3 d-flex flex-column gap-2 <%= "unread" unless notification.read? %>">
+              <p class="fw-bold title text-clamp-1"><%= notification.title %></p>
 
-							<p class="noti-content text-clamp-2"><%= notification.message %></p>
+              <p class="noti-content text-clamp-2"><%= notification.message %></p>
 
-							<div class="noti-footer mt-2 d-flex justify-content-between text-muted">
-								<p>
-									<%= time_ago_in_words(notification.created_at) + " " + t("ago").downcase %>
-								</p>
+              <div class="noti-footer mt-2 d-flex justify-content-between text-muted">
+                <p>
+                  <%= time_ago_in_words(notification.created_at) + " " + t("ago").downcase %>
+                </p>
 
-								<%= link_to t("view_detail"), notification.url %>
-							</div>
+                <%# Check if url exists before rendering the link %>
+                <% if notification.respond_to?(:url) && notification.url.present? %>
+                  <%= link_to t("view_detail"), notification.url %>
+                <% end %>
+              </div>
 
-						</li>
-					<% end %>
-				<% end %>
-			</ul>
+            </li>
+          <% end %>
+        <% end %>
+      </ul>
     </div>
 
-<%else%>
-    <%= link_to t("auth.sign_up"), signup_path, class: "signup-btn"%>
+<% else %>
+    <%= link_to t("auth.sign_up"), signup_path, class: "signup-btn" %>
 
     <%= link_to login_path, class: "login-btn gap-1 d-flex align-items-center flex-shrink-0" do %>
         <%= t("auth.log_in") %>
         <span class="material-symbols-filled">door_open</span>
     <% end %>
-<%end%>
+<% end %>

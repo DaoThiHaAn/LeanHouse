@@ -48,9 +48,13 @@ class Room < ApplicationRecord
 
   # Model method
 
+  def title_name
+    I18n.t("form.room.self") + " " + self.name
+  end
+
   # Can be rented
   def available?
-    tenants_count < max_slots
+    active && tenants_count < max_slots
   end
 
   def empty?
@@ -72,6 +76,16 @@ class Room < ApplicationRecord
 
       touch
     end
+  end
+
+  # A tenant is linked to a room
+  def tenant_added!
+    increment!(:tenants_count)
+  end
+
+  # A tenant is unlinked to a room
+  def tenant_removed
+    decrement!(:tenants_count)
   end
 
   # @param house [House] the house object

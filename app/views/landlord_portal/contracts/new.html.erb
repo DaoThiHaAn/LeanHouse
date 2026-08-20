@@ -1,6 +1,11 @@
 <%# Varaibles: @contract %>
 
-<%= turbo_frame_tag "new_contract_modal" do%>
+<% content_for :title, t("page_titles.new_contract") %>
 
-
-<% end %>
+<div class="d-flex align-items-center mb-5">
+  <%= link_to :back, class: "d-flex align-items-center gap-1 turn-back link" do%>
+            <span class="material-symbols-outlined ms-2">arrow_left_alt</span>
+            <%=t('turn_back')%>
+  <%end%>
+  <h1 class="text-center flex-grow-1"><%=t('page_titles.new_contract') %></h1>
+</div> 

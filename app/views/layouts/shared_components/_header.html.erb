@@ -1,3 +1,5 @@
+<%# Local varianles: unread_count, notifications %>
+
 <nav class="navbar sticky-top navbar-expand-md navbar-light py-0">
   <div class="container-fluid px-4 gap-1 gap-sm-0">
 
@@ -24,29 +26,31 @@
 
     <div class="d-flex gap-2 align-items-center">
         <%# User authentication links %>
-      <%= render "layouts/shared_components/auth_box" %>
+      <%= render "layouts/shared_components/auth_box", 
+          unread_count: unread_count, notifications: notifications %>
 
-      <%# Language selector%>
+      <%# Language selector %>
       <div class="nav-item dropdown lang-switcher">
-        <a class="nav-link lang-btn dropdown-toggle d-flex justify-content-center align-items-center gap-1"
-            type="button" title="<%= t("bar.lang_switch")%>"
+        <button class="nav-link lang-btn dropdown-toggle d-flex justify-content-center align-items-center gap-1"
+            type="button" title="<%= t("bar.lang_switch") %>"
             id="langDropdown"
             data-bs-toggle="dropdown"
             aria-expanded="false">
             <span class="material-symbols-outlined">language</span>
             <%= I18n.locale.to_s.upcase %> <!-- Current language -->
-        </a>
+        </button>
 
         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="langDropdown">
             <% ["en", "vi"].each do |loc| %>
             <li>
                 <%= link_to loc.upcase,
                           url_for(params.permit!.to_h.merge(lang: loc)),
+                          title: t("lang.#{loc}"),
                           class: "dropdown-item #{'active' if I18n.locale.to_s == loc}" %>
             </li>
             <% end %>
         </ul>
       </div>
     </div>
-  </div>  
+  </div>
 </nav>

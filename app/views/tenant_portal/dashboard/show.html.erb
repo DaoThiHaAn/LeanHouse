@@ -2,7 +2,7 @@
 <% content_for :title, t("dashboard.self") %>
 
 <div class="tenant-dashboard main-container w-75">
-  <h1 class="text-center mb-4"><%=  t("dashboard.self") %> </h1>
+  <h1 class="text-center mb-4"><%= t("dashboard.self") %> </h1>
 
-  <%= render "tenant_portal/shared/room_info_zone" %>
+  <%= render "tenant_portal/shared/room_info_zone", house: @house, tenant_stay: @tenant_stay %>
 </div>

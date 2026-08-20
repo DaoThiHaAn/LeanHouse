@@ -6,6 +6,7 @@ class House < ApplicationRecord
   has_many :beds, through: :rooms, dependent: :destroy
   has_many :services, inverse_of: :house, dependent: :destroy
   has_many :service_variants, through: :services
+  has_many :assets, through: :rooms
 
   # Rails auto generates helper methods for enum values
   enum :mode, { room: "room", bed: "bed" }
@@ -66,20 +67,20 @@ class House < ApplicationRecord
     !rooms.where("tenants_count > 0").exists?
   end
 
+
   # Returns active, available rental units with their location preloaded.
-  #
-  # Room mode: rental_unit.rentable.floor
-  # Bed mode:  rental_unit.rentable.room.floor
+  # @return [Array<RentalUnit>]
   def available_rental_units
     if room?
       RentalUnit
         .where(rentable_type: "Room")
         .joins("INNER JOIN rooms ON rooms.id = rental_units.rentable_id")
         .joins("INNER JOIN floors ON floors.id = rooms.floor_id")
-        .where(floors: { house_id: id }, rooms: { deleted: false })
+        .where(
+          floors: { house_id: id },
+          rooms: { deleted: false }
+        )
         .where("rooms.tenants_count < rooms.max_slots")
-        .joins("LEFT JOIN tenant_stays ON tenant_stays.rental_unit_id = rental_units.id AND tenant_stays.checkout_at IS NULL")
-        .where(tenant_stays: { id: nil })
         .includes(rentable: :floor)
         .order("floors.position ASC, rooms.name ASC")
     else
@@ -88,21 +89,25 @@ class House < ApplicationRecord
         .joins("INNER JOIN beds ON beds.id = rental_units.rentable_id")
         .joins("INNER JOIN rooms ON rooms.id = beds.room_id")
         .joins("INNER JOIN floors ON floors.id = rooms.floor_id")
-        .where(floors: { house_id: id }, rooms: { deleted: false }, beds: { deleted: false, is_available: true })
-        .joins("LEFT JOIN tenant_stays ON tenant_stays.rental_unit_id = rental_units.id AND tenant_stays.checkout_at IS NULL")
-        .where(tenant_stays: { id: nil })
+        .where(
+          floors: { house_id: id },
+          rooms: { deleted: false },
+          beds: { deleted: false, is_available: true }
+        )
         .includes(rentable: { room: :floor })
         .order("floors.position ASC, rooms.name ASC, beds.name ASC")
     end
   end
 
   # Return all linked tenants with/without signing contracts
+  # @param signed_contract [Boolean]
+  # @return tenants [Array<Tenant>]
   def all_linked_tenants(signed_contract:)
     rentable_records = room? ? rooms : beds
     rental_units = RentalUnit.where(rentable: rentable_records)
 
     Tenant
-      .includes(:user)
+      .includes(:user, :contracts)
       .joins(:tenant_stays)
       .where(tenant_stays: {
         rental_unit_id: rental_units,
@@ -119,11 +124,12 @@ class House < ApplicationRecord
     return unless regulation_file.attached?
 
     unless regulation_file.content_type == "application/pdf"
-      errors.add(:regulation_file, "must be a PDF")
+      errors.add(
+        :regulation_file, :invalid_file)
     end
 
     if regulation_file.byte_size > 50.megabytes
-      errors.add(:regulation_file, "must be smaller than 5 MB")
+      errors.add(:regulation_file, :too_large)
     end
   end
 end

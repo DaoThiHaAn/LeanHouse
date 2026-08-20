@@ -22,12 +22,12 @@
                     </p>
                     <p class="card-text text-clamp-2 mb-0"><%= house_address(house) %></p>
                 </div>
-            
+
                 <!-- Change house Button -->
                 <button type="button" 
                         class="other-house-btn d-flex align-items-center rounded-circle" 
                         title="<%= t('bar.other_houses') %>">
-                    <%= link_to other_houses_landlord_house_path(@house), data: {turbo_frame: "other_houses"} do%>
+                    <%= link_to other_houses_landlord_house_path(@house), data: {turbo_frame: "other_houses"} do %>
                         <span class="material-symbols-outlined">more_vert</span>
                     <% end %>
                 </button>
@@ -53,7 +53,7 @@
             </div>
         <% end %>
 
-        <%= link_to "#", class: class_names("card", "other-card", active: controller_name == "properties") do %>
+        <%= link_to landlord_house_assets_path(house), class: class_names("card", "other-card", active: controller_name == "assets") do %>
             <div class="card-body p-0 d-flex flex-column gap-1 align-items-center justify-content-center">
                 <%= image_tag "property.png", alt: "Property Icon" %>
                 <h5 class="m-0 text-center card-title d-flex align-items-center">
@@ -71,7 +71,7 @@
             </div>
         <% end %>
 
-        <%= link_to "#", class: class_names("card", "other-card", active: controller_name == "contracts") do %>
+        <%= link_to landlord_house_contracts_path(house), class: class_names("card", "other-card", active: controller_name == "contracts") do %>
             <div class="card-body p-0 d-flex flex-column gap-1 align-items-center justify-content-center">
                 <%= image_tag "contracts.png", alt: "Contract Icon" %>
                 <h5 class="m-0 text-center card-title d-flex align-items-center">
@@ -80,7 +80,7 @@
             </div>
         <% end %>
 
-        <%= link_to "#", class: class_names("card", "other-card", active: controller_name == "invoices") do %>
+        <%= link_to landlord_house_invoices_path(house), class: class_names("card", "other-card", active: controller_name == "invoices") do %>
             <div class="card-body p-0 d-flex flex-column gap-1 align-items-center justify-content-center">
                 <%= image_tag "expenses.png", alt: "Invoice Icon" %>
                 <h5 class="m-0 text-center card-title d-flex align-items-center">
@@ -89,7 +89,7 @@
             </div>
         <% end %>
 
-        <%= link_to "#", class: class_names("card", "other-card", active: controller_name == "vehicles") do %>
+        <%= link_to landlord_house_vehicles_path(house), class: class_names("card", "other-card", active: controller_name == "vehicles") do %>
             <div class="card-body p-0 d-flex flex-column gap-1 align-items-center justify-content-center">
                 <%= image_tag "car.png", alt: "Car Icon" %>
                 <h5 class="m-0 text-center card-title d-flex align-items-center">
@@ -112,7 +112,7 @@
     title="<%= t('bar.secondary_toggle_close') %>"
     data-title-open="<%= t('bar.secondary_toggle_expand') %>"
     data-title-close="<%= t('bar.secondary_toggle_close') %>"
-    data-secondary-nav-target="button"> 
+    data-secondary-nav-target="button">
     <span class="material-symbols-outlined toggle-icon">
       chevron_line_up
     </span>

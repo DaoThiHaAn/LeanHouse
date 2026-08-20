@@ -28,6 +28,11 @@ vi:
             role:
               blank: "Chọn 1 vai trò!"
 
+        house:
+          attributes:
+            regulation_file:
+              invalid_type: "Tệp phải có định dạng PDF"
+              too_large: "Tệp phải có dung lượng nhỏ hơn 50 MB"
 
         service:
           attributes:
@@ -50,6 +55,14 @@ vi:
           attributes:
             name:
               taken: "Phòng %{value} đã tồn tại trong tầng được chọn!"
+        
+        contract:
+          attributes:
+            citizen_id:
+              format: "phải gồm đúng 12 chữ số"
+              blank: "không được để trống"
+            due_date:
+              comparison: "phải sau Ngày bắt đầu"
 
       # Global messages
       messages:
@@ -57,6 +70,13 @@ vi:
         # taken: "Đã tồn tại!"
         not_a_number: "Phải là một số!"
         greater_than: "Phải lớn hơn %{count}!"
+
+    # Attribute translation
+    attributes:
+      contract:
+        citizen_id: "Số CCCD"
+        start_date: "Ngày bắt đầu"
+        due_date: "Ngày hết hạn"
 
   # For enum values
   enums:

@@ -81,7 +81,7 @@ class LandlordPortal::BedsController < LandlordPortal::BaseController
   def delete
   end
 
-  def filtered_table
+  def filtered
     @beds = filtered_beds
 
     render partial: "bed_table", locals: { house: @house, beds: @beds }

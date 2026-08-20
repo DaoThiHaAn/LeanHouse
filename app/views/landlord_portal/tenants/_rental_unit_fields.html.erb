@@ -1,0 +1,43 @@
+<!-- Local variables: house, floors -->
+
+<%# Floor %>
+<div class="input-group mb-3">
+  <%= label_tag :floor_id, class: "input-group-text" do %>
+    <%= t("form.floor.self") + ":" %><span class="ms-1 asterisk">*</span>
+  <% end %>
+  <%= select_tag :floor_id,
+        options_for_select([[t("form.room.select_floor"), ""]] + floors.map { |floor| [floor.name, floor.id] }),
+        class: "form-select", required: true,
+        data: { 
+          dependent_rental_unit_target: "floor",
+          action: "change->dependent-rental-unit#floorChanged" 
+        } %>
+</div>
+
+<%# Room %>
+<div class="input-group mb-3">
+  <%= label_tag :room_id, class: "input-group-text" do %>
+    <%= t("form.room.self") + ":" %><span class="ms-1 asterisk">*</span>
+  <% end %>
+
+  <%= select_tag :room_id, options_for_select([]), class: "form-select", required: true,
+        data: { 
+          dependent_rental_unit_target: "room", 
+          action: "change->dependent-rental-unit#roomChanged" 
+        } %>
+</div>
+
+<%# Bed %>
+<% if house.bed? %>
+  <div class="input-group mb-3">
+    <%= label_tag :bed_id, class: "input-group-text" do %>
+      <%= t("form.bed.self") + ":" %><span class="ms-1 asterisk">*</span>
+  <% end %>
+
+    <%= select_tag :bed_id, options_for_select([]), class: "form-select", required: true,
+          data: { 
+            dependent_rental_unit_target: "bed",
+            action: "change->dependent-rental-unit#bedChanged"
+          } %>
+  </div>
+<% end %>

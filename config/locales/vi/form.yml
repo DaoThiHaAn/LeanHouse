@@ -39,6 +39,7 @@ vi:
       reg_now: "Đăng ký ngay"
       reset_pw: "Đặt mật khẩu mới"
       change_avatar: "Đổi ảnh đại diện"
+      citizen_id: "Căn cước công dân"
  
     house:
       add: "Tạo nhà mới"
@@ -142,18 +143,26 @@ vi:
 
     tenant:
       self: "Khách thuê"
+      acc_info: "Thông tin tài khoản"
       tel: "Số điện thoại khách thuê"
       link: "Liên kết với khách thuê"
-      create_and_link: "Tạo tài khoản và Liên kết với khách thuê"
+      create_and_link: "Tạo tài khoản và Liên kết với Khách thuê"
       create_link_info: "Trong trường hợp khách thuê chưa có tài khoản, bạn có thể tạo tài khoản cho khách thuê và liên kết sau đó."
       ready: "Tài khoản sẵn sàng kết nối"
       select_unit: "Vị trí thuê"
       select_unit_info: "Màn hình chỉ hiển thị các vị trí còn trống."
       none: "Chưa ghi nhận khách thuê!"
       checkin_at: "Ngày vào ở"
-      name_tel: "Nhập tên / số điện thoại"
-      unsigned_list: "Danh sách người thuê chưa ký "
-
+      name_input: "Nhập tên"
+      unsigned_list: "Danh sách người thuê chưa ký"
+      without_contract: "Chưa ký hợp đồng"
+      remove: "Xóa khỏi nhà"
+      remove_cf: "Bạn có chắc chắn muốn xóa Khách thuê này ra khỏi nhà?"
+      remove_warning: "Sau khi xóa, hợp đồng hiện tại của bạn với khách thuê này (nếu còn hiệu lực) sẽ tự động kết thúc."
+      list: "Danh sách Khách thuê"
+      rental_unit: "Chỗ thuê"
+      info: "Thông tin Khách thuê"
+      move: "Chuyển chỗ"
 
       no_house: "Bạn chưa được kết nối với Nhà nào!"
       let_link: "Hãy liên hệ với chủ nhà để bắt đầu nhận phòng và theo dõi quá trình lưu trú của bạn ở đây."
@@ -198,6 +207,8 @@ vi:
       model: "Mẫu"
       purchase_date: "Ngày mua"
       price: "Giá tiền (đ)"
+      none: "Chưa có tài sản trong Nhà"
+      add: "Thêm tài sản"
 
     roommates: "Bạn cùng phòng"
 
@@ -209,3 +220,12 @@ vi:
       sign: "Ký hợp đồng"
       extend: "Gia hạn"
       close: "Kết thúc"
+      resid_register: "Đăng ký tạm trú"
+      resid_register_due: "Ngày hết hạn tạm trú"
+      state: "Tình trạng"
+      active: "Còn hiệu lực"
+      overdue: "Quá hạn"
+      nearly_due: "Gần hết hạn"
+      deposit_paid: "Đã chuyển tiền cọc"
+      due_date: "Hạn hợp đồng"
+

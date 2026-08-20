@@ -1,5 +1,7 @@
 class Asset < ApplicationRecord
   belongs_to :room, inverse_of: :assets
+  has_one :house, through: :room, inverse_of: :assets
+
 
   BUILT_IN_CATEGORIES = %w[
     fridge

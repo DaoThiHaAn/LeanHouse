@@ -71,8 +71,12 @@
     def change_mode
     end
 
-    def check_delete
-      @can_delete = @house.can_delete?
+    def check_deletion
+      if @house.can_delete?
+        render :check_deletion_confirm
+      else
+        render :check_deletion_blocked
+      end
     end
 
     def destroy

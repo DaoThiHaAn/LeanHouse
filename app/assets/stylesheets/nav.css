@@ -307,7 +307,6 @@
 
 @media screen and (max-width: 768px) {
     .navbar-nav {
-        background-color: rgb(201, 217, 222);
         padding: 10px 20px;
     }
 }

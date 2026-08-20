@@ -6,7 +6,7 @@
 <%= turbo_frame_tag "beds_index" do %>
   <div class="d-flex justify-content-between align-items-center mb-5">
     <%# query: state=? %>
-    <%= form_with url: filtered_table_landlord_house_beds_path(@house),
+    <%= form_with url: filtered_landlord_house_beds_path(@house),
                   method: :get,
                   data: {turbo_frame: "bed_table"} do |f| %>
       <div class="d-flex align-items-center gap-2">
@@ -23,19 +23,18 @@
     <% end %>
 
     <!-- Add Room Button -->
-    <%=link_to new_landlord_house_bed_path(@house), 
+    <%= link_to new_landlord_house_bed_path(@house), 
         class:"main-btn d-flex align-items-center gap-2 px-2 py-1",
-        data: {turbo_frame: "new_bed_modal"} do%>
+        data: {turbo_frame: "new_bed_modal"} do %>
       <span class="material-symbols-filled">add_circle</span>
-      <%=t('form.bed.add')%>
-    <%end%>
+      <%= t('form.bed.add') %>
+    <% end %>
   </div>
 
   <%= turbo_frame_tag "bed_table",
-        src: filtered_table_landlord_house_beds_path(
+        src: filtered_landlord_house_beds_path(
           @house, 
-          page: params[:page],
-          state: params[:state]
+          params.permit(:page, :state)
         ),
         loading: :lazy,
         data: {
@@ -43,12 +42,10 @@
           pagination_sync_canonical_url_value: landlord_house_beds_path(@house),
           pagination_sync_default_params_value: { state: "all" }.to_json,
           pagination_sync_query_params_value: ["state"].to_json,
-          pagination_sync_total_pages_selector_value: "[data-pagination-total-pages]",
+          pagination_sync_total_pages_selector_value: "[data-pagination-total-pages",
           action: "turbo:frame-load->pagination-sync#updateUrl"
         } do %>
       <!-- Loading icon -->
     <%= loading_spinner %>
   <% end %>
-
-
 <% end %>

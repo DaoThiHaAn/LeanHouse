@@ -13,8 +13,7 @@ module TenantPortal
     # floor: @tenant_stay.rental_unit.floor
     def set_tenant_and_stay
       @tenant = current_user.tenant
-      @tenant_stay = @tenant.tenant_stays
-                            .where(checkout_at: nil)
+      @tenant_stay = @tenant.tenant_stays.staying
                             .includes(rental_unit: :rentable)
                             .first
 

@@ -24,6 +24,11 @@ class Floor < ApplicationRecord
 
   # MODEL METHODS
 
+  # Format the name in format: "Floor ..."
+  def title_name
+    I18n.t("form.floor.self") + " " + name
+  end
+
   def reach_max_rooms?
     rooms_count.to_i == 100
   end

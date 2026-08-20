@@ -107,6 +107,10 @@ body {
   width: 85%;
 }
 
+.w-fit-content {
+  width: fit-content;
+}
+
 main {
   overflow-x: auto;
 }
@@ -287,14 +291,20 @@ input {
 
 .main-container {
   background-color: white;
-  margin: 20px auto;
+  margin: 10px auto 20px;
   box-shadow: 2px 5px 5px 4px rgba(0, 0, 0, 0.15);
   padding: 30px;
 }
 
 .turn-back.link {
   color: var(--primary-text);
-  width: fit-content
+  width: fit-content;
+  opacity: 70%;
+}
+
+.turn-back.link:hover {
+  opacity: 100%;
+  text-decoration: none;
 }
 
 .number.form-control {

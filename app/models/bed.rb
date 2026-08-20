@@ -21,11 +21,27 @@ class Bed < ApplicationRecord
 
   # MODEL METHODS
 
-  def available?
-    is_available
+  def title_name
+    I18n.t("form.bed.self") + " " + self.name
   end
 
-  def available__for?(rental_unit)
-    is_available
+  def available?
+    active && is_available
+  end
+
+  # A tenant is unlinked to a bed
+  def tenant_removed!
+    transaction do
+      update!(is_available: true)
+      room.decrement!(:tenants_count)
+    end
+  end
+
+  # A tenant is linked to a bed
+  def tenant_added!
+    transaction do
+      update!(is_available: false)
+      room.increment!(:tenants_count)
+    end
   end
 end

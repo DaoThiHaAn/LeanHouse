@@ -10,7 +10,7 @@ class LandlordPortal::RoomsController < LandlordPortal::BaseController
   end
 
   # Return the filtered table partial
-  def filtered_table
+  def filtered
     @rooms = filtered_rooms
 
     if @house.room?

@@ -1,0 +1,21 @@
+
+<%= turbo_frame_tag "tenant_detail_modal" do %>
+  <div class="modal fade" id="tenantDetailModal" tabindex="-1" aria-hidden="true"
+        data-controller="modal" data-modal-auto-open-value="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content px-2">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="tenantDetailModalLabel">
+            <%= t("form.tenant.info") %>
+          </h1>
+
+          <button type="button" class="m-0 btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+<% end %>

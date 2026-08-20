@@ -1,24 +1,21 @@
-<%# Variables: @house, @tenant_stay  %>
+<%# Variables: house, tenant_stay %>
 
 <%# Show the stay info of tenant %>
 <div class="room-info-zone py-3 ps-1 pe-4 d-flex">
   <span class="material-symbols-filled location align-self-center">location_home</span>
   <div class="d-flex flex-column gap-1">
-    <p class="title fs-4"><%= @house.name %>
+    <p class="title fs-4"><%= house.name %></p>
     <p class="fw-bold room-name p-2">
-      <% if @house.bed? %>
-        <%= t("form.bed.self") + " " + @tenant_stay.rental_unit.bed&.name + " - " %>
-      <% end%>
-      <%= "#{t("form.room.self")} #{@tenant_stay.rental_unit.room.name}, #{t("form.floor.self")} #{@tenant_stay.rental_unit.floor.name}"%>   
+      <%= tenant_stay.rental_unit.location_info %>
     </p>
 
     <p>
       <span class="material-symbols-outlined">location_on</span>
-      <%= house_address(@house) %>
+      <%= house_address(house) %>
     </p>
     <p class="checkin mt-1">
-      <%= t("form.tenant.checkin_at") + ": "%>
-      <%= @tenant_stay.checkin_at.strftime("%d/%m/%Y")  %>
+      <%= t("form.tenant.checkin_at") + ": " %>
+      <%= tenant_stay.checkin_at.strftime("%d/%m/%Y") %>
     </p>
   </div>
 </div>

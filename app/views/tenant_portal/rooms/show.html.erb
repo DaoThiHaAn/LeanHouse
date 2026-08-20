@@ -3,8 +3,8 @@
 <% content_for :title, t("page_titles.my_room") %>
 
 <div class="tenant-room main-container w-75">
-  <h1 class="w-100 text-center mb-3"><%=  t("page_titles.room_info") %> </h1>
-  <%= render "tenant_portal/shared/room_info_zone" %>
+  <h1 class="w-100 text-center mb-3"><%= t("page_titles.room_info") %> </h1>
+  <%= render "tenant_portal/shared/room_info_zone", house: @house, tenant_stay: @tenant_stay %>
 
   <div class="d-flex flex-column mt-3 gap-3 px-3">
     <%# Landlord info %>
@@ -15,7 +15,7 @@
       <p>-</p>
       <div class="d-flex gap-1 align-items-center">
         <span class="material-symbols-filled call-icon">call</span>
-        <a href="tel:<%=@landlord.tel%>"><%= @landlord.tel%></a>
+        <a href="tel:<%= @landlord.tel %>"><%= @landlord.tel %></a>
       </div>
     </div>
 

@@ -10,6 +10,10 @@ vi:
       default: "%d/%m/%Y %H:%M:%S"
       short: "%d/%m/%y %H:%M"
 
+  lang:
+    en: "Tiếng Anh"
+    vi: "Tiếng Việt"
+
   bar:
     home: "Trang Chủ"
     about: "Về Chúng Tôi"
@@ -120,6 +124,11 @@ vi:
     tel_linked: "Tài khoản này đang được liên kết với Nhà khác"
     rental_unit_unavailable: "Vị trí thuê này không còn trống. Vui lòng chọn lại."
     not_bed_mode: "Nhà này không thuộc loại hình Thuê theo Giường!"
+    house_cant_deleted: "Không thể xóa nhà này khi vẫn còn khách thuê!"
+    room_cant_deleted: "Không thể xóa phòng này khi vẫn còn khách thuê!"
+    bed_cant_deleted: "Không thể xóa giường này khi vẫn còn khách thuê!"
+
+
   
   success_messages:
     tenant_linked: "Đã liên kết khách thuê thành công"
@@ -139,6 +148,7 @@ vi:
     room_created: "Tạo phòng thành công!"
     room_updated: "Cập nhật phòng thành công!"
     tenant_linked: "Liên kết thành công!"
+    tenant_removed: "Xoá khách thuê thành công!"
 
   page_titles:
     home: "Trang Chủ"
@@ -155,11 +165,14 @@ vi:
     tenant_mng: "Quản lý Khách thuê"
     room_mng: "Quản lý Phòng"
     bed_mng: "Quản lý Giường"
+    asset_mng: "Quản lý Tài sản"
+    service_mng: "Quản lý Dịch vụ"
     issue_report: "Báo cáo sự cố"
     my_room: "Phòng của tôi"
     room_info: "Thông tin phòng ở"
     my_contract: "Hợp đồng của tôi"
     used_sv: "Dịch vụ sử dụng"
+    new_contract: "Hợp đồng mới"
 
 
   pagination:
@@ -225,7 +238,9 @@ vi:
   new_tel_owner:
     self: "Trợ giúp xác minh số điện thoại"
     title: "Xác minh số điện thoại"
-    content_1: "Trong trường hợp bạn là chủ sở hữu số điện thoại nhưng hệ thống thông báo đã ghi nhận đã được sử dụng, hãy làm theo các bước sau:"
+    case_2: "Trường hợp 2: Bạn là chủ nhà đang tạo tài khoản mới cho Khách thuê"
+    case_1: "Trường hợp 1: Bạn là chủ sở hữu số điện thoại"
+    content_1: "Hệ thống thông báo ghi nhận số điện thoại đã được sử dụng có thể do chủ sở hữu trước đã dùng để đăng ký, để xác minh quyền sở hữu, bạn hãy làm theo các bước sau:"
     content_2_html: "<em>Bước 1</em>: Gửi tin nhắn đến số  <strong>1414</strong> (Số tổng đài miễn phí của các nhà mạng viễn thông tại Việt Nam) với cú pháp <strong>TTTB [Số CMND/CCCD]</strong>"
     content_3_html: "<em>Bước 2</em>: Chụp màn hình tin nhắn gửi và tin nhắn phản hồi như ảnh."
     content_4_html: "<em>Bước 3</em>: Gửi email đến chúng tôi qua <a class='text-decoration-underline' target='_blank' rel='noopener noreferrer' href='mailto:customerservice@leanhouse.com?subject=Trợ giúp xác nhận số điện thoại'>customerservice@leanhouse.com</a>. Trong email, hãy chèn ảnh chụp màn hình ở bước 2."
@@ -233,6 +248,7 @@ vi:
     fig_caption: "Hình ảnh minh họa tin nhắn và phản hồi xác thực số điện thoại chính chủ thành công"
     content_5: "Số điện thoại được xác nhận chính là số điện thoại được nhà mạng phản hồi lại trong tin nhắn đến."
     content_6: "Chúng tôi sẽ xử lý và phản hồi lại trong 1-2 ngày làm việc, không tính thứ bảy, chủ nhật và ngày lễ. Trong trường hợp chưa nhận được email, vui lòng kiểm tra thư mục Spam hoặc Thư rác."
+    content_7: "Bạn hãy liên hệ với Khách thuê và hướng dẫn họ thực hiện các bước đã nêu trên, hoặc đổi sang số điện thoại mới."
 
   incident_reports:
     email: "Email"

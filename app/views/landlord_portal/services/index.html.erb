@@ -1,1 +1,71 @@
-INDEX SERVICES
+<% content_for :title, t("page_titles.service_mng") %>
+
+<% provide :container_width, "d-flex flex-column vh-100 w-100" %>
+
+<h1 class="text-center mb-5"> <%= t("page_titles.service_mng") %></h1>
+
+<% if @services.empty? %>
+  <p class="fs-5 text-center fw-bold"><%= t("form.asset.none") %></p>
+
+  <%= link_to new_landlord_house_service_path(@house),
+     class: "main-btn px-2 py-1 d-flex align-items-center gap-2 mx-auto mt-3" do %>
+        <span class="material-symbols-filled">add_circle</span>
+        <%= t('form.asset.add') %>
+  <% end %>
+<% else %>
+
+  HAS SERVICE
+
+<div class="d-flex h-100" data-controller="sidebar">
+  <aside id="sidebar" class="sidebar text-white"
+    data-sidebar-target="sidebar">
+    <div class="sidebar-header d-flex align-items-center justify-content-between">
+      <span class="sidebar-title fw-bold">Dormify</span>
+
+      <button
+        id="sidebarToggle"
+        class="btn btn-dark border-0"
+        type="button"
+        data-action="click->sidebar#toggle"
+        aria-label="Toggle sidebar"
+      >
+        <i class="bi bi-list fs-4"></i>
+      </button>
+    </div>
+
+    <nav class="sidebar-nav mt-3">
+      <%= link_to "#", class: "sidebar-link" do %>
+        <i class="bi bi-speedometer2"></i>
+        <span>Dashboard</span>
+      <% end %>
+
+      <%= link_to "#", class: "sidebar-link" do %>
+        <i class="bi bi-door-open"></i>
+        <span>Rooms</span>
+      <% end %>
+
+      <%= link_to "#", class: "sidebar-link" do %>
+        <i class="bi bi-people"></i>
+        <span>Tenants</span>
+      <% end %>
+
+      <%= link_to "#", class: "sidebar-link" do %>
+        <i class="bi bi-file-earmark-text"></i>
+        <span>Contracts</span>
+      <% end %>
+
+      <%= link_to "#", class: "sidebar-link" do %>
+        <i class="bi bi-credit-card"></i>
+        <span>Payments</span>
+      <% end %>
+
+      <%= link_to "#", class: "sidebar-link" do %>
+        <i class="bi bi-gear"></i>
+        <span>Settings</span>
+      <% end %>
+    </nav>
+</aside>
+
+</div>
+
+<% end %>

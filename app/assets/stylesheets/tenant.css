@@ -53,11 +53,60 @@
   width: fit-content;
 }
 
-.tenant-containter {
-  height: 90vh
+.tenant-container {
+  min-width: 60vw;
+  max-width: 90vw
 }
 
-.unsigned.card {
-  background-color: rgb(255, 240, 154);
-  border: 1px solid rgb(225, 212, 137)
+.tenant-container .alert {
+  min-width: 300px;
+}
+
+
+.tenant-container h2 {
+  font-size: 1.1rem;
+  font-weight: 800;
+  font-family: "Nunito Sans", system-ui, sans-serif;
+}
+
+.tenant-container .unsigned-card {
+  background-color: #ffe09c;
+  color: rgb(90, 47, 16);
+  border: 1px solid #fbd582
+}
+
+.unsigned-card span {
+  color: rgb(102, 101, 101);
+  transition: background-color 0.2s ease;
+}
+
+.unsigned-card span:hover {
+  color: rgb(16, 16, 16);
+}
+
+.unsigned-card button {
+  background-color: transparent;
+}
+
+
+/* Warning animation */
+.warning-pulse {
+  display: inline-block; /* Required for transform scale to work properly */
+  animation: warning-zoom 1.75s infinite ease-in-out;
+}
+
+
+@keyframes warning-zoom {
+  0%, 100% {
+    transform: scale(1);
+    color: #c69b1b;
+  }
+  50% { 
+    transform: scale(1.25);
+    color: #ffaa33; /* Shifts to red at peak zoom */
+  }
+}
+ 
+.create-new-form-container{
+  max-width: 500px;
 }

@@ -1,4 +1,4 @@
-<div>
+<div class="mx-auto w-fit-content">
   <button type="button" class="fw-bold text-muted text-decoration-underline bg-transparent" data-bs-toggle="modal" data-bs-target="#telVerifyHelpModal">
     <%= t("new_tel_owner.self") %>
   </button>
@@ -16,33 +16,38 @@
         </div>
 
         <div class="help modal-body px-4">
-          <p><%= t("new_tel_owner.content_1")%></p>
+          <h3 class="fs-5 fw-bold text-decoration-underline mb-4"><%= t("new_tel_owner.case_1") %></h3>
+          <p><%= t("new_tel_owner.content_1") %></p>
           <ul class="my-3">
             <li>
-              <p><%= t("new_tel_owner.content_2_html")%></p>
+              <p><%= t("new_tel_owner.content_2_html") %></p>
             </li>
             <li>
-              <p><%= t("new_tel_owner.content_3_html")%></p>
+              <p><%= t("new_tel_owner.content_3_html") %></p>
               <figure class="d-flex flex-column align-items-center">
                 <%= image_tag "mess-example.png", alt: "Phone screenshot", width: "200px", height: "auto", class: "my-2" %>
                 <figcaption class="text-center fst-italic text-muted">
-                  <%= t("new_tel_owner.fig_caption")%>
+                  <%= t("new_tel_owner.fig_caption") %>
                 </figcaption>
               </figure>
             </li>
             <li>
-              <p><%= t("new_tel_owner.content_4_html")%></p>
-              <p><%= t("new_tel_owner.content_4_1_html")%></p>
+              <p><%= t("new_tel_owner.content_4_html") %></p>
+              <p><%= t("new_tel_owner.content_4_1_html") %></p>
             </li>
           </ul>
 
-          <p><%= t("new_tel_owner.content_5")%></p>
-          <p><%= t("new_tel_owner.content_6")%></p>
+          <p class="mb-1"><%= t("new_tel_owner.content_5") %></p>
+          <p><%= t("new_tel_owner.content_6") %></p>
+
+          <h3 class="fs-5 fw-bold text-decoration-underline my-3"><%= t("new_tel_owner.case_2") %></h3>
+          <p><%= t("new_tel_owner.content_7") %></p>
         </div>
 
-      <div class="modal-footer">
-        <button type="button" class="custom-primary-btn" data-bs-dismiss="modal">OK</button>
+        <div class="modal-footer">
+          <button type="button" class="custom-primary-btn" data-bs-dismiss="modal">OK</button>
+        </div>
       </div>
     </div>
-  <div>
+  </div>
 </div>

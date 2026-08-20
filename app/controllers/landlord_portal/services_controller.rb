@@ -6,6 +6,7 @@ class LandlordPortal::ServicesController < LandlordPortal::BaseController
   end
 
   def index
+    @services = @house.services
     render :index
   end
 end

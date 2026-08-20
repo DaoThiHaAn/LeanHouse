@@ -66,14 +66,14 @@ Rails.application.routes.draw do
       member do # act on 1 single record
         get "/other-houses", to: "houses#other_houses", as: :other_houses
         patch :change_mode
-        get :check_delete
+        get :check_deletion
       end
 
       resources :services
 
       resources :rooms do
         collection do # act on the collection of records
-          get :filtered_table
+          get :filtered
         end
       end
 
@@ -93,15 +93,19 @@ Rails.application.routes.draw do
       # resources :rental_unit, only: [] do
       #   resources :tenants, only: [ :create ]
       # end
-      resources :tenants, only: [ :index, :show, :new, :create ] do
+      resources :tenants, only: [ :index, :show, :new, :create, :destroy ] do
         member do
           get :link
+          get :move
+        end
+        collection do
+          get :filtered
         end
       end
 
       resources :beds do
         collection do # act on the collection of records
-          get :filtered_table
+          get :filtered
         end
       end
 

@@ -44,8 +44,8 @@ export default class extends Controller {
       canonicalUrl.searchParams.set(this.pageParamValue, page || "1")
     }
 
-    window.history.replaceState(window.history.state, "", canonicalUrl)
+    window.history.replaceState(window.history.state, "", canonicalUrl.href)
 
-    console.log("Update url")
+    console.log("Update url", canonicalUrl.href)
   }
 }

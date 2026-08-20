@@ -2,30 +2,33 @@
 
 <%= turbo_frame_tag "room_table" do %>
 
+<!-- Used by stimulus to update url -->
+<span hidden data-pagination-total-pages="<%= rooms.total_pages %>"></span>
+
 <h2 class="table-caption"><%= t("form.room.list") %></h2>
 
 <div class="mb-3 d-flex align-items-center gap-2">
-	<span class="material-symbols-outlined">list_arrow</span>
-	<%= t("form.floor.order") %>
+  <span class="material-symbols-outlined">list_arrow</span>
+  <%= t("form.floor.order") %>
 </div>
 
 <div class="table-responsive border rounded w-85 m-auto">
   <table class="table table-bordered table-hover align-middle mb-0">
     <thead class="table-light">
       <tr>
-        <th><%=t("form.room.name")%></th>
-        <th><%=t("form.room.tenants_count")%></th>
-        <th><%="#{t("form.room.rent")} (đ)"%></th>
-        <th><%="#{t("form.room.deposit")} (đ)"%></th>
-        <th class="text-center"><%=t("actions")%></th>
+        <th><%= t("form.room.name") %></th>
+        <th><%= t("form.room.tenants_count") %></th>
+        <th><%= t("form.room.rent") %> (đ)</th>
+        <th><%= t("form.room.deposit") %> (đ)</th>
+        <th class="text-center"><%= t("actions") %></th>
       </tr>
     </thead>
 
     <tbody>
       <% rooms.group_by(&:floor).each do |floor, floor_rooms| %>
         <tr class="colspan">
-          <td colspan="100" >
-            <%= "#{t("form.floor.self")} #{floor.name}" %>
+          <td colspan="100">
+            <%= t("form.floor.self") %> <%= floor.name %>
           </td>
         </tr>
 
@@ -33,7 +36,7 @@
           rental_unit = room.rental_unit
         %>
           <tr>
-            <td><%= "#{t("form.room.self")} #{room.name}" %></td>
+            <td><%= t("form.room.self") %> <%= room.name %></td>
             <td>
               <%= room.tenants_count %> / <%= room.max_slots %>
             </td>
