@@ -4,7 +4,13 @@ class Tenant < ApplicationRecord
   has_many :tenant_stays,  inverse_of: :tenant
   has_many :contracts, inverse_of: :tenant
 
-   scope :name_sorted, -> { order("users.fullname ASC") }
+  scope :name_sorted, -> { order("users.fullname ASC") }
+
+  scope :search, ->(query) do
+    return all if query.blank?
+    q = "%#{sanitize_sql_like(query.strip)}%"
+    joins(:user).where("unaccent(users.fullname) ILIKE unaccent(:q)", q: q)
+  end
 
   # MODEL METHOD
 

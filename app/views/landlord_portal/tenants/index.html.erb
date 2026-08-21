@@ -29,6 +29,12 @@
                   <span class="material-symbols-filled">ink_pen</span>
                 <% end %>
 
+                <%= link_to move_landlord_house_tenant_path(@house, @tenant), class:"main-btn d-flex align-items-center gap-2 px-2 py-1 mb-3 ms-auto",
+                    data: { turbo_frame: "move_tenant_modal" } do %>
+                    <span class="material-symbols-filled">move_location</span>
+                    <%= t('form.tenant.link') %>
+                <% end %>
+
                 <%= button_to landlord_house_tenant_path(@house, tenant), method: :delete,
                     title: t("form.tenant.remove"),
                     data: {turbo_confirm: t("form.tenant.remove_cf")} do %>
@@ -46,69 +52,85 @@
   <% end %>
 
   <%# Main tenant table container (contract signed) %>
-	<div class="flex-grow-2">
-		<!-- Link Tenant Button -->
-		<%= link_to new_landlord_house_tenant_path, class:"main-btn d-flex align-items-center gap-2 px-2 py-1 mb-3 ms-auto",
-				data: { turbo_frame: "new_tenant_modal" } do %>
-				<span class="material-symbols-filled">link</span>
-				<%= t('form.tenant.link') %>
-		<% end %>
+  <div class="flex-grow-2">
+    <!-- Link Tenant Button -->
+    <%= link_to new_landlord_house_tenant_path(@house), class:"main-btn d-flex align-items-center gap-2 px-2 py-1 mb-3 ms-auto",
+        data: { turbo_frame: "new_tenant_modal" } do %>
+        <span class="material-symbols-filled">link</span>
+        <%= t('form.tenant.link') %>
+    <% end %>
 
-		<!-- Create & Link Tenant Button -->
-		<%= link_to landlord_house_create_new_tenant_path, class:"subtle main-btn d-flex align-items-center gap-2 px-2 py-1 mb-2 ms-auto",
-				data: {**tooltip("top", "form.tenant.create_link_info")} do %>
-			<span class="material-symbols-filled">person_add</span>
-			<%= t('form.tenant.create_and_link') %>
-		<% end %>
+    <!-- Create & Link Tenant Button -->
+    <%= link_to landlord_house_create_new_tenant_path(@house), class:"subtle main-btn d-flex align-items-center gap-2 px-2 py-1 mb-2 ms-auto",
+        data: {**tooltip("top", :"form.tenant.create_link_info")} do %>
+      <span class="material-symbols-filled">person_add</span>
+      <%= t('form.tenant.create_and_link') %>
+    <% end %>
 
-		<% unless @signed_tenants.empty? %>
-			<div class="d-flex">
-				<%# Search bar: name/tel %>
-				<div class="row mb-4 search-bar w-50">
-					<%= form_with url: landlord_house_tenant_path(@house), method: :get,
-												data: { 
-													controller: "search", turbo_frame: "house-grid", turbo_action: "advance"
-												} do |f| %>
+    <% unless @signed_tenants.empty? %>
+      <%= form_with url: filtered_landlord_house_rooms_path(@house),
+          class:"d-flex aign-items-center flex-wrap gap-2 my-3",
+          data: { 
+            controller: "search", turbo_frame: "house-grid", turbo_action: "advance"
+          } do |f| %>
 
-						<div class="input-group">
-							<span class="input-group-text">
-									<span class="material-symbols-outlined">search</span>
-							</span>
+        <%# Search bar: name %>
+        <div class="row mb-4 search-bar w-50">
+            <div class="input-group">
+              <span class="input-group-text">
+                  <span class="material-symbols-outlined">search</span>
+              </span>
 
-							<%= f.search_field :query,
-									value: params[:query],
-									placeholder: "#{t("form.tenant.name_input")}...",
-									class: "form-control",
-									data: {
-											search_target: "input",
-											action: "input->search#debounce"
-									} 
-								%>
-						</div>
-					<% end %>
-				</div>
+              <%= f.search_field :query,
+                  value: params[:query],
+                  placeholder: "#{t("form.tenant.name_input")}...",
+                  class: "form-control",
+                  data: {
+                      search_target: "input",
+                      action: "input->search#debounce"
+                  } %>
+            </div>
+        </div>
 
-			</div>
-
-			<!-- TODO: -->
-			<%= form_with url: filtered_landlord_house_rooms_path(house),
-										method: :get,
-										data: {turbo_frame: "tenant_table"} do |f| %>
-				<div class="d-flex align-items-center gap-2 mb-5">
-					<%= f.label :state, t("form.room.state"), class:"fw-semibold" %>
-
-					<%= f.select :state,
+				<!-- Contract State -->
+				<%= f.label :contract_state, t("form.contract.state"), class:"fw-semibold" %>
+				<%= f.select :contract_state,
 							[[t("all"), ""],
-								[t("form.room.available"), "available"],
-								[t("form.room.full"), "full"]],
-							{ selected: params[:state] },
+								[t("form.contract.overdue"), "overdue"],
+								[t("form.contract.nearly_due"), "nearly-due"]],
+							{ selected: params[:contract_state] },
 							class: "form-select w-auto",
 							onchange: "this.form.requestSubmit()" %>
-				</div>
-		<% end %>
-		</div>
-		<% end %>
-	</div>
+
+				<!-- Temporary residence State -->
+				<%= f.label :residence_state, t("form.room.resid_register_due"), class:"fw-semibold" %>
+				<%= f.select :residence_state,
+							[[t("all"), ""],
+								[t("form.contract.no_register"), "none"]
+								[t("form.contract.overdue"), "overdue"],
+								[t("form.contract.nearly_due"), "nearly-due"]],
+							{ selected: params[:contract_state] },
+							class: "form-select w-auto",
+							onchange: "this.form.requestSubmit()" %>
+      <% end %>
+
+      <%= turbo_frame_tag "room_table",
+            src: filtered_landlord_house_tenants_path(@house, params.permit(:page, :contract_state, :query, :residence_state)),
+            loading: :lazy,
+            data: {
+              controller: "pagination-sync",
+              pagination_sync_canonical_url_value: landlord_house_tenants_path(@house),
+              pagination_sync_default_params_value: 
+                { contract_state: "all", residence_state: "all" }.to_json,
+              pagination_sync_query_params_value: ["contract_state", "residence_state", "query"].to_json,
+              pagination_sync_total_pages_selector_value: "[data-pagination-total-pages]",
+              action: "turbo:frame-load->pagination-sync#updateUrl"
+            } do %>
+          <!-- Loading icon -->
+        <%= loading_spinner %>
+      <% end %>
+    <% end %>
+  </div>
 </div>
 
 <%= turbo_frame_tag "new_tenant_modal" %>

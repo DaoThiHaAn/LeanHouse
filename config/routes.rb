@@ -1,21 +1,4 @@
 Rails.application.routes.draw do
-  namespace :landlord_portals do
-    get "requests/show"
-    get "requests/index"
-  end
-  namespace :tenant_portal do
-    get "services/show"
-    get "contract/show"
-  end
-  namespace :landlord_portal do
-    get "assets/index"
-    get "assets/show"
-    get "assets/new"
-    get "assets/edit"
-    get "assets/create"
-    get "assets/update"
-    get "assets/destroy"
-  end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
@@ -97,6 +80,7 @@ Rails.application.routes.draw do
         member do
           get :link
           get :move
+          post :move, to: "tenants#execute_move"
         end
         collection do
           get :filtered

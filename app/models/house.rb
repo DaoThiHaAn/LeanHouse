@@ -118,6 +118,18 @@ class House < ApplicationRecord
       .distinct
   end
 
+  # @param tenant_id [int]
+  # @return [TenantStay]: the object that show a tenant is actually living in the house
+  def tenant_stay_for(tenant_id)
+    rental_units = RentalUnit.where(
+      rentable: room? ? rooms : beds
+    )
+
+    TenantStay
+      .staying
+      .find_by(rental_unit_id: rental_units, tenant_id: tenant_id)
+  end
+
   private
 
   def validate_regulation_file

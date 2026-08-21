@@ -28,7 +28,7 @@
       <% rooms.group_by(&:floor).each do |floor, floor_rooms| %>
         <tr class="colspan">
           <td colspan="100">
-            <%= t("form.floor.self") %> <%= floor.name %>
+            <%= floor.title_name %>
           </td>
         </tr>
 

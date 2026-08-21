@@ -46,7 +46,7 @@ module HousesHelper
 
   # Show general detail of Floor
   def floor_general_details(floor)
-    "#{t('form.house.floor')} #{floor.name} " +
+    "#{floor.title_name} " +
     "- #{floor.rooms_count} #{t('form.room.self')} " +
     "(#{t("form.floor.total_slots")}: #{floor.total_slots})"
   end

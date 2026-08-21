@@ -10,11 +10,11 @@
   <table class="table table-bordered table-hover align-middle mb-0">
     <thead class="table-light">
       <tr>
-        <th><%=t("form.bed.name")%></th>
-        <th><%=t("form.tenant.self")%></th>
-        <th><%="#{t("form.room.rent")} (đ)"%></th>
-        <th><%="#{t("form.room.deposit")} (đ)"%></th>
-        <th class="text-center"><%=t("actions")%></th>
+        <th><%= t("form.bed.name") %></th>
+        <th><%= t("form.tenant.self") %></th>
+        <th><%= t("form.room.rent") %> (đ)</th>
+        <th><%= t("form.room.deposit") %> (đ)</th>
+        <th class="text-center"><%= t("actions") %></th>
       </tr>
     </thead>
 
@@ -22,21 +22,21 @@
       <% beds.group_by { |bed| bed.room.floor }.each do |floor, floor_beds| %>
         <tr class="colspan">
           <td colspan="100" class="fs-5">
-            <%= "#{t("form.floor.self")} #{floor.name}" %>
+            <%= floor.title_name %>
           </td>
         </tr>
 
         <% floor_beds.group_by(&:room).each do |room, room_beds| %>
           <tr class="room colspan">
             <td colspan="100" class="text-center">
-              <%= "#{t("form.room.self")} #{room.name}" %>
+              <%= room.title_name %>
             </td>
           </tr>
 
           <% room_beds.each do |bed| %>
             <% rental_unit = bed.rental_unit %>
             <tr>
-              <td><%= "#{t("form.bed.self")} #{bed.name}" %></td>
+              <td><%= t("form.bed.self") %> <%= bed.name %></td>
               <td>
                 <% fullname = bed.staying_tenant&.user&.fullname %>
                 <% if fullname.present? %>

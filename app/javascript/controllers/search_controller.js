@@ -11,7 +11,7 @@ export default class extends Controller {
     clearTimeout(this.timeout)
     // query each 0.8 seconds
     this.timeout = setTimeout(() => {
-        console.log("Submitting...")
+        console.log("Search query submitting...")
         this.element.requestSubmit()
     }, 800)
   }

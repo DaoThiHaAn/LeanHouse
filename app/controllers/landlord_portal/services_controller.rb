@@ -9,4 +9,10 @@ class LandlordPortal::ServicesController < LandlordPortal::BaseController
     @services = @house.services
     render :index
   end
+
+  def new
+  end
+
+  def create
+  end
 end

@@ -29,7 +29,7 @@
       <%= link_to edit_landlord_house_path(house),
             data: { 
               turbo_frame: "_top", # force Rails to direct to a new page
-              **tooltip("right", "edit") 
+              **tooltip("right", :"edit") 
             },
             class: "house-btn p-2 rounded-circle" do %>
         <span class="material-symbols-filled">edit</span>
@@ -44,7 +44,7 @@
       <%= link_to landlord_house_rooms_path(house), 
                 data: { 
                   turbo_frame: "_top", # force Rails to direct to a new page
-                  **tooltip("right", "form.house.enter") 
+                  **tooltip("right", :"form.house.enter") 
                 },
                 class: "house-btn p-2 rounded-circle d-flex align-items-center justify-content-center" do %>
         <span class="material-symbols-filled">arrow_right_alt</span>

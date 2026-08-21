@@ -84,7 +84,7 @@ class Room < ApplicationRecord
   end
 
   # A tenant is unlinked to a room
-  def tenant_removed
+  def tenant_removed!
     decrement!(:tenants_count)
   end
 

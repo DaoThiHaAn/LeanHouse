@@ -107,6 +107,10 @@ body {
   width: 85%;
 }
 
+.w-95 {
+  width: 95%;
+}
+
 .w-fit-content {
   width: fit-content;
 }
@@ -115,7 +119,7 @@ main {
   overflow-x: auto;
 }
 
-h1, h2 {
+h1 {
   font-family: "Playpen Sans", system-ui, sans-serif;
   margin-bottom: 2rem;
   color: var(--primary-text);
@@ -129,7 +133,8 @@ h1 {
 
 h2 {
   font-size: 1.4rem;
-  font-weight: 600;
+  font-weight: 700;
+  color: #297072;
 }
 
 em {
@@ -170,6 +175,10 @@ p {
 
 input {
   border: 1px solid var(--border) !important;
+}
+
+textarea {
+  resize: none
 }
 
 ::placeholder {
@@ -394,4 +403,18 @@ input {
 
 figcaption {
   font-size: 0.9rem
+}
+
+
+/* RESPONSIVE */
+@media (max-width: 991.98px) {
+  html {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  html {
+    font-size: 11px;
+  }
 }

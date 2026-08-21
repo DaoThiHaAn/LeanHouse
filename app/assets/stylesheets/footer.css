@@ -44,8 +44,14 @@ footer .logo {
     height: auto;
 }
 
+@media only screen and (max-width: 990px) {
+  footer .logo {
+    height: 120px;
+  }
+}
+
 @media only screen and (max-width: 650px) {
   footer .logo {
-    height: 100px;
+    height: 90px;
   }
 }

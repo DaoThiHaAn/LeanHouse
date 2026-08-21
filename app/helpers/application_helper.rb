@@ -1,12 +1,12 @@
 module ApplicationHelper
   # Generate syntax for tooltip
   # @param pos [String]: position
-  # @param *i18n_keys [String]: keys of i18n
+  # @param *texts [String / Symbol]: normal string / keys of i18n
   # @param html [Boolean]: convert to html elements
   # Usage:
   # data: {**tooltip(...)}
-  def tooltip(pos, *i18n_keys, html: false)
-    title = i18n_keys.map { |key| t(key) }.join("<br><br>")
+  def tooltip(pos, *texts, html: false)
+    title = texts.map { |text| text.is_a?(Symbol) ? t(text) : text }.join("<br><br>")
 
     if html
       options = {

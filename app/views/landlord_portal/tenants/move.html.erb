@@ -1,3 +1,4 @@
+<!-- Variables: @tenant, @available_slots -->
 
 <%= turbo_frame_tag "move_tenant_modal" do %>
   <div class="modal fade" id="moveTenantModal" tabindex="-1" aria-hidden="true"
@@ -12,10 +13,46 @@
           <button type="button" class="m-0 btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
 
+        <div class="modal-body">
+          <p class="text-wrap fw-semibold fs-6"><%= vn_name(@tenant.user.fullname) %> </p>
+          <!-- Staying info -->
+          <p class="mt-2">
+            <span class="fw-bold fs-6"><%= t("form.tenant.current_rental_unit") %></span>
+            <%= @tenant.current_staying_info %>
+          </p>
+
+          <p class="my-3"><%= t("form.tenant.new_rental_unit") %></p>
+          <%= form_with url: move_landlord_house_tenant_path(@house, @tenant), method: :post,
+                  class:"px-3 py-2 mx-auto mb-2" ,
+                  data: { 
+                    turbo_frame: "_top",
+                    controller: "loading",
+                    loading_text_value: t("form.tenant.moving") + "...",
+                    action: "submit->loading#submit"
+                  } do |f| %>
+
+            <div data-controller="dependent-rental-unit"
+                data-dependent-rental-unit-rooms-value="<%= @available_slots.room_options.to_json %>"
+                data-dependent-rental-unit-beds-value="<%= @available_slots.bed_options.to_json %>"
+                data-dependent-rental-unit-bed-mode-value="<%= @house.bed? %>">
+              <%= hidden_field_tag :rental_unit_id, nil, data: { dependent_rental_unit_target: "rentalUnit" } %>
+
+              <%= render 'rental_unit_fields', house: @house, floors: @available_slots.floors %>
+            </div>
+
+            <%= f.button :submit, 
+                  class: "mt-2 custom-primary-btn mx-auto main-form d-flex align-items-center justify-content-center gap-2",
+                  data: { loading_target: "button" } do %>
+                  <span data-loading-target="text"><%= t("form.tenant.move") %></span>
+
+                  <span class="material-symbols-outlined spin d-none"
+                    data-loading-target="spinner">
+                    progress_activity
+                  </span>
+            <% end %>
+          <% end %>
+        </div>
       </div>
-
     </div>
-
   </div>
-
 <% end %>

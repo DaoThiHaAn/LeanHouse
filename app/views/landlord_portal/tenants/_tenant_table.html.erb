@@ -1,6 +1,9 @@
-<%# Local variables: signed_tenants %>
+<%# Local variables: signed_tenants, house %>
 
 <%= turbo_frame_tag "tenant_table" do %>
+
+<!-- Used by stimulus to update url -->
+<span hidden data-pagination-total-pages="<%= signed_tenants.total_pages %>"></span>
 
 <h2 class="table-caption"><%= t("form.tenant.list") %></h2>
 
@@ -32,7 +35,7 @@
           <td><%= tenant.user.tel %></td>
           <td><%= tenant.current_staying_info %></td>
           <td>
-            <% if latest_contract.deposited_paid %>
+            <% if latest_contract.deposit_paid %>
               <span class="material-symbols-filled">check_circle</span>
             <% else %>
               -
@@ -65,7 +68,7 @@
                         data: { 
                           turbo_confirm: [
                             t("form.tenant.remove_cf"),
-                            t("form.tenant.remove_warning")
+                            t("form.tenant.remove_warning_1") + "\n" + t("form.tenant.remove_warning_2")
                           ].join("\n\n") 
                         },
                         title: t("form.tenant.remove"),
@@ -73,8 +76,11 @@
                 <span class="material-symbols-filled">person_remove</span>
               <% end %>
 
-              <%= button_to move_landlord_house_tenant_path(house, tenant),
-                        title: t("delete"),
+              <%= link_to move_landlord_house_tenant_path(house, tenant),
+                        title: t("form.tenant.move"),
+                        data: { 
+                          turbo_frame: "move_tenant_modal"
+                        },
                         class: "table-action" do %>
                 <span class="material-symbols-filled">move_location</span>
               <% end %>
@@ -86,7 +92,12 @@
   </table>
 </div>
 
+<!-- TODO: Update the params-->
 <div class="mt-3">
-  <%= paginate tenants, params: {state: params[:state]} %>
+  <%= paginate signed_tenants, 
+      params: {
+        contract_state: params[:contract_state], 
+        residence_state:  params[:residence_state],
+        query: params[:query] } %>
 </div>
 <% end %>

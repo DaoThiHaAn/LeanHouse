@@ -49,9 +49,12 @@ class Ability
     can :read, :dashboard
     can :manage, House, landlord_id: id
     # 2-level relations
-    can :manage, [ Floor, Service, Tenant, Contract ], house: { landlord_id: id }
+    can :manage, [ Floor, Service, Contract ], house: { landlord_id: id }
+    # can :manage, Tenant
     # 3-level relations
     can :manage, [ Room, Bed, ServiceVariant, RoomService ], house: { landlord_id: id }
+    can :manage, Asset, room: { house: { landlord_id: id } }
+
 
     # can :manage, Floor, house: { landlord_id: id }
     # can :manage, Room, house: { landlord_id: id }

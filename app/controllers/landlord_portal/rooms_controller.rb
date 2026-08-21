@@ -158,6 +158,7 @@ class LandlordPortal::RoomsController < LandlordPortal::BaseController
     @room.deposit ||= rental_unit&.deposit
   end
 
+  # Filter rooms based on url params
   def filtered_rooms
     scope = @house.rooms.active.includes(:floor)
 

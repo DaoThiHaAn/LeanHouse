@@ -16,6 +16,15 @@ class Contract < ApplicationRecord
   scope :expiring_soonest, -> { order(due_date: :asc, id: :asc) }
   scope :latest_started, -> { order(start_date: :desc, id: :desc) }
 
+  # Contract due scopes
+  scope :overdue, -> { where("contracts.due_date < ?", Date.current) }
+  scope :nearly_due, -> { where(contracts: { due_date: Date.current..(Date.current + NEARLY_DUE_DAYS.days) }) }
+
+  # Temporary residence scopes
+  scope :temp_resid_unregistered, -> { where(contracts: { temp_resid_registered: false }) }
+  scope :temp_resid_overdue, -> { where(contracts: { temp_resid_registered: true }).where("contracts.temp_resid_due_date < ?", Date.current) }
+  scope :temp_resid_nearly_due, -> { where(contracts: { temp_resid_registered: true, temp_resid_due_date: Date.current..(Date.current + NEARLY_DUE_DAYS.days) }) }
+
   # METHODS
 
   # Generate the status of the contract

@@ -98,7 +98,11 @@ class LandlordPortal::FloorsController < LandlordPortal::BaseController
   end
 
   def check_delete
-    @can_delete = @floor.can_delete?
+    if @floor.can_delete?
+      render "check_delete_confirm"
+    else
+      render "check_delete_blocked"
+    end
   end
 
   def sort

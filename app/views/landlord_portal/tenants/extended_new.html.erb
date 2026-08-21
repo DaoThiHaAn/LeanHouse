@@ -1,4 +1,4 @@
-<%# Variables: @house, @rental_units, @tenant %>
+<!-- Variables: @tenant, @available_slots -->
 
 <%# Extended new tenant modal when a telephone is valid %>
 <%= turbo_frame_tag "tenant_form" do %>
@@ -42,12 +42,12 @@
 
     <%= hidden_field_tag :tenant_id, @tenant.id %>
     <div data-controller="dependent-rental-unit"
-        data-dependent-rental-unit-rooms-value="<%= @room_options.to_json %>"
-        data-dependent-rental-unit-beds-value="<%= @bed_options.to_json %>"
+        data-dependent-rental-unit-rooms-value="<%= @available_slots.room_options.to_json %>"
+        data-dependent-rental-unit-beds-value="<%= @available_slots.bed_options.to_json %>"
         data-dependent-rental-unit-bed-mode-value="<%= @house.bed? %>">
       <%= hidden_field_tag :rental_unit_id, nil, data: { dependent_rental_unit_target: "rentalUnit" } %>
 
-      <%= render 'rental_unit_fields', house: @house, floors: @floors %>
+      <%= render 'rental_unit_fields', house: @house, floors: @available_slots.floors %>
     </div>
 
     <%= f.button :submit, 

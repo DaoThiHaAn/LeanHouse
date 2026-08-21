@@ -1,0 +1,21 @@
+<!-- Variables: -->
+
+<%= turbo_frame_tag "new_service_modal" do %>
+
+  <div class="modal fade" id="newServiceModal" tabindex="-1" aria-hidden="true"
+        data-controller="modal" data-modal-auto-open-value="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+
+      <div class="modal-content px-2">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5 flex-grow-1 text-center" id="newServiceModalLabel"><%= t("form.tenant.link") %></h1>
+            <button type="button" class="m-0 btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+
+          <div class="modal-body d-flex flex-column align-items-center">
+
+          </div>
+      </div>
+    </div>
+  </div>
+<% end %>

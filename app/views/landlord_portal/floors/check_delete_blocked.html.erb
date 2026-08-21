@@ -1,4 +1,4 @@
-<%#  Variables: @floor  %>
+<%# Variables: @floor %>
 
 <%= turbo_frame_tag "floor_delete_modal" do %>
   <div class="modal fade" id="floorCheckDeleteModal" tabindex="-1" aria-hidden="true"
@@ -6,20 +6,14 @@
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content px-2">
         <div class="modal-header d-flex">
-          <h1 class="modal-title fs-5 flex-grow-1 text-center" id="houseDetailModalLabel"><%= "#{t("form.floor.self")}: #{@floor.name}" %></h1>
+          <h1 class="modal-title fs-5 flex-grow-1 text-center" id="houseDetailModalLabel"><%= @floor.title_name.upcase %></h1>
           <button type="button" class="m-0 btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
 
         <div class="modal-body">
-          FLOOR CHECK DELETE
-        </div>
-
-
-        <div class="modal-footer d-flex justify-content-between align-items-center">
-          <button type="button" class="cancel-btn" data-bs-dismiss="modal"><%= t("close") %></button>
-          <button type="button" class="btn btn-primary">Save changes</button>
+           <%= t("errors.floor_cant_deleted") %>
         </div>
       </div>
     </div>
   </div>
-<%end%>
+<% end %>

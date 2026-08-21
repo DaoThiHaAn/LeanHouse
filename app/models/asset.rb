@@ -27,7 +27,18 @@ class Asset < ApplicationRecord
 
   def normalize_strings
     self.brand = brand&.squish
-    self.model = series_id&.squish
+    self.model = model&.squish
     self.note = note&.squish
+  end
+
+  # Get the list of category options in i18n format
+  def self.category_options
+    BUILT_IN_CATEGORIES.map do |cat|
+      [ I18n.t("enums.asset.categories.#{cat}", default: cat.humanize), cat ]
+    end + [ [ I18n.t("other"), "other" ] ]
+  end
+  # Hiển thị tên danh mục đã dịch khi xem chi tiết/danh sách
+  def human_category
+    I18n.t("enums.asset.categories.#{category}", default: category)
   end
 end

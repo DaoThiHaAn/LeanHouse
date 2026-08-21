@@ -1,7 +1,6 @@
 .content-wrapper {
   position: relative; /* Essential for positioning quotes */
   display: inline-block;
-  padding: 0 40px;
 }
 
 #about-us p {

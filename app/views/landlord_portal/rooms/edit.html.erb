@@ -1,15 +1,15 @@
 <%# Variables %>
 
-<%= turbo_frame_tag "edit_room_modal" do%>
+<%= turbo_frame_tag "edit_room_modal" do %>
   <div class="modal fade" id="editRoomModal" tabindex="-1" aria-hidden="true"
         data-controller="modal" data-modal-auto-open-value="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content px-2">
         <div class="modal-header py-2">
           <div class="w-100">
-            <h1 class="modal-title fs-5 text-center mb-2" id="editRoomModal"><%= t("form.room.edit") %></h1>
+            <h1 class="modal-title fs-5 text-center mb-2" id="editRoomModalLabel"><%= t("form.room.edit") %></h1>
             <p class="fs-5 fw-semibold text-center">
-              <%= "#{t("form.room.self")} #{@room.name_was}"%> - <%= "#{t("form.floor.self")} #{@room.floor.name}"%>
+              <%= t("form.room.self") %> <%= @room.name_was %> - <%= @room.floor.title_name %>
             </p>
           </div>
           <button type="button" class="m-0 btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -34,8 +34,8 @@
           <%# Room name %>
           <div class="room-name form-group">
             <div class="d-flex align-items-center gap-3" data-controller="form">
-              <%= f.label :name, class: "form-label flex-shrink-0" do%>
-                    <%= t('form.room.name') +  ": "%>
+              <%= f.label :name, class: "form-label flex-shrink-0" do %>
+                    <%= t('form.room.name') +  ": " %>
                     <span class="asterisk">*</span>
               <% end %>
 
@@ -52,13 +52,13 @@
               </small>
             </div>
 
-            <%= field_error(@room, :name, classes: "ms-2 mt-2")%>
+            <%= field_error(@room, :name, classes: "ms-2 mt-2") %>
           </div>
 
           <%# Room detail %>
           <div class="form-group d-flex flex-column gap-3">
             <div class="form-label flex-shrink-0 d-flex gap-1 ">
-              <%= t('form.house.detailed_room') +  ": "%>
+              <%= t('form.house.detailed_room') +  ": " %>
               <span class="asterisk">*</span>
             </div>
 
@@ -88,7 +88,7 @@
               <%= f.text_field :rent,
                     class: "form-control", data: {controller: "currency"},
                     required: true %>
-              <% if @house.bed?  %>
+              <% if @house.bed? %>
                 <span class="input-group-text"> <%= t("form.room.per_bed") %> </span>
               <% end %>
             </div>
@@ -100,15 +100,15 @@
               <%= f.text_field :deposit,
                     class: "form-control", data: {controller: "currency"},
                     required: true %>
-              <% if @house.bed?  %>
+              <% if @house.bed? %>
                 <span class="input-group-text"> <%= t("form.room.per_bed") %> </span>
-              <% end %>           
+              <% end %>
             </div>
           </div>
 
           <%# Services %>
           <div>
-            <div class="form-label"><%= t('form.service.self')%>:</div>
+            <div class="form-label"><%= t('form.service.self') %>:</div>
 
             <% @services.each do |service| %>
               <% applied_variant = @applied_service_variants_by_service_id[service.id] %>
@@ -159,7 +159,7 @@
                           data-service-selection-target="variantLabel"
                           data-placeholder="<%= t("form.service.select_variant") %>">
                         <% if applied_variant %>
-                          <%= "#{number_with_delimiter(applied_variant.fee)} đ / #{t("enums.room_service.unit.#{applied_variant.unit}")}" %>
+                          <%= number_with_delimiter(applied_variant.fee) %> đ / <%= t("enums.room_service.unit.#{applied_variant.unit}") %>
                         <% else %>
                           <%= t("form.service.select_variant") %>
                         <% end %>
@@ -175,9 +175,9 @@
                             data-variant-id="<%= variant.id %>"
                           >
                             <span class="material-symbols-filled me-2">payments</span>
-                            <%= "#{number_with_delimiter(variant.fee)} đ / #{t("enums.room_service.unit.#{variant.unit}")}" %>
+                            <%= number_with_delimiter(variant.fee) %> đ / <%= t("enums.room_service.unit.#{variant.unit}") %>
                             <% if variant.is_real_time %>
-                              <div class="ms-2" title="<%= t('form.service.real_time_short')%>">
+                              <div class="ms-2" title="<%= t('form.service.real_time_short') %>">
                                 -
                                 <span class="material-symbols-filled">speed</span>
                               </div>
@@ -200,14 +200,14 @@
 
           <%= f.button :submit, 
             class: "custom-primary-btn mx-auto main-form d-flex align-items-center justify-content-center gap-2",
-            data: { loading_target: "button" } do%>
+            data: { loading_target: "button" } do %>
             <span data-loading-target="text"><%= t("save") %></span>
 
             <span class="material-symbols-outlined spin d-none"
               data-loading-target="spinner">
               progress_activity
             </span>
-          <%end%>
+          <% end %>
         <% end %>
 
         </div>

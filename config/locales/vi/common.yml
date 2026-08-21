@@ -57,6 +57,9 @@ vi:
     back_house_index: "Quay về Danh sách Nhà"
     lang_switch: "Chuyển đổi ngôn ngữ"
 
+  sidebar:
+    click_to_open: "Nhấp để đóng/mở thanh bên"
+
   auth:
     sign_up: "Đăng Ký"
     log_in: "Đăng Nhập"
@@ -98,10 +101,13 @@ vi:
   select_another: "Chọn tài khoản khác"
   save_order: "Lưu thứ tự"
   click_open: "Nhấp để mở thông báo"
+  click_choose: "Nhấp để chọn"
   ago: "Trước"
   send: "Gửi"
   min: "Tối thiểu %{val}"
   note: "Ghi chú"
+  note_placeholder: "Nhập ghi chú"
+  other: "Khác"
   
 
   errors:
@@ -125,6 +131,7 @@ vi:
     rental_unit_unavailable: "Vị trí thuê này không còn trống. Vui lòng chọn lại."
     not_bed_mode: "Nhà này không thuộc loại hình Thuê theo Giường!"
     house_cant_deleted: "Không thể xóa nhà này khi vẫn còn khách thuê!"
+    floor_cant_deleted: "Không thể xóa tầng này vì còn ít nhất 1 phòng vẫn còn khách thuê"
     room_cant_deleted: "Không thể xóa phòng này khi vẫn còn khách thuê!"
     bed_cant_deleted: "Không thể xóa giường này khi vẫn còn khách thuê!"
 
@@ -149,6 +156,10 @@ vi:
     room_updated: "Cập nhật phòng thành công!"
     tenant_linked: "Liên kết thành công!"
     tenant_removed: "Xoá khách thuê thành công!"
+    tenant_moved: "Chuyển chỗ thuê thành công!"
+    asset_created: "Thêm tài sản mới thành công!"
+    asset_updated: "Cập nhật tài sản thành công!"
+
 
   page_titles:
     home: "Trang Chủ"
@@ -173,6 +184,7 @@ vi:
     my_contract: "Hợp đồng của tôi"
     used_sv: "Dịch vụ sử dụng"
     new_contract: "Hợp đồng mới"
+    new_service: "Dịch vụ mới"
 
 
   pagination:

@@ -3,12 +3,29 @@
 <% provide :container_width, "h-100 w-75" %>
 
 <h1 class="text-center mb-5"> <%= t("page_titles.asset_mng") %></h1>
+
 <% if @assets.empty? %>
   <p class="fs-5 text-center fw-bold"><%= t("form.asset.none") %></p>
 
   <%= link_to new_landlord_house_asset_path(@house),
-     class: "main-btn px-2 py-1 d-flex align-items-center gap-2 mx-auto mt-3" do %>
+     class: "main-btn px-2 py-1 d-flex align-items-center gap-2 mx-auto mt-3",
+            data: {turbo_frame: "new_asset_modal"} do %>
         <span class="material-symbols-filled">add_circle</span>
         <%= t('form.asset.add') %>
   <% end %>
+
+  <%= image_tag 'asset.gif', alt: "Asset gif", width: "150px", class: "d-block mx-auto my-3" %>
+<% else %>
+  <%= link_to new_landlord_house_asset_path(@house),
+     class: "main-btn px-2 py-1 d-flex align-items-center gap-2 mx-auto mt-3",
+            data: {turbo_frame: "new_asset_modal"} do %>
+        <span class="material-symbols-filled">add_circle</span>
+        <%= t('form.asset.add') %>
+  <% end %>
+
+  <!-- Asset table -->
+
+
 <% end %>
+
+<%= turbo_frame_tag "new_asset_modal" %>

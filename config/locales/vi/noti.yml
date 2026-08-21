@@ -7,6 +7,7 @@ vi:
     titles:
       linked_to_house: "Bạn đã được thêm vào nhà"
       rem_from_house: "Bạn đã rời khỏi nhà"
+      moved: "Bạn được chuyển chỗ thuê"
       contract_signed: "Chủ nhà đã tạo hợp đồng mới"
       contract_extended: "Hợp đồng được gia hạn"
       contract_closed: "Hợp đồng đã kết thúc"
@@ -14,6 +15,7 @@ vi:
 
     messages:
       tenant_added: "Bạn đã được thêm vào %{house}, tầng %{floor}, %{rental_unit}."
+      tenant_moved: "Bạn đã được chuyển vào %{house}, tầng %{floor}, %{rental_unit}."
       tenant_removed: "Chủ nhà đã xóa bạn ra khỏi %{house}, tầng %{floor}, %{rental_unit}."
       contract_signed: "Chủ nhà đã tạo %{contract_name}."
       contract_extended: "%{contract_name} được gia hạn đến %{date}."

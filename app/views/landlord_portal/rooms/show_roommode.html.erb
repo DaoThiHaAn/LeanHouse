@@ -9,7 +9,7 @@
           <div class="d-flex align-items-center justify-content-start gap-1 mx-auto">
             <span class="icon material-symbols-filled">living</span>
             <h1 class="modal-title fs-5" id="houseDetailModalLabel">
-              <%= t("form.room.self") %> <%= @room.name.capitalize %> - <%= t("form.floor.self") %> <%= @floor.name.capitalize %>
+              <%= @room.title_name.capitalize %> - <%= @floor.title_name.capitalize %>
             </h1>
           </div>
           <button type="button" class="m-0 btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
