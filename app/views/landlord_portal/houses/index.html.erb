@@ -41,7 +41,7 @@
         </button>
     <% else %>
         <!-- Active State  -->
-        <%= link_to new_landlord_house_path, class: "main-btn px-2 py-1" do %>
+        <%= link_to new_landlord_house_path, class: "shadow-sm main-btn px-2 py-1" do %>
             <div class="d-flex align-items-center gap-2">
                 <span class="material-symbols-filled">add_home</span>
                 <%= t('form.house.add') %>
@@ -50,12 +50,12 @@
     <% end %>
 
     <span class="material-symbols-outlined max-house-info"
-            <%=tooltip("right", "form.house.max_house", html: true)%>">
+            <%= tooltip("right", "form.house.max_house", html: true) %>>
             info
     </span>
 </div>
 
-<p><%=t("form.house.num_house", num: @landlord.houses_count)%></p>
+<p><%= t("form.house.num_house", num: @landlord.houses_count) %></p>
 
 <%# House card grid %>
 <%= turbo_frame_tag "house-grid", class: "d-block w-100" do %>

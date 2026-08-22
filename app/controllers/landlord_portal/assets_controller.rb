@@ -1,14 +1,23 @@
 class LandlordPortal::AssetsController < LandlordPortal::BaseController
   layout "house_mngment"
 
-  load_and_authorize_resource :asset, through: :house, except: %i[new create]
+  load_and_authorize_resource :asset, through: :house, except: %i[new create index]
+
+  ASSETS_PER_PAGE = 15
 
   def index
-    @assets = @house.assets.sorted
+    @assets = @house.assets.includes(room: :floor).sorted
+
+    @available_categories = @house.assets.distinct.order(:category).pluck(:category).compact.map do |cat|
+      [ I18n.t("enums.asset.categories.#{cat}", default: cat), cat ]
+    end
   end
 
-  def show
+  def filtered
+    @assets = filtered_assets
+    render partial: "asset_table", locals: { house: @house, assets: @assets }
   end
+
 
   def new
     @asset = Asset.new
@@ -62,5 +71,16 @@ class LandlordPortal::AssetsController < LandlordPortal::BaseController
 
   def asset_params
     params.require(:asset).permit(:room_id, :brand, :model, :price, :purchased_at, :note)
+  end
+
+  def filtered_assets
+    scope = @house.assets.includes(room: :floor)
+    if params[:category].present?
+      scope = scope.where(category: params[:category])
+    end
+
+    scope.sorted
+          .page(params[:page])
+          .per(ASSETS_PER_PAGE)
   end
 end

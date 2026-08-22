@@ -2,6 +2,7 @@
 
 <%= turbo_frame_tag "bed_table" do %>
 
+<!-- Used by stimulus to paginate and update url -->
 <span hidden data-pagination-total-pages="<%= beds.total_pages %>"></span>
 
 <h2 class="table-caption"><%= t("form.bed.list") %></h2>

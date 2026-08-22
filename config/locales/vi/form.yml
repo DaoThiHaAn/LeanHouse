@@ -215,6 +215,7 @@ vi:
       self: "Tài sản"
       in_room: "Tài sản trong phòng"
       cat: "Loại"
+      location: "Vị trí"
       info: "Thông tin tài sản"
       brand: "Thương hiệu"
       model: "Mẫu"
@@ -229,6 +230,11 @@ vi:
       brand_placeholder: "Nhập tên thương hiệu"
       model_placeholder: "Nhập mã sản phẩm"
       select_room: "Chọn phòng"
+      delete_cf: "Bạn có chắc chắn muốn xóa tài sản này?"
+
+    repair_history:
+      self: "Lịch sử bảo hành, sữa chửa"
+      view: "Xem Lịch sử bảo hành, sữa chửa"
 
     roommates: "Bạn cùng phòng"
 

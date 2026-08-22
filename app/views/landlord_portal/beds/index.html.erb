@@ -10,21 +10,21 @@
                   method: :get,
                   data: {turbo_frame: "bed_table"} do |f| %>
       <div class="d-flex align-items-center gap-2">
-        <%= f.label :state, t("form.bed.state"), class:"fw-semibold" %>
+        <%= f.label :state, t("form.bed.state"), class:"fw-bold" %>
 
         <%= f.select :state,
             [[t("all"), ""],
               [t("form.room.available"), "available"],
               [t("form.room.full"), "full"]],
             { selected: params[:state] },
-            class: "form-select w-auto",
+            class: "shadow-sm form-select w-auto",
             onchange: "this.form.requestSubmit()" %>
       </div>
     <% end %>
 
-    <!-- Add Room Button -->
+    <!-- Add Bed Button -->
     <%= link_to new_landlord_house_bed_path(@house), 
-        class:"main-btn d-flex align-items-center gap-2 px-2 py-1",
+        class:"shadow-sm main-btn d-flex align-items-center gap-2 px-2 py-1",
         data: {turbo_frame: "new_bed_modal"} do %>
       <span class="material-symbols-filled">add_circle</span>
       <%= t('form.bed.add') %>

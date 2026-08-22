@@ -108,6 +108,7 @@ vi:
   note: "Ghi chú"
   note_placeholder: "Nhập ghi chú"
   other: "Khác"
+  not_redo: "Lưu ý: Hành động này không thể hoàn tác"
   
 
   errors:

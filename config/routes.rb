@@ -94,7 +94,11 @@ Rails.application.routes.draw do
       end
 
       resources :assets, except: [ :show ] do
-        resource :repair_history
+        collection do
+          get :filtered
+        end
+
+        resources :repair_history
       end
 
       resources :invoices, :vehicles, :contracts

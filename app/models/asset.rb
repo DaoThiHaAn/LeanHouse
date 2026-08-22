@@ -1,6 +1,6 @@
 class Asset < ApplicationRecord
   belongs_to :room, inverse_of: :assets
-  has_one :house, through: :room, inverse_of: :assets
+  has_one :house, through: :room
 
 
   BUILT_IN_CATEGORIES = %w[
@@ -13,6 +13,7 @@ class Asset < ApplicationRecord
     smart_door
     water_heater
     tv
+    microwave
   ].freeze
 
   before_validation :normalize_strings
@@ -21,7 +22,24 @@ class Asset < ApplicationRecord
             numericality: { only_integer: true, greater_than: 0, less_than_or_equal_to: 1_000_000_000 }
   validates :category, presence: true
 
-  scope :sorted, -> { order(type: :asc) }
+  scope :sorted, -> { order(category: :asc) }
+
+  # METHODS
+  # Get the list of category options in i18n format
+  def self.category_options
+    BUILT_IN_CATEGORIES.map do |cat|
+      [ I18n.t("enums.asset.categories.#{cat}", default: cat.humanize), cat ]
+    end + [ [ I18n.t("other"), "other" ] ]
+  end
+
+  # I18n translation for the category options
+  def human_category
+    I18n.t("enums.asset.categories.#{category}", default: category)
+  end
+
+  def location
+    room.title_name + ", " + room.floor.title_name
+  end
 
   private
 
@@ -29,16 +47,5 @@ class Asset < ApplicationRecord
     self.brand = brand&.squish
     self.model = model&.squish
     self.note = note&.squish
-  end
-
-  # Get the list of category options in i18n format
-  def self.category_options
-    BUILT_IN_CATEGORIES.map do |cat|
-      [ I18n.t("enums.asset.categories.#{cat}", default: cat.humanize), cat ]
-    end + [ [ I18n.t("other"), "other" ] ]
-  end
-  # Hiển thị tên danh mục đã dịch khi xem chi tiết/danh sách
-  def human_category
-    I18n.t("enums.asset.categories.#{category}", default: category)
   end
 end

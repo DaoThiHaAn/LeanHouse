@@ -46,6 +46,7 @@
   background-color: transparent;
   transition: background-color 0.2s ease;
   border-radius: 50%;
+  padding: 1px 4px;
 }
 
 .table-action:hover {
