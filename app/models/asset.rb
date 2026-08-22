@@ -20,7 +20,7 @@ class Asset < ApplicationRecord
 
   validates :price, presence: true,
             numericality: { only_integer: true, greater_than: 0, less_than_or_equal_to: 1_000_000_000 }
-  validates :category, presence: true
+  validates :category, presence: true, on: :create
 
   scope :sorted, -> { order(category: :asc) }
 

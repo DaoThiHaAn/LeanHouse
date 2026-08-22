@@ -236,7 +236,7 @@ textarea {
   top: 1rem;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 1055; /* above navbar */
+  z-index: 1065; /* above navbar */
   width: min(90%, 480px);
 }
 
@@ -403,6 +403,11 @@ textarea {
 
 figcaption {
   font-size: 0.9rem
+}
+
+.table-responsive td {
+  max-width: 200px;
+  min-width: 100px;
 }
 
 

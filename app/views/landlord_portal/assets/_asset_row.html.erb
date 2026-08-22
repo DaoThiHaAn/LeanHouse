@@ -1,0 +1,37 @@
+<%# Local variables: house, asset %>
+
+<tr id="<%= dom_id(asset) %>">
+  <td><%= asset.human_category %></td>
+  <td><%= asset.location %></td>
+  <td><%= number_with_delimiter(asset.price) %></td>
+  <td><%= asset.brand %></td>
+  <td><%= asset.model %></td>
+  <td><%= asset.purchased_at %></td>
+  <td class="text-muted fst-italic" <%= asset.note.to_s.length > 70 ? tooltip('top', asset.note, html: true) : '' %>>
+    <%= truncate(asset.note, length: 70) %>
+  </td>
+  <td>
+    <div class="d-flex align-items-center justify-content-center gap-1">
+      <%= link_to edit_landlord_house_asset_path(house, asset),
+                data: { turbo_frame: "edit_asset_modal" },
+                title: t("edit"),
+                class: "table-action" do %>
+        <span class="material-symbols-filled">edit</span>
+      <% end %>
+
+      <%= link_to landlord_house_asset_repair_history_index_path(house, asset),
+                data: { turbo_frame: "_top" },
+                title: t("form.repair_history.view"),
+                class: "table-action" do %>
+        <span class="material-symbols-outlined">manage_history</span>
+      <% end %>
+
+      <%= button_to landlord_house_asset_path(house, asset), method: :delete,
+                title: t("delete"),
+                data: { turbo_confirm: [t("form.asset.delete_cf"), t("not_redo")].join("\n\n") },
+                class: "table-action" do %>
+        <span class="material-symbols-filled">delete</span>
+      <% end %>
+    </div>
+  </td>
+</tr>

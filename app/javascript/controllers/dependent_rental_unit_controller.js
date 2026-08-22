@@ -56,14 +56,19 @@ export default class extends Controller {
   }
 
   replaceOptions(select, options, label) {
+    // Lấy giá trị đã chọn sẵn từ dataset hoặc giá trị hiện tại của select
+    const selectedValue = select.dataset.selectedValue || select.value
     select.replaceChildren(new Option(`Chọn ${label}`, ""))
-
     options.forEach((option) => {
       const element = new Option(option.name, option.id)
       element.dataset.rentalUnitId = option.rentalUnitId || ""
       select.add(element)
     })
-
+    // Chọn lại option tương ứng
+    if (selectedValue) {
+      select.value = selectedValue
+      delete select.dataset.selectedValue // Xóa dataset sau lần đầu để các lần đổi tầng tiếp theo hoạt động bình thường
+    }
     select.disabled = options.length === 0
   }
 }

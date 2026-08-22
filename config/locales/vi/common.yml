@@ -160,6 +160,7 @@ vi:
     tenant_moved: "Chuyển chỗ thuê thành công!"
     asset_created: "Thêm tài sản mới thành công!"
     asset_updated: "Cập nhật tài sản thành công!"
+    asset_deleted: "Xóa tài sản thành công!"
 
 
   page_titles:
