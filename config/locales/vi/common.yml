@@ -180,6 +180,7 @@ vi:
     bed_mng: "Quản lý Giường"
     asset_mng: "Quản lý Tài sản"
     service_mng: "Quản lý Dịch vụ"
+    contract_mng: "Quản lý Hợp đồng"
     issue_report: "Báo cáo sự cố"
     my_room: "Phòng của tôi"
     room_info: "Thông tin phòng ở"
@@ -198,16 +199,16 @@ vi:
   datetime:
     distance_in_words:
       less_than_x_seconds:
-        one: "chưa đến 1 giây"
-        other: "chưa đến %{count} giây"
+        one: "gần 1 giây"
+        other: "gần %{count} giây"
 
       x_seconds:
         one: "1 giây"
         other: "%{count} giây"
 
       less_than_x_minutes:
-        one: "chưa đến 1 phút"
-        other: "chưa đến %{count} phút"
+        one: "gần 1 phút"
+        other: "gần %{count} phút"
 
       x_minutes:
         one: "1 phút"

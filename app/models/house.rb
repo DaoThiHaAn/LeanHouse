@@ -7,6 +7,7 @@ class House < ApplicationRecord
   has_many :services, inverse_of: :house, dependent: :destroy
   has_many :service_variants, through: :services
   has_many :assets, through: :rooms
+  has_many :contracts,  inverse_of: :house, dependent: :destroy
 
   # Rails auto generates helper methods for enum values
   enum :mode, { room: "room", bed: "bed" }
@@ -130,6 +131,19 @@ class House < ApplicationRecord
       .find_by(rental_unit_id: rental_units, tenant_id: tenant_id)
   end
 
+  # @return [Array<Contract>] all contracts of the current staying tenants
+  def all_current_contracts
+    rentable_records = room? ? rooms : beds
+    rental_units = RentalUnit.where(rentable: rentable_records)
+    contracts
+      .includes(tenant: :user)
+      .joins(tenant: :tenant_stays)
+      .where(tenant_stays: {
+        rental_unit_id: rental_units,
+        checkout_at: nil
+      })
+      .distinct
+  end
   private
 
   def validate_regulation_file

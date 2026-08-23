@@ -56,14 +56,8 @@ class Ability
     can :manage, Asset, room: { house: { landlord_id: id } }
 
 
-    # can :manage, Floor, house: { landlord_id: id }
-    # can :manage, Room, house: { landlord_id: id }
-    # can :manage, Bed, room: { house: { landlord_id: id } }
-    # can :manage, RoomService, room: { house: { landlord_id: id } }
-    # can :manage, Service, house: { landlord_id: id }
     # can :manage, Invoice, room: { house: { landlord_id: user.id } }
     # can :manage, Vehicle, room: { house: { landlord_id: user.id } }
-    # can :manage, Contract, room: { house: { landlord_id: user.id } }
   end
 
   def tenant_abilities(user)

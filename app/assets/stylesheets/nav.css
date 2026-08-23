@@ -222,7 +222,8 @@
 
 .secondary-nav .card.active {
     background-color: rgba(124, 72, 72, 0.2);
-    border: 1px solid #365B4B;  
+    border: 1px solid #365B4B;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2)  
 }
 
 /* Rotate collapse arrow when closed */
@@ -304,6 +305,14 @@
   background-attachment: local, local, scroll, scroll;
 }
 
+.mark-as-read {
+    opacity: 0.8;
+}
+
+.notification-dropdown .mark-as-read:hover {
+    background-color: transparent;
+    opacity: 1;
+}
 
 @media screen and (max-width: 768px) {
     .navbar-nav {

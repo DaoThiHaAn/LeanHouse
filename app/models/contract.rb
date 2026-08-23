@@ -1,6 +1,6 @@
 class Contract < ApplicationRecord
   belongs_to :tenant
-  belongs_to :house
+  belongs_to :house, counter_cache: :current_contracts_count
   belongs_to :landlord
 
   NEARLY_DUE_DAYS = 30

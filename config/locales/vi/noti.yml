@@ -1,7 +1,8 @@
 vi:
   noti:
     self: "Thông báo"
-    mark_as_read: "Đánh dấu tất cả đã đọc"
+    mark_all_as_read: "Đánh dấu tất cả đã đọc"
+    mark_as_read: "Đánh dấu đã đọc"
     empty: "Không có thông báo."
 
     titles:

@@ -60,6 +60,7 @@
 
 .tenant-container .alert {
   min-width: 300px;
+  max-height: 50vh;
 }
 
 
@@ -86,6 +87,10 @@
 
 .unsigned-card button {
   background-color: transparent;
+}
+
+.unsigned-card .staying-info {
+  font-size: 0.9rem;
 }
 
 

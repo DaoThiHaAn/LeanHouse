@@ -27,7 +27,7 @@
                 <button type="button" 
                         class="other-house-btn d-flex align-items-center rounded-circle" 
                         title="<%= t('bar.other_houses') %>">
-                    <%= link_to other_houses_landlord_house_path(@house), data: {turbo_frame: "other_houses"} do %>
+                    <%= link_to other_houses_landlord_house_path(house), data: {turbo_frame: "other_houses"} do %>
                         <span class="material-symbols-outlined">more_vert</span>
                     <% end %>
                 </button>

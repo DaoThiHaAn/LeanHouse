@@ -8,7 +8,7 @@
 <div class="d-flex justify-content-between gap-3 mt-4">
   <%# Unsigned tenants %>
   <% unless @unsigned_tenants.empty? %>
-    <div class="alert alert-warning card p-0 h-50">
+    <div class="alert alert-warning card p-0">
       <h2 class="card-header">
         <span class="material-symbols-outlined warning-pulse">warning</span>
         <%= t("form.tenant.without_contract") %>!
@@ -17,7 +17,7 @@
       <div class="card-body overflow-y-auto d-flex flex-column gap-2 align-items-center">
         <!-- Show the list of unsigned tenants -->
         <% @unsigned_tenants.each do |tenant| %>
-          <div class="unsigned-card pt-1 px-2 rounded w-100">
+          <div class="unsigned-card py-1 px-2 rounded w-100">
             <!-- Name + Actions -->
             <div class="d-flex align-items-center gap-2 ">
               <p class="flex-grow-1 text-wrap fw-semibold"><%= vn_name(tenant.user.fullname) %> </p>
@@ -29,10 +29,10 @@
                   <span class="material-symbols-filled">ink_pen</span>
                 <% end %>
 
-                <%= link_to move_landlord_house_tenant_path(@house, @tenant), class:"main-btn d-flex align-items-center gap-2 px-2 py-1 mb-3 ms-auto",
+                <%= link_to move_landlord_house_tenant_path(@house, tenant),
+                    class: "d-block",
                     data: { turbo_frame: "move_tenant_modal" } do %>
                     <span class="material-symbols-filled">move_location</span>
-                    <%= t('form.tenant.link') %>
                 <% end %>
 
                 <%= button_to landlord_house_tenant_path(@house, tenant), method: :delete,
@@ -44,7 +44,7 @@
             </div>
 
             <!-- Staying info -->
-            <p class="text-muted fst-italic"><%= tenant.current_staying_info %> </p>
+            <p class="text-muted fst-italic staying-info"><%= tenant.current_staying_info %> </p>
           </div>
         <% end %>
       </div>
@@ -54,14 +54,14 @@
   <%# Main tenant table container (contract signed) %>
   <div class="flex-grow-2">
     <!-- Link Tenant Button -->
-    <%= link_to new_landlord_house_tenant_path(@house), class:"main-btn d-flex align-items-center gap-2 px-2 py-1 mb-3 ms-auto",
+    <%= link_to new_landlord_house_tenant_path(@house), class:"main-btn shadow-sm d-flex align-items-center gap-2 px-2 py-1 mb-3 ms-auto",
         data: { turbo_frame: "new_tenant_modal" } do %>
         <span class="material-symbols-filled">link</span>
         <%= t('form.tenant.link') %>
     <% end %>
 
     <!-- Create & Link Tenant Button -->
-    <%= link_to landlord_house_create_new_tenant_path(@house), class:"subtle main-btn d-flex align-items-center gap-2 px-2 py-1 mb-2 ms-auto",
+    <%= link_to landlord_house_create_new_tenant_path(@house), class:"shadow-sm subtle main-btn d-flex align-items-center gap-2 px-2 py-1 mb-2 ms-auto",
         data: {**tooltip("top", :"form.tenant.create_link_info")} do %>
       <span class="material-symbols-filled">person_add</span>
       <%= t('form.tenant.create_and_link') %>
@@ -92,26 +92,26 @@
             </div>
         </div>
 
-				<!-- Contract State -->
-				<%= f.label :contract_state, t("form.contract.state"), class:"fw-semibold" %>
-				<%= f.select :contract_state,
-							[[t("all"), ""],
-								[t("form.contract.overdue"), "overdue"],
-								[t("form.contract.nearly_due"), "nearly-due"]],
-							{ selected: params[:contract_state] },
-							class: "form-select w-auto",
-							onchange: "this.form.requestSubmit()" %>
+        <!-- Contract State -->
+        <%= f.label :contract_state, t("form.contract.state"), class:"fw-semibold" %>
+        <%= f.select :contract_state,
+              [[t("all"), ""],
+                [t("form.contract.overdue"), "overdue"],
+                [t("form.contract.nearly_due"), "nearly-due"]],
+              { selected: params[:contract_state] },
+              class: "form-select w-auto",
+              onchange: "this.form.requestSubmit()" %>
 
-				<!-- Temporary residence State -->
-				<%= f.label :residence_state, t("form.room.resid_register_due"), class:"fw-semibold" %>
-				<%= f.select :residence_state,
-							[[t("all"), ""],
-								[t("form.contract.no_register"), "none"]
-								[t("form.contract.overdue"), "overdue"],
-								[t("form.contract.nearly_due"), "nearly-due"]],
-							{ selected: params[:contract_state] },
-							class: "form-select w-auto",
-							onchange: "this.form.requestSubmit()" %>
+        <!-- Temporary residence State -->
+        <%= f.label :residence_state, t("form.room.resid_register_due"), class:"fw-semibold" %>
+        <%= f.select :residence_state,
+              [[t("all"), ""],
+                [t("form.contract.no_register"), "none"],
+                [t("form.contract.overdue"), "overdue"],
+                [t("form.contract.nearly_due"), "nearly-due"]],
+              { selected: params[:contract_state] },
+              class: "form-select w-auto",
+              onchange: "this.form.requestSubmit()" %>
       <% end %>
 
       <%= turbo_frame_tag "room_table",
@@ -120,8 +120,7 @@
             data: {
               controller: "pagination-sync",
               pagination_sync_canonical_url_value: landlord_house_tenants_path(@house),
-              pagination_sync_default_params_value: 
-                { contract_state: "all", residence_state: "all" }.to_json,
+              pagination_sync_default_params_value: { contract_state: "all", residence_state: "all" }.to_json,
               pagination_sync_query_params_value: ["contract_state", "residence_state", "query"].to_json,
               pagination_sync_total_pages_selector_value: "[data-pagination-total-pages]",
               action: "turbo:frame-load->pagination-sync#updateUrl"

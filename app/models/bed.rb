@@ -26,7 +26,7 @@ class Bed < ApplicationRecord
   end
 
   def available?
-    active && is_available
+    !deleted && is_available
   end
 
   # A tenant is unlinked to a bed

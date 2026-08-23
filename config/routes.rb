@@ -33,6 +33,15 @@ Rails.application.routes.draw do
   resources :posts, only: [ :index, :show ]
   resources :users
 
+  resources :notifications, only: [] do
+    member do
+      patch :mark_as_read
+    end
+    collection do
+      patch :mark_all_as_read
+    end
+  end
+
   # LANDLORD
   namespace :landlord, module: :landlord_portal do
     resource :profile, only: [ :show, :edit, :update ] do

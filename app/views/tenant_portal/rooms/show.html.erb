@@ -26,26 +26,34 @@
       <%# Room rent info %>
       <div class="d-flex justify-content-between flex-column flex-sm-row">
         <p>
-          <span class="fw-bold"> <%= t("form.room.area")%>: </span>
+          <span class="fw-bold"> <%= t("form.room.area") %>: </span>
           <%= @room.area %> m²
         </p>
         <p>
-          <span class="fw-bold"><%= t("form.room.rent")%>:</span>
+          <span class="fw-bold"><%= t("form.room.rent") %>:</span>
           <%= format_money(@rental_unit.rent) %> / tháng
         </p>
         <p>
-          <span class="fw-bold"><%= t("form.room.deposit")%>: </span>
+          <span class="fw-bold"><%= t("form.room.deposit") %>: </span>
           <%= format_money(@rental_unit.deposit) %>
         </p>
       </div>
-      <p>
-        <span class="fw-bold"><%= t("form.house.inv_creation_date")%>: </span>
-        <%= @house.inv_creation_date %>
-      </p>
+
+      <div class="d-flex gap-5 flex-column flex-sm-row">
+        <p>
+          <span class="fw-bold"><%= t("form.room.max_tenants_count") %>:</span>
+          <%= @room.max_slots %>
+        </p>
+
+        <p>
+          <span class="fw-bold"><%= t("form.house.inv_creation_date") %>: </span>
+          <%= @house.inv_creation_date %>
+        </p>
+      </div>
 
       <%# Display Regulation File %>
       <div class="d-flex align-items-center gap-3 mt-1">
-        <p class="fw-bold m-0"><%=t("form.house.regulation") + ": "%></p>
+        <p class="fw-bold m-0"><%= t("form.house.regulation") + ": " %></p>
 
         <% if @house.regulation_file.attached? %>
           <div>
@@ -64,9 +72,9 @@
       </div>
 
       <%# Assets %>
-      <h3 class="fw-bold mt-2 ms-3"><%= t("form.asset.in_room")%>:</h3>
+      <h3 class="fw-bold mt-2 ms-3"><%= t("form.asset.in_room") %>:</h3>
       <% if @assets.empty? %>
-        <p class="text-muted ms-3"><%= t("none")%></p>
+        <p class="text-muted ms-3"><%= t("none") %></p>
       <% else %>
         <div class="table-responsive border rounded mt-2">
           <table class="table table-bordered table-hover align-middle mb-0">
@@ -77,19 +85,17 @@
                 <th><%= t("form.asset.brand") %></th>
                 <th><%= t("form.asset.model") %></th>
                 <th><%= t("form.asset.purchase_date") %></th>
-                <th><%= t("note") %></th>
               </tr>
             </thead>
 
             <tbody>
               <% @assets.each do |asset| %>
                 <tr>
-                  <td><%= asset_category_label(asset.category) %></td>
+                  <td><%= asset.human_category %></td>
                   <td><%= number_with_delimiter(asset.price) %></td>
                   <td><%= asset.brand %></td>
                   <td><%= asset.model %></td>
                   <td><%= asset.purchased_at %></td>
-                  <td><%= asset.note %></td>
                 </tr>
               <% end %>
             </tbody>
@@ -103,7 +109,7 @@
       <h2 class="fw-bold m-0"><%= t("form.roommates") %>:</h2>
 
       <% if @roommates.empty? %>
-        <p class="text-muted"><%= t("none")%></p>
+        <p class="text-muted"><%= t("none") %></p>
       <% else %>
         <div class="table-responsive border rounded mt-2">
           <table class="table table-bordered table-hover align-middle mb-0">

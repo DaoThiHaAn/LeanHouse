@@ -1,0 +1,64 @@
+<%# Local variables: unread_count, notifications %>
+
+<div class="dropdown notification-dropdown">
+  <button class="dropdown-toggle" type="button" data-bs-toggle="dropdown"
+          aria-expanded="false" title="<%= t("click_open") %>">
+    <div class="position-relative">
+      <span class="noti material-symbols-filled">notifications</span>
+      <% if unread_count.to_i > 0 %>
+        <span class="notification-badge">
+          <%= noti_count(unread_count) %>
+        </span>
+      <% end %>
+    </div>
+  </button>
+
+  <ul class="divided dropdown-menu dropdown-menu-end p-0">
+    <% if notifications.empty? %>
+      <li class="py-3 text-center text-muted">
+        <span class="material-symbols-outlined d-block mb-2">
+          notifications_off
+        </span>
+        <p class="mb-0"><%= t("form.noti.empty") %></p>
+      </li>
+    <% else %>
+      <div class="py-1 px-3 d-flex justify-content-end border-bottom">
+        <!-- Mark all as read -->
+        <%= button_to mark_all_as_read_notifications_path, method: :patch, 
+          class: "text-danger fw-medium fst-italic mark-as-read" do %>
+          <span class="text-danger material-symbols-outlined">done_all</span>
+          <%= t("noti.mark_all_as_read") %>
+        <% end %>
+      </div>
+
+      <% notifications.each do |notification| %>
+        <li class="py-2 px-3 d-flex flex-column gap-2 <%= "unread" unless notification.read? %>">
+          <p class="fw-bold title text-clamp-1"><%= notification.title %></p>
+          <p class="noti-content text-clamp-2"><%= notification.message %></p>
+
+          <div class="noti-footer mt-2 d-flex justify-content-between text-muted">
+            <p>
+              <%= time_ago_in_words(notification.created_at) + " " + t("ago").downcase %>
+            </p>
+
+            <div class="d-flex gap-2">
+              <!-- Mark as read -->
+              <% unless notification.read? %>
+                <%= button_to mark_as_read_notification_path(notification),
+                      method: :patch,
+                      title: t("noti.mark_as_read"),
+                      class: "btn btn-link p-0 text-muted d-flex align-items-center border-0 bg-transparent" do %>
+                  <span class="material-symbols-outlined fs-6">done</span>
+                <% end %>
+              <% end %>
+
+              <% if notification.respond_to?(:url) && notification.url.present? %>
+                <%= link_to t("view_detail"), notification.url %>
+              <% end %>
+            </div>
+          </div>
+        </li>
+      <% end %>
+    <% end %>
+  </ul>
+</div>

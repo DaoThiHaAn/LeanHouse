@@ -1,7 +1,7 @@
 class LandlordPortal::TenantsController < LandlordPortal::BaseController
   layout "house_mngment"
 
-  before_action :authorize_tenant_belongs_to_house!, only: [ :move, :destroy ]
+  before_action :authorize_tenant_belongs_to_house!, only: [ :move, :destroy, :execute_move ]
 
   def show
     render :show
@@ -25,7 +25,7 @@ class LandlordPortal::TenantsController < LandlordPortal::BaseController
 
   # TODO: Modal form to move tenant to another rental unit
   def move
-    @available_slots = AvailableSlotsService.call(
+    @available_slots = AvailableSlotsBuilder.call(
       house: @house,
       excluded_rental_unit_id: @tenant_stay.rental_unit_id
     )
@@ -51,7 +51,7 @@ class LandlordPortal::TenantsController < LandlordPortal::BaseController
 
     if @form.valid?
       @tenant = @form.tenant
-      @available_slots = AvailableSlotsService.call(house: @house)
+      @available_slots = AvailableSlotsBuilder.call(house: @house)
 
       render turbo_stream: turbo_stream.replace(
           "tenant_form",
@@ -64,7 +64,7 @@ class LandlordPortal::TenantsController < LandlordPortal::BaseController
   # TODO:
   def create_new
     @user = User.new
-    @available_slots = AvailableSlotsService.call(house: @house)
+    @available_slots = AvailableSlotsBuilder.call(house: @house)
   end
 
   # Link a tenant to a rental unit
@@ -77,7 +77,7 @@ class LandlordPortal::TenantsController < LandlordPortal::BaseController
 
     redirect_to landlord_house_tenants_path(@house), notice: t("success_messages.tenant_linked")
   rescue ActiveRecord::RecordNotFound, ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique
-    redirect_to new_landlord_house_tenant_path(@house), alert: t("errors.rental_unit_unavailable")
+    redirect_to landlord_house_tenant_path(@house), alert: t("errors.rental_unit_unavailable")
   end
 
   # Remove a tenant from a house
@@ -102,53 +102,4 @@ class LandlordPortal::TenantsController < LandlordPortal::BaseController
     raise CanCan::AccessDenied unless @tenant_stay
     @tenant = @tenant_stay.tenant
   end
-
-  # def prepare_available_slots
-  #   @rental_units = @house.available_rental_units.to_a
-  #   @rooms = @rental_units.filter_map(&:room).uniq
-
-  #   @floors = @rooms
-  #     .filter_map(&:floor)
-  #     .uniq
-  #     .sort_by(&:position)
-
-  #   @room_options =
-  #     if @house.room?
-  #       @rental_units.map do |unit|
-  #         room = unit.rentable
-
-  #         {
-  #           id: room.id,
-  #           floorId: room.floor_id,
-  #           name: room.name,
-  #           rentalUnitId: unit.id
-  #         }
-  #       end
-  #     else
-  #       @rooms.map do |room|
-  #         {
-  #           id: room.id,
-  #           floorId: room.floor_id,
-  #           name: room.name,
-  #           rentalUnitId: nil
-  #         }
-  #       end
-  #     end
-
-  #   @bed_options =
-  #     if @house.bed?
-  #       @rental_units.map do |unit|
-  #         bed = unit.rentable
-
-  #         {
-  #           id: bed.id,
-  #           roomId: bed.room_id,
-  #           name: bed.name,
-  #           rentalUnitId: unit.id
-  #         }
-  #       end
-  #     else
-  #       []
-  #     end
-  # end
 end

@@ -28,58 +28,13 @@
     </div>
 
     <!-- TODO: Notification -->
-    <div class="dropdown notification-dropdown">
-      <button class="dropdown-toggle" type="button" data-bs-toggle="dropdown"
-              aria-expanded="false" title="<%= t("click_open") %>">
-        <div class="position-relative">
-          <span class="noti material-symbols-filled">notifications</span>
-          <% if unread_count > 0 %>
-            <span class="notification-badge">
-              <%= noti_count(unread_count) %>
-            </span>
-          <% end %>
-        </div>
-      </button>
+    <!-- Mở kết nối WebSocket lắng nghe thông báo riêng của current_user -->
+    <%= turbo_stream_from current_user, :notifications %>
 
-      <ul class="divided dropdown-menu dropdown-menu-end p-0">
-        <% if notifications.empty? %>
-          <li class="py-3 text-center text-muted">
-            <span class="material-symbols-outlined d-block mb-2">
-              notifications_off
-            </span>
-
-            <p class="mb-0"><%= t("form.noti.empty") %></p>
-          </li>
-
-        <% else %>
-          <div class="py-1 px-3 d-flex justify-content-end border-bottom">
-            <%= link_to "#", class: "text-danger fw-medium fst-italic mark-as-read" do %>
-              <span class="text-danger material-symbols-outlined">done_all</span>
-              <%= t("noti.mark_as_read") %>
-            <% end %>
-          </div>
-
-          <% notifications.each do |notification| %>
-            <li class="py-2 px-3 d-flex flex-column gap-2 <%= "unread" unless notification.read? %>">
-              <p class="fw-bold title text-clamp-1"><%= notification.title %></p>
-
-              <p class="noti-content text-clamp-2"><%= notification.message %></p>
-
-              <div class="noti-footer mt-2 d-flex justify-content-between text-muted">
-                <p>
-                  <%= time_ago_in_words(notification.created_at) + " " + t("ago").downcase %>
-                </p>
-
-                <%# Check if url exists before rendering the link %>
-                <% if notification.respond_to?(:url) && notification.url.present? %>
-                  <%= link_to t("view_detail"), notification.url %>
-                <% end %>
-              </div>
-
-            </li>
-          <% end %>
-        <% end %>
-      </ul>
+    <div id="notification_box">
+      <%= render "layouts/shared_components/notification_dropdown",
+            unread_count: unread_count,
+            notifications: notifications %>
     </div>
 
 <% else %>

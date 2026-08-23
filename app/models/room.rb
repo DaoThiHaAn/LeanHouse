@@ -54,7 +54,7 @@ class Room < ApplicationRecord
 
   # Can be rented
   def available?
-    active && tenants_count < max_slots
+    !deleteted && tenants_count < max_slots
   end
 
   def empty?
