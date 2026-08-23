@@ -58,7 +58,7 @@
   max-width: 90vw
 }
 
-.tenant-container .alert {
+.unsigned.alert {
   min-width: 300px;
   max-height: 50vh;
 }
@@ -70,7 +70,7 @@
   font-family: "Nunito Sans", system-ui, sans-serif;
 }
 
-.tenant-container .unsigned-card {
+.unsigned-card {
   background-color: #ffe09c;
   color: rgb(90, 47, 16);
   border: 1px solid #fbd582

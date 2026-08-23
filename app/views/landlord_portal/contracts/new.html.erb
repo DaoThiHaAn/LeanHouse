@@ -2,10 +2,237 @@
 
 <% content_for :title, t("page_titles.new_contract") %>
 
+<% provide :container_width, "contract-container w-50" %>
+
 <div class="d-flex align-items-center mb-5">
-  <%= link_to :back, class: "d-flex align-items-center gap-1 turn-back link" do%>
+  <%= link_to :back, class: "d-flex align-items-center gap-1 turn-back link" do %>
             <span class="material-symbols-outlined ms-2">arrow_left_alt</span>
-            <%=t('turn_back')%>
-  <%end%>
-  <h1 class="text-center flex-grow-1"><%=t('page_titles.new_contract') %></h1>
-</div> 
+            <%= t('turn_back') %>
+  <% end %>
+  <h1 class="text-center flex-grow-1"><%= t('page_titles.new_contract') %></h1>
+</div>
+
+<!-- Tenant info -->
+<div class="room-info-zone py-3 px-4">
+  <div class="d-flex gap-3 align-items-center">
+    <p class="fw-bold room-name p-2">
+      <%= t("form.contract.b") %> &nbsp;
+      (<%= t("form.tenant.self") %>)
+    </p>
+
+    <span class="material-symbols-outlined" <%= tooltip("top", :"form.contract.extracted_info", html:true) %>>
+      info
+    </span>
+  </div>
+
+  <div class="d-flex gap-3 align-items-center">
+    <span class="material-symbols-filled person-icon">person</span>
+    <p class="title fs-5"><%= @user.fullname.upcase %></p>
+  </div>
+
+  <div class="d-flex gap-5">
+    <p>
+      <span class="fw-bold"><%= t("form.profile.sex") %>:&nbsp;</span>
+      <%= t("form.profile.#{@user.sex}") %>
+    </p>
+    <p>
+      <span class="fw-bold"><%= t("form.profile.bday") %>:&nbsp;</span>
+      <%= @user.bday.strftime('%d/%m/%Y') %>
+    </p>
+  </div>
+
+  <p>
+    <span class="fw-bold"><%= t("form.profile.address") %>:&nbsp;</span>
+    <%= @user.address %>
+  </p>
+</div>
+
+<%= form_with model: @contract, url: landlord_house_tenant_contract_path(@house, @user.tenant),
+    class: "px-4 my-4 d-flex flex-column gap-3",
+    data: { 
+      controller: "loading",
+      loading_text_value: t("saving") + "...",
+      action: "submit->loading#submit"
+    } do |f| %>
+  <!-- Name -->
+  <div class="form-group" data-controller="form">
+    <%= f.label :name, class: "form-label d-flex justify-content-between" do %>
+      <div>
+          <%= t('form.contract.name') +  ": " %>
+          <span class="asterisk">*</span>
+      </div>
+
+      <small class="counter-text">
+          <span data-form-target="charCount">0</span>
+      </small>
+    <% end %>
+
+    <div class="input-group mb-3">
+      <span class="input-group-text"><%= t("form.contract.self") %></span>
+      <%= f.text_field :name, maxlength: 50, class: "form-control #{invalid_class(@contract, :name)}", 
+        placeholder: t('form.contract.name_placeholder'), required: true,
+        data: {
+            form_target: "input",
+            action: "input->form#update"
+        } 
+      %>
+    </div>
+
+    <%= field_error(@contract, :name) %>
+  </div>
+
+  <!-- Citizen ID -->
+  <div class="form-group" data-controller="form">
+    <%= f.label :citizen_id, class: "form-label d-flex justify-content-between" do %>
+      <div>
+          <%= t('form.contract.tenant_citizen_id') +  ": " %>
+          <span class="asterisk">*</span>
+      </div>
+
+      <small class="counter-text">
+          <span data-form-target="charCount">0</span>
+      </small>
+    <% end %>
+
+    <%= f.text_field :citizen_id, length: 12, class: "form-control #{invalid_class(@contract, :citizen_id)}", 
+      placeholder: t('form.contract.citizen_id_placeholder'), required: true,
+      data: {
+          form_target: "input",
+          action: "input->form#update"
+      } 
+    %>
+
+    <%= field_error(@contract, :citizen_id) %>
+  </div>
+
+  <!-- Period -->
+  <div class="form-group">
+    <div class="d-flex gap-1">
+      <p class="fw-semibold"><%= t('form.contract.period') +  ": " %></p>
+      <span class="asterisk">*</span>
+    </div>
+
+    <div class="d-flex justify-content-between mt-2 gap-2">
+      <div class="input-group mb-3">
+        <span class="input-group-text"><%= t("form.contract.start") %></span>
+        <%= f.date_field :start_date, class: "date form-control", required: true %>
+      </div>
+
+      <div class="input-group mb-3">
+        <span class="input-group-text"><%= t("form.contract.end") %></span>
+        <%= f.date_field :due_date, class: "date form-control", required: true %>
+      </div>
+    </div>
+
+    <%= field_error(@contract, :due_date) %>
+  </div>
+
+  <!-- Temp residence registration -->
+  <div class="form-group mb-3" data-controller="toggle-extra-fields">
+    <div class="d-flex gap-4">
+      <label class="form-label fw-semibold m-0 flex-shrink-0">
+        <%= t("form.contract.resid_register", default: "Đăng ký tạm trú") %>:
+      </label>
+
+      <div class="d-flex flex-column gap-2">
+        <%# Chưa %>
+        <div class="form-check m-0 d-flex align-items-center gap-1">
+          <%= f.radio_button :temp_resid_registered, "false",
+                checked: !@contract.temp_resid_registered?,
+                class: "form-check-input",
+                id: "temp_resid_false",
+                data: { action: "change->toggle-extra-fields#toggle" } %>
+          <%= label_tag "temp_resid_false", "Chưa", class: "form-check-label" %>
+        </div>
+
+        <%# Rồi %>
+        <div class="d-flex gap-3">
+          <div class="form-check m-0 d-flex align-items-center gap-2">
+            <%= f.radio_button :temp_resid_registered, "true",
+                  checked: @contract.temp_resid_registered?,
+                  class: "form-check-input",
+                  id: "temp_resid_true",
+                  data: {
+                    toggle_extra_fields_target: "checkbox",
+                    action: "change->toggle-extra-fields#toggle"
+                  } %>
+            <%= label_tag "temp_resid_true", "Rồi", class: "form-check-label" %>
+          </div>
+
+          <%# Hạn: date input %>
+          <div class="d-flex align-items-center gap-2 <%= "d-none" unless @contract.temp_resid_registered? %>"
+              data-toggle-extra-fields-target="extraFields">
+            <span class="fw-semibold"><%= t("form.contract.due") %>:</span>
+            <%= f.date_field :temp_resid_due_date,
+                  min: Date.current.to_s,
+                  class: "date form-control",
+                  placeholder: "dd/mm/yyyy" %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%= field_error(@contract, :temp_resid_due_date, classes: "mt-2") %>
+  </div>
+
+<!-- Chứng từ hợp đồng (Image upload với ô vuông + icon add_photo_alternate) -->
+  <div class="form-group mb-3" data-controller="image-upload"
+      data-image-upload-max-files-value="10"
+      data-image-upload-max-size-mb-value="20">
+    <div class="d-flex gap-1 mb-2">
+      <p class="fw-semibold m-0"><%= t("form.contract.documents") %>:</p>
+      <span class="asterisk">*</span>
+    </div>
+
+    <%= field_info(
+      [t("form.contract.img_note_1"), t("form.contract.img_note_2")],
+      extra_classes: "gap-2 mb-3",
+    ) %>
+
+    <div class="d-flex flex-wrap gap-3 align-items-center">
+      <%# Nút Upload hình vuông giống thiết kế trong ảnh %>
+      <button type="button"
+              class="upload-img-btn btn btn-light border d-flex align-items-center justify-content-center p-0"
+              data-action="click->image-upload#triggerUpload"
+              title="<%= t("add_img") %>">
+        <span class="material-symbols-outlined text-secondary">
+          add_photo_alternate
+        </span>
+      </button>
+
+      <%# Input file ẩn (multiple, image/*) %>
+      <%= f.file_field :documents,
+            multiple: true,
+            accept: "image/*",
+            class: "d-none",
+            data: {
+              image_upload_target: "input",
+              action: "change->image-upload#handleFiles"
+            } %>
+
+      <%# Khu vực hiển thị danh sách ảnh preview + nút X %>
+      <div class="d-flex flex-wrap gap-3 align-items-center" data-image-upload-target="previewContainer"></div>
+    </div>
+
+    <small class="text-danger d-none mt-1 d-block" data-image-upload-target="errorMessage"></small>
+    <%= field_error(@contract, :documents, classes: "mt-2") %>
+  </div>
+
+
+  <div class="info-container px-3 py-2 my-3 mx-auto">
+    <%= field_info(
+      [t("form.contract.note")],
+      extra_classes: "gap-2")  %>
+  </div>
+
+  <%= f.button :submit, 
+    class: "custom-primary-btn mx-auto main-form d-flex align-items-center justify-content-center gap-2",
+    data: { loading_target: "button" } do %>
+    <span data-loading-target="text"><%= t("save") %></span>
+    <span class="material-symbols-outlined spin d-none"
+      data-loading-target="spinner">
+      progress_activity
+    </span>
+  <% end %>
+
+<% end %>

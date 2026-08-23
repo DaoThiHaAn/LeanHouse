@@ -94,6 +94,8 @@ Rails.application.routes.draw do
         collection do
           get :filtered
         end
+
+        resource :contract, only: %i[new create]
       end
 
       resources :beds do
@@ -110,7 +112,8 @@ Rails.application.routes.draw do
         resources :repair_history
       end
 
-      resources :invoices, :vehicles, :contracts
+      resources :contracts, except: %i[new create]
+      resources :invoices, :vehicles
     end
   end
 

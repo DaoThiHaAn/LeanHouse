@@ -12,6 +12,8 @@ vi:
       contract_signed: "Chủ nhà đã tạo hợp đồng mới"
       contract_extended: "Hợp đồng được gia hạn"
       contract_closed: "Hợp đồng đã kết thúc"
+      contract_created_landlord:  "Hợp đồng mới đã được tạo"
+      contract_signed: "Chủ nhà đã tạo hợp đồng mới với bạn"
 
 
     messages:
@@ -22,3 +24,5 @@ vi:
       contract_extended: "%{contract_name} được gia hạn đến %{date}."
       contract_closed_overdue: "%{contract_name} đã kết thúc do quá hạn."
       contract_closed_overdue: "{contract_name} đã kết thúc trước thời hạn."
+      contract_signed_landlord: "Hợp đồng %{contract_name} với khách %{tenant_name} đã được tạo thành công."
+      contract_signed: "Chủ nhà đã tạo hợp đồng %{contract_name}."

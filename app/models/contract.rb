@@ -1,17 +1,22 @@
 class Contract < ApplicationRecord
   belongs_to :tenant
-  belongs_to :house, counter_cache: :current_contracts_count
+  belongs_to :house
   belongs_to :landlord
+  has_many_attached :documents
 
   NEARLY_DUE_DAYS = 30
+  ALLOWED_TYPES = %w[image/jpeg image/jpg image/png]
 
   before_validation :normalize_name
 
   validates :citizen_id, :start_date, :due_date, :name, presence: true
-  validates :due_date, comparison: { greater_than: :start_date }
+  validates :due_date,
+    comparison: { greater_than: :start_date, message: :must_be_after_start_date }
   validates :citizen_id, format: { with: /\A\d{12}\z/ }
   # When a tenant is registerd for temporary residence, its due date must be set
   validates :temp_resid_due_date, presence: true, if: :temp_resid_registered?
+  validates :temp_resid_due_date, comparison: { greater_than: -> { Date.current } }, if: :temp_resid_registered?
+  validate :validate_documents
 
   scope :expiring_soonest, -> { order(due_date: :asc, id: :asc) }
   scope :latest_started, -> { order(start_date: :desc, id: :desc) }
@@ -46,7 +51,25 @@ class Contract < ApplicationRecord
 
   private
 
-  def noralize_name
+  def normalize_name
     self.name = name&.squish
+  end
+
+  def validate_documents
+    if !documents.attached? || documents.empty?
+      errors.add(:documents, :blank)
+      return
+    end
+    if documents.length > 10
+      errors.add(:documents, :too_long, count: 10)
+    end
+    documents.each do |doc|
+      if doc.blob.byte_size > 20.megabytes
+        errors.add(:documents, :file_too_big, size: "20MB")
+      end
+      unless ALLOWED_TYPES.include?(doc.blob.content_type)
+        errors.add(:documents, :invalid_content_type)
+      end
+    end
   end
 end

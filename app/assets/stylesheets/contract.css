@@ -1,1 +1,23 @@
 /* Tenant view */
+
+
+
+/* Landlord View */
+.contract-container {
+  min-width: 350px;
+}
+
+.room-info-zone .person-icon {
+  color: #CCFFBA;
+  font-size: 2.5rem;
+}
+
+.upload-img-btn {
+  width: 90px;
+  height: 90px;
+  background-color: #e9ecef;
+  border-radius: 8px;
+}
+.upload-img-btn span {
+  font-size: 5rem;
+}

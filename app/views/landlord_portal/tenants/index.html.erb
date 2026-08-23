@@ -8,7 +8,7 @@
 <div class="d-flex justify-content-between gap-3 mt-4">
   <%# Unsigned tenants %>
   <% unless @unsigned_tenants.empty? %>
-    <div class="alert alert-warning card p-0">
+    <div class="unsigned alert alert-warning card p-0">
       <h2 class="card-header">
         <span class="material-symbols-outlined warning-pulse">warning</span>
         <%= t("form.tenant.without_contract") %>!
@@ -23,7 +23,7 @@
               <p class="flex-grow-1 text-wrap fw-semibold"><%= vn_name(tenant.user.fullname) %> </p>
 
               <div class="d-flex gap-1 align-items-center w-auto">
-                <%= link_to new_landlord_house_contract_path(@house),
+                <%= link_to new_landlord_house_tenant_contract_path(@house, tenant),
                     class: "d-block",
                     title: t("form.contract.sign") do %>
                   <span class="material-symbols-filled">ink_pen</span>
