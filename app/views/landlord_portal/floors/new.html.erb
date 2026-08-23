@@ -34,9 +34,9 @@
 
             <%# Floor name %>
             <div class="w-75 form-group mb-3" data-controller="form">
-                <%= f.label :name , class: "form-label d-flex justify-content-between" do%>
+                <%= f.label :name , class: "form-label d-flex justify-content-between" do %>
                     <div>
-                      <%= t('form.floor.name') +  ": "%>
+                      <%= t('form.floor.name') +  ": " %>
                       <span class="asterisk">*</span>
                     </div>
 
@@ -53,15 +53,15 @@
                     } 
                 %>
 
-                <%= field_error(@floor, :name)%>
+                <%= field_error(@floor, :name) %>
             </div>
 
             <%# Rooms count %>
             <div class="w-75 form-group d-flex align-items-center gap-3 mb-3">
               <%= f.label :rooms_count, class: "form-label flex-shrink-0 d-flex gap-1" do %>
-                  <%= t('form.floor.rooms_count') +  ": "%>
+                  <%= t('form.floor.rooms_count') +  ": " %>
                   <span class="asterisk">*</span>
-              <%end %>
+              <% end %>
 
               <%= f.number_field :rooms_count, required: true, value: 1,
                     class: "form-control w-auto", placeholder: "1-100",
@@ -69,7 +69,7 @@
             </div>
 
             <div class="form-label w-75 flex-shrink-0 d-flex gap-1 my-3">
-              <%= t('form.house.detailed_room') +  ": "%>
+              <%= t('form.house.detailed_room') +  ": " %>
               <span class="asterisk">*</span>
             </div>
 
@@ -101,7 +101,7 @@
                 <%= f.text_field :room_rent,
                       class: "form-control", data: {controller: "currency"},
                       required: true %>
-                <% if @house.bed?  %>
+                <% if @house.bed? %>
                   <span class="input-group-text"> <%= t("form.room.per_bed") %> </span>
                 <% end %>
               </div>
@@ -113,9 +113,9 @@
                 <%= f.text_field :room_deposit,
                       class: "form-control", data: {controller: "currency"},
                       required: true %>
-                <% if @house.bed?  %>
+                <% if @house.bed? %>
                   <span class="input-group-text"> <%= t("form.room.per_bed") %> </span>
-                <% end %>           
+                <% end %>
               </div>
             </div>
           </div>
@@ -128,14 +128,14 @@
 
             <%= f.button :submit, 
                 class: "custom-primary-btn main-form d-flex align-items-center justify-content-center gap-2",
-                data: { loading_target: "button" } do%>
+                data: { loading_target: "button" } do %>
                 <span data-loading-target="text"><%= t("create") %></span>
 
                 <span class="material-symbols-outlined spin d-none"
                   data-loading-target="spinner">
                   progress_activity
                 </span>
-            <%end%>
+            <% end %>
           </div>
         <% end %>
       </div>

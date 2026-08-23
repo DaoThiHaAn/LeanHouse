@@ -117,7 +117,7 @@ class LandlordPortal::BedsController < LandlordPortal::BaseController
       scope = scope.empty
     end
 
-    scope.order("floors.name ASC, rooms.name ASC, beds.name ASC")
+    scope.order("floors.position ASC, rooms.name ASC, beds.name ASC")
          .page(params[:page])
          .per(BEDS_PER_PAGE)
   end

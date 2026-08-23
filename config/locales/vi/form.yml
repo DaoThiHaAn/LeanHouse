@@ -112,7 +112,7 @@ vi:
       create_info_2: "Tất cả tầng trong cùng 1 tòa nhà phải có tên khác nhau."
       create_info_3: "1 toà nhà chỉ có tối đa %{num} tầng."
       create_info_4_html: "Trong loại hình Thuê theo <span class='fw-bold'>Giường</span>, các phòng được tạo ra mặc định có 1 giường."
-      create_info_ 5: "Các phòng được tạo ra giống nhau và bạn có thể tùy chỉnh sau"
+      create_info_5: "Các phòng được tạo ra giống nhau và bạn có thể tùy chỉnh sau"
       reach_max: "Đã đạt tối đa 50 tầng! Không thể thêm tầng mới!"
 
     room:

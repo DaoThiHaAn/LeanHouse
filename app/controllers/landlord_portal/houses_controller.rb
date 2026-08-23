@@ -26,7 +26,7 @@
 
 
     def edit
-      @floors = @house.floors
+      @floors = @house.floors.pos_order
 
       # For cancel button
       if turbo_frame_request?
