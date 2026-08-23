@@ -112,7 +112,16 @@ Rails.application.routes.draw do
         resources :repair_history
       end
 
-      resources :contracts, except: %i[new create]
+      resources :contracts, except: %i[new create] do
+        collection do
+          get :filtered
+        end
+        member do
+          get :extended
+          post :extended, to: "contracts#execute_extended"
+        end
+      end
+
       resources :invoices, :vehicles
     end
   end

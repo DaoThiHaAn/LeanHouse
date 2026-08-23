@@ -5,21 +5,16 @@
 <!-- Used by stimulus to update url -->
 <span hidden data-pagination-total-pages="<%= signed_tenants.total_pages %>"></span>
 
-<h2 class="table-caption"><%= t("form.tenant.list") %></h2>
+<h2 class="table-caption my-4"><%= t("form.tenant.list") %></h2>
 
-<div class="mb-3 d-flex align-items-center gap-2">
-  <span class="material-symbols-outlined">list_arrow</span>
-  <%= t("form.floor.order") %>
-</div>
-
-<div class="table-responsive border rounded w-85 m-auto">
+<div class="table-responsive border rounded m-auto">
   <table class="table table-bordered table-hover align-middle mb-0">
     <thead class="table-light">
       <tr>
         <th><%= t("form.profile.fullname") %></th>
-        <th><%= t("form.profile.tel") %> (đ)</th>
+        <th><%= t("form.profile.tel") %> </th>
         <th><%= t("form.tenant.rental_unit") %></th>
-        <th><%= t("form.contract.deposit_paid") %> (đ)</th>
+        <th><%= t("form.contract.deposit_paid") %> </th>
         <th><%= t("form.contract.resid_register_due") %> </th>
         <th><%= t("form.contract.due_date") %> </th>
         <th class="text-center"><%= t("actions") %></th>
@@ -34,24 +29,33 @@
           <td><%= vn_name(tenant.user.fullname) %></td>
           <td><%= tenant.user.tel %></td>
           <td><%= tenant.current_staying_info %></td>
+
           <td>
-            <% if latest_contract.deposit_paid %>
-              <span class="material-symbols-filled">check_circle</span>
-            <% else %>
-              -
-            <% end %>
+            <div class="d-flex justify-content-center gap-1">
+              <% if latest_contract.deposit_paid %>
+                <span class="material-symbols-filled">check_circle</span>
+              <% else %>
+                <p>-</p>
+              <% end %>
+            </div>
           </td>
-          <td class="d-flex gap-1 align-items-center">
-            <% if latest_contract.temp_resid_registered? %>
-              <%= latest_contract.temp_resid_due_date.strftime("%d/%m/%Y") %>
-              <%= due_status_label(latest_contract.temp_resid_due_status) %>
-            <% else %>
-              -
-            <% end %>
+
+          <td>
+            <div class="d-flex flex-column justify-content-center align-items-center gap-2">
+              <% if latest_contract.temp_resid_registered? %>
+                <%= latest_contract.temp_resid_due_date.strftime("%d/%m/%Y") %>
+                <%= due_status_icon_label(latest_contract.temp_resid_due_status) %>
+              <% else %>
+                <p>-</p>
+              <% end %>
+            </div>
           </td>
-          <td class="d-flex gap-1 align-items-center">
-            <%= latest_contract.due_date.strftime("%d/%m/%Y") %>
-            <%= due_status_label(latest_contract.due_status) %>
+
+          <td>
+            <div class="d-flex flex-column justify-content-center align-items-center gap-2">
+              <%= latest_contract.due_date.strftime("%d/%m/%Y") %>
+              <%= due_status_icon_label(latest_contract.due_status) %>
+            </div>
           </td>
 
           <%# Actions %>
@@ -64,7 +68,7 @@
                 <span class="material-symbols-filled">visibility</span>
               <% end %>
 
-              <%= link_to landlord_house_tenant_path(house, tenant), method: :delete,
+              <%= button_to landlord_house_tenant_path(house, tenant), method: :delete,
                         data: { 
                           turbo_confirm: [
                             t("form.tenant.remove_cf"),
@@ -92,7 +96,6 @@
   </table>
 </div>
 
-<!-- TODO: Update the params-->
 <div class="mt-3">
   <%= paginate signed_tenants, 
       params: {

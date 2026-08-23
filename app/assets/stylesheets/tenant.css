@@ -59,7 +59,8 @@
 }
 
 .unsigned.alert {
-  min-width: 300px;
+  max-width: 300px;
+  min-width: 150px;
   max-height: 50vh;
 }
 
@@ -67,7 +68,10 @@
 .tenant-container h2 {
   font-size: 1.1rem;
   font-weight: 800;
-  font-family: "Nunito Sans", system-ui, sans-serif;
+}
+
+.main-table-zone {
+  overflow-x: auto;
 }
 
 .unsigned-card {
@@ -79,6 +83,7 @@
 .unsigned-card span {
   color: rgb(102, 101, 101);
   transition: background-color 0.2s ease;
+  font-size: 1.5rem;
 }
 
 .unsigned-card span:hover {
@@ -91,6 +96,10 @@
 
 .unsigned-card .staying-info {
   font-size: 0.9rem;
+}
+
+.input-group.search-bar {
+  max-width: 300px;
 }
 
 
@@ -114,4 +123,28 @@
  
 .create-new-form-container{
   max-width: 500px;
+}
+
+/* Collapsible effect */
+.unsigned.alert {
+  max-width: 320px;
+  min-width: 260px;
+  max-height: 70vh;
+  transition: all 0.5 s ease-in-out;
+  border-color: #ffe69c;
+}
+/* Khi thu gọn: co lại thành hộp nhỏ 52px */
+.unsigned.alert.is-collapsed {
+  min-width: 52px !important;
+  max-width: 52px !important;
+  cursor: pointer;
+  background-color: #fff3cd;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+.unsigned.alert.is-collapsed:hover {
+  background-color: #ffe09c;
+}
+.cursor-pointer {
+  cursor: pointer;
 }

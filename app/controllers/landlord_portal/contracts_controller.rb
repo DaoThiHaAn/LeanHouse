@@ -4,6 +4,7 @@ class LandlordPortal::ContractsController < LandlordPortal::BaseController
   load_and_authorize_resource :contract, through: :house, except: %i[new create index]
   before_action :authorize_tenant_belongs_to_house!, only: [ :new, :create ]
 
+  CONTRACTS_PER_PAGE = 15
 
   def new
     @contract = Contract.new
@@ -33,6 +34,9 @@ class LandlordPortal::ContractsController < LandlordPortal::BaseController
     @contracts = @house.all_current_contracts.expiring_soonest
   end
 
+  def filtered
+  end
+
   def destroy
   end
 
@@ -46,7 +50,7 @@ class LandlordPortal::ContractsController < LandlordPortal::BaseController
 
   def contract_params
     params.require(:contract).permit(
-      :name, :citizen_id, :start_date, :due_date,
+      :name, :citizen_id, :start_date, :due_date, :note,
       :deposit_paid, :temp_resid_registered, :temp_resid_due_date,
       documents: [] # Cho phép nhận mảng file ảnh upload
     )

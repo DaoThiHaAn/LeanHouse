@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_08_20_110903) do
+ActiveRecord::Schema[8.0].define(version: 2026_08_23_190318) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "unaccent"
@@ -78,6 +78,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_20_110903) do
     t.date "end_date"
     t.string "name", null: false
     t.boolean "deposit_paid", default: false, null: false
+    t.string "note"
     t.index ["house_id"], name: "index_contracts_on_house_id"
     t.index ["landlord_id"], name: "index_contracts_on_landlord_id"
     t.index ["tenant_id"], name: "index_contracts_on_tenant_id"

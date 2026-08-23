@@ -102,6 +102,7 @@ vi:
   save_order: "Lưu thứ tự"
   click_open: "Nhấp để mở thông báo"
   click_choose: "Nhấp để chọn"
+  click_expand: "Bấm để mở rộng"
   ago: "Trước"
   send: "Gửi"
   min: "Tối thiểu %{val}"

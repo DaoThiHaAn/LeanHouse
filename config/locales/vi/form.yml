@@ -153,7 +153,7 @@ vi:
       select_unit_info: "Màn hình chỉ hiển thị các vị trí còn trống."
       none: "Chưa ghi nhận khách thuê!"
       checkin_at: "Ngày vào ở"
-      name_input: "Nhập tên"
+      name_input: "Nhập tên Khách thuê"
       unsigned_list: "Danh sách người thuê chưa ký"
       without_contract: "Chưa ký hợp đồng"
       remove: "Xóa khỏi nhà"
@@ -241,6 +241,7 @@ vi:
 
     contract:
       self: "Hợp đồng"
+      id: "Mã hợp đồng"
       name: "Tên hợp đồng"
       none: "Hệ thống chưa ghi nhận hợp đồng giữa bạn và chủ nhà!"
       landlord_create: "Khi chủ nhà tạo 1 hợp đồng mới, thông tin hợp đồng sẽ được hiển thị ở đây."
@@ -251,7 +252,7 @@ vi:
       resid_register: "Đăng ký tạm trú"
       resid_register_due: "Hạn tạm trú"
       contract_state: "Tình trạng hợp đồng"
-      active: "Còn hiệu lực"
+      normal: "Còn hiệu lực"
       overdue: "Hết hạn"
       nearly_due: "Gần hết hạn"
       due: "Hạn"
@@ -260,6 +261,7 @@ vi:
       start: "Ngày bắt đầu"
       end: "Ngày kết thúc"
       period: "Thời hạn"
+      period_note: "Lưu ý: Thời hạn hợp đồng sẽ không thể chỉnh sửa sau khi tạo hợp đồng thành công."
       no_register: "Chưa đăng ký"
       let_sign: "Hãy tạo hợp đồng mới để bắt đầu quản lý!"
       create_instruction: "Để tạo hợp đồng, trước hết bạn cần thêm Khách thuê vào nhà"

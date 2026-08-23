@@ -1,4 +1,3 @@
-# Filter tenants to display in views
 class TenantFilter
   TENANTS_PER_PAGE = 15
 
@@ -20,9 +19,8 @@ class TenantFilter
     scope = apply_contract_filters(scope)
 
     scope
-      .includes(:user, :contracts, tenant_stays: { rental_unit: [ :rentable, room: :floor ] })
-      .name_sorted
-      .distinct
+      .preload(:user, :contracts, tenant_stays: { rental_unit: :rentable })
+      .order("users.fullname ASC")
       .page(page)
       .per(TENANTS_PER_PAGE)
   end
@@ -31,18 +29,17 @@ class TenantFilter
 
   attr_reader :house, :query, :contract_state, :residence_state, :page
 
-  # Base scope: signed tenants with active stays in this house
+  # Base scope: Lấy danh sách ID khách thuê đang lưu trú có hợp đồng qua Subquery (không bị nhân đôi bản ghi)
   def base_scope
     rentable_records = house.room? ? house.rooms : house.beds
     rental_units = RentalUnit.where(rentable: rentable_records)
 
-    Tenant
-      .joins(:tenant_stays)
-      .where(tenant_stays: {
-        rental_unit_id: rental_units,
-        checkout_at: nil,
-        has_contract: true
-      })
+    active_tenant_ids = TenantStay
+      .staying
+      .where(rental_unit_id: rental_units, has_contract: true)
+      .select(:tenant_id)
+
+    Tenant.joins(:user).where(id: active_tenant_ids)
   end
 
   def apply_search(scope)
@@ -51,12 +48,15 @@ class TenantFilter
     scope.search(query)
   end
 
+  # Lọc hợp đồng theo subquery
   def apply_contract_filters(scope)
     return scope unless filtering_by_contract?
 
-    scope = scope.joins(:contracts).where(contracts: { house_id: house.id })
-    scope = apply_contract_state(scope)
-    apply_residence_state(scope)
+    contract_scope = Contract.where(house_id: house.id)
+    contract_scope = apply_contract_state(contract_scope)
+    contract_scope = apply_residence_state(contract_scope)
+
+    scope.where(id: contract_scope.select(:tenant_id))
   end
 
   def apply_contract_state(scope)

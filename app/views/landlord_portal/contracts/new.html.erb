@@ -112,6 +112,8 @@
       <span class="asterisk">*</span>
     </div>
 
+    <p class="fst-italic my-2 text-danger-emphasis"><%= t("form.contract.period_note") %></p>
+
     <div class="d-flex justify-content-between mt-2 gap-2">
       <div class="input-group mb-3">
         <span class="input-group-text"><%= t("form.contract.start") %></span>
@@ -175,10 +177,32 @@
     <%= field_error(@contract, :temp_resid_due_date, classes: "mt-2") %>
   </div>
 
-<!-- Chứng từ hợp đồng (Image upload với ô vuông + icon add_photo_alternate) -->
+  <!-- Note -->
+  <div class="form-group mb-3">
+    <div class="d-flex align-items-center gap-3" data-controller="form">
+      <%= f.label :note, class: "form-label flex-shrink-0" do %>
+            <%= t('note') +  ": " %>
+      <% end %>
+
+      <%= f.text_area :note, maxlength: 1000, class: "mb-1 form-control", 
+          placeholder: t('note_placeholder'),
+          rows: 5,
+          data: {
+              form_target: "input",
+              action: "input->form#update"
+          } 
+      %>
+
+      <small class="counter-text">
+        <span data-form-target="charCount">0</span>
+      </small>
+    </div>
+  </div>
+
+  <!-- Chứng từ hợp đồng (Image upload với ô vuông + icon add_photo_alternate) -->
   <div class="form-group mb-3" data-controller="image-upload"
-      data-image-upload-max-files-value="10"
-      data-image-upload-max-size-mb-value="20">
+        data-image-upload-max-files-value="10"
+        data-image-upload-max-size-mb-value="20">
     <div class="d-flex gap-1 mb-2">
       <p class="fw-semibold m-0"><%= t("form.contract.documents") %>:</p>
       <span class="asterisk">*</span>

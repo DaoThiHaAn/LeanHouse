@@ -410,6 +410,9 @@ figcaption {
   min-width: 100px;
 }
 
+thead {
+  vertical-align: middle !important
+}
 
 /* RESPONSIVE */
 @media (max-width: 991.98px) {
