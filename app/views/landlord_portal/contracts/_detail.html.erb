@@ -1,4 +1,3 @@
-
 <div class="info-container px-3 py-2 my-3 mx-auto w-75">
   <%= field_info(
     t("form.contract.note"),
@@ -7,21 +6,217 @@
 </div>
 
 <%# Show the stay info of tenant %>
-<div class="room-info-zone py-3 ps-1 pe-4 d-flex">
-  <span class="material-symbols-filled location align-self-center">location_home</span>
-  <div class="d-flex flex-column gap-1">
-    <p class="title fs-4"><%= house.name %></p>
-    <p class="fw-bold room-name p-2">
-      <%= tenant_stay.rental_unit.location_info %>
+<div class="room-info-zone py-3 ps-4 pe-5 d-flex gap-3">
+  <span class="material-symbols-filled location align-self-center">contract</span>
+  <div class="d-flex flex-column gap-2">
+    <div class="d-flex gap-3 align-items-center">
+      <p class="title fs-4"><%= contract.title_name %></p>
+      <%= contract_state_tag(contract.due_status) %>
+    </div>
+
+    <p>
+      <span><%= t("form.contract.id") %>: </span>
+      <%= contract.id %>
     </p>
 
     <p>
-      <span class="material-symbols-outlined">location_on</span>
-      <%= house_address(house) %>
+      <span><%= t("form.contract.period") %>: </span>
+      <%= contract.formatted_period %>
     </p>
-    <p class="checkin mt-1">
-      <%= t("form.tenant.checkin_at") + ": " %>
-      <%= tenant_stay.checkin_at.strftime("%d/%m/%Y") %>
+
+    <p>
+     <span class="me-3"><%= t("form.contract.end") %>: </span>
+      <%= contract.formatted_end_date %>
+    </p>
+
+    <p class="checkin fst-italic">
+     <span class="material-symbols-outlined fs-5"
+      title="<%= t("last_updated") %>">
+      update
+    </span>
+      <%= contract.updated_at.strftime('%H:%M:%S %d/%m/%Y') %>
     </p>
   </div>
+</div>
+
+<div class="d-flex flex-column mt-3 gap-3 px-5 contract-detail-container">
+  <%# Landlord info %>
+  <div class="pb-2 border-bottom">
+    <div class="d-flex gap-3 align-items-center mb-2">
+      <h2 class="fw-bold m-0">
+        <%= t("form.contract.a") %>
+        (<%= t("form.contract.a_extend") %>):
+      </h2>
+
+      <p><%= vn_name(contract.landlord.user.fullname) %></p>
+
+      <div class="d-flex gap-1 align-items-center">
+        <span class="material-symbols-outlined"
+          title="<%= t("form.contract.landlord_citizen_id") %>">
+          id_card
+        </span>
+        <p><%= contract.landlord_citizen_id %></p>
+      </div>
+    </div>
+
+    <p>
+      <span class="subtitle"><%= t("form.profile.address") %>: </span>
+      <%= contract.landlord.user.address %>
+    </p>
+  </div>
+
+  <%# Tenant info %>
+  <div class="pb-2 border-bottom">
+    <div class="d-flex gap-3 align-items-center mb-2">
+      <h2 class="fw-bold m-0">
+        <%= t("form.contract.b") %>
+        (<%= t("form.contract.b_extend") %>):
+      </h2>
+
+      <p><%= vn_name(contract.tenant.user.fullname) %></p>
+
+      <div class="d-flex gap-1 align-items-center">
+        <span class="material-symbols-outlined"
+          title="<%= t("form.contract.tenant_citizen_id") %>">
+          id_card
+        </span>
+        <p><%= contract.tenant_citizen_id %></p>
+      </div>
+    </div>
+
+    <p>
+      <span class="subtitle"><%= t("form.profile.address") %>: </span>
+      <%= contract.tenant.user.address %>
+    </p>
+  </div>
+
+  <%# Stay Detail %>
+  <div class="d-flex flex-column gap-2 pb-3 border-bottom">
+    <h2 class="fw-bold mb-2"><%= t("form.tenant.select_unit") %>:</h2>
+
+    <p>
+      <%= tenant_stay&.rental_unit&.location_info || t("none") %>,
+      <%= house.name %>,
+      <%= house.full_address %>
+    </p>
+  </div>
+
+  <!-- Temp residence -->
+  <div class="d-flex gap-3 align-items-center pb-3 border-bottom">
+    <h2 class="fw-bold m-0"><%= t("form.contract.temp_resid_b") %>:</h2>
+
+    <% if contract.temp_resid_registered %>
+      <div class="d-flex align-items-center gap-4">
+        <span class="material-symbols-filled text-success">check_circle</span>
+        <p>
+          <span class="fw-semibold"><%= t("form.contract.due") %>:</span>
+          <%= contract.temp_resid_due_date&.strftime("%d/%m/%Y") %>
+        </p>
+      </div>
+    <% else %>
+      <p class="text-muted fst-italic"><%= t("form.contract.no_register") %></p>
+    <% end %>
+  </div>
+
+  <!-- Note -->
+  <div class="d-flex flex-column gap-2 pb-3 border-bottom">
+    <h2 class="fw-bold mb-2"><%= t("note") %>:</h2>
+
+    <p class="text-muted fst-italic m-0">
+      <%= contract.note.presence || t("none") %>
+    </p>
+  </div>
+
+  <!-- Images -->
+  <div class="d-flex flex-column gap-2 pb-3 border-bottom">
+    <h2 class="fw-bold mb-2"><%= t("form.contract.documents") %>:</h2>
+
+    <% if contract.documents.attached? && contract.documents.any? %>
+      <%
+        documents_data = contract.documents.map.with_index do |doc, idx|
+          {
+            index: idx,
+            url: rails_blob_path(doc, disposition: "inline"),
+            name: doc.filename.to_s
+          }
+        end
+      %>
+
+      <div data-controller="image-viewer"
+           data-image-viewer-images-value="<%= documents_data.to_json %>">
+        <!-- Thumbnail Grid in Page -->
+        <div class="d-flex flex-wrap gap-3">
+          <% contract.documents.each_with_index do |doc, index| %>
+            <div class="doc-preview-item position-relative"
+                 data-action="click->image-viewer#open"
+                 data-index="<%= index %>"
+                 title="<%= doc.filename.to_s %>">
+              <%= image_tag doc,
+                            class: "rounded border object-fit-cover shadow-sm w-100 h-100",
+                            alt: doc.filename.to_s %>
+            </div>
+          <% end %>
+        </div>
+
+        <!-- Lightbox Modal -->
+        <div class="image-viewer-modal d-none"
+             data-image-viewer-target="modal"
+             data-action="click->image-viewer#backdropClick">
+          <!-- Header -->
+          <div class="image-viewer-header">
+            <span class="fs-6 text-truncate" data-image-viewer-target="mainCaption"></span>
+            <div class="d-flex align-items-center gap-3">
+              <span class="badge bg-dark border border-secondary" data-image-viewer-target="counter"></span>
+              <button type="button" class="btn btn-sm btn-outline-light rounded-circle d-flex align-items-center justify-content-center p-1"
+                      data-action="click->image-viewer#close"
+                      style="width: 32px; height: 32px;"
+                      title="<%= t('close', default: 'Đóng') %>">
+                <span class="material-symbols-outlined fs-5">close</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Main Image & Navigation Arrows -->
+          <div class="image-viewer-content">
+            <% if contract.documents.length > 1 %>
+              <button type="button" class="image-viewer-nav prev"
+                      data-action="click->image-viewer#prev"
+                      title="<%= t('prev', default: 'Ảnh trước') %>">
+                <span class="material-symbols-outlined fs-2">chevron_left</span>
+              </button>
+            <% end %>
+
+            <img src="" alt="" class="image-viewer-img" data-image-viewer-target="mainImage">
+
+            <% if contract.documents.length > 1 %>
+              <button type="button" class="image-viewer-nav next"
+                      data-action="click->image-viewer#next"
+                      title="<%= t('next', default: 'Ảnh tiếp theo') %>">
+                <span class="material-symbols-outlined fs-2">chevron_right</span>
+              </button>
+            <% end %>
+          </div>
+
+          <!-- Bottom Thumbnails -->
+          <% if contract.documents.length > 1 %>
+            <div class="image-viewer-thumbnails">
+              <% contract.documents.each_with_index do |doc, index| %>
+                <%= image_tag doc,
+                              class: "image-viewer-thumb",
+                              data: {
+                                image_viewer_target: "thumbnail",
+                                action: "click->image-viewer#select",
+                                index: index
+                              },
+                              alt: doc.filename.to_s %>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% else %>
+      <p class="text-muted fst-italic m-0"><%= t("none") %></p>
+    <% end %>
+  </div>
+
 </div>

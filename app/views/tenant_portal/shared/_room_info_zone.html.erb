@@ -1,17 +1,17 @@
 <%# Variables: house, tenant_stay %>
 
 <%# Show the stay info of tenant %>
-<div class="room-info-zone py-3 ps-1 pe-4 d-flex">
+<div class="room-info-zone py-3 ps-4 pe-5 d-flex gap-3">
   <span class="material-symbols-filled location align-self-center">location_home</span>
-  <div class="d-flex flex-column gap-1">
+  <div class="d-flex flex-column gap-2">
     <p class="title fs-4"><%= house.name %></p>
     <p class="fw-bold room-name p-2">
       <%= tenant_stay.rental_unit.location_info %>
     </p>
 
     <p>
-      <span class="material-symbols-outlined">location_on</span>
-      <%= house_address(house) %>
+      <span class="material-symbols-outlined fs-4">location_on</span>
+      <%= house.full_address %>
     </p>
     <p class="checkin mt-1">
       <%= t("form.tenant.checkin_at") + ": " %>

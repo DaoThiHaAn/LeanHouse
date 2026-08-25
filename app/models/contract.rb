@@ -9,10 +9,10 @@ class Contract < ApplicationRecord
 
   before_validation :normalize_name
 
-  validates :citizen_id, :start_date, :due_date, :name, presence: true
+  validates :tenant_citizen_id, :landlord_citizen_id, :start_date, :due_date, :name, presence: true
   validates :due_date,
     comparison: { greater_than: :start_date, message: :must_be_after_start_date }
-  validates :citizen_id, format: { with: /\A\d{12}\z/ }
+  validates :tenant_citizen_id, :landlord_citizen_id, format: { with: /\A\d{12}\z/ }
   # When a tenant is registerd for temporary residence, its due date must be set
   validates :temp_resid_due_date, presence: true, if: :temp_resid_registered?
   validates :temp_resid_due_date, comparison: { greater_than: -> { Date.current } }, if: :temp_resid_registered?
@@ -59,6 +59,9 @@ class Contract < ApplicationRecord
     I18n.t("form.contract.self") + " " + name
   end
 
+  def formatted_period
+    "#{start_date&.strftime('%d/%m/%Y')} - #{due_date&.strftime('%d/%m/%Y')}"
+  end
 
   private
 

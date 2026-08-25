@@ -58,7 +58,10 @@ vi:
         
         contract:
           attributes:
-            citizen_id:
+            tenant_citizen_id:
+              invalid: "Số CCCD phải gồm đúng 12 chữ số!"
+              blank: "Không được để trống!"
+            landlord_citizen_id:
               invalid: "Số CCCD phải gồm đúng 12 chữ số!"
               blank: "Không được để trống!"
             due_date:
@@ -79,7 +82,8 @@ vi:
     # Attribute translation
     attributes:
       contract:
-        citizen_id: "Số CCCD"
+        tenant_citizen_id: "Số CCCD của khách thuê"
+        landlord_citizen_id: "Số CCCD của chủ nhà"
         start_date: "Ngày bắt đầu"
         due_date: "Ngày hết hạn"
 

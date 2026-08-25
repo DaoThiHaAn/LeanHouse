@@ -53,3 +53,135 @@
   background-color: #ff851b;
   color: #2e1700;
 }
+
+.contract-detail-container h2 {
+  font-size: 1.2rem;
+}
+
+.contract-detail-container .subtitle {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+/* Image Viewer / Lightbox */
+.doc-preview-item {
+  width: 150px;
+  height: 150px;
+  cursor: zoom-in;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.doc-preview-item:hover {
+  transform: scale(1.05);
+}
+
+.image-viewer-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.88);
+  z-index: 1060;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  backdrop-filter: blur(4px);
+}
+
+.image-viewer-header {
+  width: 100%;
+  max-width: 1100px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #ffffff;
+  padding: 8px 16px;
+  z-index: 1061;
+}
+
+.image-viewer-content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  width: 100%;
+  max-width: 1200px;
+  max-height: calc(100vh - 180px);
+}
+
+.image-viewer-img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  user-select: none;
+  transition: transform 0.2s ease;
+}
+
+.image-viewer-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  border: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 1062;
+}
+
+.image-viewer-nav:hover {
+  background: rgba(255, 255, 255, 0.4);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.image-viewer-nav.prev {
+  left: 16px;
+}
+
+.image-viewer-nav.next {
+  right: 16px;
+}
+
+.image-viewer-thumbnails {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  max-width: 90vw;
+  padding: 10px 4px 4px 4px;
+  z-index: 1061;
+}
+
+.image-viewer-thumb {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 6px;
+  cursor: pointer;
+  opacity: 0.5;
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.image-viewer-thumb:hover {
+  opacity: 0.85;
+}
+
+.image-viewer-thumb.active-thumbnail {
+  opacity: 1;
+  border-color: #0d6efd;
+  box-shadow: 0 0 8px rgba(13, 110, 253, 0.8);
+  transform: scale(1.08);
+}

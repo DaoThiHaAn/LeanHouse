@@ -105,6 +105,7 @@
 .room-info-zone {
   background-color: var(--primary-text);
   color: white;
+  margin: 0 auto;
 }
 
 .room-info-zone .room-name {
@@ -114,7 +115,7 @@
 }
 
 .room-info-zone .location {
-    font-size: 8rem;
+    font-size: 6rem;
     display:block;
     line-height: .9;
 }

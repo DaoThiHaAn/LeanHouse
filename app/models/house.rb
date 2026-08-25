@@ -68,6 +68,9 @@ class House < ApplicationRecord
     !rooms.where("tenants_count > 0").exists?
   end
 
+  def full_address
+    [ address_l3, address_l2, address_l1 ].compact_blank.join(", ")
+  end
 
   # Returns active, available rental units with their location preloaded.
   # @return [Array<RentalUnit>]

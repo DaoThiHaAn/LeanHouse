@@ -48,7 +48,7 @@
 </div>
 
 <%= form_with model: @contract, url: landlord_house_tenant_contract_path(@house, @user.tenant),
-    class: "px-4 my-4 d-flex flex-column gap-3",
+    class: "px-4 mt-4 d-flex flex-column gap-4",
     data: { 
       controller: "loading",
       loading_text_value: t("saving") + "...",
@@ -67,7 +67,7 @@
       </small>
     <% end %>
 
-    <div class="input-group mb-3">
+    <div class="input-group">
       <span class="input-group-text"><%= t("form.contract.self") %></span>
       <%= f.text_field :name, maxlength: 50, class: "form-control #{invalid_class(@contract, :name)}", 
         placeholder: t('form.contract.name_placeholder'), required: true,
@@ -81,9 +81,33 @@
     <%= field_error(@contract, :name) %>
   </div>
 
-  <!-- Citizen ID -->
+  <!-- Landlord Citizen ID -->
   <div class="form-group" data-controller="form">
-    <%= f.label :citizen_id, class: "form-label d-flex justify-content-between" do %>
+    <%= f.label :landlord_citizen_id, class: "form-label d-flex justify-content-between" do %>
+      <div>
+          <%= t('form.contract.landlord_citizen_id') +  ": " %>
+          <span class="asterisk">*</span>
+      </div>
+
+      <small class="counter-text">
+          <span data-form-target="charCount">0</span>
+      </small>
+    <% end %>
+
+    <%= f.text_field :landlord_citizen_id, maxlength: 12, class: "form-control #{invalid_class(@contract, :landlord_citizen_id)}", 
+      placeholder: t('form.contract.citizen_id_placeholder'), required: true,
+      data: {
+          form_target: "input",
+          action: "input->form#update"
+      } 
+    %>
+
+    <%= field_error(@contract, :landlord_citizen_id) %>
+  </div>
+
+  <!-- Tenant Citizen ID -->
+  <div class="form-group" data-controller="form">
+    <%= f.label :tenant_citizen_id, class: "form-label d-flex justify-content-between" do %>
       <div>
           <%= t('form.contract.tenant_citizen_id') +  ": " %>
           <span class="asterisk">*</span>
@@ -94,7 +118,7 @@
       </small>
     <% end %>
 
-    <%= f.text_field :citizen_id, length: 12, class: "form-control #{invalid_class(@contract, :citizen_id)}", 
+    <%= f.text_field :tenant_citizen_id, maxlength: 12, class: "form-control #{invalid_class(@contract, :tenant_citizen_id)}", 
       placeholder: t('form.contract.citizen_id_placeholder'), required: true,
       data: {
           form_target: "input",
@@ -102,7 +126,7 @@
       } 
     %>
 
-    <%= field_error(@contract, :citizen_id) %>
+    <%= field_error(@contract, :tenant_citizen_id) %>
   </div>
 
   <!-- Period -->
@@ -130,7 +154,7 @@
   </div>
 
   <!-- Deposit paid -->
-  <div class="form-group mb-3">
+  <div class="form-group">
     <div class="d-flex align-items-center gap-3">
       <%= f.label :deposit_paid, 
             t("form.contract.deposit_paid", default: "Đã chuyển tiền cọc") + ":", 
@@ -148,7 +172,7 @@
   </div>
 
   <!-- Temp residence registration -->
-  <div class="form-group mb-3" data-controller="toggle-extra-fields">
+  <div class="form-group" data-controller="toggle-extra-fields">
     <div class="d-flex gap-4">
       <label class="form-label fw-semibold m-0 flex-shrink-0">
         <%= t("form.contract.resid_register", default: "Đăng ký tạm trú") %>:
@@ -196,7 +220,7 @@
   </div>
 
   <!-- Note -->
-  <div class="form-group mb-3" data-controller="form">
+  <div class="form-group" data-controller="form">
     <div class="d-flex align-items-center justify-content-between gap-3">
       <%= f.label :note, class: "form-label flex-shrink-0" do %>
             <%= t('note') +  ": " %>
@@ -207,7 +231,7 @@
       </small>
     </div>
 
-    <%= f.text_area :note, maxlength: 1000, class: "mb-1 form-control", 
+    <%= f.text_area :note, maxlength: 1000, class: "form-control", 
         placeholder: t('note_placeholder'),
         rows: 5,
         data: {
@@ -260,8 +284,7 @@
     <%= field_error(@contract, :documents, classes: "mt-2") %>
   </div>
 
-
-  <div class="info-container px-3 py-2 my-3 mx-auto">
+  <div class="info-container px-3 py-2 mb-2 mx-auto">
     <%= field_info(
       [t("form.contract.note")],
       extra_classes: "gap-2")  %>
@@ -276,5 +299,4 @@
       progress_activity
     </span>
   <% end %>
-
 <% end %>

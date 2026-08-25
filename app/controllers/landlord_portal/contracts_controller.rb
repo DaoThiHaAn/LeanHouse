@@ -24,6 +24,7 @@ class LandlordPortal::ContractsController < LandlordPortal::BaseController
   end
 
   def show
+    @tenant_stay = @house.tenant_stay_for(@contract.tenant_id)
   end
 
   def index
@@ -54,8 +55,8 @@ class LandlordPortal::ContractsController < LandlordPortal::BaseController
 
   def contract_params
     params.require(:contract).permit(
-      :name, :citizen_id, :start_date, :due_date, :note, :deposit_paid,
-      :deposit_paid, :temp_resid_registered, :temp_resid_due_date,
+      :name, :tenant_citizen_id, :landlord_citizen_id, :start_date, :due_date, :note, :deposit_paid,
+      :temp_resid_registered, :temp_resid_due_date,
       documents: [] # Cho phép nhận mảng file ảnh upload
     )
   end
