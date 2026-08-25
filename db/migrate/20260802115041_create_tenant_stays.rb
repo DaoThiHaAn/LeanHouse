@@ -1,5 +1,5 @@
 class CreateTenantStays < ActiveRecord::Migration[8.0]
- def change
+  def change
     create_table :tenant_stays do |t|
       t.references :tenant, null: false, foreign_key: true
       t.references :rental_unit, null: false, foreign_key: true

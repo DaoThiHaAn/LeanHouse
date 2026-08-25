@@ -11,6 +11,7 @@
           <th><%= t("form.asset.cat") %></th>
           <th><%= t("form.asset.location") %></th>
           <th><%= t("form.asset.price") %> </th>
+          <th class="text-center"><%= t("form.asset.status") %></th>
           <th><%= t("form.asset.brand") %></th>
           <th><%= t("form.asset.model") %></th>
           <th><%= t("form.asset.purchase_date") %></th>
@@ -35,6 +36,7 @@
   </div>
 
   <div class="mt-3">
-    <%= paginate assets, params: { category: params[:category] } %>
+    <%= paginate assets, 
+        params: { category: params[:category], status: params[:status] } %>
   </div>
 <% end %>

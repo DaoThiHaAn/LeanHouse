@@ -1,0 +1,31 @@
+.asset-status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px 8px;
+  font-size: 0.8rem;
+  text-align: center;
+  white-space: nowrap;
+  letter-spacing: 0.2px;
+}
+
+/* 1. Bình thường (Xanh lá) */
+.asset-status-badge.badge-normal {
+  background-color: #b1fdb6;
+  color: #176942;
+  border: 1px solid #92bfa9;
+}
+
+/* 2. Hư hỏng (Đỏ) */
+.asset-status-badge.badge-damaged {
+  background-color: #f8d7da;
+  color: #842029;
+  border: 1px solid #f5c2c7;
+}
+
+/* 3. Đang sửa chữa (Vàng cam) */
+.asset-status-badge.badge-under-repair {
+  background-color: #fff3cd;
+  color: #664d03;
+  border: 1px solid #ffecb5;
+}

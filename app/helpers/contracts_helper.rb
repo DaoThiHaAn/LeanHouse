@@ -30,3 +30,28 @@ module ContractsHelper
     end
   end
 end
+
+# Tạo badge tag trạng thái hợp đồng (Còn hiệu lực, Sắp hết hạn, Quá hạn)
+# @param status_or_contract [Symbol]
+def contract_state_tag(status_contract)
+  case status_contract
+  when :nearly_due, :"nearly-due"
+    content_tag(
+      :div,
+      t("form.contract.nearly_due"),
+      class: "contract-badge badge-nearly-due fw-bold"
+    )
+  when :overdue
+    content_tag(
+      :div,
+      t("form.contract.overdue"),
+      class: "contract-badge badge-overdue fw-bold"
+    )
+  else # :normal, :active
+    content_tag(
+      :div,
+      t("form.contract.normal"),
+      class: "contract-badge badge-active fw-bold"
+    )
+  end
+end

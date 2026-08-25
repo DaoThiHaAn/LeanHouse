@@ -111,6 +111,7 @@ vi:
   other: "Khác"
   not_redo: "Lưu ý: Hành động này không thể hoàn tác"
   add_img: "Thêm ảnh"
+  not_yet: "Chưa"
   
 
   errors:

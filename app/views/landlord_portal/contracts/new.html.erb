@@ -112,7 +112,7 @@
       <span class="asterisk">*</span>
     </div>
 
-    <p class="fst-italic my-2 text-danger-emphasis"><%= t("form.contract.period_note") %></p>
+    <p class="fst-italic mt-2 mb-3 text-danger-emphasis fw-medium"><%= t("form.contract.period_note") %></p>
 
     <div class="d-flex justify-content-between mt-2 gap-2">
       <div class="input-group mb-3">
@@ -127,6 +127,24 @@
     </div>
 
     <%= field_error(@contract, :due_date) %>
+  </div>
+
+  <!-- Deposit paid -->
+  <div class="form-group mb-3">
+    <div class="d-flex align-items-center gap-3">
+      <%= f.label :deposit_paid, 
+            t("form.contract.deposit_paid", default: "Đã chuyển tiền cọc") + ":", 
+            class: "form-label fw-semibold m-0 flex-shrink-0 cursor-pointer", 
+            for: "deposit_paid_switch" %>
+
+      <div class="form-check form-switch m-0">
+        <%= f.check_box :deposit_paid, 
+              class: "form-check-input", 
+              role: "switch", 
+              id: "deposit_paid_switch" %>
+      </div>
+    </div>
+    <%= field_error(@contract, :deposit_paid) %>
   </div>
 
   <!-- Temp residence registration -->
@@ -178,25 +196,25 @@
   </div>
 
   <!-- Note -->
-  <div class="form-group mb-3">
-    <div class="d-flex align-items-center gap-3" data-controller="form">
+  <div class="form-group mb-3" data-controller="form">
+    <div class="d-flex align-items-center justify-content-between gap-3">
       <%= f.label :note, class: "form-label flex-shrink-0" do %>
             <%= t('note') +  ": " %>
       <% end %>
-
-      <%= f.text_area :note, maxlength: 1000, class: "mb-1 form-control", 
-          placeholder: t('note_placeholder'),
-          rows: 5,
-          data: {
-              form_target: "input",
-              action: "input->form#update"
-          } 
-      %>
 
       <small class="counter-text">
         <span data-form-target="charCount">0</span>
       </small>
     </div>
+
+    <%= f.text_area :note, maxlength: 1000, class: "mb-1 form-control", 
+        placeholder: t('note_placeholder'),
+        rows: 5,
+        data: {
+            form_target: "input",
+            action: "input->form#update"
+        } 
+    %>
   </div>
 
   <!-- Chứng từ hợp đồng (Image upload với ô vuông + icon add_photo_alternate) -->

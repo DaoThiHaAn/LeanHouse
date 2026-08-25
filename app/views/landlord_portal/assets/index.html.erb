@@ -4,7 +4,13 @@
 
 <% provide :container_width, "h-100 w-95" %>
 
-<h1 class="text-center mb-5"> <%= t("page_titles.asset_mng") %></h1>
+<h1 class="text-center mb-5">
+  <%= t("page_titles.asset_mng") %>
+ <span class="material-symbols-outlined fs-4"
+    <%= tooltip("top", :"form.asset.mng_note", html: true) %>>
+    help
+  </span>
+</h1>
 
 <% if @assets.empty? %>
   <p class="fs-5 text-center fw-bold"><%= t("form.asset.none") %></p>
@@ -30,7 +36,9 @@
     <!-- Filter form -->
     <%= form_with url: filtered_landlord_house_assets_path(@house),
                   method: :get,
+                  class: "d-flex gap-5 align-items-center",
                   data: { turbo_frame: "asset_table" } do |f| %>
+      <!-- Category -->
       <div class="d-flex align-items-center gap-2">
         <%= f.label :category, t("form.asset.cat") + ":", class: "fw-bold text-nowrap" %>
         <%= f.select :category,
@@ -39,18 +47,30 @@
               class: "form-select w-auto shadow-sm",
               onchange: "this.form.requestSubmit()" %>
       </div>
+
+       <%# Lọc tình trạng %>
+      <div class="d-flex align-items-center gap-2">
+        <%= f.label :status, t("form.asset.status") + ":", class: "fw-bold text-nowrap" %>
+        <%= f.select :status,
+              [[t("all"), ""]] + Asset.status_options,
+              { selected: params[:status] },
+              class: "form-select w-auto shadow-sm",
+              onchange: "this.form.requestSubmit()" %>
+      </div>
     <% end %>
   </div>
 
+  <h2 class="fs-5 mb-3"><%= t("form.asset.list") %></h2>
+
   <!-- Asset table -->
   <%= turbo_frame_tag "asset_table",
-      src: filtered_landlord_house_assets_path(@house, params.permit(:page, :category)),
+      src: filtered_landlord_house_assets_path(@house, params.permit(:page, :category, :status)),
       loading: :lazy,
       data: {
         controller: "pagination-sync",
         pagination_sync_canonical_url_value: landlord_house_assets_path(@house),
-        pagination_sync_default_params_value: { category: "" }.to_json,
-        pagination_sync_query_params_value: ["category"].to_json,
+        pagination_sync_default_params_value: { category: "", status: "" }.to_json,
+        pagination_sync_query_params_value: ["category", "status"].to_json,
         pagination_sync_total_pages_selector_value: "[data-pagination-total-pages]",
         action: "turbo:frame-load->pagination-sync#updateUrl"
       } do %>

@@ -4,9 +4,10 @@
   <td><%= asset.human_category %></td>
   <td><%= asset.location %></td>
   <td><%= number_with_delimiter(asset.price) %></td>
-  <td><%= asset.brand %></td>
-  <td><%= asset.model %></td>
-  <td><%= asset.purchased_at.strftime('%d/%m/%Y') %></td>
+  <td class="text-center"><%= asset_status_tag(asset.status) %></td>
+  <td><%= asset&.brand %></td>
+  <td><%= asset&.model %></td>
+  <td><%= asset.purchased_at&.strftime('%d/%m/%Y') %></td>
   <td class="text-muted fst-italic" <%= asset.note.to_s.length > 70 ? tooltip('top', asset.note, html: true) : '' %>>
     <%= truncate(asset.note, length: 70) %>
   </td>
@@ -29,7 +30,7 @@
       <%= button_to landlord_house_asset_path(house, asset), method: :delete,
                 title: t("delete"),
                 data: { turbo_confirm: [t("form.asset.delete_cf"), t("not_redo")].join("\n\n") },
-                class: "table-action" do %>
+                class: "table-action text-danger-emphasis" do %>
         <span class="material-symbols-filled">delete</span>
       <% end %>
     </div>

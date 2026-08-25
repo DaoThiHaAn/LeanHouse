@@ -2,7 +2,6 @@ class Asset < ApplicationRecord
   belongs_to :room, inverse_of: :assets
   has_one :house, through: :room
 
-
   BUILT_IN_CATEGORIES = %w[
     fridge
     air_con
@@ -15,6 +14,13 @@ class Asset < ApplicationRecord
     tv
     microwave
   ].freeze
+
+  enum :status, {
+    normal: "normal",
+    damaged: "damaged",
+    under_repair: "under_repair"
+  }, default: :normal
+
 
   before_validation :normalize_strings
 
@@ -40,6 +46,14 @@ class Asset < ApplicationRecord
   def location
     room.title_name + ", " + room.floor.title_name
   end
+
+  # All status options
+  def self.status_options
+    statuses.keys.map do |st|
+      [ I18n.t("enums.asset.status.#{st}", default: st.humanize), st ]
+    end
+  end
+
 
   private
 

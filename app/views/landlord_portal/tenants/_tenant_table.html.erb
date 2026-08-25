@@ -35,7 +35,7 @@
               <% if latest_contract.deposit_paid %>
                 <span class="material-symbols-filled">check_circle</span>
               <% else %>
-                <p>-</p>
+                <span class="material-symbols-filled" title="<%= t("not_yet") %>">x_circle</span>
               <% end %>
             </div>
           </td>
@@ -46,7 +46,7 @@
                 <%= latest_contract.temp_resid_due_date.strftime("%d/%m/%Y") %>
                 <%= due_status_icon_label(latest_contract.temp_resid_due_status) %>
               <% else %>
-                <p>-</p>
+                <span class="material-symbols-filled">x_circle</span>
               <% end %>
             </div>
           </td>
@@ -68,18 +68,6 @@
                 <span class="material-symbols-filled">visibility</span>
               <% end %>
 
-              <%= button_to landlord_house_tenant_path(house, tenant), method: :delete,
-                        data: { 
-                          turbo_confirm: [
-                            t("form.tenant.remove_cf"),
-                            t("form.tenant.remove_warning_1") + "\n" + t("form.tenant.remove_warning_2")
-                          ].join("\n\n") 
-                        },
-                        title: t("form.tenant.remove"),
-                        class: "table-action" do %>
-                <span class="material-symbols-filled">person_remove</span>
-              <% end %>
-
               <%= link_to move_landlord_house_tenant_path(house, tenant),
                         title: t("form.tenant.move"),
                         data: { 
@@ -87,6 +75,19 @@
                         },
                         class: "table-action" do %>
                 <span class="material-symbols-filled">move_location</span>
+              <% end %>
+
+
+              <%= button_to landlord_house_tenant_path(house, tenant), method: :delete,
+                    data: { 
+                      turbo_confirm: [
+                        t("form.tenant.remove_cf"),
+                        t("form.tenant.remove_warning_1") + "\n" + t("form.tenant.remove_warning_2")
+                      ].join("\n\n") 
+                    },
+                    title: t("form.tenant.remove"),
+                    class: "table-action" do %>
+                <span class="material-symbols-filled text-danger-emphasis">person_remove</span>
               <% end %>
             </div>
           </td>

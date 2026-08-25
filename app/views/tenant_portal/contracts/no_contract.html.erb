@@ -1,0 +1,16 @@
+
+<% content_for :title, t("page_titles.my_contract") %>
+
+<div class="tenant-contract main-container w-75">
+  <h1 class="w-100 text-center mb-5"><%= t("page_titles.my_contract") %></h1>
+
+  <p class="fs-5 text-center fw-bold mb-2"><%= t("form.contract.none") %></p>
+  <p class="fs-5 text-center"><%= t("form.contract.landlord_create") %></p>
+  <div class="info-container px-3 py-2 my-3 mx-auto w-75">
+    <%= field_info(
+      t("form.contract.note"),
+      extra_classes: "gap-1"
+    ) %>
+  </div>
+  <%= image_tag "agreement.gif", alt: "Aggrement gif", width: "200px", class:"mx-auto d-block" %>
+</div>

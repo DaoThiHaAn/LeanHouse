@@ -30,6 +30,9 @@ class Contract < ApplicationRecord
   scope :temp_resid_overdue, -> { where(contracts: { temp_resid_registered: true }).where("contracts.temp_resid_due_date < ?", Date.current) }
   scope :temp_resid_nearly_due, -> { where(contracts: { temp_resid_registered: true, temp_resid_due_date: Date.current..(Date.current + NEARLY_DUE_DAYS.days) }) }
 
+  scope :finished, -> { where.not(end_date: nil) }
+  scope :unfinished, -> { where(end_date: nil) }
+
   # METHODS
 
   # Generate the status of the contract
@@ -46,6 +49,14 @@ class Contract < ApplicationRecord
     return :overdue if temp_resid_due_date < Date.current
     return :nearly_due if temp_resid_due_date <= Date.current + NEARLY_DUE_DAYS.days
     :normal
+  end
+
+  def formatted_end_date
+    end_date&.strftime("%d/%m/%Y") || "-"
+  end
+
+  def title_name
+    I18n.t("form.contract.self") + " " + name
   end
 
 

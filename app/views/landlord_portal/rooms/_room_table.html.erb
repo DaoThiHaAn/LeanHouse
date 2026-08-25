@@ -25,49 +25,57 @@
     </thead>
 
     <tbody>
-      <% rooms.group_by(&:floor).each do |floor, floor_rooms| %>
-        <tr class="colspan">
-          <td colspan="100">
-            <%= floor.title_name %>
+      <% if rooms.empty? %>
+        <tr>
+          <td colspan="100" class="text-center py-4 text-muted">
+            <%= t("form.room.unfound") %>
           </td>
         </tr>
-
-        <% floor_rooms.each do |room|
-          rental_unit = room.rental_unit
-        %>
-          <tr>
-            <td><%= t("form.room.self") %> <%= room.name %></td>
-            <td>
-              <%= room.tenants_count %> / <%= room.max_slots %>
-            </td>
-            <td><%= number_with_delimiter(rental_unit.rent) %></td>
-            <td><%= number_with_delimiter(rental_unit.deposit) %></td>
-
-            <%# Actions %>
-            <td>
-              <div class="d-flex align-items-center justify-content-center gap-2">
-                <%= link_to landlord_house_room_path(house, room),
-                          class: "table-action px-1 py-0",
-                          data: { turbo_frame: "room_detail_modal" },
-                          title: t("view_detail") do %>
-                  <span class="material-symbols-filled">visibility</span>
-                <% end %>
-
-                <%= link_to edit_landlord_house_room_path(house, room),
-                          data: { turbo_frame: "edit_room_modal" },
-                          title: t("edit"),
-                          class: "table-action" do %>
-                  <span class="material-symbols-filled">edit</span>
-                <% end %>
-
-                <%= button_to landlord_house_room_path(house, room), method: :delete,
-                          title: t("delete"),
-                          class: "table-action" do %>
-                  <span class="material-symbols-filled">delete</span>
-                <% end %>
-              </div>
+      <% else %>
+        <% rooms.group_by(&:floor).each do |floor, floor_rooms| %>
+          <tr class="colspan">
+            <td colspan="100">
+              <%= floor.title_name %>
             </td>
           </tr>
+
+          <% floor_rooms.each do |room|
+            rental_unit = room.rental_unit
+          %>
+            <tr>
+              <td><%= t("form.room.self") %> <%= room.name %></td>
+              <td>
+                <%= room.tenants_count %> / <%= room.max_slots %>
+              </td>
+              <td><%= number_with_delimiter(rental_unit.rent) %></td>
+              <td><%= number_with_delimiter(rental_unit.deposit) %></td>
+
+              <%# Actions %>
+              <td>
+                <div class="d-flex align-items-center justify-content-center gap-2">
+                  <%= link_to landlord_house_room_path(house, room),
+                            class: "table-action px-1 py-0",
+                            data: { turbo_frame: "room_detail_modal" },
+                            title: t("view_detail") do %>
+                    <span class="material-symbols-filled">visibility</span>
+                  <% end %>
+
+                  <%= link_to edit_landlord_house_room_path(house, room),
+                            data: { turbo_frame: "edit_room_modal" },
+                            title: t("edit"),
+                            class: "table-action" do %>
+                    <span class="material-symbols-filled">edit</span>
+                  <% end %>
+
+                  <%= button_to landlord_house_room_path(house, room), method: :delete,
+                            title: t("delete"),
+                            class: "table-action" do %>
+                    <span class="material-symbols-filled">delete</span>
+                  <% end %>
+                </div>
+              </td>
+            </tr>
+          <% end %>
         <% end %>
       <% end %>
     </tbody>

@@ -139,6 +139,7 @@ vi:
       create_info_2: "Tất cả phòng trong cùng 1 tầng phải có tên khác nhau."
       create_info_3: "Mỗi phòng chỉ được áp dụng một phiên bản cho mỗi loại dịch vụ."
       select_floor: "Chọn tầng"
+      unfound: "Không tìm thấy phòng nào!"
 
 
     tenant:
@@ -167,7 +168,7 @@ vi:
       info: "Thông tin Khách thuê"
       move: "Chuyển chỗ"
       moving: "Đang chuyển"
-
+      unfound: "Không tìm thấy khách thuê nào!"
       no_house: "Bạn chưa được kết nối với Nhà nào!"
       let_link: "Hãy liên hệ với chủ nhà để bắt đầu nhận phòng và theo dõi quá trình lưu trú của bạn ở đây."
 
@@ -179,6 +180,8 @@ vi:
       list: "Danh sách giường"
       add_info_1: "1 phòng chỉ có tối đa 20 giường"
       add_info_2: "Các giường mới tạo ra sẽ có tên mặc định dựa vào thứ tự tiếp theo trong phòng"
+      unfound: "Không tìm thấy giường nào!"
+
 
     property:
       title: "Tài sản"
@@ -213,6 +216,8 @@ vi:
 
     asset:
       self: "Tài sản"
+      list: "Danh sách Tài sản"
+      mng_note: "Giúp bạn ghi nhận, quản lý các tài sản có giá trị trong phòng như nội thất, thiết bị gia dụng,..."
       in_room: "Tài sản trong phòng"
       cat: "Loại"
       location: "Vị trí"
@@ -232,6 +237,8 @@ vi:
       model_placeholder: "Nhập mã sản phẩm"
       select_room: "Chọn phòng"
       delete_cf: "Bạn có chắc chắn muốn xóa tài sản này?"
+      unfound: "Không tìm thấy tài sản nào!"
+      status: "Tình trạng"
 
     repair_history:
       self: "Lịch sử bảo hành, sữa chửa"
@@ -241,7 +248,9 @@ vi:
 
     contract:
       self: "Hợp đồng"
+      list: "Danh sách Hợp đồng"
       id: "Mã hợp đồng"
+      id_note: "Mã hợp đồng được hệ thống tự động sinh ra, đảm bảo tính duy nhất và không trùng lặp."
       name: "Tên hợp đồng"
       none: "Hệ thống chưa ghi nhận hợp đồng giữa bạn và chủ nhà!"
       landlord_create: "Khi chủ nhà tạo 1 hợp đồng mới, thông tin hợp đồng sẽ được hiển thị ở đây."
@@ -252,6 +261,7 @@ vi:
       resid_register: "Đăng ký tạm trú"
       resid_register_due: "Hạn tạm trú"
       contract_state: "Tình trạng hợp đồng"
+      state_note: "Hợp đồng sẽ được đánh dấu Gần hết hạn trong vòng 30 ngày trước ngày kết thúc theo hợp đồng"
       normal: "Còn hiệu lực"
       overdue: "Hết hạn"
       nearly_due: "Gần hết hạn"
@@ -260,6 +270,7 @@ vi:
       due_date: "Hạn hợp đồng"
       start: "Ngày bắt đầu"
       end: "Ngày kết thúc"
+      end_note: "Ngày kết thúc hợp đồng trong thực tế, có thể sớm hơn thời hạn đã định"
       period: "Thời hạn"
       period_note: "Lưu ý: Thời hạn hợp đồng sẽ không thể chỉnh sửa sau khi tạo hợp đồng thành công."
       no_register: "Chưa đăng ký"
@@ -274,3 +285,6 @@ vi:
       documents: "Chứng từ hợp đồng"
       img_note_1: "Chỉ cho phép định dạng .jpg, .jpeg, .png"
       img_note_2: "Tải lên tối đa 10 ảnh, mỗi ảnh không quá 20MB"
+      unfound: "Không tìm thấy hợp đồng nào!"
+      close: "Kết thúc hợp đồng"
+      info: "Thông tin hợp đồng"

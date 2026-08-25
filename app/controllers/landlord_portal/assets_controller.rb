@@ -101,14 +101,13 @@ class LandlordPortal::AssetsController < LandlordPortal::BaseController
   end
 
   def asset_params
-    params.require(:asset).permit(:room_id, :brand, :model, :price, :purchased_at, :note)
+    params.require(:asset).permit(:room_id, :brand, :model, :price, :purchased_at, :note, :status)
   end
 
   def filtered_assets
     scope = @house.assets.includes(room: :floor)
-    if params[:category].present?
-      scope = scope.where(category: params[:category])
-    end
+    scope = scope.where(category: params[:category]) if params[:category].present?
+    scope = scope.where(status: params[:status]) if params[:status].present?
 
     scope.sorted
           .page(params[:page])

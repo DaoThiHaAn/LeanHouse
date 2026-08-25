@@ -119,6 +119,7 @@ Rails.application.routes.draw do
         member do
           get :extended
           post :extended, to: "contracts#execute_extended"
+          get :close
         end
       end
 

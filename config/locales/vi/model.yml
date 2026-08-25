@@ -108,3 +108,8 @@ vi:
         water_heater: "Máy nước nóng"
         tv: "Tivi"
         microwave: "Lò vi sóng"
+
+      status:
+        normal: "Bình thường"
+        damaged: "Hư hỏng"
+        under_repair: "Đang sửa chữa"

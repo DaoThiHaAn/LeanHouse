@@ -1,10 +1,8 @@
 class LandlordPortal::ContractsController < LandlordPortal::BaseController
   layout "house_mngment"
 
-  load_and_authorize_resource :contract, through: :house, except: %i[new create index]
+  load_and_authorize_resource :contract, through: :house, except: %i[new create index filtered]
   before_action :authorize_tenant_belongs_to_house!, only: [ :new, :create ]
-
-  CONTRACTS_PER_PAGE = 15
 
   def new
     @contract = Contract.new
@@ -31,10 +29,16 @@ class LandlordPortal::ContractsController < LandlordPortal::BaseController
   def index
     @unsigned_tenants = @house.all_linked_tenants(signed_contract: false)
     # Extract all contracts of only current staying tenants
-    @contracts = @house.all_current_contracts.expiring_soonest
+    @has_contracts = @house.all_current_contracts.expiring_soonest
   end
 
   def filtered
+    @contracts = ContractFilter.call(house: @house, params: params)
+    render partial: "contract_table",
+           locals: { house: @house, contracts: @contracts }
+  end
+
+  def close
   end
 
   def destroy
@@ -50,7 +54,7 @@ class LandlordPortal::ContractsController < LandlordPortal::BaseController
 
   def contract_params
     params.require(:contract).permit(
-      :name, :citizen_id, :start_date, :due_date, :note,
+      :name, :citizen_id, :start_date, :due_date, :note, :deposit_paid,
       :deposit_paid, :temp_resid_registered, :temp_resid_due_date,
       documents: [] # Cho phép nhận mảng file ảnh upload
     )
