@@ -37,6 +37,20 @@
         <span class="material-symbols-filled">edit</span>
       <% end %>
 
+      <%= link_to extend_landlord_house_contract_path(house, contract),
+                data: { turbo_frame: "extend_modal" },
+                title: t("form.contract.extend"),
+                class: "table-action" do %>
+        <span class="material-symbols-outlined">more_time</span>
+      <% end %>
+
+      <%= link_to sign_new_landlord_house_contract_path(house, contract),
+                data: { turbo_frame: "_top" },
+                title: t("form.contract.sign_new"),
+                class: "table-action" do %>
+        <span class="material-symbols-filled">ink_pen</span>
+      <% end %>
+
       <%= link_to close_landlord_house_contract_path(house, contract),
                 title: t("form.contract.close"),
                 data: { turbo_frame: "close_cf_modal" },

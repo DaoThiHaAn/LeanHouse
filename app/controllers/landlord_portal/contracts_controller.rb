@@ -39,6 +39,62 @@ class LandlordPortal::ContractsController < LandlordPortal::BaseController
            locals: { house: @house, contracts: @contracts }
   end
 
+  def edit
+  end
+
+  def update
+  end
+
+  def extend
+  end
+
+  def execute_extend
+    ContractExtension.call(
+      house: @house,
+      contract: @contract,
+      params: extend_contract_params
+    )
+
+    respond_to do |format|
+      format.turbo_stream do
+        @tenant_stay = @house.tenant_stay_for(@contract.tenant_id)
+        flash.now[:notice] = t("success_messages.contract_extended", default: "Gia hạn hợp đồng thành công!")
+        render turbo_stream: [
+          turbo_stream.replace(
+            ActionView::RecordIdentifier.dom_id(@contract),
+            partial: "landlord_portal/contracts/contract_row",
+            locals: { house: @house, contract: @contract }
+          ),
+          turbo_stream.replace(
+            "contract_detail",
+            partial: "landlord_portal/contracts/detail",
+            locals: { house: @house, contract: @contract, tenant_stay: @tenant_stay }
+          ),
+          turbo_stream.append(
+            "events",
+            partial: "layouts/shared_components/event",
+            locals: { event: "close-modal" }
+          ),
+          turbo_stream.update("flash", partial: "layouts/shared_components/flash_message")
+        ]
+      end
+      format.html do
+        redirect_to landlord_house_contracts_path(@house),
+                    notice: t("success_messages.contract_extended", default: "Gia hạn hợp đồng thành công!")
+      end
+    end
+  rescue ActiveRecord::RecordInvalid => e
+    flash.now[:alert] = @contract.errors.full_messages.to_sentence.presence || t("errors.unprocessable_entity")
+    render turbo_stream: turbo_stream.replace(
+      "extend_modal",
+      template: "landlord_portal/contracts/extend"
+    ), status: :unprocessable_entity
+  end
+
+
+  def sign_new
+  end
+
   def close
     @tenant_stay = @house.tenant_stay_for(@contract.tenant_id)
   end
@@ -70,5 +126,9 @@ class LandlordPortal::ContractsController < LandlordPortal::BaseController
       :temp_resid_registered, :temp_resid_due_date,
       documents: [] # Cho phép nhận mảng file ảnh upload
     )
+  end
+
+  def extend_contract_params
+    params.require(:contract).permit(:due_date)
   end
 end

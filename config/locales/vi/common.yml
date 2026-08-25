@@ -165,6 +165,7 @@ vi:
     asset_updated: "Cập nhật tài sản thành công!"
     asset_deleted: "Xóa tài sản thành công!"
     contract_created: "Tạo hợp đồng thành công!"
+    contract_extended: "Gia hạn hợp đồng thành công!"
 
 
   page_titles:

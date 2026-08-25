@@ -1,0 +1,61 @@
+<%= turbo_frame_tag "extend_modal" do %>
+  <div class="modal fade" id="extendModal" tabindex="-1" aria-labelledby="extendModalLabel" aria-hidden="true"
+        data-controller="modal" data-modal-auto-open-value="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content px-2">
+        <div class="modal-header py-3">
+          <h1 class="modal-title fs-5 w-100 text-center" id="extendModalLabel">
+            <%= t("form.contract.extend") + " " + t("form.contract.self") %>
+          </h1>
+          <button type="button" class="m-0 btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+          <p class="fs-5 fw-bold mb-3 text-center">
+            <span class="fw-bold"> <%= t("form.contract.id") %>: </span>
+            <%= @contract.id %>
+          </p>
+
+          <p class="fs-5 mb-3 text-center">
+            <span class="fw-medium"> <%= t("form.contract.period") %>: </span>
+            <%= @contract.formatted_period %>
+          </p>
+
+          <%= form_with model: @contract, url: extend_landlord_house_contract_path(@house, @contract), method: :post do |f| %>
+            <% if @contract.errors.any? %>
+              <div class="alert alert-danger py-2 px-3 mb-3">
+                <ul class="mb-0 ps-3">
+                  <% @contract.errors.full_messages.each do |msg| %>
+                    <li><%= msg %></li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
+
+            <!-- Date field -->
+            <div class="input-group mb-3">
+              <span class="input-group-text"><%= t("form.contract.end_new") %></span>
+              <%= f.date_field :due_date,
+                               value: (params.dig(:contract, :due_date).presence || (@contract.due_date.present? ? (@contract.due_date + 1.day).to_s : Date.current.to_s)),
+                               min: (@contract.due_date.present? ? (@contract.due_date + 1.day).to_s : Date.current.to_s),
+                               class: "date form-control",
+                               title: "mm/dd/yyyy",
+                               required: true %>
+            </div>
+
+            <p class="fst-italic text-danger-emphasis mb-3">
+              <%= t("form.contract.new_end_note") %>
+            </p>
+
+            <div class="modal-footer px-0 pb-0 pt-2 border-top">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                <%= t("cancel") %>
+              </button>
+              <%= f.submit t("form.contract.extend"), class: "btn btn-primary fw-bold border-none" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

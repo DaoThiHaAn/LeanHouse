@@ -19,6 +19,13 @@
         <span class="material-symbols-filled fs-3">edit</span>
       <% end %>
 
+      <%= link_to extend_landlord_house_contract_path(@house, @contract),
+                data: { turbo_frame: "extend_modal" },
+                title: t("form.contract.extend"),
+                class: "table-action" do %>
+        <span class="material-symbols-filled">more_time</span>
+      <% end %>
+
       <%= link_to close_landlord_house_contract_path(@house, @contract),
                 title: t("form.contract.close"),
                 data: { turbo_frame: "close_cf_modal" },
@@ -29,6 +36,9 @@
   </div>
 </div>
 
-<%= render 'detail', contract: @contract, house: @house, tenant_stay: @tenant_stay %>
+<div id="contract_detail">
+  <%= render 'detail', contract: @contract, house: @house, tenant_stay: @tenant_stay %>
+</div>
 
 <%= turbo_frame_tag "close_cf_modal" %>
+<%= turbo_frame_tag "extend_modal" %>

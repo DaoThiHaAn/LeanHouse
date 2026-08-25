@@ -66,6 +66,7 @@ vi:
               blank: "Không được để trống!"
             due_date:
               must_be_after_start_date: "Ngày bắt đầu phải sau Ngày kết thúc!"
+              must_be_after_current_due_date: "Ngày kết thúc mới phải lớn hơn ngày kết thúc hiện tại!"
             documents:
               blank: "Phải có ít nhất 1 ảnh chứng từ hợp đồng!"
               too_long: "Chỉ được tải lên tối đa %{count} ảnh!"

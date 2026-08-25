@@ -117,9 +117,11 @@ Rails.application.routes.draw do
           get :filtered
         end
         member do
-          get :extended
-          post :extended, to: "contracts#execute_extended"
+          get :extend
+          post :extend, to: "contracts#execute_extend"
+          patch :extend, to: "contracts#execute_extend"
           get :close
+          get :sign_new
         end
       end
 
