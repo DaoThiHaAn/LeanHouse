@@ -166,6 +166,7 @@ vi:
     asset_deleted: "Xóa tài sản thành công!"
     contract_created: "Tạo hợp đồng thành công!"
     contract_extended: "Gia hạn hợp đồng thành công!"
+    contract_signed_new: "Ký hợp đồng mới thành công!"
 
 
   page_titles:
@@ -192,6 +193,7 @@ vi:
     my_contract: "Hợp đồng của tôi"
     used_sv: "Dịch vụ sử dụng"
     new_contract: "Hợp đồng mới"
+    sign_new_contract: "Ký hợp đồng mới"
     new_service: "Dịch vụ mới"
 
 

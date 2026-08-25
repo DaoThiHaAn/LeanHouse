@@ -122,6 +122,7 @@ Rails.application.routes.draw do
           patch :extend, to: "contracts#execute_extend"
           get :close
           get :sign_new
+          post :sign_new, to: "contracts#execute_sign_new"
         end
       end
 

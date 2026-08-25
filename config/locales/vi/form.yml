@@ -257,6 +257,7 @@ vi:
       note: "Dữ liệu hợp đồng được thu thập / hiển thị chỉ phục vụ mục đích quản lý trên hệ thống, không thay thế cho hợp đồng giấy / điện tử và không có giá trị pháp lý."
       sign: "Ký hợp đồng"
       sign_new: "Ký hợp đồng mới"
+      sign_new_note: "Lưu ý: Ký hợp đồng mới sẽ tự động kết thúc hợp đồng hiện tại (mã số: %{id})."
       extend: "Gia hạn"
       close: "Kết thúc"
       resid_register: "Đăng ký tạm trú"

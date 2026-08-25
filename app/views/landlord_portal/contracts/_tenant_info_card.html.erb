@@ -1,0 +1,36 @@
+<%# locals: (user:) %>
+
+<!-- Tenant info -->
+<div class="room-info-zone py-3 px-4">
+  <div class="d-flex gap-3 align-items-center">
+    <p class="fw-bold room-name p-2">
+      <%= t("form.contract.b") %> &nbsp;
+      (<%= t("form.tenant.self") %>)
+    </p>
+
+    <span class="material-symbols-outlined" <%= tooltip("top", :"form.contract.extracted_info", html:true) %>>
+      info
+    </span>
+  </div>
+
+  <div class="d-flex gap-3 align-items-center">
+    <span class="material-symbols-filled person-icon">person</span>
+    <p class="title fs-5"><%= user.fullname.upcase %></p>
+  </div>
+
+  <div class="d-flex gap-5">
+    <p>
+      <span class="fw-bold"><%= t("form.profile.sex") %>:&nbsp;</span>
+      <%= t("form.profile.#{user.sex}") %>
+    </p>
+    <p>
+      <span class="fw-bold"><%= t("form.profile.bday") %>:&nbsp;</span>
+      <%= user.bday.strftime('%d/%m/%Y') %>
+    </p>
+  </div>
+
+  <p>
+    <span class="fw-bold"><%= t("form.profile.address") %>:&nbsp;</span>
+    <%= user.address %>
+  </p>
+</div>

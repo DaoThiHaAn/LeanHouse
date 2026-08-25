@@ -1,1 +1,21 @@
-sign new
+<%# Variables: @contract, @old_contract, @user, @house %>
+
+<% content_for :title, t("page_titles.sign_new_contract", default: "Ký hợp đồng mới") %>
+
+<% provide :container_width, "contract-container w-50" %>
+
+<div class="d-flex align-items-center mb-5">
+  <%= link_to :back, class: "d-flex align-items-center gap-1 turn-back link" do %>
+    <span class="material-symbols-outlined ms-2">arrow_left_alt</span>
+    <%= t('turn_back') %>
+  <% end %>
+  <h1 class="text-center flex-grow-1"><%= t('page_titles.sign_new_contract', default: "Ký hợp đồng mới") %></h1>
+</div>
+
+<%= render "tenant_info_card", user: @user %>
+
+<%= render "form",
+           contract: @contract,
+           old_contract: @old_contract,
+           url: sign_new_landlord_house_contract_path(@house, @old_contract),
+           submit_text: t("form.contract.sign_new", default: "Ký hợp đồng mới") %>
