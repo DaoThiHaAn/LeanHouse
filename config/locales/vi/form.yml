@@ -292,3 +292,6 @@ vi:
       close: "Kết thúc hợp đồng"
       info: "Thông tin hợp đồng"
       temp_resid_b: "Đăng ký tạm trú cho B"
+      close_cf: "Bạn có chắc chắn muốn kết thúc Hợp đồng (mã số:  %{id}) với khách thuê %{name} không?"
+      close_note: "Hãy kiểm tra các điều khoản kết thúc hợp đồng, tài sản trong phòng và các khoản tiền cần thanh toán để tránh vấn đề phát sinh sau này."
+      remove_tenant: "Xoá Khách thuê khỏi nhà"

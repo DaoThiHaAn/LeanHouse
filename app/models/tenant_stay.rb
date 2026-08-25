@@ -10,4 +10,7 @@ class TenantStay < ApplicationRecord
 
 
   # MODEL METHODS
+  def contract
+    rental_unit&.house&.contracts&.unfinished&.find_by(tenant_id: tenant_id)
+  end
 end

@@ -37,9 +37,9 @@
         <span class="material-symbols-filled">edit</span>
       <% end %>
 
-      <%= link_to landlord_house_contract_path(house, contract), method: :delete,
+      <%= link_to close_landlord_house_contract_path(house, contract),
                 title: t("form.contract.close"),
-                data: { turbo_confirm: [t("form.contract.delete_cf"), t("not_redo")].join("\n\n") },
+                data: { turbo_frame: "close_cf_modal" },
                 class: "table-action" do %>
         <span class="material-symbols-filled text-danger-emphasis">contract_delete</span>
       <% end %>

@@ -137,6 +137,7 @@ Rails.application.routes.draw do
 
     resources :invoices, only: [ :show, :index ]
     resource :contract, only: [ :show ]
+    get "/old-contracts", to: "contracts#old_index"
     resource :room, only: [ :show ]
     resources :services, only: [ :index ]
 

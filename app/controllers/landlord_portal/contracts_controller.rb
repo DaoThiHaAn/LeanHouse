@@ -40,9 +40,20 @@ class LandlordPortal::ContractsController < LandlordPortal::BaseController
   end
 
   def close
+    @tenant_stay = @house.tenant_stay_for(@contract.tenant_id)
   end
 
   def destroy
+    remove_tenant = params[:remove_tenant] == "1"
+
+    ContractClosing.call(
+      house: @house,
+      contract: @contract,
+      remove_tenant: remove_tenant
+    )
+
+    redirect_to landlord_house_contracts_path(@house),
+                notice: t("success_messages.contract_closed", default: "Kết thúc hợp đồng thành công!")
   end
 
   private

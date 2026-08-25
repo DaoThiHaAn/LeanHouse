@@ -1,0 +1,43 @@
+<%= turbo_frame_tag "close_cf_modal" do %>
+  <div class="modal fade" id="closeConfirmModal" tabindex="-1" aria-hidden="true"
+        data-controller="modal" data-modal-auto-open-value="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content px-2">
+        <div class="modal-header py-3">
+          <h1 class="modal-title fs-5 w-100 text-center" id="closeConfirmModalLabel">
+            <%= t("form.contract.close") %>
+          </h1>
+          <button type="button" class="m-0 btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+          <p class="fs-5 fw-bold mb-3 text-center">
+            <%= t("form.contract.close_cf", id: @contract.id, name: @contract.tenant.user.fullname) %>
+          </p>
+
+          <%= form_with url: landlord_house_contract_path(@house, @contract), method: :delete, data: { turbo_frame: "_top" } do |f| %>
+            <!-- Optional checkbox to remove the tenant out of the house too -->
+            <div class="form-check my-3 p-3 bg-light rounded border">
+              <%= f.check_box :remove_tenant, class: "form-check-input ms-0 me-2", id: "removeTenantCheck" %>
+              <%= f.label :remove_tenant, t("form.contract.remove_tenant"), class: "form-check-label fw-semibold cursor-pointer", for: "removeTenantCheck" %>
+            </div>
+
+            <p class="fw-medium text-danger-emphasis mb-1">
+              <%= t("not_redo") %>
+            </p>
+            <p class="fw-medium text-danger-emphasis mb-3">
+              <%= t("form.contract.close_note") %>
+            </p>
+
+            <div class="modal-footer px-0 pb-0 pt-2 border-top">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                <%= t("cancel") %>
+              </button>
+              <%= f.submit t("form.contract.close"), class: "btn btn-danger fw-bold border-none" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

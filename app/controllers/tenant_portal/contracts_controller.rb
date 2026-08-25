@@ -6,4 +6,8 @@ class TenantPortal::ContractsController < TenantPortal::BaseController
     @contract = @tenant.latest_contract
     render :show
   end
+
+  def old_index
+    # Show all old contracts
+  end
 end

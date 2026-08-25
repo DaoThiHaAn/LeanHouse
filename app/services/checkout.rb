@@ -18,10 +18,9 @@ class Checkout
       end_contract! if @end_contract
     end
 
-    send_notification(tenant_stay) if @send_noti
+    send_notification if @send_noti
     tenant_stay
   end
-
 
   private
 
@@ -34,23 +33,25 @@ class Checkout
     )
   end
 
-  # TODO
   def end_contract!
-    return unless tenant_stay.has_contract?
-
-    tenant_stay.contract.update!(
-      end_date: Time.current.to_date
-    )
+    contract = house.contracts.unfinished.find_by(tenant_id: tenant_stay.tenant_id)
+    if contract
+      contract.update!(end_date: Date.current)
+      tenant_stay.update!(has_contract: false)
+    end
   end
 
   def send_notification
     rental_unit = tenant_stay.rental_unit
+    recipients = [ tenant_stay.tenant.user, house.landlord.user ].compact.uniq
 
     TenantRemovedNotifier.with(
       tenant_stay: tenant_stay,
+      house_id: house.id,
       house: house.name,
       floor: rental_unit.floor.name,
-      rental_unit: rental_unit.title_name
-    ).deliver_later(tenant_stay.tenant.user)
+      rental_unit: rental_unit.title_name,
+      tenant_name: tenant_stay.tenant.user.fullname
+    ).deliver_later(recipients)
   end
 end

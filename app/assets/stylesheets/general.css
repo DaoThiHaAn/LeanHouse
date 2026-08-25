@@ -309,6 +309,7 @@ textarea {
   color: var(--primary-text);
   width: fit-content;
   opacity: 70%;
+  flex-shrink: 0;
 }
 
 .turn-back.link:hover {

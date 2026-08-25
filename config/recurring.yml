@@ -13,3 +13,19 @@ production:
   clear_solid_queue_finished_jobs:
     command: "SolidQueue::Job.clear_finished_in_batches(sleep_between_batches: 0.3)"
     schedule: every hour at minute 12
+
+  contract_due_reminder:
+    class: ContractDueReminderJob
+    schedule: every day at 1am
+
+  invoice_creation_reminder:
+    class: InvoiceCreationReminderJob
+    schedule: every day at 1am
+
+  contract_due_today:
+    class: ContractDueTodayJob
+    schedule: every day at 3am
+
+  contract_overdue_close:
+    class: ContractOverdueCloseJob
+    schedule: every day at 3am
