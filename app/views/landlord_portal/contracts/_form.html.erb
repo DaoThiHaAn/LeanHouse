@@ -1,4 +1,18 @@
-<%# locals: (contract:, url:, old_contract: nil, submit_text: nil) %>
+<%# locals: (contract:, url:, old_contract: nil, submit_text: nil, is_edit: false) %>
+
+<%
+  existing_docs = if contract.persisted? && contract.documents.attached?
+    contract.documents.map do |doc|
+      {
+        id: doc.id,
+        url: rails_blob_path(doc, disposition: "inline"),
+        name: doc.filename.to_s
+      }
+    end
+  else
+    []
+  end
+%>
 
 <%= form_with model: contract, url: url,
     class: "px-4 mt-4 d-flex flex-column gap-4",
@@ -99,21 +113,37 @@
       <span class="asterisk">*</span>
     </div>
 
-    <p class="fst-italic mt-2 mb-3 text-danger-emphasis fw-medium"><%= t("form.contract.period_note") %></p>
+    <% if local_assigns[:is_edit] %>
+      <p class="fst-italic mt-2 mb-3 text-muted fw-medium"><%= t("form.contract.period_note") %></p>
 
-    <div class="d-flex justify-content-between mt-2 gap-2">
-      <div class="input-group mb-3">
-        <span class="input-group-text"><%= t("form.contract.start") %></span>
-        <%= f.date_field :start_date, class: "date form-control", required: true %>
+      <div class="d-flex justify-content-between mt-2 gap-2">
+        <div class="input-group mb-3">
+          <span class="input-group-text"><%= t("form.contract.start") %></span>
+          <%= f.date_field :start_date, class: "date form-control bg-light", disabled: true %>
+        </div>
+
+        <div class="input-group mb-3">
+          <span class="input-group-text"><%= t("form.contract.end") %></span>
+          <%= f.date_field :due_date, class: "date form-control bg-light", disabled: true %>
+        </div>
+      </div>
+    <% else %>
+      <p class="fst-italic mt-2 mb-3 text-danger-emphasis fw-medium"><%= t("form.contract.period_note") %></p>
+
+      <div class="d-flex justify-content-between mt-2 gap-2">
+        <div class="input-group mb-3">
+          <span class="input-group-text"><%= t("form.contract.start") %></span>
+          <%= f.date_field :start_date, class: "date form-control", required: true %>
+        </div>
+
+        <div class="input-group mb-3">
+          <span class="input-group-text"><%= t("form.contract.end") %></span>
+          <%= f.date_field :due_date, class: "date form-control", required: true %>
+        </div>
       </div>
 
-      <div class="input-group mb-3">
-        <span class="input-group-text"><%= t("form.contract.end") %></span>
-        <%= f.date_field :due_date, class: "date form-control", required: true %>
-      </div>
-    </div>
-
-    <%= field_error(contract, :due_date) %>
+      <%= field_error(contract, :due_date) %>
+    <% end %>
   </div>
 
   <!-- Deposit paid -->
@@ -207,10 +237,17 @@
   <!-- Chứng từ hợp đồng -->
   <div class="form-group mb-3" data-controller="image-upload"
         data-image-upload-max-files-value="10"
-        data-image-upload-max-size-mb-value="20">
-    <div class="d-flex gap-1 mb-2">
-      <p class="fw-semibold m-0"><%= t("form.contract.documents") %>:</p>
-      <span class="asterisk">*</span>
+        data-image-upload-max-size-mb-value="20"
+        data-image-upload-existing-files-value="<%= existing_docs.to_json %>">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <div class="d-flex gap-1">
+        <p class="fw-semibold m-0"><%= t("form.contract.documents") %>:</p>
+        <span class="asterisk">*</span>
+      </div>
+
+      <small class="counter-text">
+        <span data-image-upload-target="fileCount"><%= existing_docs.size %></span>/10
+      </small>
     </div>
 
     <%= field_info(
@@ -238,6 +275,7 @@
             } %>
 
       <div class="d-flex flex-wrap gap-3 align-items-center" data-image-upload-target="previewContainer"></div>
+      <div data-image-upload-target="purgeContainer"></div>
     </div>
 
     <small class="text-danger d-none mt-1 d-block" data-image-upload-target="errorMessage"></small>
@@ -250,13 +288,22 @@
       extra_classes: "gap-2")  %>
   </div>
 
-  <%= f.button :submit, 
-    class: "custom-primary-btn mx-auto main-form d-flex align-items-center justify-content-center gap-2",
-    data: { loading_target: "button" } do %>
-    <span data-loading-target="text"><%= local_assigns[:submit_text] || t("save") %></span>
-    <span class="material-symbols-outlined spin d-none"
-      data-loading-target="spinner">
-      progress_activity
-    </span>
-  <% end %>
+  <div class="d-flex justify-content-center align-items-center gap-3 mt-3">
+    <button type="reset"
+            class="cancel-btn d-inline-flex align-items-center justify-content-center gap-1 px-4 py-2"
+            title="<%= t("reset") %>">
+      <span class="material-symbols-outlined fs-5">restart_alt</span>
+      <%= t("reset") %>
+    </button>
+
+    <%= f.button :submit, 
+      class: "custom-primary-btn main-form d-flex align-items-center justify-content-center gap-2 m-0",
+      data: { loading_target: "button" } do %>
+      <span data-loading-target="text"><%= local_assigns[:submit_text] || t("save") %></span>
+      <span class="material-symbols-outlined spin d-none"
+        data-loading-target="spinner">
+        progress_activity
+      </span>
+    <% end %>
+  </div>
 <% end %>

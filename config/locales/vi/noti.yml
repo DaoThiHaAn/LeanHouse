@@ -21,6 +21,8 @@ vi:
       contract_closed_landlord: "Hợp đồng đã kết thúc"
       tenant_removed_landlord: "Đã xóa khách thuê khỏi nhà"
       tel_changed: "Đổi số điện thoại thành công"
+      contract_updated: "Hợp đồng đã được cập nhật"
+      contract_updated_landlord: "Cập nhật hợp đồng thành công"
 
 
     messages:
@@ -35,6 +37,8 @@ vi:
       contract_closed_early: "%{contract_name} đã kết thúc trước thời hạn."
       contract_closed_landlord: "Hợp đồng %{contract_name} với khách %{tenant_name} đã được kết thúc thành công."
       contract_signed_landlord: "Hợp đồng %{contract_name} với khách %{tenant_name} đã được tạo thành công."
+      contract_updated_tenant: "Chủ nhà đã cập nhật thông tin Hợp đồng %{contract_name}."
+      contract_updated_landlord: "Hợp đồng %{contract_name} với khách %{tenant_name} đã được cập nhật thành công."
       contract_expiring_soon_landlord: "Hợp đồng %{contract_name} với khách %{tenant_name} sắp hết hạn vào ngày %{due_date}."
       contract_expiring_soon_tenant: "Hợp đồng %{contract_name} của bạn sắp hết hạn vào ngày %{due_date}."
       contract_due_today_landlord: "Hợp đồng %{contract_name} với khách %{tenant_name} đến hạn vào hôm nay (%{due_date})."

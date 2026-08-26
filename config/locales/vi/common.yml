@@ -89,6 +89,7 @@ vi:
   save: "Lưu"
   save_changes: "Lưu thay đổi"
   cancel: "Hủy"
+  reset: "Đặt lại"
   saving: "Đang lưu"
   checking: "Đang kiểm tra"
   check: "Kiểm tra"
@@ -167,6 +168,7 @@ vi:
     asset_updated: "Cập nhật tài sản thành công!"
     asset_deleted: "Xóa tài sản thành công!"
     contract_created: "Tạo hợp đồng thành công!"
+    contract_updated: "Cập nhật hợp đồng thành công!"
     contract_extended: "Gia hạn hợp đồng thành công!"
     contract_signed_new: "Ký hợp đồng mới thành công!"
 
@@ -195,6 +197,7 @@ vi:
     my_contract: "Hợp đồng của tôi"
     used_sv: "Dịch vụ sử dụng"
     new_contract: "Hợp đồng mới"
+    edit_contract: "Chỉnh sửa hợp đồng"
     sign_new_contract: "Ký hợp đồng mới"
     new_service: "Dịch vụ mới"
 

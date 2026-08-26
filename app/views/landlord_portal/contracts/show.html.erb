@@ -13,7 +13,6 @@
     <h1 class="text-center"><%= t("form.contract.info") %></h1>
     <div class="d-flex gap-2">
       <%= link_to edit_landlord_house_contract_path(@house, @contract),
-                data: { turbo_frame: "edit_contract_modal" },
                 title: t("edit"),
                 class: "table-action" do %>
         <span class="material-symbols-filled fs-3">edit</span>

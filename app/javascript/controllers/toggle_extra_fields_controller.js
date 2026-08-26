@@ -4,7 +4,22 @@ export default class extends Controller {
   static targets = ["extraFields", "checkbox"]
 
   connect() {
+    this.boundReset = () => {
+      setTimeout(() => this.toggle(), 10)
+    }
+    const form = this.element.closest("form")
+    if (form) {
+      form.addEventListener("reset", this.boundReset)
+    }
+
     this.toggle()
+  }
+
+  disconnect() {
+    const form = this.element.closest("form")
+    if (form && this.boundReset) {
+      form.removeEventListener("reset", this.boundReset)
+    }
   }
 
   toggle() {

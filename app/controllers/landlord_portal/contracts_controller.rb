@@ -40,9 +40,24 @@ class LandlordPortal::ContractsController < LandlordPortal::BaseController
   end
 
   def edit
+    @tenant_stay = @house.tenant_stay_for(@contract.tenant_id)
+    @user = @contract.tenant.user
   end
 
   def update
+    @tenant_stay = @house.tenant_stay_for(@contract.tenant_id)
+    @user = @contract.tenant.user
+
+    ContractUpdate.call(
+      house: @house,
+      contract: @contract,
+      params: update_contract_params
+    )
+
+    redirect_to landlord_house_contract_path(@house, @contract),
+                notice: t("success_messages.contract_updated", default: "Cập nhật hợp đồng thành công!")
+  rescue ActiveRecord::RecordInvalid => e
+    render :edit, status: :unprocessable_entity
   end
 
   def extend
@@ -165,5 +180,14 @@ class LandlordPortal::ContractsController < LandlordPortal::BaseController
 
   def extend_contract_params
     params.require(:contract).permit(:due_date)
+  end
+
+  def update_contract_params
+    params.require(:contract).permit(
+      :name, :tenant_citizen_id, :landlord_citizen_id, :note, :deposit_paid,
+      :temp_resid_registered, :temp_resid_due_date,
+      documents: [],
+      purge_document_ids: []
+    )
   end
 end

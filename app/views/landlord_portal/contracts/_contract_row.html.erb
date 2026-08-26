@@ -31,7 +31,7 @@
       <% end %>
 
       <%= link_to edit_landlord_house_contract_path(house, contract),
-                data: { turbo_frame: "edit_contract_modal" },
+                data: { turbo_frame: "_top" },
                 title: t("edit"),
                 class: "table-action" do %>
         <span class="material-symbols-filled">edit</span>
