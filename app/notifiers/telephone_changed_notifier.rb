@@ -19,4 +19,3 @@ class TelephoneChangedNotifier < ApplicationNotifier
     end
   end
 end
-

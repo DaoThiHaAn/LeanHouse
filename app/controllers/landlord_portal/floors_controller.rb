@@ -109,8 +109,7 @@ class LandlordPortal::FloorsController < LandlordPortal::BaseController
     Floor.transaction do
       offset = @house.floors.count + 100 # Bypass the unique constraint
 
-      @house.floors.update_all("position = position + #{offset}")
-
+      @house.floors.update_all(Arel.sql("position = position + #{offset.to_i}"))
       params[:floor_ids].each_with_index do |id, index|
         @house.floors.where(id: id).update_all(position: index + 1)
       end

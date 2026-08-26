@@ -44,7 +44,7 @@
             <% ["en", "vi"].each do |loc| %>
             <li>
                 <%= link_to loc.upcase,
-                          url_for(params.permit!.to_h.merge(lang: loc)),
+                          url_for(request.query_parameters.merge(lang: loc)),
                           title: t("lang.#{loc}"),
                           class: "dropdown-item #{'active' if I18n.locale.to_s == loc}" %>
             </li>

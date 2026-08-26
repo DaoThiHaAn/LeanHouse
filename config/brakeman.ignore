@@ -1,0 +1,53 @@
+{
+  "ignored_warnings": [
+    {
+      "warning_type": "Mass Assignment",
+      "warning_code": 105,
+      "fingerprint": "005ff0f82bf0bce8ce63196d467186837a331cd0053ad70d8b15b0a2881f5d73",
+      "check_name": "PermitAttributes",
+      "message": "Potentially dangerous key allowed for mass assignment",
+      "file": "app/controllers/users_controller.rb",
+      "line": 100,
+      "link": "https://brakemanscanner.org/docs/warning_types/mass_assignment/",
+      "code": "params.require(:user).permit(:fullname, :tel, :password, :password_confirmation, :role, :address, :sex, :bday, :terms_accepted)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "UsersController",
+        "method": "user_params"
+      },
+      "user_input": ":role",
+      "confidence": "Medium",
+      "cwe_id": [
+        915
+      ],
+      "note": "Users explicitly choose landlord or tenant role upon registration"
+    },
+    {
+      "warning_type": "Mass Assignment",
+      "warning_code": 105,
+      "fingerprint": "af0ba237c69d863c4ed106c697ccb5e6688a4e08d38ce558ea7ee36601b8363a",
+      "check_name": "PermitAttributes",
+      "message": "Potentially dangerous key allowed for mass assignment",
+      "file": "app/controllers/authentication_controller.rb",
+      "line": 87,
+      "link": "https://brakemanscanner.org/docs/warning_types/mass_assignment/",
+      "code": "params.require(:user).permit(:tel, :password, :role)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "AuthenticationController",
+        "method": "login_params"
+      },
+      "user_input": ":role",
+      "confidence": "Medium",
+      "cwe_id": [
+        915
+      ],
+      "note": "Role is used during authentication lookup"
+    }
+  ],
+  "updated": "2026-08-27 02:00:00 +0700",
+  "brakeman_version": "8.0.6"
+}
+
