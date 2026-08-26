@@ -1,4 +1,7 @@
 {
   "name": "app",
-  "private": "true"
+  "private": "true",
+  "scripts": {
+    "build:css": "echo 'css build done'"
+  }
 }

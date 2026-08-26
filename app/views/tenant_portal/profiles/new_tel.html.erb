@@ -1,0 +1,50 @@
+<% content_for :title, t('form.profile.new_tel') %>
+
+<div class="custom card px-5 py-4 m-5 mx-auto">
+  <div class="card-body d-flex flex-column gap-3">
+    <div class="d-flex align-items-center mb-4 gap-3">
+      <%= link_to tenant_profile_path, class: "d-flex align-items-center gap-1 turn-back link" do %>
+        <span class="material-symbols-outlined ms-2">arrow_left_alt</span>
+        <%= t('turn_back') %>
+      <% end %>
+      <h1 class="text-center flex-grow-1"><%= t('form.profile.new_tel') %></h1>
+    </div>
+
+    <%= form_with url: change_tel_tenant_profile_path, method: :post, local: true,
+          class: "d-flex align-items-center flex-column gap-4" do |f| %>
+
+      <!-- Tel -->
+      <div class="form-group w-100" data-controller="form">
+        <%= f.label :tel, class: "form-label d-flex justify-content-between" do %>
+          <div>
+            <%= t("form.profile.new_tel") %>:<span class="asterisk">*</span>
+          </div>
+
+          <small class="counter-text">
+            <span data-form-target="charCount">0</span>
+          </small>
+        <% end %>
+
+        <%= f.telephone_field :tel,
+            value: params[:tel],
+            minlength: 10,
+            maxlength: 10,
+            required: true,
+            autofocus: true,
+            class: "form-control #{invalid_class(@user, :tel)}",
+            placeholder: t("form.profile.tel_placeholder"),
+            data: {
+              form_target: "input",
+              action: "input->form#update"
+            } %>
+        <%= field_error(@user, :tel) %>
+      </div>
+
+      <%= f.submit t("form.profile.send_otp"), class: "mx-auto custom-primary-btn" %>
+    <% end %>
+
+    <div class="mt-3">
+      <%= render 'layouts/shared_components/new_tel_owner' %>
+    </div>
+  </div>
+</div>

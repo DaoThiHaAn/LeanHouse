@@ -6,15 +6,16 @@
 
 <div class="custom card my-5 mx-auto px-5 py-4">
     <div class="card-body d-flex align-items-center flex-column gap-3">
-        <h1 class="card-title text-center"><%=t('form.profile.otp_title').upcase %></h1>
-        <p class="card-text"><%=t('form.profile.check_tel') %></p>
-        <p class="card-text"><%=t('form.profile.check_tel_html', tel: tel) %></p>
-        <p class="card-text otp-valid"><%=t('form.profile.otp_valid') %></p>
+        <h1 class="card-title text-center"><%= t('form.profile.otp_title').upcase %></h1>
+        <p class="card-text"><%= t('form.profile.check_tel') %></p>
+        <p class="card-text"><%= t('form.profile.check_tel_html', tel: tel) %></p>
+        <p class="card-text otp-valid"><%= t('form.profile.otp_valid') %></p>
 
+        <% target_expires_at = local_assigns[:expires_at] || (Time.current + 5.minutes) %>
         <!-- Timer -->
         <div class="text-center fw-bold timer"
             data-controller="otp-timer"
-            data-otp-timer-duration-value="300">
+            data-otp-timer-expires-at-value="<%= (target_expires_at.to_f * 1000).to_i %>">
 
             <span data-otp-timer-target="time"></span>
         </div>
@@ -27,7 +28,7 @@
             <%= form_with url: verify_otp_path, method: :post, local: false, 
                             data: { otp_target: "form" }, 
                             class: "d-flex flex-column gap-3 mb-5 align-items-center" do |f| %>
-                
+
                 <%# The hidden field that will hold the combined 6 digits %>
                 <%= f.hidden_field :otp, data: { otp_target: "hidden" } %>
 
@@ -52,14 +53,14 @@
 
 
         <div class="field-info mb-2 d-flex align-items-center gap-1">
-            <span class="material-symbols-outlined">info</span>
+            <span class="material-symbols-outlined fs-5">info</span>
             <small><%= t('form.profile.otp_note') %></small>
         </div>
 
         <%= button_to t('form.profile.resend_otp'), resend_otp_path, data: { turbo: false }, class:"custom-secondary-btn" %>
-        <%= link_to :back, class: "mx-auto d-flex align-items-center forgot-pw link" do%>
+        <%= link_to :back, class: "mx-auto d-flex align-items-center forgot-pw link" do %>
             <span class="material-symbols-outlined">arrow_left_alt</span>
-            <%=t('turn_back')%>
-        <%end%>
+            <%= t('turn_back') %>
+        <% end %>
     </div>
 </div>

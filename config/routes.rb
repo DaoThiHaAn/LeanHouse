@@ -27,6 +27,7 @@ Rails.application.routes.draw do
   get "/otp-verification", to: "otp#input", as: :otp_input
   post "/verify-otp",  to: "otp#verify", as: :verify_otp
   post "/resend-otp",  to: "otp#resend"
+  get  "/resend-otp",  to: redirect("/otp-verification")
   # get "/otp", to: "otp#new"
 
 
@@ -46,6 +47,9 @@ Rails.application.routes.draw do
   namespace :landlord, module: :landlord_portal do
     resource :profile, only: [ :show, :edit, :update ] do
       patch :update_avatar
+      get :new_tel
+      post :change_tel
+      get :change_password
     end
 
     resource :dashboard, only: [ :show ]
@@ -136,6 +140,9 @@ Rails.application.routes.draw do
 
     resource :profile, only: [ :show, :edit, :update ] do
       patch :update_avatar
+      get :new_tel
+      post :change_tel
+      get :change_password
     end
 
     resources :invoices, only: [ :show, :index ]

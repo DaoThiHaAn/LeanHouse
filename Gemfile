@@ -61,6 +61,7 @@ group :development do
 end
 
 group :test do
+  gem "minitest", "~> 5.25"
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"
@@ -73,3 +74,4 @@ gem "kaminari", "~> 1.2"
 gem "noticed", "~> 3.0"
 
 gem "image_processing", "~> 2.0"
+gem "mini_magick", "~> 5.0"

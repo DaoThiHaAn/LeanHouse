@@ -22,3 +22,13 @@
 .avatar-btn:hover {
   background-color: rgba(188, 187, 187, 0.75);
 }
+
+.profile-credentials-group {
+  max-width: 300px;
+}
+
+.profile-date-input {
+  width: auto;
+  min-width: 180px;
+  max-width: 220px;
+}

@@ -20,6 +20,7 @@ vi:
       contract_overdue_closed: "Hợp đồng đã kết thúc do quá hạn"
       contract_closed_landlord: "Hợp đồng đã kết thúc"
       tenant_removed_landlord: "Đã xóa khách thuê khỏi nhà"
+      tel_changed: "Đổi số điện thoại thành công"
 
 
     messages:
@@ -27,6 +28,7 @@ vi:
       tenant_moved: "Bạn đã được chuyển vào %{house}, tầng %{floor}, %{rental_unit}."
       tenant_removed: "Chủ nhà đã xóa bạn ra khỏi %{house}, tầng %{floor}, %{rental_unit}."
       tenant_removed_landlord: "Đã xóa khách thuê %{tenant_name} ra khỏi %{house}, tầng %{floor}, %{rental_unit}."
+      tel_changed: "Số điện thoại tài khoản của bạn đã được đổi thành %{new_tel}."
       contract_signed: "Chủ nhà đã tạo %{contract_name}."
       contract_extended: "%{contract_name} được gia hạn đến %{date}."
       contract_closed_overdue: "%{contract_name} đã kết thúc do quá hạn."

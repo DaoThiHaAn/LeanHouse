@@ -46,8 +46,14 @@ class UsersController < ApplicationController
 
       if @user.save(context: context)
         if session[:is_reset_pw]
+          was_logged_in = logged_in?
+          target_path = if was_logged_in
+                          current_user.landlord? ? landlord_profile_path : tenant_profile_path
+          else
+                          login_path
+          end
           clear_session_keys(:is_reset_pw, :verified_tel, :pending_role, :pending_tel)
-          format.html { redirect_to login_path, notice: t("success_messages.user_update_pw_success") }
+          format.html { redirect_to target_path, notice: t("success_messages.user_update_pw_success") }
         else
           format.html { redirect_to @user, notice: t("success_messages.user_updated"), status: :see_other }
           format.json { render :show, status: :ok, location: @user }

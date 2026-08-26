@@ -40,6 +40,11 @@ vi:
       reset_pw: "Đặt mật khẩu mới"
       change_avatar: "Đổi ảnh đại diện"
       citizen_id: "Căn cước công dân"
+      change_tel: "Đổi số điện thoại"
+      change_pw: "Đổi mật khẩu"
+      new_tel: "Số điện thoại mới"
+      personal_info: "Thông tin cá nhân"
+      security: "Bảo mật tài khoản"
  
     house:
       add: "Tạo nhà mới"

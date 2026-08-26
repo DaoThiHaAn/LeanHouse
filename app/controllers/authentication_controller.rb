@@ -21,14 +21,18 @@ class AuthenticationController < ApplicationController
   end
 
   def reset_pw
-    tel = session[:verified_tel]
+    if logged_in?
+      @user = current_user
+    else
+      tel = session[:verified_tel]
 
-    unless tel
-      redirect_to forgot_pw_path, alert: t("errors.session_expired")
-      return
+      unless tel
+        redirect_to forgot_pw_path, alert: t("errors.session_expired")
+        return
+      end
+
+      @user = User.kept.find_by(tel: tel, role: session[:pending_role])
     end
-
-    @user = User.kept.find_by(tel: tel, role: session[:pending_role])
   end
 
 

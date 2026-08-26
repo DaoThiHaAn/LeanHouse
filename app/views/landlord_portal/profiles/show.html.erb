@@ -1,24 +1,35 @@
 <% content_for :title, t("bar.my_profile") %>
 
-<div class="main-container w-85">
-  <h1 class="w-100 text-center mb-5"> <%=  t("bar.my_profile") %> </h1>
+<div class="profile main-container w-75">
+  <h1 class="w-100 text-center mb-5"><%= t("bar.my_profile") %></h1>
 
-  <div class="d-flex gap-2">
+  <div class="d-flex gap-5 px-3">
     <%# Sidebar %>
-    <div class="flex-1">
+    <div class="d-flex flex-column gap-3">
       <%# Avatar %>
       <div class="avatar-container d-flex flex-column align-items-center gap-3 p-3 pb-2">
         <%= render "avatar", user: @user %>
         <p><%= t('role.landlord') %></p>
       </div>
-    
+
+      <p class="fst-italic text-muted d-flex align-items-center gap-1">
+        <span class="material-symbols-outlined fs-5" title="<%= t("last_updated") %>">
+          update
+        </span>
+        <%= @user.updated_at.strftime('%H:%M:%S %d/%m/%Y') %>
+      </p>
     </div>
 
     <%# Main section %>
-    <div class="flex-3 overflow-y-auto h-100">
+    <div class="flex-3 overflow-y-auto h-100 flex-grow-1">
+      <%= render 'layouts/shared_components/credentials_section',
+            user: @user,
+            change_tel_url: new_tel_landlord_profile_path,
+            change_pw_url: change_password_landlord_profile_path %>
 
+      <%= render 'layouts/shared_components/personal_info_form',
+            user: @user,
+            update_profile_url: landlord_profile_path %>
     </div>
-
   </div>
-
 </div>

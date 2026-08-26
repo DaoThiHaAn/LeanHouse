@@ -81,7 +81,12 @@
 .forgot-pw.link {
     color: var(--info-text);
     font-style: italic;
-    font-weight: 400
+    font-weight: 400;
+    opacity: 0.7;
+}
+.forgot-pw.link:hover {
+    text-decoration: none;
+    opacity: 1;
 }
 
 .pw.form-group .form-control.is-invalid + span {

@@ -21,11 +21,13 @@ class User < ApplicationRecord
 
   before_validation :normalize_inputs
 
-  validates :fullname, :password_confirmation, :tel, :sex, :bday, :address, presence: true,  on: [ :create, :update ]
+  validates :fullname, :tel, :sex, :bday, :address, presence: true,  on: [ :create, :update ]
   validates :fullname, format: { with: /\A[\p{L}\s]+\z/, message: :invalid }, on: [ :create, :update ]
   validates :password, presence: true, on: [ :create, :pw_reset, :login ]
+  validates :password_confirmation, presence: true, on: :create
 
   validates :tel,
+            presence: true,
             format: { with: /\A0\d{9}\z/, message: :invalid },
             on: [ :create, :change_tel, :login ]
   validates :tel, uniqueness: {
@@ -34,6 +36,7 @@ class User < ApplicationRecord
               message: :existed_acc
             },
             on: [ :create, :change_tel ]
+  validate :new_tel_different_from_current, on: :change_tel
 
   validates :role, presence: true, on: [ :login, :create ]
 
@@ -69,9 +72,7 @@ class User < ApplicationRecord
     avatar.variant(
       resize_to_fill: [ 128, 128 ],
       format: :webp,
-      saver: {
-        quality: 80
-      }
+      quality: 80
     )
   end
 
@@ -86,6 +87,12 @@ class User < ApplicationRecord
   def pw_match
     if password != password_confirmation
       errors.add(:password_confirmation, :confirmation)
+    end
+  end
+
+  def new_tel_different_from_current
+    if tel.present? && tel == tel_was
+      errors.add(:tel, :same_as_current)
     end
   end
 

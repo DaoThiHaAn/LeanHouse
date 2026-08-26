@@ -1,5 +1,5 @@
-class LandlordPortal::ProfilesController < LandlordPortal::BaseController
-  skip_before_action :require_house, :set_house, :authorize_house
+class TenantPortal::ProfilesController < TenantPortal::BaseController
+  skip_before_action :set_tenant_and_stay, :set_house
   before_action :set_user
 
   def show
@@ -10,7 +10,7 @@ class LandlordPortal::ProfilesController < LandlordPortal::BaseController
 
   def update
     if @user.update(profile_params)
-      redirect_to landlord_profile_path, notice: t("success_messages.user_updated")
+      redirect_to tenant_profile_path, notice: t("success_messages.user_updated")
     else
       render :show, status: :unprocessable_entity
     end

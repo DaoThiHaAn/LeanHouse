@@ -1,0 +1,103 @@
+<%# locals: (user:, update_profile_url:) %>
+<div class="py-4">
+  <h2 class="mb-4"><%= t("form.profile.personal_info") %></h2>
+
+  <%= form_with model: user, url: update_profile_url, method: :patch, local: true,
+        class: "d-flex flex-column gap-3 mx-auto", style: "max-width: 600px;" do |f| %>
+
+    <!-- Fullname -->
+    <div class="form-group mb-2" data-controller="form">
+      <%= f.label :fullname, class: "form-label d-flex justify-content-between" do %>
+        <div class="fw-bold">
+          <%= t("form.profile.fullname") %>:
+        </div>
+
+        <small class="counter-text">
+          <span data-form-target="charCount">0</span>
+        </small>
+      <% end %>
+
+      <%= f.text_field :fullname,
+          maxlength: 50,
+          class: "form-control #{invalid_class(user, :fullname)}",
+          placeholder: t("form.profile.fullname_placeholder"),
+          required: true,
+          data: {
+            form_target: "input",
+            action: "input->form#update"
+          } %>
+      <%= field_error(user, :fullname) %>
+    </div>
+
+    <!-- Sex -->
+    <div class="form-group d-flex gap-4 align-items-center mb-2 flex-wrap">
+      <%= f.label :sex, class: "form-label fw-bold d-block mb-0" do %>
+        <%= t("form.profile.sex") %>:
+      <% end %>
+
+      <div class="d-flex gap-4 align-items-center">
+        <label class="d-flex align-items-center gap-2 mb-0" style="cursor: pointer;">
+          <%= f.radio_button :sex, "male" %>
+          <%= t("form.profile.male") %>
+        </label>
+
+        <label class="d-flex align-items-center gap-2 mb-0" style="cursor: pointer;">
+          <%= f.radio_button :sex, "female" %>
+          <%= t("form.profile.female") %>
+        </label>
+      </div>
+      <%= field_error(user, :sex) %>
+    </div>
+
+    <!-- Birthday -->
+    <div class="form-group d-flex gap-4 align-items-center mb-2 flex-wrap">
+      <%= f.label :bday, class: "form-label fw-bold flex-shrink-0" do %>
+        <%= t("form.profile.bday") %>:
+      <% end %>
+
+      <%= f.date_field :bday,
+          class: "form-control profile-date-input #{invalid_class(user, :bday)}",
+          required: true %>
+      <%= field_error(user, :bday) %>
+    </div>
+
+    <!-- Address -->
+    <div class="form-group" data-controller="form">
+      <%= f.label :address, class: "form-label d-flex justify-content-between" do %>
+        <div class="fw-bold">
+          <%= t("form.profile.address") %>:
+        </div>
+
+        <small class="counter-text">
+          <span data-form-target="charCount">0</span>
+        </small>
+      <% end %>
+
+      <%= f.text_field :address,
+          maxlength: 100,
+          class: "form-control #{invalid_class(user, :address)}",
+          placeholder: t("form.profile.address_placeholder"),
+          required: true,
+          data: {
+            form_target: "input",
+            action: "input->form#update"
+          } %>
+      <%= field_error(user, :address) %>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="d-flex justify-content-center gap-3 mt-3">
+      <button type="reset" class="cancel-btn d-inline-flex align-items-center gap-1 px-3 py-2">
+        <span class="material-symbols-outlined fs-5">close</span>
+        <%= t("cancel") %>
+      </button>
+
+      <button type="submit" class="custom-primary-btn d-inline-flex align-items-center gap-2 px-4 py-2">
+        <span class="material-symbols-outlined fs-5">save</span>
+        <%= t("save_changes") %>
+      </button>
+    </div>
+
+  <% end %>
+</div>
+<hr class="mt-2">

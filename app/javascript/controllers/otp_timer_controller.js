@@ -2,32 +2,37 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   static targets = ["time"]
-  static values = { duration: Number }
+  static values = { expiresAt: Number }
 
   connect() {
-    this.remaining = this.durationValue
     this.tick()
     this.interval = setInterval(() => this.tick(), 1000)
   }
 
   disconnect() {
-    clearInterval(this.interval)
+    if (this.interval) {
+      clearInterval(this.interval)
+    }
   }
 
   tick() {
-    if (this.remaining <= 0) {
-      this.timeTarget.textContent = "OTP expired"
-      clearInterval(this.interval)
-      lert("Mã OTP đã hết hạn! Hãy yêu cầu Gửi lại OTP")
+    const now = Date.now()
+    const remaining = Math.max(0, Math.floor((this.expiresAtValue - now) / 1000))
+
+    if (remaining <= 0) {
+      this.timeTarget.textContent = "Mã OTP đã hết hạn! Vui lòng chọn Gửi lại OTP."
+      this.timeTarget.classList.add("text-danger")
+      if (this.interval) {
+        clearInterval(this.interval)
+      }
       return
     }
 
-    const minutes = Math.floor(this.remaining / 60)
-    const seconds = this.remaining % 60
+    const minutes = Math.floor(remaining / 60)
+    const seconds = remaining % 60
 
+    this.timeTarget.classList.remove("text-danger")
     this.timeTarget.textContent =
       `${minutes}:${seconds.toString().padStart(2, "0")}`
-
-    this.remaining--
   }
 }

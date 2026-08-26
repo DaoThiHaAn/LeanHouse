@@ -249,7 +249,7 @@ textarea {
   padding: 5px 30px;
   border: none;
   border-radius: 40px;
-  background-color: var(--primary-button-bg);
+  background-color: var(--primary-text);
   color: white;
   font-weight: bold;
   font-size: 1.1rem;
@@ -257,12 +257,9 @@ textarea {
   box-shadow: 1px 2px 5px rgba(0, 0, 0, 0.35);
 }
 
-.custom-primary-btn.main-form{
-  background-color: var(--primary-text);
-}
 
 .custom-primary-btn:hover {
-  background-color: #006ca2;
+  background-color: var(--primary-bg );
 }
 
 .custom-secondary-btn {

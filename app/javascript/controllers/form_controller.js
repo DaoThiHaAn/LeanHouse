@@ -5,11 +5,30 @@ export default class extends Controller {
 
   connect() {
     this.update()
-    console.log("FormController connected")
+    this.boundReset = () => this.reset()
+    const form = this.element.closest("form")
+    if (form) {
+      form.addEventListener("reset", this.boundReset)
+    }
+  }
+
+  disconnect() {
+    const form = this.element.closest("form")
+    if (form && this.boundReset) {
+      form.removeEventListener("reset", this.boundReset)
+    }
+  }
+
+  reset() {
+    setTimeout(() => {
+      this.update()
+    }, 10)
   }
 
   // char counter
   update() {
+    if (!this.hasCharCountTarget || !this.hasInputTarget) return
+
     const value = this.inputTarget.value || ""
     const length = value.length
     const max = this.maxLength()

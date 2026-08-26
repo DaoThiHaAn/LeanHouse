@@ -36,5 +36,7 @@ module LeanHouse
 
     # Rails wont wrap error fields in <div class="field_with_errors"></div>
     config.action_view.field_error_proc = proc { |html_tag, _instance| html_tag.html_safe }
+
+    config.active_storage.variant_processor = :mini_magick
   end
 end

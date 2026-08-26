@@ -4,7 +4,9 @@
     <!--TODO Profile -->
     <div class="dropdown profile-dropdown">
         <button class="py-1 dropdown-toggle d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <%= display_avatar %>
+            <span id="navbar_avatar" class="d-inline-flex align-items-center">
+              <%= render "layouts/shared_components/navbar_avatar" %>
+            </span>
             <div class="d-flex flex-column align-items-start">
                 <p class="fw-bold fullname"><%= format_name(current_user.fullname) %></p>
                 <p class="role"><%= get_role %></p>
