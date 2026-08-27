@@ -1,0 +1,52 @@
+class Request < ApplicationRecord
+  belongs_to :tenant, inverse_of: :requests
+  belongs_to :house
+  belongs_to :requestable, polymorphic: true, dependent: :destroy
+  belongs_to :resolved_by, class_name: "User", optional: true
+
+  enum :status, {
+    pending: "pending",
+    approved: "approved",
+    rejected: "rejected",
+    overdue: "overdue"
+  }, default: :pending
+
+  EXPIRED_DAYS = 7
+
+  # Require rejection reason only when rejected
+  validates :rejection_reason, presence: true, if: :rejected?
+
+  validate :status_can_only_transition_from_pending, on: :update
+
+  scope :pending, -> { where(status: :pending) }
+  scope :recent, -> { order(created_at: :desc) }
+
+  def actionable?
+    pending? && created_at > EXPIRED_DAYS.days.ago
+  end
+
+  # Generic reject method for any request type
+  def reject!(landlord_user, reason)
+    raise "Request is no longer actionable" unless actionable?
+
+    transaction do
+      update!(
+        status: :rejected,
+        rejection_reason: reason,
+        resolved_by: landlord_user,
+        resolved_at: Time.current
+      )
+
+      # Purge any ephemeral documents if the requestable supports it
+      requestable.try(:purge_documents!)
+    end
+  end
+
+  private
+
+  def status_can_only_transition_from_pending
+    if status_changed? && status_was != "pending"
+      errors.add(:status, "đã được xử lý (#{status_was}) và không thể thay đổi trạng thái nữa.")
+    end
+  end
+end

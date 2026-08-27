@@ -23,6 +23,8 @@ vi:
       tel_changed: "Đổi số điện thoại thành công"
       contract_updated: "Hợp đồng đã được cập nhật"
       contract_updated_landlord: "Cập nhật hợp đồng thành công"
+      request_created_landlord: "Yêu cầu đăng ký xe mới"
+      request_created_tenant: "Đã gửi yêu cầu đăng ký xe"
 
 
     messages:
@@ -46,3 +48,5 @@ vi:
       contract_overdue_closed_landlord: "Hợp đồng %{contract_name} với khách %{tenant_name} đã tự động kết thúc do quá hạn."
       contract_overdue_closed_tenant: "Hợp đồng %{contract_name} của bạn đã tự động kết thúc do quá hạn."
       invoice_creation_reminder: "Hôm nay là ngày tổng kết và lập hoá đơn cho nhà %{house_name}."
+      vehicle_request_created_landlord: "Khách thuê %{tenant_name} (%{location}) đã gửi yêu cầu đăng ký xe (Biển số: %{license_plate})."
+      vehicle_request_created_tenant: "Yêu cầu đăng ký xe (Biển số: %{license_plate}) tại %{house_name} đã được gửi thành công đến Chủ nhà."

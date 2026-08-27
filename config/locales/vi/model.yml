@@ -119,3 +119,10 @@ vi:
         normal: "Bình thường"
         damaged: "Hư hỏng"
         under_repair: "Đang sửa chữa"
+
+    request:
+      status:
+        pending: "Đang chờ"
+        approved: "Chấp thuận"
+        rejected: "Từ chối"
+        overdue: "Quá hạn"

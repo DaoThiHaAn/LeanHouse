@@ -1,0 +1,68 @@
+<%= content_for :title, t("request.mine") %>
+
+<div class="request main-container w-75">
+  <div class="d-flex justify-content-between align-items-center mb-5">
+    <h1 class="mb-0"><%= t("request.mine") %></h1>
+
+    <!-- Create Button / Dropdown -->
+    <% if @tenant_stay.present? %>
+      <!-- Active Stay: Show Working Dropdown -->
+      <div class="dropdown">
+        <button class="main-btn shadow-sm px-3 py-2 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <%= t("request.create") %>
+        </button>
+
+        <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+          <li>
+            <%= link_to new_tenant_vehicle_request_path,
+                class: "dropdown-item py-2",
+                data: { turbo_frame: "new_vehicle_modal" } do %>
+              <%= image_tag 'vehicle.png',alt: "Vehicle Add icon", height: "20px" %>&nbsp;
+              <%= t("request.vehicle_register") %>
+            <% end %>
+          </li>
+
+          <!-- TODO: -->
+          <li>
+            <%= link_to "#",
+                class: "dropdown-item py-2 text-muted disabled" do %>
+              <%= image_tag 'repair.png', alt: "Vehicle Add icon", height: "20px" %>&nbsp;
+              <%= t("request.repair_request") %>
+            <% end %>
+          </li>
+
+          <li>
+            <%= link_to "#",
+                class: "dropdown-item py-2 text-muted disabled" do %>
+              <%= image_tag 'exit.png', alt: "Exit icon", height: "20px" %>&nbsp;
+              <%= t("request.leave_house") %>
+            <% end %>
+          </li>
+        </ul>
+      </div>
+    <% else %>
+      <!-- Unlinked Tenant: Disabled Button with Tooltip -->
+      <span class="d-inline-block" tabindex="0" <%= tooltip("top", :"request.create_note", html: true) %>>
+        <button class="main-btn px-3 py-2 disabled" type="button" disabled style="pointer-events: none;">
+          <%= t("request.create") %>
+        </button>
+      </span>
+    <% end %>
+  </div>
+
+  <% if @requests.empty? %>
+    <p class="fs-5 fw-medium text-center"><%= t("request.none") %></p>
+    <%= image_tag 'request.png',alt: "Request icon", width: "200px", class: "d-block mx-auto mt-3" %>
+  <% else %>
+     <!-- Requests Table Section -->
+    <div class="card shadow-sm border-0">
+      <div class="card-body p-0">
+        <!-- TABLE CONTENT HERE -->
+      </div>
+    </div>
+  <% end %>
+
+
+</div>
+
+<%= turbo_frame_tag "new_vehicle_modal" %>

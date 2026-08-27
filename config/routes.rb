@@ -134,7 +134,8 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :invoices, :vehicles
+      resources :invoices
+      resources :vehicles, only: %i[index]
     end
   end
 
@@ -156,8 +157,9 @@ Rails.application.routes.draw do
     resources :services, only: [ :index ]
 
 
-    resources :requests
-    resources :vehicles
+    resources :requests, only: %i[index show]
+    resources :vehicle_requests, only: %i[new create]
+    resources :vehicles, only: [ :index ]
   end
 
   namespace :admin, module: :admin_area do

@@ -1,0 +1,150 @@
+<!-- Variables: @vehicle_request -->
+
+<%= turbo_frame_tag "new_vehicle_modal" do %>
+  <div class="modal fade" id="newVehicleModal" tabindex="-1" aria-hidden="true"
+        data-controller="modal" data-modal-auto-open-value="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+      <div class="modal-content px-2">
+        <div class="modal-header">
+          <h1 class="modal-title fs-4 flex-grow-1 text-center fw-bold" id="newVehicleModalLabel">
+            <%= t("request.new_vehicle_title") %>
+          </h1>
+          <button type="button" class="m-0 btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body d-flex flex-column align-items-center pt-2">
+          <%= form_with model: @vehicle_request, url: tenant_vehicle_requests_path, method: :post,
+                class: "px-3 py-2 d-flex flex-column gap-4 w-100",
+                data: { 
+                  turbo_frame: "_top",
+                  controller: "loading",
+                  loading_text_value: t("request.sending", default: "Đang gửi..."),
+                  action: "submit->loading#submit"
+                } do |f| %>
+
+            <!-- General Info & Policy Note -->
+            <div class="alert alert-info d-flex align-items-start gap-2 p-2 rounded-3">
+              <span class="material-symbols-outlined fs-5 text-primary flex-shrink-0 mt-1">info</span>
+              <div class="small">
+                <div><%= t("request.due_note") %></div>
+                <div class="mt-1 text-muted"><%= t("request.watermark_note") %></div>
+              </div>
+            </div>
+
+            <% if @vehicle_request.errors.any? %>
+              <div class="alert alert-danger p-2 mb-0 rounded-3">
+                <ul class="mb-0 ps-3 small">
+                  <% @vehicle_request.errors.full_messages.each do |msg| %>
+                    <li><%= msg %></li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
+
+            <!-- 2x2 Responsive Grid for Vehicle Info -->
+            <div class="row g-4">
+              <!-- Cell 1: Vehicle Type -->
+              <div class="col-12 col-md-6 mb-2 form-group">
+                <%= f.label :vehicle_type, class: "form-label fw-medium" do %>
+                  <%= t("request.vehicle_type") %><span class="asterisk text-danger">*</span>
+                <% end %>
+                <%= f.select :vehicle_type, VehicleRequest.vehicle_type_options, {}, 
+                      class: "form-select #{invalid_class(@vehicle_request, :vehicle_type)}", required: true %>
+                <%= field_error(@vehicle_request, :vehicle_type) %>
+              </div>
+
+              <!-- Cell 2: License Plate -->
+              <div class="col-12 col-md-6 mb-2 form-group">
+                <%= f.label :license_plate, class: "form-label fw-medium" do %>
+                  <%= t("request.plate_number") %><span class="asterisk text-danger">*</span>
+                <% end %>
+                <%= f.text_field :license_plate, 
+                      class: "form-control text-uppercase fw-semibold #{invalid_class(@vehicle_request, :license_plate)}", 
+                      placeholder: t("request.plate_number_placeholder"), 
+                      required: true %>
+                <%= field_error(@vehicle_request, :license_plate) %>
+              </div>
+
+              <!-- Cell 3: Brand -->
+              <div class="col-12 col-md-6 mb-2 form-group">
+                <%= f.label :brand, t("request.brand"), class: "form-label fw-medium" %>
+                <%= f.text_field :brand, class: "form-control", placeholder: t("request.brand_placeholder") %>
+              </div>
+
+              <!-- Cell 4: Model -->
+              <div class="col-12 col-md-6 mb-2 form-group">
+                <%= f.label :model, t("request.model"), class: "form-label fw-medium" %>
+                <%= f.text_field :model, class: "form-control", placeholder: t("request.model_placeholder") %>
+              </div>
+
+              <!-- Attachments: 2 Responsive Columns -->
+              <div class="col-12 col-md-6 form-group">
+                <%= f.label :registration_card_image, class: "form-label fw-medium" do %>
+                  <%= t("request.vehicle_reg_proof") %><span class="asterisk text-danger">*</span>
+                <% end %>
+                <div class="form-text small mb-1 text-muted">
+                  <i class="bi bi-shield-lock me-1"></i><%= t("request.vehicle_reg_proof_note") %>
+                </div>
+                <%= f.file_field :registration_card_image, accept: "image/*", 
+                      class: "form-control #{invalid_class(@vehicle_request, :registration_card_image)}", 
+                      required: true %>
+                <%= field_error(@vehicle_request, :registration_card_image) %>
+              </div>
+
+              <div class="col-12 col-md-6 form-group">
+                <%= f.label :vehicle_photo, class: "form-label fw-medium" do %>
+                  <%= t("request.vehicle_img") %><span class="asterisk text-danger">*</span>
+                <% end %>
+                <div class="form-text small mb-1 text-muted">
+                  <i class="bi bi-camera me-1"></i><%= t("request.vehicle_img_note") %>
+                </div>
+                <%= f.file_field :vehicle_photo, accept: "image/*", 
+                      class: "form-control #{invalid_class(@vehicle_request, :vehicle_photo)}", 
+                      required: true %>
+                <%= field_error(@vehicle_request, :vehicle_photo) %>
+              </div>
+            </div>
+
+            <!-- Row 4: Privacy Policy & Terms of Consent (Decree 13/2023/ND-CP) -->
+            <div class="card bg-light border-0 rounded-3 mt-3 p-3">
+              <div class="form-check d-flex align-items-start gap-2">
+                <%= check_box_tag :accept_terms, "1", false, id: "accept_terms_checkbox", 
+                      class: "form-check-input flex-shrink-0 mt-1", required: true %>
+                <%= label_tag "accept_terms_checkbox", class: "form-check-label small" do %>
+                  <%= t("request.term_html") %>
+                <% end %>
+              </div>
+
+              <div class="mt-2 pt-2 border-top">
+                <details class="small text-muted">
+                  <summary class="cursor-pointer text-primary user-select-none">
+                    <i class="bi bi-shield-check me-1"></i>Chính sách bảo vệ dữ liệu cá nhân
+                  </summary>
+                  <p class="mt-2 mb-0">
+                    <%= t("request.privacy_html") %>
+                  </p>
+                </details>
+              </div>
+            </div>
+
+            <!-- Submit Buttons -->
+            <div class="d-flex justify-content-center gap-3 mt-3">
+              <button type="button" class="btn btn-outline-secondary px-3" data-bs-dismiss="modal">
+                <%= t("cancel") %>
+              </button>
+
+              <%= f.button type: :submit, 
+                    class: "custom-primary-btn px-4 py-2 d-flex align-items-center justify-content-center gap-2",
+                    data: { loading_target: "button" } do %>
+                <span data-loading-target="text"><%= t("request.send_request") %></span>
+                <span class="material-symbols-outlined spin d-none" data-loading-target="spinner">
+                  progress_activity
+                </span>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_08_26_195533) do
+ActiveRecord::Schema[8.0].define(version: 2026_08_27_163121) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "unaccent"
@@ -163,6 +163,23 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_26_195533) do
     t.index ["rentable_type", "rentable_id"], name: "index_rental_units_on_rentable"
   end
 
+  create_table "requests", force: :cascade do |t|
+    t.bigint "tenant_id", null: false
+    t.bigint "house_id", null: false
+    t.string "requestable_type", null: false
+    t.bigint "requestable_id", null: false
+    t.string "status", default: "pending", null: false
+    t.string "rejection_reason"
+    t.bigint "resolved_by_id"
+    t.datetime "resolved_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["house_id"], name: "index_requests_on_house_id"
+    t.index ["requestable_type", "requestable_id"], name: "index_requests_on_requestable_type_and_requestable_id", unique: true
+    t.index ["resolved_by_id"], name: "index_requests_on_resolved_by_id"
+    t.index ["tenant_id"], name: "index_requests_on_tenant_id"
+  end
+
   create_table "room_services", force: :cascade do |t|
     t.bigint "room_id", null: false
     t.bigint "service_variant_id", null: false
@@ -242,6 +259,33 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_26_195533) do
     t.index ["tel", "role"], name: "index_users_on_tel_and_role", unique: true, where: "(discarded_at IS NULL)"
   end
 
+  create_table "vehicle_requests", force: :cascade do |t|
+    t.string "license_plate", null: false
+    t.string "vehicle_type", default: "motorbike", null: false
+    t.string "brand"
+    t.string "model"
+    t.string "color"
+    t.datetime "consent_given_at", null: false
+    t.datetime "documents_purged_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["license_plate"], name: "index_vehicle_requests_on_license_plate"
+  end
+
+  create_table "vehicles", force: :cascade do |t|
+    t.bigint "tenant_id", null: false
+    t.bigint "house_id", null: false
+    t.string "license_plate", null: false
+    t.string "vehicle_type", default: "motorbike", null: false
+    t.string "brand"
+    t.string "model"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["house_id"], name: "index_vehicles_on_house_id"
+    t.index ["license_plate", "house_id"], name: "index_vehicles_on_license_plate_and_house_id", unique: true
+    t.index ["tenant_id"], name: "index_vehicles_on_tenant_id"
+  end
+
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "assets", "rooms", on_delete: :cascade
@@ -253,6 +297,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_26_195533) do
   add_foreign_key "houses", "landlords"
   add_foreign_key "landlords", "users", column: "id", on_delete: :cascade
   add_foreign_key "maintenance_logs", "assets", on_delete: :cascade
+  add_foreign_key "requests", "houses", on_delete: :cascade
+  add_foreign_key "requests", "tenants", on_delete: :cascade
+  add_foreign_key "requests", "users", column: "resolved_by_id"
   add_foreign_key "room_services", "rooms", on_delete: :cascade
   add_foreign_key "room_services", "service_variants", on_delete: :cascade
   add_foreign_key "rooms", "floors"
@@ -261,4 +308,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_26_195533) do
   add_foreign_key "tenant_stays", "rental_units"
   add_foreign_key "tenant_stays", "tenants"
   add_foreign_key "tenants", "users", column: "id", on_delete: :cascade
+  add_foreign_key "vehicles", "houses", on_delete: :cascade
+  add_foreign_key "vehicles", "tenants", on_delete: :cascade
 end

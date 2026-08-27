@@ -3,6 +3,7 @@ class Tenant < ApplicationRecord
   belongs_to :user, foreign_key: :id, primary_key: :id, inverse_of: :tenant
   has_many :tenant_stays,  inverse_of: :tenant
   has_many :contracts, inverse_of: :tenant
+  has_many :requests, inverse_of: :tenant
 
   scope :name_sorted, -> { order("users.fullname ASC") }
 
