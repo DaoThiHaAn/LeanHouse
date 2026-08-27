@@ -175,6 +175,7 @@ vi:
     maintenance_log_created: "Thêm lịch sử thành công!"
     maintenance_log_deleted: "Xóa lịch sử thành công!"
     maintenance_log_updated: "Cập nhật lịch sử thành công!"
+    vehicle_created_success: "Đã gửi yêu cầu đăng ký xe thành công! Vui lòng chờ Chủ nhà xét duyệt."
 
 
   page_titles:

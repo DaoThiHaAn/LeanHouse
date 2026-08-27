@@ -122,7 +122,7 @@ vi:
 
     request:
       status:
-        pending: "Đang chờ"
-        approved: "Chấp thuận"
-        rejected: "Từ chối"
-        overdue: "Quá hạn"
+        pending: "Chờ xét duyệt"
+        approved: "Đã duyệt"
+        rejected: "Đã duyệt từ chối"
+        overdue: "Hết hạn"

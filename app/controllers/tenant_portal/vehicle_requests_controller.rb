@@ -12,7 +12,7 @@ class TenantPortal::VehicleRequestsController < TenantPortal::BaseController
       accept_terms: params[:accept_terms]
     )
 
-    redirect_to tenant_requests_path, notice: t("request.vehicle_created_success")
+    redirect_to tenant_requests_path, notice: t("success_messages.vehicle_created_success")
   rescue ActiveRecord::RecordInvalid => e
     @vehicle_request = e.record.is_a?(VehicleRequest) ? e.record : VehicleRequest.new(vehicle_request_params)
     render :new, status: :unprocessable_entity

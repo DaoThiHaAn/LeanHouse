@@ -20,9 +20,37 @@ class Request < ApplicationRecord
 
   scope :pending, -> { where(status: :pending) }
   scope :recent, -> { order(created_at: :desc) }
+  scope :expired, -> { pending.where("requests.created_at <= ?", EXPIRED_DAYS.days.ago) }
+
+  # METHODS
+
+  def human_status
+    I18n.t("enums.request.status.#{status}")
+  end
+
+  # Get the list of status options in i18n format
+  def self.status_options
+    statuses.keys.map do |status_key|
+      [ I18n.t("enums.request.status.#{status_key}", default: status_key.humanize), status_key ]
+    end
+  end
+
+  # Class method to batch expire pending requests older than EXPIRED_DAYS
+  def self.expire_overdue!
+    expired.find_each(&:mark_as_overdue!)
+  end
 
   def actionable?
     pending? && created_at > EXPIRED_DAYS.days.ago
+  end
+
+  def mark_as_overdue!
+    return unless pending?
+
+    transaction do
+      update!(status: :overdue)
+      requestable.try(:purge_documents!)
+    end
   end
 
   # Generic reject method for any request type

@@ -26,6 +26,22 @@ class VehicleRequest < ApplicationRecord
     end
   end
 
+  # Dynamic watermarked variant for document viewing
+  def watermarked_registration_card
+    return unless registration_card_image.attached?
+
+    registration_card_image.variant(
+      resize_to_limit: [ 1200, 1200 ],
+      saver: { quality: 85 },
+      combine_options: {
+        gravity: "Center",
+        pointsize: "32",
+        fill: "rgba(220, 53, 69, 0.45)",
+        draw: "rotate -30 text 0,0 #{I18n.t("request.watermark")}"
+      }
+    ).processed
+  end
+
   # Purge sensitive registration paper
   def purge_documents!
     return if documents_purged_at.present?
@@ -87,9 +103,9 @@ class VehicleRequest < ApplicationRecord
   private
 
   def normalize_attributes
-    self.license_plate = license_plate&.strip&.upcase
-    self.brand = brand&.strip
-    self.model = model&.strip
-    self.color = color&.strip
+    self.license_plate = license_plate&.squish&.upcase
+    self.brand = brand&.squish
+    self.model = model&.squish
+    self.color = color&.squish
   end
 end

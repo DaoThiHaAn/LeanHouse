@@ -33,6 +33,7 @@ class Asset < ApplicationRecord
   scope :sorted, -> { order(category: :asc) }
 
   # METHODS
+
   # Get the list of category options in i18n format
   def self.category_options
     BUILT_IN_CATEGORIES.map do |cat|

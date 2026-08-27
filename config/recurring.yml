@@ -24,8 +24,12 @@ production:
 
   contract_due_today:
     class: ContractDueTodayJob
-    schedule: every day at 3am
+    schedule: every day at 2am
 
   contract_overdue_close:
     class: ContractOverdueCloseJob
+    schedule: every day at 2am
+
+  request_overdue_expire:
+    class: RequestOverdueExpireJob
     schedule: every day at 3am
