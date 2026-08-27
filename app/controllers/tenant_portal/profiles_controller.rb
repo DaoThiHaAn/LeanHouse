@@ -1,5 +1,5 @@
 class TenantPortal::ProfilesController < TenantPortal::BaseController
-  skip_before_action :set_tenant_and_stay, :set_house
+  skip_before_action :set_tenant_and_stay, :set_house, :require_linked_house!
   before_action :set_user
 
   def show
