@@ -53,7 +53,10 @@
             </div>
         <% end %>
 
-        <%= link_to landlord_house_assets_path(house), class: class_names("card", "other-card", active: controller_name == "assets") do %>
+        <%= link_to landlord_house_assets_path(house),
+                    class: class_names("card", 
+                                        "other-card", 
+                                        active: ["assets", "maintenance_logs"].include?(controller_name)) do %>
             <div class="card-body p-0 d-flex flex-column gap-1 align-items-center justify-content-center">
                 <%= image_tag "property.png", alt: "Property Icon" %>
                 <h5 class="m-0 text-center card-title d-flex align-items-center">

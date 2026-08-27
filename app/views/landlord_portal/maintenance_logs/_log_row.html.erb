@@ -1,0 +1,25 @@
+<%# Local variables: house, asset, log %>
+
+<tr id="<%= dom_id(log) %>">
+  <td><%= log.performed_on.strftime("%-d/%-m/%Y") %></td>
+  <td><%= log.content %></td>
+  <td><%= number_with_delimiter(log.cost, delimiter: ",") %></td>
+  <td>
+    <div class="d-flex align-items-center justify-content-center gap-1">
+      <%= link_to edit_landlord_house_asset_maintenance_log_path(house, asset, log),
+                data: { turbo_frame: "edit_log_modal" },
+                title: t("edit"),
+                class: "table-action" do %>
+        <span class="material-symbols-filled">edit</span>
+      <% end %>
+
+      <%= button_to landlord_house_asset_maintenance_log_path(house, asset, log),
+                method: :delete,
+                title: t("delete"),
+                data: { turbo_confirm: [t("form.maintenance_log.delete_cf"), t("not_redo")].join("\n\n") },
+                class: "table-action text-danger-emphasis" do %>
+        <span class="material-symbols-filled">delete</span>
+      <% end %>
+    </div>
+  </td>
+</tr>

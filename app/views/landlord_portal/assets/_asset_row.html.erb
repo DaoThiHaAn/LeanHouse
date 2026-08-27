@@ -20,9 +20,9 @@
         <span class="material-symbols-filled">edit</span>
       <% end %>
 
-      <%= link_to landlord_house_asset_repair_history_index_path(house, asset),
+      <%= link_to landlord_house_asset_maintenance_logs_path(house, asset),
                 data: { turbo_frame: "_top" },
-                title: t("form.repair_history.view"),
+                title: t("form.maintenance_log.view"),
                 class: "table-action" do %>
         <span class="material-symbols-outlined">manage_history</span>
       <% end %>

@@ -113,7 +113,11 @@ Rails.application.routes.draw do
           get :filtered
         end
 
-        resources :repair_history
+        resources :maintenance_logs do
+          collection do
+            get :filtered
+          end
+        end
       end
 
       resources :contracts, except: %i[new create] do

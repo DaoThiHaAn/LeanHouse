@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_08_25_100759) do
+ActiveRecord::Schema[8.0].define(version: 2026_08_26_195533) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "unaccent"
@@ -117,6 +117,16 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_25_100759) do
   create_table "landlords", force: :cascade do |t|
     t.integer "posts_count", default: 0, null: false
     t.integer "houses_count", default: 0, null: false
+  end
+
+  create_table "maintenance_logs", force: :cascade do |t|
+    t.bigint "asset_id", null: false
+    t.bigint "cost", default: 0, null: false
+    t.string "content", null: false
+    t.date "performed_on", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["asset_id"], name: "index_maintenance_logs_on_asset_id"
   end
 
   create_table "noticed_events", force: :cascade do |t|
@@ -242,6 +252,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_25_100759) do
   add_foreign_key "floors", "houses"
   add_foreign_key "houses", "landlords"
   add_foreign_key "landlords", "users", column: "id", on_delete: :cascade
+  add_foreign_key "maintenance_logs", "assets", on_delete: :cascade
   add_foreign_key "room_services", "rooms", on_delete: :cascade
   add_foreign_key "room_services", "service_variants", on_delete: :cascade
   add_foreign_key "rooms", "floors"

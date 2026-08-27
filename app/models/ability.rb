@@ -54,6 +54,7 @@ class Ability
     # 3-level relations
     can :manage, [ Room, Bed, ServiceVariant, RoomService ], house: { landlord_id: id }
     can :manage, Asset, room: { house: { landlord_id: id } }
+    can :manage, MaintenanceLog, asset: { house: { landlord_id: id } }
 
 
     # can :manage, Invoice, room: { house: { landlord_id: user.id } }

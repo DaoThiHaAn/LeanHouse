@@ -29,3 +29,14 @@
   color: #664d03;
   border: 1px solid #ffecb5;
 }
+
+/* Maintenance logs */
+.log.main-info-zone {
+  border: 1px solid #297072;
+  max-width: 300px;
+}
+
+.col-content {
+  min-width: 200px;
+  max-width: 350px;
+}

@@ -1,0 +1,68 @@
+<%# locals: (house:, asset:, log:, url:, method: :post, turbo_frame: nil, submit_text: nil, loading_text: nil) %>
+
+<%
+  submit_text ||= t("save")
+  loading_text ||= t("saving") + "..."
+%>
+
+<%= form_with model: log, url: url, method: method,
+      class: "px-4 py-2 mx-auto mb-2 d-flex flex-column gap-3 w-100",
+      data: { 
+        turbo_frame: turbo_frame,
+        controller: "loading",
+        loading_text_value: loading_text,
+        action: "submit->loading#submit"
+      }.compact do |f| %>
+
+  <!-- Date -->
+  <div class="form-group d-flex align-items-center gap-3">
+    <%= f.label :performed_on, class: "form-label flex-shrink-0" do %>
+      <%= t('form.maintenance_log.date') + ": " %><span class="asterisk">*</span>
+    <% end %>
+    <%= f.date_field :performed_on, value: (log.performed_on || Date.current), class: "date form-control", required: true %>
+  </div>
+
+  <!-- Cost -->
+  <div class="room-name form-group">
+    <div class="d-flex align-items-center gap-3">
+      <%= f.label :cost, class: "form-label flex-shrink-0" do %>
+        <%= t('form.maintenance_log.cost') + ": " %><span class="asterisk">*</span>
+      <% end %>
+      <%= f.number_field :cost, min: 0, value: (log.cost || 0), max: 1000000000, class: "form-control w-50", required: true %>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="room-name form-group" data-controller="form">
+    <div class="d-flex justify-content-between">
+      <%= f.label :content, class: "form-label flex-shrink-0" do %>
+        <%= t('form.maintenance_log.content') + ": " %><span class="asterisk">*</span>
+      <% end %>
+
+      <small class="counter-text">
+        <span data-form-target="charCount"><%= log.content.to_s.length %></span>
+      </small>
+    </div>
+
+    <%= f.text_area :content, maxlength: 200, class: "mb-1 form-control", 
+        placeholder: t('form.maintenance_log.content_placeholder'),
+        rows: 5,
+        required: true,
+        data: {
+            form_target: "input",
+            action: "input->form#update"
+        } 
+      %>
+  </div>
+
+  <%= f.button type: :submit, 
+        class: "mt-2 custom-primary-btn mx-auto main-form d-flex align-items-center justify-content-center gap-2",
+        data: { loading_target: "button" } do %>
+    <span data-loading-target="text"><%= submit_text %></span>
+
+    <span class="material-symbols-outlined spin d-none"
+      data-loading-target="spinner">
+      progress_activity
+    </span>
+  <% end %>
+<% end %>

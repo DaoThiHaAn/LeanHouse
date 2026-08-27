@@ -1,0 +1,104 @@
+<!-- Variables: @asset, @has_logs, @available_years -->
+
+<% content_for :title, t("form.maintenance_log.self") %>
+
+<% provide :container_width, "h-100 w-90" %>
+
+<div class="d-flex mb-4 px-3 align-items-center">
+  <%= link_to landlord_house_assets_path(@house), class: "align-self-start d-flex align-items-center gap-1 turn-back link" do %>
+    <span class="material-symbols-outlined ms-2">arrow_left_alt</span>
+    <%= t('turn_back') %>
+  <% end %>
+
+  <h1 class="text-center w-100 mb-0"><%= t("page_titles.maintenance_log_mng") %></h1>
+</div>
+
+<div class="d-flex flex-column flex-md-row gap-5">
+  <div>
+    <%= link_to new_landlord_house_asset_maintenance_log_path(@house, @asset),
+      class: "main-btn px-2 py-1 d-flex align-items-center gap-2 mx-auto my-3 shadow-sm",
+      data: { turbo_frame: "new_log_modal" } do %>
+      <span class="material-symbols-filled">add_circle</span>
+      <%= t('form.maintenance_log.add') %>
+    <% end %>
+
+    <!-- Asset Info -->
+    <div class="log main-info-zone py-3 ps-4 pe-5 d-flex flex-column gap-3 rounded">
+      <h2 class="title"><%= @asset.human_category %></h2>
+
+      <p class="mb-0">
+        <span class="fw-semibold"><%= t("form.asset.location") %>: </span>
+        <%= @asset.location %>
+      </p>
+
+      <% unless @asset.brand.blank? %>
+        <p class="mb-0">
+          <span class="fw-semibold"><%= t("form.asset.brand") %>: </span>
+          <%= @asset.brand %>
+        </p>
+      <% end %>
+
+      <% unless @asset.model.blank? %>
+        <p class="mb-0">
+          <span class="fw-semibold"><%= t("form.asset.model") %>: </span>
+          <%= @asset.model %>
+        </p>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Main zone -->
+  <div class="flex-grow-1 mt-3">
+    <% if !@has_logs %>
+      <p class="fs-5 fw-semibold text-center"><%= t("form.maintenance_log.none") %></p>
+      <%= image_tag 'maintenance.gif', alt: "Maintenance gif", width: "200px", class: "mx-auto d-block" %>
+    <% else %>
+      <!-- Filter form -->
+      <%= form_with url: filtered_landlord_house_asset_maintenance_logs_path(@house, @asset),
+                    method: :get,
+                    class: "d-flex gap-4 align-items-center mb-5 flex-wrap",
+                    data: { turbo_frame: "log_table" } do |f| %>
+        <!-- Month -->
+        <div class="d-flex align-items-center gap-2">
+          <%= f.label :month, t("month") + ":", class: "fw-bold text-nowrap" %>
+          <%= f.select :month,
+                [[t("all"), ""]] + (1..12).map { |m| ["#{t('month')} #{m}", m] },
+                { selected: params[:month] },
+                class: "form-select w-auto shadow-sm",
+                onchange: "this.form.requestSubmit()" %>
+        </div>
+
+        <!-- Year -->
+        <div class="d-flex align-items-center gap-2">
+          <%= f.label :year, t("year") + ":", class: "fw-bold text-nowrap" %>
+          <%= f.select :year,
+                [[t("all"), ""]] + @available_years.map { |y| [y.to_s, y] },
+                { selected: params[:year] },
+                class: "form-select w-auto shadow-sm",
+                onchange: "this.form.requestSubmit()" %>
+        </div>
+      <% end %>
+
+      <h2 class="fs-5 mb-3"><%= t("form.maintenance_log.list") %></h2>
+
+      <!-- Maintenance log table -->
+      <%= turbo_frame_tag "log_table",
+          src: filtered_landlord_house_asset_maintenance_logs_path(@house, @asset, params.permit(:page, :month, :year)),
+          loading: :lazy,
+          data: {
+            controller: "pagination-sync",
+            pagination_sync_canonical_url_value: landlord_house_asset_maintenance_logs_path(@house, @asset),
+            pagination_sync_default_params_value: { month: "", year: "" }.to_json,
+            pagination_sync_query_params_value: ["month", "year"].to_json,
+            pagination_sync_total_pages_selector_value: "[data-pagination-total-pages]",
+            action: "turbo:frame-load->pagination-sync#updateUrl"
+          } do %>
+        <%= loading_spinner %>
+      <% end %>
+    <% end %>
+  </div>
+</div>
+
+<%= turbo_frame_tag "new_log_modal" %>
+<%= turbo_frame_tag "edit_log_modal" %>
+<div id="events"></div>

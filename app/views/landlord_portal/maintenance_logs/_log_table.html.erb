@@ -1,0 +1,38 @@
+<%# Local variables: house, asset, logs %>
+
+<%= turbo_frame_tag "log_table" do %>
+  <!-- Dùng cho Stimulus pagination-sync cập nhật url -->
+  <span hidden data-pagination-total-pages="<%= logs.total_pages %>"></span>
+
+  <div class="log table-responsive border rounded mt-2">
+    <table class="table table-bordered table-hover align-middle mb-0">
+      <thead class="table-light sticky-top">
+        <tr>
+          <th><%= t("form.maintenance_log.date_short") %></th>
+          <th class="col-content"><%= t("form.maintenance_log.content") %></th>
+          <th><%= t("form.maintenance_log.cost") %></th>
+          <th class="text-center"><%= t("actions") %></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% if logs.empty? %>
+          <tr>
+            <td colspan="4" class="text-center py-4 text-muted">
+              <%= t("form.maintenance_log.unfound") %>
+            </td>
+          </tr>
+        <% else %>
+          <% logs.each do |log| %>
+            <%= render "landlord_portal/maintenance_logs/log_row", house: house, asset: asset, log: log %>
+          <% end %>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="mt-3">
+    <%= paginate logs,
+        params: { month: params[:month], year: params[:year] } %>
+  </div>
+<% end %>

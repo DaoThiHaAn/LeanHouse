@@ -1,0 +1,27 @@
+<!-- Variables: @asset, @log -->
+
+<%= turbo_frame_tag "edit_log_modal" do %>
+  <div class="modal fade" id="editLogModal" tabindex="-1" aria-hidden="true"
+        data-controller="modal" data-modal-auto-open-value="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+
+      <div class="modal-content px-2">
+        <div class="modal-header">
+          <h1 class="modal-title fs-4 flex-grow-1 text-center" id="editLogModalLabel"><%= t("form.maintenance_log.edit_extend") %></h1>
+          <button type="button" class="m-0 btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body d-flex flex-column align-items-center">
+          <%= render "form",
+                house: @house,
+                asset: @asset,
+                log: @log,
+                url: landlord_house_asset_maintenance_log_path(@house, @asset, @log),
+                method: :patch,
+                submit_text: t("save"),
+                loading_text: t("saving") + "..." %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

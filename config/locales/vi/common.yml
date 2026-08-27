@@ -114,7 +114,8 @@ vi:
   not_redo: "Lưu ý: Hành động này không thể hoàn tác"
   add_img: "Thêm ảnh"
   not_yet: "Chưa"
-  
+  month: "Tháng"
+  year: "Năm"  
 
   errors:
     session_expired: |
@@ -171,6 +172,9 @@ vi:
     contract_updated: "Cập nhật hợp đồng thành công!"
     contract_extended: "Gia hạn hợp đồng thành công!"
     contract_signed_new: "Ký hợp đồng mới thành công!"
+    maintenance_log_created: "Thêm lịch sử thành công!"
+    maintenance_log_deleted: "Xóa lịch sử thành công!"
+    maintenance_log_updated: "Cập nhật lịch sử thành công!"
 
 
   page_titles:
@@ -200,6 +204,7 @@ vi:
     edit_contract: "Chỉnh sửa hợp đồng"
     sign_new_contract: "Ký hợp đồng mới"
     new_service: "Dịch vụ mới"
+    maintenance_log_mng: "Quản lý Lịch sử sửa chữa, bão dưỡng"
 
 
   pagination:

@@ -187,10 +187,6 @@ vi:
       add_info_2: "Các giường mới tạo ra sẽ có tên mặc định dựa vào thứ tự tiếp theo trong phòng"
       unfound: "Không tìm thấy giường nào!"
 
-
-    property:
-      title: "Tài sản"
-
     service:
       self: "Dịch vụ"
       applied_sv: "Dịch vụ áp dụng"
@@ -245,9 +241,22 @@ vi:
       unfound: "Không tìm thấy tài sản nào!"
       status: "Tình trạng"
 
-    repair_history:
-      self: "Lịch sử bảo hành, sữa chửa"
-      view: "Xem Lịch sử bảo hành, sữa chửa"
+    maintenance_log:
+      self: "Lịch sử bảo hành, sửa chữa"
+      view: "Xem Lịch sử bảo hành, sửa chữa"
+      list: "Danh sách bảo dưỡng, sửa chữa"
+      add: "Thêm mới"
+      add_extend: "Thêm mới sửa chữa, bảo dưỡng"
+      edit: "Chỉnh sửa"
+      edit_extend: "Chỉnh sửa sửa chữa, bảo dưỡng"
+      none: "Chưa được ghi nhận lịch sử sửa chữa, bảo dưỡng."
+      content: "Nội dung"
+      content_placeholder: "Nhập nội dung công việc sửa chữa, bảo dưỡng, ..."
+      date: "Ngày thực hiện"
+      date_short: "Ngày sửa"
+      cost: "Chi phí (đ)"
+      delete_cf: "Bạn có chắc chắn muốn xóa lịch sử này?"
+      unfound: "Không tìm thấy lịch sử nào!"
 
     roommates: "Bạn cùng phòng"
 

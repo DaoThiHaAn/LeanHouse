@@ -102,30 +102,30 @@
   font-size: 1.2rem
 }
 
-.room-info-zone {
+.main-info-zone {
   background-color: var(--primary-text);
   color: white;
   margin: 0 auto;
 }
 
-.room-info-zone .room-name {
+.main-info-zone .room-name {
   color: #74e6ee;
   background-color: #2e788d;
   width: fit-content;
 }
 
-.room-info-zone .location {
+.main-info-zone .location {
     font-size: 6rem;
     display:block;
     line-height: .9;
 }
 
-.room-info-zone .title {
+.main-info-zone .title {
     color: #CCFFBA;
     font-weight: 800;
 }
 
-.room-info-zone .checkin {
+.main-info-zone .checkin {
     color: rgb(196, 196, 196)
 }
 
