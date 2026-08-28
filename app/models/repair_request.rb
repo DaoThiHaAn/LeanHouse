@@ -1,5 +1,5 @@
 class RepairRequest < ApplicationRecord
-  has_one :request, as: :requestable, dependent: :destroy
+  has_one :request, as: :requestable, dependent: :destroy, inverse_of: :requestable
 
   has_many_attached :images
   has_one_attached :video

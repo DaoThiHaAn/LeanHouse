@@ -56,9 +56,3 @@
   max-height: 320px;
   object-fit: contain;
 }
-
-@media (max-width: 768px) {
-  .request.main-container {
-    width: 90%
-  }
-}

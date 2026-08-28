@@ -94,6 +94,7 @@ class Request < ApplicationRecord
     transaction do
       if requestable.respond_to?(:approve!)
         requestable.approve!(landlord_user)
+        reload
       else
         update!(
           status: :approved,
@@ -112,6 +113,7 @@ class Request < ApplicationRecord
     transaction do
       if requestable.respond_to?(:start_handling!)
         requestable.start_handling!(landlord_user)
+        reload
       else
         update!(
           status: :handling,
@@ -129,6 +131,7 @@ class Request < ApplicationRecord
     transaction do
       if requestable.respond_to?(:complete!)
         requestable.complete!(landlord_user)
+        reload
       else
         update!(
           status: :completed,
@@ -146,6 +149,7 @@ class Request < ApplicationRecord
     transaction do
       if requestable.respond_to?(:reject!)
         requestable.reject!(landlord_user, reason)
+        reload
       else
         update!(
           status: :rejected,

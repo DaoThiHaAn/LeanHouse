@@ -26,6 +26,8 @@ class LandlordPortal::RequestsController < LandlordPortal::BaseController
       rejection_reason: params[:rejection_reason]
     )
 
+    set_request
+
     flash_message = case @request.status
     when "approved" then t("success_messages.request_approved", default: "Duyệt yêu cầu thành công!")
     when "handling" then t("success_messages.request_handling", default: "Tiếp nhận xử lý yêu cầu thành công!")

@@ -423,4 +423,7 @@ thead {
   html {
     font-size: 11px;
   }
+  .main-container {
+    width: 95%;
+  }
 }

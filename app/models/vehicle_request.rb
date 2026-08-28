@@ -1,5 +1,5 @@
 class VehicleRequest < ApplicationRecord
-  has_one :request, as: :requestable, dependent: :destroy
+  has_one :request, as: :requestable, dependent: :destroy, inverse_of: :requestable
 
   has_one_attached :vehicle_photo
   has_one_attached :registration_card_image

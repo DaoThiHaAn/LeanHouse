@@ -28,6 +28,9 @@ class RequestHandling
       raise ActiveRecord::RecordInvalid.new(request)
     end
 
+    # Update new status of the request
+    request.reload
+
     send_notification if send_noti
 
     request
