@@ -186,4 +186,41 @@ class LandlordPortal::RequestsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :unprocessable_entity
   end
+
+  test "landlord can handle and complete a repair request" do
+    repair_req = RepairRequest.create!(title: "Hỏng vòi sen", content: "Vòi sen không chảy nước")
+    repair_request = Request.create!(
+      tenant: @tenant,
+      house: @house,
+      requestable: repair_req,
+      status: :pending
+    )
+
+    sign_in_as(@landlord_user)
+
+    # 1. View Detail Modal
+    get landlord_request_path(repair_request), headers: { "Turbo-Frame" => "request_detail_modal" }
+    assert_response :success
+    assert_includes response.body, "Hỏng vòi sen"
+    assert_select "button[value='handling']"
+
+    # 2. Start Handling
+    patch handle_landlord_request_path(repair_request),
+          params: { decision: "handling" },
+          as: :turbo_stream
+
+    assert_response :success
+    repair_request.reload
+    assert_equal "handling", repair_request.status
+    assert_equal @landlord_user, repair_request.resolved_by
+
+    # 3. Complete Repair
+    patch handle_landlord_request_path(repair_request),
+          params: { decision: "completed" },
+          as: :turbo_stream
+
+    assert_response :success
+    repair_request.reload
+    assert_equal "completed", repair_request.status
+  end
 end

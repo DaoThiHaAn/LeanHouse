@@ -6,21 +6,27 @@ class Request < ApplicationRecord
 
   enum :status, {
     pending: "pending",
+    handling: "handling",
+    completed: "completed",
     approved: "approved",
     rejected: "rejected",
     overdue: "overdue"
   }, default: :pending
 
   EXPIRED_DAYS = 7
+  TERMINAL_STATUSES = %w[approved rejected completed overdue].freeze
 
   # Require rejection reason only when rejected
   validates :rejection_reason, presence: true, if: :rejected?
 
-  validate :status_can_only_transition_from_pending, on: :update
+  validate :validate_status_transition, on: :update
 
   scope :pending, -> { where(status: :pending) }
   scope :recent, -> { order(created_at: :desc) }
-  scope :expired, -> { pending.where("requests.created_at <= ?", EXPIRED_DAYS.days.ago) }
+  scope :expired, -> {
+    pending.where(requestable_type: "VehicleRequest")
+           .where("requests.created_at <= ?", EXPIRED_DAYS.days.ago)
+  }
 
   REQUEST_TYPES = {
     "VehicleRequest" => "request.vehicle_register",
@@ -63,7 +69,13 @@ class Request < ApplicationRecord
   end
 
   def actionable?
-    pending? && created_at > EXPIRED_DAYS.days.ago
+    if requestable_type == "VehicleRequest"
+      pending? && created_at > EXPIRED_DAYS.days.ago
+    elsif requestable_type == "RepairRequest"
+      pending? || handling?
+    else
+      pending? && created_at > EXPIRED_DAYS.days.ago
+    end
   end
 
   def mark_as_overdue!
@@ -75,7 +87,7 @@ class Request < ApplicationRecord
     end
   end
 
-  # Generic approve method for any request type
+  # Generic approve method for request types that support approval (e.g. VehicleRequest)
   def approve!(landlord_user)
     raise "Request is no longer actionable" unless actionable?
 
@@ -89,6 +101,40 @@ class Request < ApplicationRecord
           resolved_at: Time.current
         )
         requestable.try(:purge_documents!)
+      end
+    end
+  end
+
+  # Start handling method for multi-step requests (e.g. RepairRequest)
+  def start_handling!(landlord_user)
+    raise "Request is no longer actionable" unless actionable?
+
+    transaction do
+      if requestable.respond_to?(:start_handling!)
+        requestable.start_handling!(landlord_user)
+      else
+        update!(
+          status: :handling,
+          resolved_by: landlord_user,
+          resolved_at: Time.current
+        )
+      end
+    end
+  end
+
+  # Mark completed method for multi-step requests (e.g. RepairRequest)
+  def complete!(landlord_user)
+    raise "Request is no longer actionable" unless actionable?
+
+    transaction do
+      if requestable.respond_to?(:complete!)
+        requestable.complete!(landlord_user)
+      else
+        update!(
+          status: :completed,
+          resolved_by: landlord_user,
+          resolved_at: Time.current
+        )
       end
     end
   end
@@ -114,9 +160,13 @@ class Request < ApplicationRecord
 
   private
 
-  def status_can_only_transition_from_pending
-    if status_changed? && status_was != "pending"
+  def validate_status_transition
+    return unless status_changed?
+
+    if TERMINAL_STATUSES.include?(status_was)
       errors.add(:status, "đã được xử lý (#{status_was}) và không thể thay đổi trạng thái nữa.")
+    elsif status_was == "handling" && status != "completed"
+      errors.add(:status, "đang được xử lý và chỉ có thể chuyển sang hoàn thành.")
     end
   end
 end

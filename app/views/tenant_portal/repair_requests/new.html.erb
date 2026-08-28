@@ -1,0 +1,173 @@
+<!-- Variables: @repair_request -->
+
+<%= turbo_frame_tag "new_repair_modal" do %>
+  <div class="modal fade" id="newRepairModal" tabindex="-1" aria-hidden="true"
+        data-controller="modal" data-modal-auto-open-value="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content px-2">
+        <div class="modal-header">
+          <h1 class="modal-title fs-4 flex-grow-1 text-center fw-bold" id="newRepairModalLabel">
+            <%= t("request.new_repair_title") %>
+          </h1>
+          <button type="button" class="m-0 btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body d-flex flex-column align-items-center pt-2">
+          <%= form_with model: @repair_request, url: tenant_repair_requests_path, method: :post,
+                class: "px-3 py-2 d-flex flex-column gap-4 w-100",
+                data: { 
+                  turbo_frame: "_top",
+                  controller: "loading",
+                  loading_text_value: t("sending"),
+                  action: "submit->loading#submit"
+                } do |f| %>
+
+            <!-- General Info & Policy Note -->
+            <div class="alert alert-info d-flex align-items-start gap-2 p-2 rounded-3">
+              <span class="material-symbols-outlined fs-5 text-primary">info</span>
+              <div class="small">
+                <div><%= t("request.repair_note_html") %></div>
+              </div>
+            </div>
+
+            <% if @repair_request.errors.any? %>
+              <div class="alert alert-danger p-2 mb-0 rounded-3">
+                <ul class="mb-0 ps-3 small">
+                  <% @repair_request.errors.full_messages.each do |msg| %>
+                    <li><%= msg %></li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
+
+            <!-- Title Field with Character Counter -->
+            <div class="form-group" data-controller="character-counter" data-character-counter-max-value="100">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <%= f.label :title, class: "form-label fw-semibold mb-0" do %>
+                  <%= t("request.repair_title") %>&thinsp;
+                  <span class="asterisk text-danger">*</span>
+                <% end %>
+                <span class="small text-muted" data-character-counter-target="count">0/100</span>
+              </div>
+              <%= f.text_field :title,
+                    class: "form-control #{invalid_class(@repair_request, :title)}",
+                    placeholder: t("request.repair_title_placeholder"),
+                    required: true,
+                    data: {
+                      character_counter_target: "input",
+                      action: "input->character-counter#update"
+                    } %>
+              <%= field_error(@repair_request, :title) %>
+            </div>
+
+            <!-- Content / Description Field with Character Counter -->
+            <div class="form-group" data-controller="character-counter" data-character-counter-max-value="500">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <%= f.label :content, class: "form-label fw-semibold mb-0" do %>
+                  <%= t("request.repair_content") %>&thinsp;
+                  <span class="asterisk text-danger">*</span>
+                <% end %>
+                <span class="small text-muted" data-character-counter-target="count">0/500</span>
+              </div>
+              <%= f.text_area :content,
+                    rows: 4,
+                    class: "form-control #{invalid_class(@repair_request, :content)}",
+                    placeholder: t("request.repair_content_placeholder"),
+                    maxlength: 500,
+                    required: true,
+                    data: {
+                      character_counter_target: "input",
+                      action: "input->character-counter#update"
+                    } %>
+              <%= field_error(@repair_request, :content) %>
+            </div>
+
+            <!-- Media Attachments (Images & Video) -->
+            <div class="card bg-light border-0 rounded-3 p-3">
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <span class="material-symbols-filled text-primary fs-4">perm_media</span>
+                <label class="fw-bold text-primary"><%= t("request.media_attachments") %></label>
+              </div>
+              <p class="small text-primary-emphasis mb-3">
+                <%= t("request.repair_media_note") %>
+              </p>
+
+              <!-- Images Upload with Live Preview & Delete (x) Button -->
+              <div class="form-group mb-4" data-controller="image-upload"
+                   data-image-upload-max-files-value="5"
+                   data-image-upload-max-size-mb-value="10">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <%= f.label :images, class: "form-label fw-medium mb-0" do %>
+                    <span class="material-symbols-outlined fs-6">add_photo_alternate</span>
+                    <%= t("request.repair_images") %>
+                  <% end %>
+                  <small class="counter-text text-muted">
+                    <span data-image-upload-target="fileCount">0</span>/5
+                  </small>
+                </div>
+                <div class="form-text small mb-2 text-muted">
+                  <%= t("request.repair_images_note") %>
+                </div>
+
+                <div class="d-flex flex-wrap gap-3 align-items-center">
+                  <button type="button"
+                          class="upload-img-btn btn btn-light border d-flex align-items-center justify-content-center p-0 shadow-sm"
+                          data-action="click->image-upload#triggerUpload"
+                          title="<%= t("add_img") %>">
+                    <span class="material-symbols-filled text-secondary">
+                      add_photo_alternate
+                    </span>
+                  </button>
+
+                  <%= f.file_field :images,
+                        multiple: true,
+                        accept: "image/*",
+                        class: "d-none",
+                        data: {
+                          image_upload_target: "input",
+                          action: "change->image-upload#handleFiles"
+                        } %>
+
+                  <div class="d-flex flex-wrap gap-3 align-items-center" data-image-upload-target="previewContainer"></div>
+                </div>
+
+                <small class="text-danger d-none mt-2 d-block" data-image-upload-target="errorMessage"></small>
+                <%= field_error(@repair_request, :images, classes: "mt-2") %>
+              </div>
+
+              <!-- Video Upload -->
+              <div class="form-group border-top pt-3">
+                <%= f.label :video, class: "form-label fw-medium mb-1" do %>
+                  <span class="material-symbols-outlined fs-6 align-middle">video_call</span>
+                  <%= t("request.repair_video") %>
+                <% end %>
+                <div class="form-text small mb-2 text-muted">
+                  <%= t("request.repair_video_note") %>
+                </div>
+                <%= f.file_field :video, accept: "video/*",
+                      class: "form-control #{invalid_class(@repair_request, :video)}" %>
+                <%= field_error(@repair_request, :video) %>
+              </div>
+            </div>
+
+            <!-- Submit Buttons -->
+            <div class="d-flex justify-content-center gap-3 mt-3">
+              <button type="button" class="btn btn-outline-secondary px-3" data-bs-dismiss="modal">
+                <%= t("cancel") %>
+              </button>
+
+              <%= f.button type: :submit, 
+                    class: "custom-primary-btn px-4 py-2 d-flex align-items-center justify-content-center gap-2",
+                    data: { loading_target: "button" } do %>
+                <span data-loading-target="text"><%= t("request.send_request") %></span>
+                <span class="material-symbols-outlined spin d-none" data-loading-target="spinner">
+                  progress_activity
+                </span>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

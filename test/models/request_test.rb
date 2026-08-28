@@ -66,18 +66,44 @@ class RequestTest < ActiveSupport::TestCase
 
   test "status_options returns valid translated options" do
     options = Request.status_options
-    assert_equal 4, options.size
+    assert_equal 6, options.size
     assert_includes options, [ I18n.t("enums.request.status.pending"), "pending" ]
+    assert_includes options, [ I18n.t("enums.request.status.handling"), "handling" ]
+    assert_includes options, [ I18n.t("enums.request.status.completed"), "completed" ]
     assert_includes options, [ I18n.t("enums.request.status.approved"), "approved" ]
     assert_includes options, [ I18n.t("enums.request.status.rejected"), "rejected" ]
     assert_includes options, [ I18n.t("enums.request.status.overdue"), "overdue" ]
   end
 
-  test "actionable? returns true for pending requests under 7 days" do
+  test "actionable? returns true for pending vehicle requests under 7 days" do
     assert @request.actionable?
 
     @request.update_columns(created_at: 8.days.ago)
     assert_not @request.actionable?
+  end
+
+  test "actionable? returns true for repair requests in pending and handling states" do
+    repair_req = RepairRequest.create!(title: "Hỏng máy giặt", content: "Máy không vắt nước được")
+    repair_request = Request.create!(
+      tenant: @tenant,
+      house: @house,
+      requestable: repair_req,
+      status: :pending
+    )
+
+    assert repair_request.actionable?
+
+    # Even older than 7 days, repair request remains actionable (No auto-expiration)
+    repair_request.update_columns(created_at: 10.days.ago)
+    assert repair_request.actionable?
+
+    # Handling state is actionable (can be marked completed)
+    repair_request.update!(status: :handling, resolved_by: @landlord_user, resolved_at: Time.current)
+    assert repair_request.actionable?
+
+    # Completed state is terminal (no longer actionable)
+    repair_request.update!(status: :completed)
+    assert_not repair_request.actionable?
   end
 
   test "mark_as_overdue! transitions pending request to overdue" do
@@ -85,13 +111,33 @@ class RequestTest < ActiveSupport::TestCase
     assert_equal "overdue", @request.reload.status
   end
 
-  test "status can only transition from pending" do
+  test "status transitions follow state machine rules" do
     @request.update!(status: :approved, resolved_by: @landlord_user, resolved_at: Time.current)
     assert_equal "approved", @request.reload.status
 
     @request.status = :overdue
     assert_not @request.valid?(:update)
     assert @request.errors[:status].any?
+  end
+
+  test "repair request supports pending to handling to completed transitions" do
+    repair_req = RepairRequest.create!(title: "Hỏng đèn", content: "Đèn trần bị chập")
+    repair_request = Request.create!(
+      tenant: @tenant,
+      house: @house,
+      requestable: repair_req,
+      status: :pending
+    )
+
+    repair_request.update!(status: :handling, resolved_by: @landlord_user, resolved_at: Time.current)
+    assert_equal "handling", repair_request.reload.status
+
+    repair_request.update!(status: :completed)
+    assert_equal "completed", repair_request.reload.status
+
+    # Cannot transition from completed
+    repair_request.status = :pending
+    assert_not repair_request.valid?(:update)
   end
 
   test "vehicle request generates watermarked registration card variant" do

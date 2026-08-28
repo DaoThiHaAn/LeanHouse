@@ -7,31 +7,73 @@
   </h2>
 
   <p class="text-muted mb-3">
-    <%= t("request.action_notice") %>
+    <% if request.requestable_type == "RepairRequest" && request.handling? %>
+      <%= t("request.repair_handling_action_notice", default: "Yêu cầu đang trong quá trình xử lý. Khi hoàn tất công việc sửa chữa, vui lòng bấm Xác nhận hoàn thành.") %>
+    <% elsif request.requestable_type == "RepairRequest" %>
+      <%= t("request.repair_pending_action_notice", default: "Vui lòng chọn tiếp nhận để tiến hành sửa chữa, hoặc từ chối nếu yêu cầu không hợp lệ.") %>
+    <% else %>
+      <%= t("request.action_notice") %>
+    <% end %>
   </p>
 
   <%= form_with url: handle_landlord_request_path(request), method: :patch, id: "handle_request_form" do |f| %>
     <!-- Action buttons container -->
     <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
-      <!-- Approve Button -->
-      <%= button_tag type: :submit,
-            name: "decision",
-            value: "approved",
-            class: "btn btn-success d-inline-flex align-items-center gap-1 px-3 py-2 fw-bold",
-            data: { 
-              turbo_confirm: t("request.confirm_approve") 
-            } do %>
-        <span class="material-symbols-outlined fs-5">check_circle</span>
-        <%= t("request.approve") %>
-      <% end %>
+      <% if request.requestable_type == "RepairRequest" %>
+        <% if request.pending? %>
+          <!-- Start Handling Button -->
+          <%= button_tag type: :submit,
+                name: "decision",
+                value: "handling",
+                class: "btn btn-primary d-inline-flex align-items-center gap-1 px-3 py-2 fw-bold",
+                data: { 
+                  turbo_confirm: t("request.confirm_start_handling", default: "Bạn có chắc chắn muốn TIẾP NHẬN xử lý yêu cầu sửa chữa này?") 
+                } do %>
+            <span class="material-symbols-outlined fs-5">build</span>
+            <%= t("request.start_handling", default: "Tiếp nhận xử lý") %>
+          <% end %>
 
-      <!-- Toggle Reject section -->
-      <button type="button"
-              class="btn btn-outline-danger d-inline-flex align-items-center gap-1 px-3 py-2"
-              data-action="click->request-handle#toggleReject">
-        <span class="material-symbols-outlined fs-5">cancel</span>
-        <%= t("request.reject") %>
-      </button>
+          <!-- Toggle Reject section -->
+          <button type="button"
+                  class="btn btn-outline-danger d-inline-flex align-items-center gap-1 px-3 py-2"
+                  data-action="click->request-handle#toggleReject">
+            <span class="material-symbols-outlined fs-5">cancel</span>
+            <%= t("request.reject") %>
+          </button>
+        <% elsif request.handling? %>
+          <!-- Complete Button -->
+          <%= button_tag type: :submit,
+                name: "decision",
+                value: "completed",
+                class: "btn btn-success d-inline-flex align-items-center gap-1 px-3 py-2 fw-bold",
+                data: { 
+                  turbo_confirm: t("request.confirm_complete", default: "Bạn có chắc chắn đã HOÀN THÀNH sửa chữa cho yêu cầu này?") 
+                } do %>
+            <span class="material-symbols-outlined fs-5">task_alt</span>
+            <%= t("request.mark_completed", default: "Xác nhận hoàn thành") %>
+          <% end %>
+        <% end %>
+      <% else %>
+        <!-- Default: Approve Button -->
+        <%= button_tag type: :submit,
+              name: "decision",
+              value: "approved",
+              class: "btn btn-success d-inline-flex align-items-center gap-1 px-3 py-2 fw-bold",
+              data: { 
+                turbo_confirm: t("request.confirm_approve") 
+              } do %>
+          <span class="material-symbols-outlined fs-5">check_circle</span>
+          <%= t("request.approve") %>
+        <% end %>
+
+        <!-- Toggle Reject section -->
+        <button type="button"
+                class="btn btn-outline-danger d-inline-flex align-items-center gap-1 px-3 py-2"
+                data-action="click->request-handle#toggleReject">
+          <span class="material-symbols-outlined fs-5">cancel</span>
+          <%= t("request.reject") %>
+        </button>
+      <% end %>
     </div>
 
     <!-- Rejection Reason Section (Hidden by default until 'Từ chối' is clicked) -->

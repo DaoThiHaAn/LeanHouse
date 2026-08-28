@@ -145,4 +145,45 @@ class RequestHandlingTest < ActiveSupport::TestCase
       )
     end
   end
+
+  test "handles repair request transition to handling and completed" do
+    repair_req = RepairRequest.create!(title: "Hỏng bồn cầu", content: "Nước bị tràn liên tục")
+    repair_request = Request.create!(
+      tenant: @tenant,
+      house: @house,
+      requestable: repair_req,
+      status: :pending
+    )
+
+    # 1. Start Handling
+    assert_difference -> { Noticed::Notification.count }, 1 do
+      RequestHandling.call(
+        request: repair_request,
+        landlord_user: @landlord_user,
+        decision: "handling"
+      )
+    end
+
+    repair_request.reload
+    assert_equal "handling", repair_request.status
+    assert_equal @landlord_user, repair_request.resolved_by
+    assert_not_nil repair_request.resolved_at
+
+    noti1 = Noticed::Notification.last
+    assert_equal @tenant_user, noti1.recipient
+
+    # 2. Complete Repair
+    assert_difference -> { Noticed::Notification.count }, 1 do
+      RequestHandling.call(
+        request: repair_request,
+        landlord_user: @landlord_user,
+        decision: "completed"
+      )
+    end
+
+    repair_request.reload
+    assert_equal "completed", repair_request.status
+    noti2 = Noticed::Notification.last
+    assert_equal @tenant_user, noti2.recipient
+  end
 end

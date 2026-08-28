@@ -170,6 +170,7 @@ Rails.application.routes.draw do
       end
     end
     resources :vehicle_requests, only: %i[new create]
+    resources :repair_requests, only: %i[new create]
     resources :vehicles, only: [ :index ]
   end
 

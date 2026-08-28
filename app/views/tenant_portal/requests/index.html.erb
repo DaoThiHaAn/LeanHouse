@@ -23,8 +23,9 @@
           </li>
 
           <li>
-            <%= link_to "#",
-                class: "dropdown-item py-2 text-muted disabled" do %>
+            <%= link_to new_tenant_repair_request_path,
+                class: "dropdown-item py-2",
+                data: { turbo_frame: "new_repair_modal" } do %>
               <%= image_tag 'repair.png', alt: "Repair icon", height: "20px" %>&nbsp;
               <%= t("request.repair_request") %>
             <% end %>
@@ -156,4 +157,5 @@
 </div>
 
 <%= turbo_frame_tag "new_vehicle_modal" %>
+<%= turbo_frame_tag "new_repair_modal" %>
 <%= turbo_frame_tag "request_detail_modal" %>

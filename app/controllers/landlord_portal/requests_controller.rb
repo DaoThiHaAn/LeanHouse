@@ -26,9 +26,13 @@ class LandlordPortal::RequestsController < LandlordPortal::BaseController
       rejection_reason: params[:rejection_reason]
     )
 
-    flash_message = @request.approved? ?
-      t("success_messages.request_approved", default: "Duyệt yêu cầu thành công!") :
-      t("success_messages.request_rejected", default: "Từ chối yêu cầu thành công!")
+    flash_message = case @request.status
+    when "approved" then t("success_messages.request_approved", default: "Duyệt yêu cầu thành công!")
+    when "handling" then t("success_messages.request_handling", default: "Tiếp nhận xử lý yêu cầu thành công!")
+    when "completed" then t("success_messages.request_completed", default: "Xác nhận hoàn thành yêu cầu thành công!")
+    when "rejected" then t("success_messages.request_rejected", default: "Từ chối yêu cầu thành công!")
+    else t("success_messages.request_updated", default: "Cập nhật yêu cầu thành công!")
+    end
 
     respond_to do |format|
       format.turbo_stream do

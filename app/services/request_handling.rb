@@ -17,6 +17,10 @@ class RequestHandling
     case decision
     when "approved"
       handle_approval!
+    when "handling"
+      handle_start_handling!
+    when "completed"
+      handle_completion!
     when "rejected"
       handle_rejection!
     else
@@ -42,6 +46,14 @@ class RequestHandling
 
   def handle_approval!
     request.approve!(landlord_user)
+  end
+
+  def handle_start_handling!
+    request.start_handling!(landlord_user)
+  end
+
+  def handle_completion!
+    request.complete!(landlord_user)
   end
 
   def handle_rejection!

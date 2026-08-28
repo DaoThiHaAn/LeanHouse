@@ -26,11 +26,16 @@ class RequestResolvedNotifier < ApplicationNotifier
       I18n.t(
         "noti.messages.#{type_key}_#{decision}_tenant",
         **params.symbolize_keys.merge(request_type: req.human_request_type),
-        default: I18n.t(
-          "noti.messages.request_#{decision}_tenant",
-          **params.symbolize_keys.merge(request_type: req.human_request_type),
-          default: "Chủ nhà đã #{decision == 'approved' ? 'duyệt' : 'từ chối'} #{req.human_request_type} tại #{params[:house_name]}."
-        )
+          default: begin
+            decision_text = case decision
+            when "approved" then "duyệt"
+            when "handling" then "tiếp nhận xử lý"
+            when "completed" then "hoàn thành"
+            when "rejected" then "từ chối"
+            else "cập nhật trạng thái"
+            end
+            "Chủ nhà đã #{decision_text} #{req.human_request_type} tại #{params[:house_name]}."
+          end
       )
     end
 

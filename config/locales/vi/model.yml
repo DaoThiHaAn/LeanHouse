@@ -74,6 +74,22 @@ vi:
               file_too_big: "Dung lượng mỗi ảnh không được vượt quá %{size}!"
               invalid_content_type: "Chỉ chấp nhận tệp định dạng hình ảnh!"
 
+        repair_request:
+          attributes:
+            title:
+              blank: "Tiêu đề không được để trống!"
+              too_long: "Tiêu đề không được vượt quá %{count} ký tự!"
+            content:
+              blank: "Mô tả sự cố không được để trống!"
+              too_long: "Mô tả sự cố không được vượt quá %{count} ký tự!"
+            images:
+              too_long: "Tối đa chỉ được tải lên %{count} ảnh!"
+              file_too_big: "Mỗi ảnh không được vượt quá %{size}!"
+              invalid_content_type: "Chỉ chấp nhận tệp định dạng hình ảnh (JPG, PNG, WEBP, HEIC)!"
+            video:
+              file_too_big: "Video không được vượt quá %{size}!"
+              invalid_content_type: "Chỉ chấp nhận tệp định dạng video (MP4, MOV, WEBM)!"
+
       # Global messages
       messages:
         blank: "Không được để trống!"
@@ -88,6 +104,11 @@ vi:
         landlord_citizen_id: "Số CCCD của chủ nhà"
         start_date: "Ngày bắt đầu"
         due_date: "Ngày hết hạn"
+      repair_request:
+        title: "Tiêu đề"
+        content: "Mô tả sự cố"
+        images: "Ảnh thực tế"
+        video: "Video thực tế"
 
   # For enum values
   enums:
@@ -123,6 +144,8 @@ vi:
     request:
       status:
         pending: "Chờ xét duyệt"
+        handling: "Đang xử lý"
+        completed: "Đã hoàn thành"
         approved: "Đã duyệt"
         rejected: "Đã duyệt từ chối"
         overdue: "Hết hạn"

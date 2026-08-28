@@ -1,0 +1,64 @@
+<%# Local variables: requestable (RepairRequest), request (Request) %>
+
+<div class="card border rounded-3 p-4 mb-2">
+  <h2 class="fs-5 fw-bold mb-3 d-flex align-items-center gap-2">
+    <span class="material-symbols-outlined">home_repair_service</span>
+    <%= t("request.repair_info") %>
+  </h2>
+
+  <!-- Title & Description Section -->
+  <div class="px-3 mb-3">
+    <div class="mb-3">
+      <span class="text-muted small d-block mb-1"><%= t("request.repair_title") %>:</span>
+      <h3 class="fs-6 fw-bold text-dark mb-0"><%= requestable.title %></h3>
+    </div>
+
+    <div class="mb-3">
+      <span class="text-muted small d-block mb-1"><%= t("request.repair_content") %>:</span>
+      <div class="p-3 bg-light rounded-3 text-dark text-break request-content"><%= requestable.content %></div>
+    </div>
+  </div>
+
+  <!-- Attachments Section -->
+  <% if requestable.images.attached? || requestable.video.attached? %>
+    <div class="px-3 border-top pt-3">
+      <h4 class="fs-6 fw-bold mb-3 d-flex align-items-center gap-1">
+        <span class="material-symbols-filled fs-5">perm_media</span>
+        <%= t("request.media_attachments") %>
+      </h4>
+
+      <!-- Images Grid -->
+      <% if requestable.images.attached? %>
+        <div class="mb-3">
+          <span class="text-muted small d-block mb-2">
+            <%= t("request.repair_images") %> (<%= requestable.images.count %>):
+          </span>
+          <div class="d-flex flex-wrap gap-2">
+            <% requestable.images.each_with_index do |image, idx| %>
+              <div class="position-relative">
+                <%= link_to url_for(image), target: "_blank", rel: "noopener", class: "d-block", title: "#{t('request.view_image')} #{idx + 1}" do %>
+                  <%= image_tag image, class: "repair-img rounded border object-fit-cover shadow-sm", alt: "Repair image #{idx + 1}" %>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+
+      <!-- Video Player -->
+      <% if requestable.video.attached? %>
+        <div class="mb-2">
+          <span class="text-muted small d-block mb-2">
+            <%= t("request.repair_video") %>:
+          </span>
+          <div class="rounded overflow-hidden border bg-black d-flex justify-content-center">
+            <video controls preload="metadata" class="w-100 request-video">
+              <source src="<%= url_for(requestable.video) %>" type="<%= requestable.video.content_type %>">
+              <%= t("request.unsupported_video") %>
+            </video>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>

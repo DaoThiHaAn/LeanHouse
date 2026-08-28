@@ -26,6 +26,37 @@
   color: rgb(173, 80, 5)
 }
 
+.upload-img-btn {
+  width: 90px;
+  height: 90px;
+  background-color: #e9ecef;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.upload-img-btn:hover {
+  background-color: #dee2e6;
+  border-color: #ced4da !important;
+}
+
+.upload-img-btn span {
+  font-size: 2.5rem;
+}
+
+.request-content {
+  white-space: pre-wrap;
+}
+
+.repair-img {
+  width: 150px;
+  height: 150px;
+}
+
+.request-video {
+  max-height: 320px;
+  object-fit: contain;
+}
+
 @media (max-width: 768px) {
   .request.main-container {
     width: 90%

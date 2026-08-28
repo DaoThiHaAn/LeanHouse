@@ -25,8 +25,15 @@ vi:
       contract_updated_landlord: "Cập nhật hợp đồng thành công"
       request_created_landlord: "Yêu cầu đăng ký xe mới"
       request_created_tenant: "Đã gửi yêu cầu đăng ký xe"
+      repair_request_created_landlord: "Yêu cầu sửa chữa mới"
+      repair_request_created_tenant: "Đã gửi yêu cầu sửa chữa"
       request_approved: "Yêu cầu đã được xét duyệt"
+      request_handling: "Yêu cầu đang được xử lý"
+      request_completed: "Yêu cầu đã hoàn thành"
       request_rejected: "Yêu cầu đã bị từ chối"
+      repair_request_handling: "Yêu cầu sửa chữa đang được xử lý"
+      repair_request_completed: "Yêu cầu sửa chữa đã hoàn thành"
+      repair_request_rejected: "Yêu cầu sửa chữa đã bị từ chối"
 
 
     messages:
@@ -54,5 +61,12 @@ vi:
       vehicle_request_created_tenant: "Yêu cầu đăng ký xe (Biển số: %{license_plate}) tại %{house_name} đã được gửi thành công đến Chủ nhà."
       vehicle_request_approved_tenant: "Chủ nhà đã duyệt yêu cầu đăng ký xe (Biển số: %{license_plate}) tại %{house_name}."
       vehicle_request_rejected_tenant: "Chủ nhà đã từ chối yêu cầu đăng ký xe (Biển số: %{license_plate}) tại %{house_name}. Lý do: %{reason}"
+      repair_request_created_landlord: "Khách thuê %{tenant_name} tại %{house_name} (%{location}) đã gửi yêu cầu sửa chữa: \"%{title}\"."
+      repair_request_created_tenant: "Yêu cầu sửa chữa \"%{title}\" tại %{house_name} đã được gửi thành công đến Chủ nhà."
+      repair_request_handling_tenant: "Chủ nhà đã tiếp nhận và đang xử lý yêu cầu sửa chữa \"%{title}\" tại %{house_name}."
+      repair_request_completed_tenant: "Chủ nhà đã hoàn thành yêu cầu sửa chữa \"%{title}\" tại %{house_name}."
+      repair_request_rejected_tenant: "Chủ nhà đã từ chối yêu cầu sửa chữa \"%{title}\" tại %{house_name}. Lý do: %{reason}"
       request_approved_tenant: "Chủ nhà đã duyệt %{request_type} tại %{house_name}."
+      request_handling_tenant: "Chủ nhà đã tiếp nhận và đang xử lý %{request_type} tại %{house_name}."
+      request_completed_tenant: "Chủ nhà đã hoàn thành %{request_type} tại %{house_name}."
       request_rejected_tenant: "Chủ nhà đã từ chối %{request_type} tại %{house_name}. Lý do: %{reason}"

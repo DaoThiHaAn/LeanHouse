@@ -107,6 +107,7 @@ vi:
   click_expand: "Bấm để mở rộng"
   ago: "Trước"
   send: "Gửi"
+  sending: "Đang gửi"
   min: "Tối thiểu %{val}"
   note: "Ghi chú"
   note_placeholder: "Nhập ghi chú"
@@ -176,8 +177,12 @@ vi:
     maintenance_log_deleted: "Xóa lịch sử thành công!"
     maintenance_log_updated: "Cập nhật lịch sử thành công!"
     vehicle_created_success: "Đã gửi yêu cầu đăng ký xe thành công! Vui lòng chờ Chủ nhà xét duyệt."
+    repair_created_success: "Đã gửi yêu cầu sửa chữa thành công! Vui lòng chờ Chủ nhà tiếp nhận xử lý."
     request_approved: "Duyệt yêu cầu thành công!"
+    request_handling: "Tiếp nhận xử lý yêu cầu thành công!"
+    request_completed: "Xác nhận hoàn thành yêu cầu thành công!"
     request_rejected: "Từ chối yêu cầu thành công!"
+    request_updated: "Cập nhật yêu cầu thành công!"
 
 
   page_titles:

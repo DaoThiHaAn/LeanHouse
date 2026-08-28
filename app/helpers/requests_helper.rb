@@ -6,6 +6,10 @@ module RequestsHelper
     badge_class = case status_str
     when "pending"
       "bg-warning text-dark"
+    when "handling"
+      "bg-primary text-white"
+    when "completed"
+      "bg-success text-white"
     when "approved"
       "bg-success text-white"
     when "rejected"
