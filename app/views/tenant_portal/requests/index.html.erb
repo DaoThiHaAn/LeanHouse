@@ -32,8 +32,14 @@
           </li>
 
           <li>
-            <%= link_to "#",
-                class: "dropdown-item py-2 text-muted disabled" do %>
+            <% confirm_text = [
+                 t("request.confirm_leave_house", default: "Bạn có chắc chắn muốn gửi Yêu cầu rời nhà?"),
+                 (@tenant_stay&.has_contract? ? t("request.leave_house_contract_warning", default: "Lưu ý: Hợp đồng thuê hiện tại của bạn sẽ bị chấm dứt khi Chủ nhà xét duyệt yêu cầu này.") : nil)
+               ].compact.join("\n\n") %>
+            <%= button_to tenant_leave_house_requests_path,
+                method: :post,
+                class: "dropdown-item py-2 text-danger d-flex align-items-center gap-1",
+                data: { turbo_confirm: confirm_text } do %>
               <%= image_tag 'exit.png', alt: "Exit icon", height: "20px" %>&nbsp;
               <%= t("request.leave_house") %>
             <% end %>

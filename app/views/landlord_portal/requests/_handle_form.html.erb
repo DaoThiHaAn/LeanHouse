@@ -54,13 +54,22 @@
           <% end %>
         <% end %>
       <% else %>
-        <!-- Default: Approve Button -->
+        <!-- Default / LeaveHouseRequest: Approve Button -->
+        <% approve_confirm = if request.requestable_type == "LeaveHouseRequest"
+             if request.house.contracts.unfinished.find_by(tenant_id: request.tenant_id).present?
+               t("request.confirm_approve_leave_house_with_contract", default: "Bạn có chắc chắn muốn DUYỆT yêu cầu rời nhà? Hợp đồng thuê hiện tại của khách sẽ bị chấm dứt và khách sẽ được trả phòng.")
+             else
+               t("request.confirm_approve_leave_house", default: "Bạn có chắc chắn muốn DUYỆT yêu cầu rời nhà? Khách thuê sẽ được làm thủ tục trả phòng.")
+             end
+           else
+             t("request.confirm_approve")
+           end %>
         <%= button_tag type: :submit,
               name: "decision",
               value: "approved",
               class: "btn btn-success d-inline-flex align-items-center gap-1 px-3 py-2 fw-bold",
               data: { 
-                turbo_confirm: t("request.confirm_approve") 
+                turbo_confirm: approve_confirm
               } do %>
           <span class="material-symbols-outlined fs-5">check_circle</span>
           <%= t("request.approve") %>

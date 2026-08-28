@@ -178,6 +178,7 @@ vi:
     maintenance_log_updated: "Cập nhật lịch sử thành công!"
     vehicle_created_success: "Đã gửi yêu cầu đăng ký xe thành công! Vui lòng chờ Chủ nhà xét duyệt."
     repair_created_success: "Đã gửi yêu cầu sửa chữa thành công! Vui lòng chờ Chủ nhà tiếp nhận xử lý."
+    leave_house_created_success: "Đã gửi yêu cầu rời nhà thành công! Vui lòng chờ Chủ nhà xét duyệt."
     request_approved: "Duyệt yêu cầu thành công!"
     request_handling: "Tiếp nhận xử lý yêu cầu thành công!"
     request_completed: "Xác nhận hoàn thành yêu cầu thành công!"

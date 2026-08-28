@@ -1,0 +1,52 @@
+<%# Local variables: requestable (LeaveHouseRequest), request (Request) %>
+<% tenant_stay = request.house.tenant_stay_for(request.tenant_id) %>
+<% active_contract = request.house.contracts.unfinished.find_by(tenant_id: request.tenant_id) %>
+
+<div class="card border rounded-3 p-4 mb-2">
+  <h2 class="fs-5 fw-bold mb-3 d-flex align-items-center gap-2">
+    <span class="material-symbols-outlined">logout</span>
+    <%= t("request.leave_house_info", default: "Thông tin yêu cầu rời nhà") %>
+  </h2>
+
+  <div class="row g-3 px-3 mb-3">
+    <!-- Current Room / Unit Info if available -->
+    <% if tenant_stay&.rental_unit.present? %>
+      <div class="col-12 col-md-6">
+        <span class="text-muted small d-block"><%= t("request.staying_location", default: "Vị trí đang ở") %>:</span>
+        <span class="fw-semibold text-dark"><%= tenant_stay.rental_unit.location_info %></span>
+      </div>
+
+      <div class="col-12 col-md-6">
+        <span class="text-muted small d-block"><%= t("request.checkin_date", default: "Ngày bắt đầu ở") %>:</span>
+        <span class="fw-semibold text-dark"><%= tenant_stay.checkin_at.strftime("%d/%m/%Y") %></span>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Contract Notice Section -->
+  <div class="px-3">
+    <% if active_contract.present? %>
+      <div class="alert alert-warning mb-0 rounded-3">
+        <div class=" d-flex align-items-center gap-2 ">
+          <span class="material-symbols-filled fs-4 text-warning-emphasis">warning</span>
+          <div class="fw-semibold text-warning-emphasis">
+            <%= t("request.leave_house_contract_active") %>&nbsp;
+            <%= active_contract.formatted_period %>
+          </div>
+        </div>
+
+        <div class="mt-1 text-muted small px-3">
+          <%= t("request.leave_house_contract_notice") %>
+        </div>
+      </div>
+
+    <% else %>
+      <div class="alert alert-info d-flex align-items-start gap-2 mb-0 rounded-3">
+        <span class="material-symbols-outlined fs-5 text-primary">info</span>
+        <div class="small text-muted">
+          <%= t("request.leave_house_no_contract_notice") %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
