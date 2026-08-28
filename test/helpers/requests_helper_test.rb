@@ -27,9 +27,17 @@ class RequestsHelperTest < ActionView::TestCase
     assert_equal expected_years, options
   end
 
-  test "request_status_badge returns styled badge tag" do
-    badge = request_status_badge(:pending)
-    assert_includes badge, "bg-warning"
-    assert_includes badge, I18n.t("enums.request.status.pending")
+  test "request_status_badge returns styled badge tag with default sm and optional lg size" do
+    badge_sm = request_status_badge(:pending)
+    assert_includes badge_sm, "request-status-badge"
+    assert_includes badge_sm, "badge-pending"
+    assert_includes badge_sm, "badge-sm"
+    assert_includes badge_sm, I18n.t("enums.request.status.pending")
+
+    badge_lg = request_status_badge(:approved, size: :lg)
+    assert_includes badge_lg, "request-status-badge"
+    assert_includes badge_lg, "badge-approved"
+    assert_includes badge_lg, "badge-lg"
+    assert_includes badge_lg, I18n.t("enums.request.status.approved")
   end
 end

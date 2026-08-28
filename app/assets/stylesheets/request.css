@@ -56,3 +56,59 @@
   max-height: 320px;
   object-fit: contain;
 }
+
+/* Enhanced Request Status Badge */
+.request-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+  line-height: 1.2;
+}
+
+.request-status-badge.badge-sm {
+  font-size: 0.8125rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+}
+
+.request-status-badge.badge-lg {
+  font-size: 0.95rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.request-status-badge.badge-pending {
+  background-color: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeeba;
+}
+
+.request-status-badge.badge-handling {
+  background-color: #cfe2ff;
+  color: #084298;
+  border: 1px solid #b6d4fe;
+}
+
+.request-status-badge.badge-completed,
+.request-status-badge.badge-approved {
+  background-color: #d1e7dd;
+  color: #0f5132;
+  border: 1px solid #badbcc;
+}
+
+.request-status-badge.badge-rejected {
+  background-color: #f8d7da;
+  color: #842029;
+  border: 1px solid #f5c2c7;
+}
+
+.request-status-badge.badge-overdue {
+  background-color: #e2e3e5;
+  color: #41464b;
+  border: 1px solid #d3d6d8;
+}
+

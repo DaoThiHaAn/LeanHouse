@@ -1,26 +1,25 @@
 module RequestsHelper
-  def request_status_badge(status)
+  def request_status_badge(status, size: :sm)
     status_str = status.to_s
     label = I18n.t("enums.request.status.#{status_str}", default: status_str.humanize)
 
-    badge_class = case status_str
-    when "pending"
-      "bg-warning text-dark"
-    when "handling"
-      "bg-primary text-white"
-    when "completed"
-      "bg-success text-white"
-    when "approved"
-      "bg-success text-white"
-    when "rejected"
-      "bg-danger text-white"
-    when "overdue"
-      "bg-secondary text-white"
-    else
-      "bg-light text-dark border"
+    size_class = (size.to_sym == :lg) ? "badge-lg" : "badge-sm"
+    badge_variant = "badge-#{status_str}"
+
+    icon_name = case status_str
+    when "pending" then "hourglass_empty"
+    when "handling" then "sync"
+    when "completed", "approved" then "check_circle"
+    when "rejected" then "cancel"
+    when "overdue" then "timer_off"
+    else "info"
     end
 
-    content_tag(:span, label, class: "badge #{badge_class} fw-medium px-2 py-1")
+    icon_html = content_tag(:span, icon_name, class: "material-symbols-filled #{size.to_sym == :lg ? 'fs-5' : 'fs-6'} align-middle")
+
+    content_tag(:span, class: "request-status-badge #{badge_variant} #{size_class}") do
+      safe_join([ icon_html, content_tag(:span, label) ])
+    end
   end
 
   def tenant_house_filter_options(houses, current_house)

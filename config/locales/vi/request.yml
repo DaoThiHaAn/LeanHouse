@@ -11,7 +11,7 @@ vi:
     note: "Vui lòng kiểm tra kỹ thông tin yêu cầu trước khi gửi. Sau khi gửi, yêu cầu sẽ không thể được chỉnh sửa hay xóa."
     status: "Trạng thái"
     due_note: "Yêu cầu có hiệu lực trong vòng 7 ngày kể từ thời điểm gửi. Sau thời hạn này, yêu cầu sẽ tự động hết hiệu lực và Chủ nhà sẽ không thể xét duyệt. Nếu cần thiết, bạn có thể tạo và gửi lại một yêu cầu mới."
-    due_note_short: "Yêu cầu sẽ tự động hết hiệu lực sau 7 ngày kể từ thời điểm gửi. Sau thời gian này, tính năng xử lý yêu cầu sẽ bị vô hiệu. "
+    due_note_short: "Yêu cầu Đăng ký gửi xe sẽ tự động hết hiệu lực sau 7 ngày kể từ thời điểm gửi. Sau thời gian này, tính năng xử lý yêu cầu sẽ bị vô hiệu. "
     handle: "Xét duyệt"
     handle_note: "Bạn chỉ được xét duyệt yêu cầu 1 lần duy nhất!"
     reason: "Lý do"
