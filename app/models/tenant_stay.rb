@@ -13,4 +13,12 @@ class TenantStay < ApplicationRecord
   def contract
     rental_unit&.house&.contracts&.unfinished&.find_by(tenant_id: tenant_id)
   end
+
+  after_commit :broadcast_dashboard_update
+
+  private
+
+  def broadcast_dashboard_update
+    LandlordDashboardBroadcaster.broadcast_later(rental_unit&.house&.id)
+  end
 end

@@ -36,6 +36,8 @@ class Room < ApplicationRecord
   }
   validate :selected_services_have_variants, on: :service_selection
 
+  after_commit :broadcast_dashboard_update
+
   scope :active, -> { where(deleted: false) }
   scope :deleted, -> { where(deleted: true) }
   # Rooms are grouped by floor in ascending position order, and then by name in ascending order
@@ -192,5 +194,9 @@ class Room < ApplicationRecord
 
   def normalize_name
     self.name = name&.squish
+  end
+
+  def broadcast_dashboard_update
+    LandlordDashboardBroadcaster.broadcast_later(floor&.house_id)
   end
 end

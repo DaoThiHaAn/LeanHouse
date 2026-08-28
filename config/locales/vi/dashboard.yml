@@ -2,18 +2,33 @@ vi:
   dashboard:
     self: "Tổng quan"
     landlord:
-      title: "BÁO CÁO TỔNG QUAN HOẠT ĐỘNG CỦA TẤT CẢ NHÀ"
-      total_revenue: "Tổng doanh thu tháng này"
-      house_list: "DANH SÁCH NHÀ CỦA BẠN"
-      new_tenants: "khách mới"
-      old_tenants: "khách trả phòng"
-      total_debts: "Tổng số tiền khách nợ"
-      revenue: "Doanh thu tháng này"
+      title: "BÁO CÁO TỔNG QUAN HOẠT ĐỘNG"
+      title_all_houses: "BÁO CÁO TỔNG QUAN HOẠT ĐỘNG TẤT CẢ NHÀ"
+      select_house: "Chọn nhà"
+      all_houses: "Tất cả nhà"
+      month_stats_label: "Dữ liệu thống kê tháng %{month}"
+      
+      # Card 1: Tenant flow
+      tenant_flow_title: "Biến động khách"
+      tenant_flow_desc: "Lưu lượng khách trong tháng"
+      new_tenants_count: "+%{count} khách mới"
+      leaved_tenants_count: "-%{count} khách trả phòng"
+      view_tenants: "Xem danh sách khách thuê"
+
+      # Card 2: Occupancy rate
       occupied_rate: "Tỉ lệ lấp chỗ trống"
+      slots_format: "%{occupied}/%{total} chỗ"
+      view_rooms: "Xem danh sách phòng"
+
+      # Card 3: Pending requests
       pending_requests: "Yêu cầu chưa xử lý"
-      invoices: "Hợp đồng sắp hết hạn, quá hạn"
-      service_usage: "Mức sử dụng dịch vụ tháng"
+      view_requests: "Xem danh sách yêu cầu"
 
-    tenant:
-      title: 
+      # Card 4: Contracts
+      contracts_alert: "Hợp đồng cần xử lý"
+      contracts_overdue: "%{count} quá hạn"
+      contracts_nearly_due: "%{count} sắp hết hạn"
+      view_contracts: "Xem danh sách hợp đồng"
 
+      # Fallback
+      no_house_selected_tip: "Chọn một nhà để truy cập nhanh đến từng danh mục chi tiết."

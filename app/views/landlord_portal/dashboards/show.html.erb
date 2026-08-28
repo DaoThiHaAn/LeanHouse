@@ -1,7 +1,36 @@
-<div class="dashboard d-flex flex-column align-items-center gap-3 p-5">
-    <h1><%=t('dashboard.landlord.title')%></h1>
+<div class="dashboard container-fluid px-4 py-4">
+  <!-- Live Real-Time Turbo Stream Subscription -->
+  <%= turbo_stream_from @landlord, (@selected_house || :all), :dashboard %>
+
+  <!-- Dashboard Header -->
+  <div class="dashboard-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 pb-3 mb-4">
     <div>
-        LANDLORD DASHBOARD 
+      <h1 class="h3 mb-1">
+        <%= @selected_house ? t('dashboard.landlord.title') : t('dashboard.landlord.title_all_houses') %>
+      </h1>
+      <p class="text-muted mb-0">
+        <%= t('dashboard.landlord.month_stats_label', month: Date.current.strftime('%m/%Y')) %>
+      </p>
     </div>
 
+    <!-- House Selector Dropdown -->
+    <div class="d-flex align-items-center gap-2">
+      <label for="house_id" class="fw-bold text-nowrap">
+        <%= t('dashboard.landlord.select_house') %>:
+      </label>
+      <%= form_with url: landlord_dashboard_path, method: :get, data: { turbo_frame: "dashboard_stats" } do |f| %>
+        <%= f.select :house_id,
+                     options_for_select(
+                       [[t('dashboard.landlord.all_houses'), "all"]] + @houses.map { |h| [h.name, h.id] },
+                       @selected_house_id || "all"
+                     ),
+                     {},
+                     class: "form-select dashboard-house-select border-primary-subtle shadow-sm",
+                     onchange: "this.form.requestSubmit()" %>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Cards Section -->
+  <%= render "landlord_portal/dashboards/stats_grid", stats: @stats, selected_house: @selected_house %>
 </div>

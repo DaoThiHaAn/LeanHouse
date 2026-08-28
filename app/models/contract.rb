@@ -18,6 +18,8 @@ class Contract < ApplicationRecord
   validates :temp_resid_due_date, comparison: { greater_than: -> { Date.current } }, if: :temp_resid_registered?
   validate :validate_documents
 
+  after_commit :broadcast_dashboard_update
+
   scope :expiring_soonest, -> { order(due_date: :asc, id: :asc) }
   scope :latest_started, -> { order(start_date: :desc, id: :desc) }
 
@@ -85,5 +87,9 @@ class Contract < ApplicationRecord
         errors.add(:documents, :invalid_content_type)
       end
     end
+  end
+
+  def broadcast_dashboard_update
+    LandlordDashboardBroadcaster.broadcast_later(house_id)
   end
 end

@@ -21,6 +21,8 @@ class Request < ApplicationRecord
 
   validate :validate_status_transition, on: :update
 
+  after_commit :broadcast_dashboard_update
+
   scope :pending, -> { where(status: :pending) }
   scope :recent, -> { order(created_at: :desc) }
   scope :expired, -> {
@@ -172,5 +174,9 @@ class Request < ApplicationRecord
     elsif status_was == "handling" && status != "completed"
       errors.add(:status, "đang được xử lý và chỉ có thể chuyển sang hoàn thành.")
     end
+  end
+
+  def broadcast_dashboard_update
+    LandlordDashboardBroadcaster.broadcast_later(house_id)
   end
 end

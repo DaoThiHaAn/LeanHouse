@@ -1,30 +1,121 @@
 .dashboard h1 {
-    font-weight: bold;
-    color: var(--primary-text)
+  font-weight: 800;
+  color: var(--primary-text);
 }
 
-.no-house-text {
-    font-size: 1.2rem;
-    font-weight: 500;
+.dashboard-header {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 }
 
-.main-btn {
-    color: var(--primary-bg);
-    font-weight: bold;
-    font-size: 1.2rem;
-    border-radius: 10px;
-    background-color: rgb(232, 255, 246);
-    border: 1px solid rgb(196, 247, 227);
-    border-radius: 10px;
-    transition: background-color .2s ease;
-    width: fit-content
+.dashboard-house-select {
+  min-width: 200px;
+  background-color: white;
+  border-radius: 10px;
+  font-size: 0.95rem;
 }
 
-.main-btn span {
-    font-size: 1.5rem;
+/* Stat Cards */
+.dashboard-stat-card {
+  border: 1px solid transparent;
+  border-radius: 16px;
+  min-height: 145px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
 }
 
-.main-btn:hover {
-    background-color: rgb(210, 249, 234)
+.dashboard-stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08) !important;
 }
 
+/* Color Themes */
+.card-purple {
+  background-color: #F3EDF7;
+  border-color: #E2D3EE;
+}
+.card-purple .stat-icon {
+  color: #7B4397;
+}
+
+.card-green {
+  background-color: #EAF8F1;
+  border-color: #C6ECD9;
+}
+.card-green .stat-icon {
+  color: #198754;
+}
+
+.card-orange {
+  background-color: #FFF3EB;
+  border-color: #FCD8C1;
+}
+.card-orange .stat-icon {
+  color: #DC6B2F;
+}
+
+.card-blue {
+  background-color: #EDF4FC;
+  border-color: #C9E0F7;
+}
+.card-blue .stat-icon {
+  color: #2670B8;
+}
+
+/* Stat Card Inner Elements */
+.stat-card-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #555;
+  margin-bottom: 0.25rem;
+}
+
+.stat-icon {
+  font-size: 2.2rem !important;
+  line-height: 1;
+}
+
+.stat-value {
+  font-size: 1.6rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.stat-subtext {
+  font-size: 0.82rem;
+  color: #666;
+}
+
+/* Action Arrow Button */
+.action-arrow-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  color: var(--primary-text);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.action-arrow-btn .material-symbols-outlined {
+  font-size: 1.25rem;
+}
+
+.action-arrow-btn:hover {
+  background-color: var(--primary-bg);
+  color: white;
+  border-color: var(--primary-bg);
+  transform: scale(1.08);
+}
+
+.action-arrow-btn.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
