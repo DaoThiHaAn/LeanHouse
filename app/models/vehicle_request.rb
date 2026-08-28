@@ -30,15 +30,14 @@ class VehicleRequest < ApplicationRecord
   def watermarked_registration_card
     return unless registration_card_image.attached?
 
+    text = I18n.t("request.watermark")
     registration_card_image.variant(
       resize_to_limit: [ 1200, 1200 ],
-      saver: { quality: 85 },
-      combine_options: {
-        gravity: "Center",
-        pointsize: "32",
-        fill: "rgba(220, 53, 69, 0.45)",
-        draw: "rotate -30 text 0,0 #{I18n.t("request.watermark")}"
-      }
+      gravity: "Center",
+      font: "DejaVu-Sans-Bold",
+      pointsize: 18,
+      fill: "rgba(220, 53, 69, 0.65)",
+      draw: "rotate -25 text 0,0 '#{text}'"
     ).processed
   end
 

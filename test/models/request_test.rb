@@ -93,4 +93,10 @@ class RequestTest < ActiveSupport::TestCase
     assert_not @request.valid?(:update)
     assert @request.errors[:status].any?
   end
+
+  test "vehicle request generates watermarked registration card variant" do
+    variant = @vehicle_req.watermarked_registration_card
+    assert_not_nil variant
+    assert variant.send(:processed?)
+  end
 end

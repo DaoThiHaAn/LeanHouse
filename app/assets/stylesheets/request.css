@@ -7,6 +7,15 @@
   color: inherit !important
 }
 
+.meta-request {
+  background-color: rgb(240, 253, 255);
+}
+
+.vehicle-img {
+  max-height: 220px;
+  object-fit: contain;
+  margin-top: 10px;
+}
 
 @media (max-width: 768px) {
   .request.main-container {

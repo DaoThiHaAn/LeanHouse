@@ -1,0 +1,68 @@
+<%# Local variables: request %>
+
+<!-- Request Meta Info Card -->
+<div class="meta-request card border-0 rounded-3 p-3 mb-3">
+  <h2 class="fs-5 fw-bold mb-3 d-flex align-items-center gap-2">
+    <span class="material-symbols-outlined">page_info</span>
+    <%= t("request.request_info") %>
+  </h2>
+
+  <div class="row g-3">
+    <!-- House Info -->
+    <div class="col-12 col-md-6">
+      <span class="material-symbols-filled text-muted fs-5">roofing</span>
+      <span class="text-muted small"><%= t("request.house") %>:</span>
+      <p class="fw-semibold"><%= request.house.name %></p>
+      <p class="text-muted d-block">(<%= request.house.full_address %>)</p>
+    </div>
+
+    <!-- Request Type -->
+    <div class="col-12 col-md-6">
+      <span class="material-symbols-filled fs-5 text-muted">category</span>
+      <span class="text-muted small"><%= t("request.type") %>:</span>
+      <p class="fw-semibold text-primary"><%= request.human_request_type %></p>
+    </div>
+
+    <!-- Status -->
+    <div class="col-12 col-md-6">
+      <div>
+        <span class="material-symbols-filled fs-5 text-muted">task_alt</span>
+        <span class="text-muted small mb-1"><%= t("request.status") %>:</span>
+      </div>
+      <%= request_status_badge(request.status) %>
+    </div>
+
+    <!-- Sent Time -->
+    <div class="col-12 col-md-6">
+      <span class="material-symbols-filled fs-5 text-muted">send</span>
+      <span class="text-muted small"><%= t("request.sent_at") %>:</span>
+      <p class="fw-semibold"><%= request.created_at.strftime("%H:%M - %d/%m/%Y") %></p>
+    </div>
+
+    <!-- Resolved Info if available -->
+    <% if request.resolved_at.present? %>
+      <div class="col-12 col-md-6">
+        <span class="text-muted small"><%= t("request.resolved_at") %>:</span>
+        <p class="fw-semibold"><%= request.resolved_at.strftime("%H:%M - %d/%m/%Y") %></p>
+      </div>
+
+      <% if request.resolved_by.present? %>
+        <div class="col-12 col-md-6">
+          <span class="text-muted small"><%= t("request.resolved_by") %>:</span>
+          <p class="fw-semibold"><%= vn_name(request.resolved_by.fullname) %></p>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+</div>
+
+<!-- Rejection Reason if Rejected -->
+<% if request.rejected? && request.rejection_reason.present? %>
+  <div class="alert alert-danger rounded-3 mb-3">
+    <div class="fw-semibold mb-1 d-flex align-items-center gap-1">
+      <span class="material-symbols-outlined fs-5">error</span>
+      <%= t("request.reason") %>:
+    </div>
+    <div class="ms-4"><%= request.rejection_reason %></div>
+  </div>
+<% end %>
