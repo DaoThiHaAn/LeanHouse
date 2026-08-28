@@ -62,8 +62,7 @@ class VehicleRequest < ApplicationRecord
         license_plate: license_plate,
         vehicle_type: vehicle_type,
         brand: brand,
-        model: model,
-        color: color
+        model: model
       )
 
       # 2. Transfer vehicle photo
@@ -106,6 +105,5 @@ class VehicleRequest < ApplicationRecord
     self.license_plate = license_plate&.squish&.upcase
     self.brand = brand&.squish
     self.model = model&.squish
-    self.color = color&.squish
   end
 end

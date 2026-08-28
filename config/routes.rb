@@ -157,7 +157,11 @@ Rails.application.routes.draw do
     resources :services, only: [ :index ]
 
 
-    resources :requests, only: %i[index show]
+    resources :requests, only: %i[index show] do
+      collection do
+        get :filtered
+      end
+    end
     resources :vehicle_requests, only: %i[new create]
     resources :vehicles, only: [ :index ]
   end

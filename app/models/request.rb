@@ -22,16 +22,38 @@ class Request < ApplicationRecord
   scope :recent, -> { order(created_at: :desc) }
   scope :expired, -> { pending.where("requests.created_at <= ?", EXPIRED_DAYS.days.ago) }
 
+  REQUEST_TYPES = {
+    "VehicleRequest" => "request.vehicle_register",
+    "RepairRequest" => "request.repair_request",
+    "LeaveHouseRequest" => "request.leave_house"
+  }.freeze
+
   # METHODS
 
   def human_status
     I18n.t("enums.request.status.#{status}")
   end
 
+  def human_request_type
+    key = REQUEST_TYPES[requestable_type]
+    if key
+      I18n.t(key, default: requestable_type.humanize)
+    else
+      requestable_type.to_s.underscore.humanize
+    end
+  end
+
   # Get the list of status options in i18n format
   def self.status_options
     statuses.keys.map do |status_key|
       [ I18n.t("enums.request.status.#{status_key}", default: status_key.humanize), status_key ]
+    end
+  end
+
+  # Get the list of request type options in i18n format
+  def self.request_type_options
+    REQUEST_TYPES.map do |type_class, i18n_key|
+      [ I18n.t(i18n_key, default: type_class.humanize), type_class ]
     end
   end
 

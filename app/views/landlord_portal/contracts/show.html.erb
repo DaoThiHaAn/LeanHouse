@@ -15,27 +15,27 @@
       <%= link_to edit_landlord_house_contract_path(@house, @contract),
                 title: t("edit"),
                 class: "table-action" do %>
-        <span class="material-symbols-filled fs-3">edit</span>
+        <span class="material-symbols-filled fs-2">edit</span>
       <% end %>
 
       <%= link_to extend_landlord_house_contract_path(@house, @contract),
                 data: { turbo_frame: "extend_modal" },
                 title: t("form.contract.extend"),
                 class: "table-action" do %>
-        <span class="material-symbols-filled">more_time</span>
+        <span class="material-symbols-filled fs-2">more_time</span>
       <% end %>
 
       <%= link_to sign_new_landlord_house_contract_path(@house, @contract),
                 title: t("form.contract.sign_new"),
                 class: "table-action" do %>
-        <span class="material-symbols-filled">ink_pen</span>
+        <span class="material-symbols-filled fs-2">ink_pen</span>
       <% end %>
 
       <%= link_to close_landlord_house_contract_path(@house, @contract),
                 title: t("form.contract.close"),
                 data: { turbo_frame: "close_cf_modal" },
                 class: "table-action" do %>
-        <span class="material-symbols-filled text-danger-emphasis fs-3">contract_delete</span>
+        <span class="material-symbols-filled text-danger-emphasis fs-2">contract_delete</span>
       <% end %>
     </div>
   </div>

@@ -32,4 +32,20 @@ class Tenant < ApplicationRecord
   def latest_contract
     contracts.latest_started.first
   end
+
+  # Returns all distinct houses this tenant has ever been linked to
+  def linked_houses
+    stay_unit_ids = tenant_stays.select(:rental_unit_id)
+    room_house_ids = House.joins(floors: { rooms: :rental_unit })
+                          .where(rental_units: { id: stay_unit_ids })
+                          .pluck(:id)
+    bed_house_ids = House.joins(floors: { rooms: { beds: :rental_unit } })
+                         .where(rental_units: { id: stay_unit_ids })
+                         .pluck(:id)
+    contract_house_ids = contracts.pluck(:house_id)
+    request_house_ids = requests.pluck(:house_id)
+
+    all_house_ids = (room_house_ids + bed_house_ids + contract_house_ids + request_house_ids).compact.uniq
+    House.where(id: all_house_ids).sorted
+  end
 end

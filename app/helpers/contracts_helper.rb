@@ -39,19 +39,19 @@ def contract_state_tag(status_contract)
     content_tag(
       :div,
       t("form.contract.nearly_due"),
-      class: "contract-badge badge-nearly-due fw-bold"
+      class: "contract-badge badge-nearly-due"
     )
   when :overdue
     content_tag(
       :div,
       t("form.contract.overdue"),
-      class: "contract-badge badge-overdue fw-bold"
+      class: "contract-badge badge-overdue"
     )
   else # :normal, :active
     content_tag(
       :div,
       t("form.contract.normal"),
-      class: "contract-badge badge-active fw-bold"
+      class: "contract-badge badge-active"
     )
   end
 end

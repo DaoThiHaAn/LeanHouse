@@ -60,7 +60,7 @@ class LandlordPortal::MaintenanceLogsControllerTest < ActionDispatch::Integratio
     assert_response :success
     assert_select "tr##{ActionView::RecordIdentifier.dom_id(@log)}"
     assert_includes response.body, "Bơm gas"
-    assert_includes response.body, "100,000"
+    assert_includes response.body, "100.000"
     assert_includes response.body, "5/6/2025"
   end
 

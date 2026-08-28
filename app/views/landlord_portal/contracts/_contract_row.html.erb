@@ -1,7 +1,7 @@
 <%# Local variables: house, contract %>
 
 <tr id="<%= dom_id(contract) %>">
-  <td><%= contract.id %></td>
+  <td>#<%= contract.id %></td>
   <td><%= contract.title_name %></td>
   <td><%= contract.tenant.user.fullname %></td>
   <td><%= contract.due_date.strftime('%d/%m/%Y') %></td>
@@ -17,7 +17,7 @@
     </div>
   </td>
 
-  <td class="text-muted fst-italic" <%= contract.note.to_s.length > 70 ? tooltip('top', contract.note, html: true) : '' %>>
+  <td class="text-muted fst-italic note" <%= contract.note.to_s.length > 70 ? tooltip('top', contract.note, html: true) : '' %>>
     <%= truncate(contract.note, length: 70) %>
   </td>
 

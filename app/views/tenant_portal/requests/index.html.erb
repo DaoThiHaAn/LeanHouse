@@ -1,7 +1,7 @@
 <%= content_for :title, t("request.mine") %>
 
 <div class="request main-container w-75">
-  <div class="d-flex justify-content-between align-items-center mb-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="mb-0"><%= t("request.mine") %></h1>
 
     <!-- Create Button / Dropdown -->
@@ -17,16 +17,15 @@
             <%= link_to new_tenant_vehicle_request_path,
                 class: "dropdown-item py-2",
                 data: { turbo_frame: "new_vehicle_modal" } do %>
-              <%= image_tag 'vehicle.png',alt: "Vehicle Add icon", height: "20px" %>&nbsp;
+              <%= image_tag 'vehicle.png', alt: "Vehicle Add icon", height: "20px" %>&nbsp;
               <%= t("request.vehicle_register") %>
             <% end %>
           </li>
 
-          <!-- TODO: -->
           <li>
             <%= link_to "#",
                 class: "dropdown-item py-2 text-muted disabled" do %>
-              <%= image_tag 'repair.png', alt: "Vehicle Add icon", height: "20px" %>&nbsp;
+              <%= image_tag 'repair.png', alt: "Repair icon", height: "20px" %>&nbsp;
               <%= t("request.repair_request") %>
             <% end %>
           </li>
@@ -50,19 +49,109 @@
     <% end %>
   </div>
 
-  <% if @requests.empty? %>
-    <p class="fs-5 fw-medium text-center"><%= t("request.none") %></p>
-    <%= image_tag 'request.png',alt: "Request icon", width: "200px", class: "d-block mx-auto mt-3" %>
-  <% else %>
-     <!-- Requests Table Section -->
-    <div class="card shadow-sm border-0">
-      <div class="card-body p-0">
-        <!-- TABLE CONTENT HERE -->
+  <!-- Filter Form -->
+  <%= form_with url: filtered_tenant_requests_path,
+      method: :get,
+      class: "request-form d-flex align-items-center flex-wrap gap-3 my-4 p-3 justify-content-around rounded-3",
+      data: { 
+        controller: "filter-form",
+        filter_form_default_house_value: @house&.id&.to_s || "",
+        turbo_frame: "requests_table",
+        turbo_action: "advance"
+      } do |f| %>
+
+    <!-- 1. House Filter -->
+    <div class="d-flex flex-column gap-1">
+      <%= f.label :house_id, t("request.house_filter"), class: "form-label fw-semibold mb-0" %>
+      <%= f.select :house_id,
+            tenant_house_filter_options(@linked_houses, @house),
+            { selected: @selected_house_id },
+            class: "form-select form-select-sm shadow-sm",
+            data: {
+              filter_form_target: "houseSelect",
+              action: "change->filter-form#changed"
+            } %>
+    </div>
+
+    <!-- 2. Sent Time Filter (Month + Year) -->
+    <div class="d-flex flex-column gap-1">
+      <%= f.label :month, t("request.sent_time"), class: "form-label fw-semibold mb-0" %>
+
+      <div class="input-group flex-nowrap">
+        <span class="input-group-text"><%= t("request.sent_month") %></span>
+        <%= f.select :month,
+              [[t("all"), ""]] + (1..12).map { |m| [m.to_s.rjust(2, "0"), m.to_s] },
+              { selected: params[:month] },
+              class: "form-select form-select-sm shadow-sm",
+              data: {
+                filter_form_target: "monthSelect",
+                action: "change->filter-form#changed"
+              } %>
+
+        <span class="input-group-text"><%= t("request.sent_year") %></span>
+        <%= f.select :year,
+              tenant_year_filter_options(@tenant),
+              { selected: params[:year] },
+              class: "form-select form-select-sm shadow-sm",
+              data: {
+                filter_form_target: "yearSelect",
+                action: "change->filter-form#changed"
+              } %>
       </div>
+    </div>
+
+    <!-- 3. Status Filter -->
+    <div class="d-flex flex-column gap-1">
+      <%= f.label :status, t("request.status"), class: "form-label  fw-semibold mb-0" %>
+      <%= f.select :status,
+            [[t("all"), ""]] + Request.status_options,
+            { selected: params[:status] },
+            class: "form-select form-select-sm shadow-sm",
+            data: {
+              filter_form_target: "statusSelect",
+              action: "change->filter-form#changed"
+            } %>
+    </div>
+
+    <!-- 4. Request Type Filter -->
+    <div class="d-flex flex-column gap-1">
+      <%= f.label :request_type, t("request.type"), class: "form-label  fw-semibold mb-0" %>
+      <%= f.select :request_type,
+            [[t("all"), ""]] + Request.request_type_options,
+            { selected: params[:request_type] },
+            class: "form-select form-select-sm shadow-sm",
+            data: {
+              filter_form_target: "requestTypeSelect",
+              action: "change->filter-form#changed"
+            } %>
+    </div>
+
+    <!-- Clear Filter Button (Dynamically toggled by Stimulus) -->
+    <div class="align-self-end ms-auto d-none" data-filter-form-target="clearButton">
+      <button type="button"
+              class="filter-off btn btn-sm btn-outline-secondary bg-light d-flex align-items-center gap-1"
+              data-action="click->filter-form#clear">
+        <span class="material-symbols-outlined fs-6">filter_alt_off</span>
+        <%= t("request.clear_filter") %>
+      </button>
     </div>
   <% end %>
 
-
+  <!-- Requests Table Section (Turbo Frame) -->
+  <%= turbo_frame_tag "requests_table",
+        src: filtered_tenant_requests_path(params.permit(:page, :house_id, :month, :year, :status, :request_type)),
+        loading: :lazy,
+        data: {
+          controller: "pagination-sync",
+          pagination_sync_canonical_url_value: tenant_requests_path,
+          pagination_sync_default_params_value: {}.to_json,
+          pagination_sync_query_params_value: ["house_id", "month", "year", "status", "request_type"].to_json,
+          pagination_sync_total_pages_selector_value: "[data-pagination-total-pages]",
+          action: "turbo:frame-load->pagination-sync#updateUrl"
+        } do %>
+    <%= loading_spinner %>
+  <% end %>
 </div>
 
 <%= turbo_frame_tag "new_vehicle_modal" %>
+<%= turbo_frame_tag "request_detail_modal" %>

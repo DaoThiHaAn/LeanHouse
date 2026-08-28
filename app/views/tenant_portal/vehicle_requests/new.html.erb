@@ -27,7 +27,7 @@
               <span class="material-symbols-outlined fs-5 text-primary flex-shrink-0 mt-1">info</span>
               <div class="small">
                 <div><%= t("request.due_note") %></div>
-                <div class="mt-1 text-muted"><%= t("request.watermark_note") %></div>
+                <div class="mt-1 text-muted"><%= t("request.watermark_note_html") %></div>
               </div>
             </div>
 
@@ -46,7 +46,8 @@
               <!-- Cell 1: Vehicle Type -->
               <div class="col-12 col-md-6 mb-2 form-group">
                 <%= f.label :vehicle_type, class: "form-label fw-medium" do %>
-                  <%= t("request.vehicle_type") %><span class="asterisk text-danger">*</span>
+                  <%= t("request.vehicle_type") %>&thinsp;
+                  <span class="asterisk text-danger">*</span>
                 <% end %>
                 <%= f.select :vehicle_type, VehicleRequest.vehicle_type_options, {}, 
                       class: "form-select #{invalid_class(@vehicle_request, :vehicle_type)}", required: true %>
@@ -56,7 +57,8 @@
               <!-- Cell 2: License Plate -->
               <div class="col-12 col-md-6 mb-2 form-group">
                 <%= f.label :license_plate, class: "form-label fw-medium" do %>
-                  <%= t("request.plate_number") %><span class="asterisk text-danger">*</span>
+                  <%= t("request.plate_number") %>&thinsp;
+                  <span class="asterisk text-danger">*</span>
                 <% end %>
                 <%= f.text_field :license_plate, 
                       class: "form-control text-uppercase fw-semibold #{invalid_class(@vehicle_request, :license_plate)}", 
@@ -80,10 +82,12 @@
               <!-- Attachments: 2 Responsive Columns -->
               <div class="col-12 col-md-6 form-group">
                 <%= f.label :registration_card_image, class: "form-label fw-medium" do %>
-                  <%= t("request.vehicle_reg_proof") %><span class="asterisk text-danger">*</span>
+                  <%= t("request.vehicle_reg_proof") %>&thinsp;
+                  <span class="asterisk text-danger">*</span>
                 <% end %>
                 <div class="form-text small mb-1 text-muted">
-                  <i class="bi bi-shield-lock me-1"></i><%= t("request.vehicle_reg_proof_note") %>
+                  <span class="material-symbols-filled fs-6">photo_camera</span>&nbsp;;
+                  <%= t("request.vehicle_reg_proof_note") %>
                 </div>
                 <%= f.file_field :registration_card_image, accept: "image/*", 
                       class: "form-control #{invalid_class(@vehicle_request, :registration_card_image)}", 
@@ -93,10 +97,12 @@
 
               <div class="col-12 col-md-6 form-group">
                 <%= f.label :vehicle_photo, class: "form-label fw-medium" do %>
-                  <%= t("request.vehicle_img") %><span class="asterisk text-danger">*</span>
+                  <%= t("request.vehicle_img") %>&thinsp;
+                  <span class="asterisk text-danger">*</span>
                 <% end %>
                 <div class="form-text small mb-1 text-muted">
-                  <i class="bi bi-camera me-1"></i><%= t("request.vehicle_img_note") %>
+                  <span class="material-symbols-filled fs-6">photo_camera</span>&nbsp;
+                  <%= t("request.vehicle_img_note") %>
                 </div>
                 <%= f.file_field :vehicle_photo, accept: "image/*", 
                       class: "form-control #{invalid_class(@vehicle_request, :vehicle_photo)}", 
@@ -118,9 +124,10 @@
               <div class="mt-2 pt-2 border-top">
                 <details class="small text-muted">
                   <summary class="cursor-pointer text-primary user-select-none">
-                    <i class="bi bi-shield-check me-1"></i>Chính sách bảo vệ dữ liệu cá nhân
+                    <span class="material-symbols-outlined fs-6">shield</span>&nbsp;
+                    <%= t("request.protection_policy") %>
                   </summary>
-                  <p class="mt-2 mb-0">
+                  <p class="mt-2">
                     <%= t("request.privacy_html") %>
                   </p>
                 </details>

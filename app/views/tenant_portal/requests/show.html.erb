@@ -1,0 +1,156 @@
+<%= turbo_frame_tag "request_detail_modal" do %>
+  <div class="modal fade" id="requestDetailModal" tabindex="-1" aria-hidden="true"
+        data-controller="modal" data-modal-auto-open-value="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+      <div class="modal-content px-2">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5 fw-bold flex-grow-1 text-center" id="requestDetailModalLabel">
+            <%= t("request.detail_title") %> #<%= @request.id %>
+          </h1>
+          <button type="button" class="m-0 btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body p-3">
+          <!-- Request Meta Info Card -->
+          <div class="card border-0 bg-light rounded-3 p-3 mb-3">
+            <h2 class="fs-6 fw-bold mb-3 d-flex align-items-center gap-2 text-dark">
+              <span class="material-symbols-outlined text-primary">info</span>
+              <%= t("request.request_info", default: "Thông tin yêu cầu") %>
+            </h2>
+
+            <div class="row g-3">
+              <!-- House Info -->
+              <div class="col-12 col-md-6">
+                <span class="text-muted small d-block"><%= t("request.house") %>:</span>
+                <span class="fw-semibold"><%= @request.house.name %></span>
+                <span class="text-muted small d-block">(<%= @request.house.full_address %>)</span>
+              </div>
+
+              <!-- Request Type -->
+              <div class="col-12 col-md-6">
+                <span class="text-muted small d-block"><%= t("request.type") %>:</span>
+                <span class="fw-semibold"><%= @request.human_request_type %></span>
+              </div>
+
+              <!-- Status -->
+              <div class="col-12 col-md-6">
+                <span class="text-muted small d-block mb-1"><%= t("request.status") %>:</span>
+                <%= request_status_badge(@request.status) %>
+              </div>
+
+              <!-- Sent Time -->
+              <div class="col-12 col-md-6">
+                <span class="text-muted small d-block"><%= t("request.sent_at") %>:</span>
+                <span class="fw-semibold"><%= @request.created_at.strftime("%H:%M - %d/%m/%Y") %></span>
+              </div>
+
+              <!-- Resolved Info if available -->
+              <% if @request.resolved_at.present? %>
+                <div class="col-12 col-md-6">
+                  <span class="text-muted small d-block"><%= t("request.resolved_at") %>:</span>
+                  <span class="fw-semibold"><%= @request.resolved_at.strftime("%H:%M - %d/%m/%Y") %></span>
+                </div>
+
+                <% if @request.resolved_by.present? %>
+                  <div class="col-12 col-md-6">
+                    <span class="text-muted small d-block"><%= t("request.resolved_by") %>:</span>
+                    <span class="fw-semibold"><%= vn_name(@request.resolved_by.fullname) %></span>
+                  </div>
+                <% end %>
+              <% end %>
+            </div>
+          </div>
+
+          <!-- Rejection Reason if Rejected -->
+          <% if @request.rejected? && @request.rejection_reason.present? %>
+            <div class="alert alert-danger rounded-3 mb-3">
+              <div class="fw-semibold mb-1 d-flex align-items-center gap-1">
+                <span class="material-symbols-outlined fs-5">error</span>
+                <%= t("request.reason") %>:
+              </div>
+              <div class="ms-4"><%= @request.rejection_reason %></div>
+            </div>
+          <% end %>
+
+          <!-- Polymorphic Content: VehicleRequest -->
+          <% if @request.requestable.is_a?(VehicleRequest) %>
+            <% vehicle = @request.requestable %>
+            <div class="card border rounded-3 p-3 mb-2">
+              <h2 class="fs-6 fw-bold mb-3 d-flex align-items-center gap-2 text-primary">
+                <span class="material-symbols-outlined">directions_car</span>
+                <%= t("request.vehicle_info", default: "Thông tin phương tiện") %>
+              </h2>
+
+              <div class="row g-3 mb-3">
+                <!-- Vehicle Type -->
+                <div class="col-12 col-md-6">
+                  <span class="text-muted small d-block"><%= t("request.vehicle_type") %>:</span>
+                  <span class="fw-semibold"><%= t("request.vehicle_types.#{vehicle.vehicle_type}", default: vehicle.vehicle_type.humanize) %></span>
+                </div>
+
+                <!-- License Plate -->
+                <div class="col-12 col-md-6">
+                  <span class="text-muted small d-block"><%= t("request.plate_number") %>:</span>
+                  <span class="fw-bold text-uppercase badge bg-light text-dark border px-2 py-1 fs-6"><%= vehicle.license_plate %></span>
+                </div>
+
+                <!-- Brand -->
+                <% if vehicle.brand.present? %>
+                  <div class="col-12 col-md-6">
+                    <span class="text-muted small d-block"><%= t("request.brand") %>:</span>
+                    <span class="fw-semibold"><%= vehicle.brand %></span>
+                  </div>
+                <% end %>
+
+                <!-- Model -->
+                <% if vehicle.model.present? %>
+                  <div class="col-12 col-md-6">
+                    <span class="text-muted small d-block"><%= t("request.model") %>:</span>
+                    <span class="fw-semibold"><%= vehicle.model %></span>
+                  </div>
+                <% end %>
+              </div>
+
+              <!-- Vehicle Attachments -->
+              <div class="row g-3">
+                <!-- Vehicle Photo -->
+                <div class="col-12 col-md-6">
+                  <span class="text-muted small fw-medium d-block mb-1"><%= t("request.vehicle_img") %>:</span>
+                  <% if vehicle.vehicle_photo.attached? %>
+                    <div class="border rounded p-2 text-center bg-light">
+                      <%= image_tag vehicle.vehicle_photo, class: "img-fluid rounded", style: "max-height: 220px; object-fit: contain;" %>
+                    </div>
+                  <% else %>
+                    <span class="text-muted fst-italic"><%= t("not_available", default: "Không có") %></span>
+                  <% end %>
+                </div>
+
+                <!-- Registration Card Image (Watermarked or Purged) -->
+                <div class="col-12 col-md-6">
+                  <span class="text-muted small fw-medium d-block mb-1"><%= t("request.vehicle_reg_proof") %>:</span>
+                  <% if vehicle.registration_card_image.attached? %>
+                    <div class="border rounded p-2 text-center bg-light">
+                      <% variant = (vehicle.watermarked_registration_card rescue vehicle.registration_card_image) %>
+                      <%= image_tag variant, class: "img-fluid rounded", style: "max-height: 220px; object-fit: contain;" %>
+                    </div>
+                  <% else %>
+                    <div class="alert alert-secondary small mb-0 p-3 rounded-3 d-flex align-items-start gap-2">
+                      <span class="material-symbols-outlined fs-5 flex-shrink-0">shield_lock</span>
+                      <div><%= t("request.documents_purged") %></div>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+
+        <div class="modal-footer justify-content-center">
+          <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">
+            <%= t("close", default: "Đóng") %>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
