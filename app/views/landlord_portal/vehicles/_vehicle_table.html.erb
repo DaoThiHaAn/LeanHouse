@@ -1,0 +1,31 @@
+<%# Local variables: house, vehicles %>
+
+<%= turbo_frame_tag "vehicle_table" do %>
+  <% if vehicles.empty? %>
+    <div class="text-center py-5">
+      <p class="fs-5 text-muted fw-semibold"><%= t("vehicle.no_vehicles_found") %></p>
+    </div>
+  <% else %>
+    <div class="table-responsive border rounded-3 shadow-sm mt-3 bg-white">
+      <table class="table table-bordered table-hover align-middle mb-0">
+        <thead class="table-light sticky-top">
+          <tr>
+            <th class="text-center" style="width: 140px;"><%= t("vehicle.type") %></th>
+            <th class="text-center" style="width: 150px;"><%= t("vehicle.plate_number") %></th>
+            <th><%= t("vehicle.brand") %></th>
+            <th><%= t("vehicle.model") %></th>
+            <th class="text-center" style="width: 120px;"><%= t("vehicle.photo") %></th>
+            <th class="text-center" style="width: 130px;"><%= t("vehicle.start_date") %></th>
+            <th><%= t("vehicle.tenant") %></th>
+            <th class="text-center" style="width: 100px;"><%= t("vehicle.actions") %></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% vehicles.each do |vehicle| %>
+            <%= render "landlord_portal/vehicles/vehicle_row", house: house, vehicle: vehicle %>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+<% end %>

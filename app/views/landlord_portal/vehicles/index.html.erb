@@ -1,0 +1,50 @@
+<% content_for :title, t("page_titles.vehicle_mng") %>
+<% provide :container_width, "h-100 w-95" %>
+
+<h1 class="text-center mb-4">
+  <%= t("page_titles.vehicle_mng") %>
+</h1>
+
+<% if @vehicles.empty? %>
+  <div class="card border-0 bg-light rounded-4 text-center py-5 px-3 mx-auto" style="max-width: 600px;">
+    <div class="mb-3">
+      <span class="material-symbols-outlined text-muted" style="font-size: 4rem;">two_wheeler</span>
+    </div>
+    <h2 class="fs-5 fw-bold text-dark mb-2"><%= t("vehicle.no_vehicles") %></h2>
+    <p class="text-muted small mb-0"><%= t("vehicle.no_vehicles_found") %></p>
+  </div>
+<% else %>
+  <!-- Filter form toolbar -->
+  <div class="d-flex justify-content-center px-4 align-items-center mb-4 gap-4">
+    <%= form_with url: filtered_landlord_house_vehicles_path(@house),
+                  method: :get,
+                  class: "d-flex gap-4 align-items-center flex-wrap justify-content-center",
+                  data: { turbo_frame: "vehicle_table" } do |f| %>
+      <!-- Vehicle Type filter -->
+      <div class="d-flex align-items-center gap-2">
+        <%= f.label :vehicle_type, t("vehicle.type") + ":", class: "fw-bold text-nowrap" %>
+        <%= f.select :vehicle_type,
+              [[t("all"), ""]] + @available_types,
+              { selected: params[:vehicle_type] },
+              class: "form-select w-auto shadow-sm",
+              onchange: "this.form.requestSubmit()" %>
+      </div>
+
+      <!-- Search input -->
+      <div class="d-flex align-items-center gap-2">
+        <div class="input-group shadow-sm" style="max-width: 300px;">
+          <span class="input-group-text bg-white border-end-0">
+            <span class="material-symbols-outlined text-muted fs-6">search</span>
+          </span>
+          <%= f.text_field :query,
+                value: params[:query],
+                placeholder: t("vehicle.license_plate_placeholder", default: "Tìm biển số, hãng, khách..."),
+                class: "form-control border-start-0 ps-0",
+                oninput: "this.form.requestSubmit()" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <%= render "vehicle_table", house: @house, vehicles: @vehicles %>
+<% end %>

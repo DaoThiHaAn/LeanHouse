@@ -16,6 +16,7 @@ class Checkout
       checkout_stay!
       tenant_stay.rental_unit.tenant_removed!  # Update occupancy
       end_contract! if @end_contract
+      remove_vehicles!
     end
 
     send_notification if @send_noti
@@ -39,6 +40,10 @@ class Checkout
       contract.update!(end_date: Date.current)
       tenant_stay.update!(has_contract: false)
     end
+  end
+
+  def remove_vehicles!
+    house.vehicles.where(tenant_id: tenant_stay.tenant_id).destroy_all
   end
 
   def send_notification

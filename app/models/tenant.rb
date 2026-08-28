@@ -4,6 +4,7 @@ class Tenant < ApplicationRecord
   has_many :tenant_stays,  inverse_of: :tenant
   has_many :contracts, inverse_of: :tenant
   has_many :requests, inverse_of: :tenant
+  has_many :vehicles, inverse_of: :tenant, dependent: :destroy
 
   scope :name_sorted, -> { order("users.fullname ASC") }
 

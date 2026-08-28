@@ -149,3 +149,10 @@ vi:
         approved: "Đã duyệt"
         rejected: "Đã duyệt từ chối"
         overdue: "Hết hạn"
+
+    vehicle:
+      vehicle_type:
+        motorbike: "Xe máy"
+        electric_bike: "Xe đạp điện"
+        bicycle: "Xe đạp"
+        car: "Ô tô"

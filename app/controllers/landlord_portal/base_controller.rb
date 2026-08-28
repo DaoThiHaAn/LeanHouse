@@ -5,10 +5,15 @@
 module LandlordPortal
   class BaseController < ApplicationController
     before_action :authenticate_user!
+    before_action :require_landlord!
     before_action :set_landlord, :require_house, :set_house
     before_action :authorize_house
 
     private
+
+    def require_landlord!
+      raise CanCan::AccessDenied unless current_user&.landlord?
+    end
 
     def set_landlord
       @landlord = current_user.landlord
@@ -16,6 +21,7 @@ module LandlordPortal
 
     # Redirect or render custom view if the landlord doesn't have any houses
     def require_house
+      return unless @landlord
       render "landlord_portal/shared/no_house", status: :ok if @landlord.houses_count.zero?
     end
 

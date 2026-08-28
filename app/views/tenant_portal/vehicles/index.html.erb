@@ -1,1 +1,49 @@
-INDEX
+<% content_for :title, t("page_titles.my_vehicles") %>
+
+<div class="container py-4" style="max-width: 1000px;">
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+      <h1 class="fs-4 fw-bold text-dark mb-1">
+        <%= t("page_titles.my_vehicles") %>
+      </h1>
+      <p class="text-muted small mb-0">
+        <%= @house.name %> • <%= @house.full_address %>
+      </p>
+    </div>
+
+    <%= link_to new_tenant_vehicle_request_path,
+          class: "custom-primary-btn d-inline-flex align-items-center gap-2 px-3 py-2 text-decoration-none shadow-sm",
+          data: { turbo_frame: "new_vehicle_modal" } do %>
+      <span class="material-symbols-outlined fs-5">add_circle</span>
+      <span><%= t("vehicle.register_btn") %></span>
+    <% end %>
+  </div>
+
+  <% if @vehicles.empty? %>
+    <div class="card border-0 bg-light rounded-4 text-center py-5 px-3">
+      <div class="mb-3">
+        <span class="material-symbols-outlined text-muted" style="font-size: 4.5rem;">two_wheeler</span>
+      </div>
+      <h2 class="fs-5 fw-bold text-dark mb-2"><%= t("vehicle.no_vehicles_tenant") %></h2>
+      <p class="text-muted small mb-4" style="max-width: 480px; margin-inline: auto;">
+        <%= t("vehicle.register_prompt") %>
+      </p>
+      <div>
+        <%= link_to new_tenant_vehicle_request_path,
+              class: "custom-primary-btn d-inline-flex align-items-center gap-2 px-4 py-2 text-decoration-none",
+              data: { turbo_frame: "new_vehicle_modal" } do %>
+          <span class="material-symbols-outlined fs-5">add_circle</span>
+          <span><%= t("vehicle.register_btn") %></span>
+        <% end %>
+      </div>
+    </div>
+  <% else %>
+    <div class="row g-4" id="tenant_vehicles_grid">
+      <% @vehicles.each do |vehicle| %>
+        <%= render "tenant_portal/vehicles/vehicle_card", vehicle: vehicle %>
+      <% end %>
+    </div>
+  <% end %>
+</div>
+
+<%= turbo_frame_tag "new_vehicle_modal" %>

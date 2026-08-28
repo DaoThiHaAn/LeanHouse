@@ -223,4 +223,12 @@ class LandlordPortal::RequestsControllerTest < ActionDispatch::IntegrationTest
     repair_request.reload
     assert_equal "completed", repair_request.status
   end
+
+  test "tenant typing landlord portal url on purpose is forbidden with access denied" do
+    sign_in_as(@tenant_user)
+
+    get landlord_requests_path
+    assert_response :forbidden
+    assert_includes response.body, "Truy Cập Bị Từ Chối!"
+  end
 end

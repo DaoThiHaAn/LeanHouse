@@ -131,4 +131,12 @@ class TenantPortal::RequestsControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "Honda"
     assert_includes response.body, "Vision"
   end
+
+  test "landlord typing tenant portal url on purpose is forbidden with access denied" do
+    sign_in_as(@landlord_user)
+
+    get tenant_requests_path
+    assert_response :forbidden
+    assert_includes response.body, "Truy Cập Bị Từ Chối!"
+  end
 end

@@ -142,7 +142,11 @@ Rails.application.routes.draw do
       end
 
       resources :invoices
-      resources :vehicles, only: %i[index]
+      resources :vehicles, only: %i[index destroy] do
+        collection do
+          get :filtered
+        end
+      end
     end
   end
 
@@ -172,7 +176,7 @@ Rails.application.routes.draw do
     resources :vehicle_requests, only: %i[new create]
     resources :repair_requests, only: %i[new create]
     resources :leave_house_requests, only: %i[create]
-    resources :vehicles, only: [ :index ]
+    resources :vehicles, only: %i[index destroy]
   end
 
   namespace :admin, module: :admin_area do

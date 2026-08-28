@@ -1,0 +1,132 @@
+<%# Local variables: house, vehicle %>
+
+<tr id="<%= dom_id(vehicle, :vehicle_row) %>">
+  <!-- 1. Type -->
+  <td class="text-center">
+    <span class="badge bg-light text-dark border d-inline-flex align-items-center gap-1 px-2 py-1">
+      <span class="material-symbols-outlined fs-6 text-primary"><%= vehicle.type_icon %></span>
+      <span><%= vehicle.human_type %></span>
+    </span>
+  </td>
+
+  <!-- 2. Plate number -->
+  <td class="text-center">
+    <span class="fw-bold font-monospace text-dark px-2 py-1 bg-light border rounded-2">
+      <%= vehicle.license_plate %>
+    </span>
+  </td>
+
+  <!-- 3. Brand -->
+  <td>
+    <span class="fw-medium"><%= vehicle.brand.presence || "-" %></span>
+  </td>
+
+  <!-- 4. Model -->
+  <td>
+    <span class="text-muted"><%= vehicle.model.presence || "-" %></span>
+  </td>
+
+  <!-- 5. Photo -->
+  <td class="text-center">
+    <% if vehicle.vehicle_photo.attached? %>
+      <button type="button" 
+              class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1 p-1"
+              data-bs-toggle="modal" 
+              data-bs-target="#vehiclePhotoModal_<%= vehicle.id %>"
+              title="<%= t("vehicle.view_photo") %>">
+        <%= image_tag vehicle.vehicle_photo, class: "rounded border object-fit-cover", style: "width: 45px; height: 35px;" %>
+      </button>
+
+      <!-- Photo Modal -->
+      <div class="modal fade" id="vehiclePhotoModal_<%= vehicle.id %>" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-md">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h2 class="modal-title fs-6 fw-bold">
+                <%= vehicle.license_plate %> - <%= vehicle.brand %> <%= vehicle.model %>
+              </h2>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center p-3">
+              <%= image_tag vehicle.vehicle_photo, class: "img-fluid rounded-3 shadow-sm", style: "max-height: 450px; object-fit: contain;" %>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% else %>
+      <span class="text-muted small fst-italic"><%= t("vehicle.no_photo") %></span>
+    <% end %>
+  </td>
+
+  <!-- 6. Start date (Date approved / created) -->
+  <td class="text-center text-muted small">
+    <%= vehicle.created_at.strftime("%d/%m/%Y") %>
+  </td>
+
+  <!-- 7. Tenant -->
+  <td>
+    <div class="d-flex flex-column">
+      <span class="fw-semibold text-dark"><%= vn_name(vehicle.tenant.user.fullname) %></span>
+      <span class="text-muted small"><%= vehicle.tenant.user.tel %></span>
+    </div>
+  </td>
+
+  <!-- 8. Actions (Delete with Reason Modal) -->
+  <td class="text-center">
+    <button type="button"
+            class="btn btn-sm btn-outline-danger d-inline-flex align-items-center justify-content-center p-1"
+            data-bs-toggle="modal"
+            data-bs-target="#deleteVehicleModal_<%= vehicle.id %>"
+            title="<%= t("vehicle.delete") %>">
+      <span class="material-symbols-filled fs-5">delete</span>
+    </button>
+
+    <!-- Delete Vehicle Modal -->
+    <div class="modal fade" id="deleteVehicleModal_<%= vehicle.id %>" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-start">
+          <div class="modal-header">
+            <h2 class="modal-title fs-5 fw-bold text-danger d-flex align-items-center gap-2">
+              <span class="material-symbols-outlined text-danger">warning</span>
+              <%= t("vehicle.delete_confirm_title") %>
+            </h2>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+
+          <%= form_with url: landlord_house_vehicle_path(house, vehicle), method: :delete do |f| %>
+            <div class="modal-body p-3">
+              <div class="alert alert-light border rounded-3 p-2 mb-3">
+                <div class="fw-semibold"><%= vehicle.human_type %> - <%= vehicle.license_plate %></div>
+                <div class="small text-muted"><%= vehicle.brand %> <%= vehicle.model %> • Khách thuê: <%= vehicle.tenant.user.fullname %></div>
+              </div>
+
+              <div class="mb-3">
+                <%= f.label :reason, class: "form-label fw-medium" do %>
+                  <%= t("vehicle.delete_reason") %> <span class="text-danger">*</span>
+                <% end %>
+                <%= f.text_area :reason,
+                      rows: 3,
+                      required: true,
+                      class: "form-control",
+                      placeholder: t("vehicle.delete_reason_placeholder") %>
+              </div>
+
+              <p class="small text-muted mb-0">
+                <%= t("vehicle.delete_notice") %>
+              </p>
+            </div>
+
+            <div class="modal-footer justify-content-end gap-2">
+              <button type="button" class="btn btn-secondary px-3" data-bs-dismiss="modal">
+                <%= t("cancel") %>
+              </button>
+              <%= f.submit t("vehicle.delete"),
+                    class: "btn btn-danger px-3",
+                    data: { bs_dismiss: "modal" } %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </td>
+</tr>

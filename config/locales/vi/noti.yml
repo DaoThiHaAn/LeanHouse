@@ -36,6 +36,8 @@ vi:
       repair_request_handling: "Yêu cầu sửa chữa đang được xử lý"
       repair_request_completed: "Yêu cầu sửa chữa đã hoàn thành"
       repair_request_rejected: "Yêu cầu sửa chữa đã bị từ chối"
+      vehicle_removed_landlord: "Phương tiện đã được xóa khỏi nhà"
+      vehicle_removed_tenant: "Phương tiện đã được xóa khỏi nhà"
 
 
     messages:
@@ -72,6 +74,8 @@ vi:
       leave_house_request_created_tenant: "Yêu cầu rời nhà tại %{house_name} đã được gửi thành công đến Chủ nhà."
       leave_house_request_approved_tenant: "Chủ nhà đã duyệt yêu cầu rời nhà tại %{house_name}."
       leave_house_request_rejected_tenant: "Chủ nhà đã từ chối yêu cầu rời nhà tại %{house_name}. Lý do: %{reason}"
+      vehicle_removed_landlord: "Phương tiện %{license_plate} của khách %{tenant_name} đã được xóa khỏi %{house_name}. Lý do: %{reason}"
+      vehicle_removed_tenant: "Phương tiện %{license_plate} của bạn tại %{house_name} đã được xóa. Lý do: %{reason}"
       request_approved_tenant: "Chủ nhà đã duyệt %{request_type} tại %{house_name}."
       request_handling_tenant: "Chủ nhà đã tiếp nhận và đang xử lý %{request_type} tại %{house_name}."
       request_completed_tenant: "Chủ nhà đã hoàn thành %{request_type} tại %{house_name}."
