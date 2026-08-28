@@ -56,7 +56,14 @@ Rails.application.routes.draw do
 
     resources :posts
 
-    resources :requests
+    resources :requests, only: %i[index show] do
+      collection do
+        get :filtered
+      end
+      member do
+        patch :handle
+      end
+    end
 
     resources :houses do
       member do # act on 1 single record

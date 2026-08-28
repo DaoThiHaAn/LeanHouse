@@ -75,20 +75,40 @@ class Request < ApplicationRecord
     end
   end
 
+  # Generic approve method for any request type
+  def approve!(landlord_user)
+    raise "Request is no longer actionable" unless actionable?
+
+    transaction do
+      if requestable.respond_to?(:approve!)
+        requestable.approve!(landlord_user)
+      else
+        update!(
+          status: :approved,
+          resolved_by: landlord_user,
+          resolved_at: Time.current
+        )
+        requestable.try(:purge_documents!)
+      end
+    end
+  end
+
   # Generic reject method for any request type
   def reject!(landlord_user, reason)
     raise "Request is no longer actionable" unless actionable?
 
     transaction do
-      update!(
-        status: :rejected,
-        rejection_reason: reason,
-        resolved_by: landlord_user,
-        resolved_at: Time.current
-      )
-
-      # Purge any ephemeral documents if the requestable supports it
-      requestable.try(:purge_documents!)
+      if requestable.respond_to?(:reject!)
+        requestable.reject!(landlord_user, reason)
+      else
+        update!(
+          status: :rejected,
+          rejection_reason: reason,
+          resolved_by: landlord_user,
+          resolved_at: Time.current
+        )
+        requestable.try(:purge_documents!)
+      end
     end
   end
 

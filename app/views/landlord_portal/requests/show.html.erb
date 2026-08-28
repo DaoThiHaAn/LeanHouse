@@ -1,2 +1,55 @@
-<h1>LandlordPortals::Requests#show</h1>
-<p>Find me in app/views/landlord_portals/requests/show.html.erb</p>
+<%= turbo_frame_tag "request_detail_modal" do %>
+  <div class="modal fade" id="requestDetailModal" tabindex="-1" aria-hidden="true"
+        data-controller="modal" data-modal-auto-open-value="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+      <div class="modal-content px-2">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5 fw-bold flex-grow-1 text-center" id="requestDetailModalLabel">
+            <%= t("request.detail_title") %> #<%= @request.id %>
+          </h1>
+          <button type="button" class="m-0 btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body p-3">
+          <!-- 1. Common Metadata (House, Sender/Tenant, Status, Timestamps, Reviewer, Rejection Reason) -->
+          <%= render "landlord_portal/requests/meta", request: @request %>
+
+          <!-- 2. Dynamic Polymorphic Details (types/_vehicle_request) -->
+          <% type_partial = "tenant_portal/requests/types/#{@request.requestable_type.underscore}" %>
+          <% if lookup_context.template_exists?(type_partial, [], true) %>
+            <%= render partial: type_partial, locals: { requestable: @request.requestable, request: @request } %>
+          <% end %>
+
+          <!-- 3. Handle Form for Landlord (If request is actionable) -->
+          <% if @request.actionable? %>
+            <%= render "landlord_portal/requests/handle_form", request: @request %>
+          <% elsif @request.pending? %>
+            <div class="alert alert-secondary d-flex align-items-center gap-2 mt-3 mb-0 rounded-3">
+              <span class="material-symbols-filled fs-5">timer_off</span>
+              <div><%= t("request.expired_note") %></div>
+            </div>
+          <% else %>
+            <div class="handle-bg d-flex align-items-center gap-2 mt-3 mb-0 py-2 px-3 rounded-3">
+              <span class="material-symbols-filled handle-text fs-4">verified</span>
+              <div class="handle-text fw-semibold">
+                <%= t("request.handled") %>:&nbsp;
+                <%= request_status_badge(@request.status) %>
+              </div>
+              <div>
+                <% if @request.resolved_at.present? %>
+                  &nbsp; • <%= @request.resolved_at.strftime("%H:%M - %d/%m/%Y") %>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+
+        <div class="modal-footer justify-content-center">
+          <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">
+            <%= t("close") %>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

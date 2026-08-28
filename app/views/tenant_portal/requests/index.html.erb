@@ -52,7 +52,7 @@
   <!-- Filter Form -->
   <%= form_with url: filtered_tenant_requests_path,
       method: :get,
-      class: "request-form d-flex align-items-center flex-wrap gap-3 my-4 p-3 justify-content-around rounded-3",
+      class: "request-form d-flex align-items-center flex-wrap gap-3 mt-4 p-3 justify-content-around rounded-3",
       data: { 
         controller: "filter-form",
         filter_form_default_house_value: @house&.id&.to_s || "",
@@ -136,6 +136,8 @@
       </button>
     </div>
   <% end %>
+
+  <h2 class="mt-5"><%= t("request.list") %></h2>
 
   <!-- Requests Table Section (Turbo Frame) -->
   <%= turbo_frame_tag "requests_table",

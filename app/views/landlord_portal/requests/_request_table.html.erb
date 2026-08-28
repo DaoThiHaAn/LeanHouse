@@ -1,0 +1,55 @@
+<%# Local variables: requests %>
+
+<%= turbo_frame_tag "requests_table" do %>
+  <!-- Used by Stimulus pagination-sync to update URL -->
+  <span hidden data-pagination-total-pages="<%= requests.total_pages %>"></span>
+
+  <% if requests.empty? %>
+    <div class="text-center py-5">
+      <p class="fs-5 fw-medium text-muted mb-2">
+        <%= (params[:house_id].present? || params[:month].present? || params[:year].present? || params[:status].present? || params[:request_type].present?) ? t("request.filter_empty") : t("request.none") %>
+      </p>
+      <%= image_tag 'request.png', alt: "Request icon", width: "160px", class: "d-block mx-auto mt-3 opacity-75" %>
+    </div>
+  <% else %>
+    <div class="table-responsive border rounded-3 bg-white mt-3">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th scope="col" class="py-3 px-3"><%= t("request.id") %></th>
+            <th scope="col" class="py-3 px-3"><%= t("request.type") %></th>
+            <th scope="col" class="py-3 px-3"><%= t("request.house") %></th>
+            <th scope="col" class="py-3 px-3"><%= t("request.sender") %></th>
+            <th scope="col" class="py-3 px-3 text-center">
+              <%= t("request.status") %>
+              <span class="material-symbols-outlined fs-6"
+                    <%= tooltip("top", :"request.due_note_short", html: true) %>>
+                info
+              </span>
+            </th>
+            <th scope="col" class="py-3 px-3 text-center"><%= t("request.sent_at") %></th>
+            <th scope="col" class="py-3 px-3 text-center"><%= t("request.updated_at") %></th>
+            <th scope="col" class="py-3 px-3 text-center"><%= t("actions") %></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% requests.each do |request| %>
+            <%= render "landlord_portal/requests/request_row", request: request %>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="d-flex justify-content-center mt-4">
+      <%= paginate requests,
+            params: {
+              house_id: params[:house_id],
+              month: params[:month],
+              year: params[:year],
+              status: params[:status],
+              request_type: params[:request_type]
+            } %>
+    </div>
+  <% end %>
+<% end %>

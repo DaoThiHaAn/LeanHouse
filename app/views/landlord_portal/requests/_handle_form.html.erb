@@ -1,0 +1,68 @@
+<%# Local variables: request %>
+
+<div class="handle-bg card rounded-3 p-3 mt-3" data-controller="request-handle">
+  <h2 class="fs-5 fw-bold mb-2 d-flex align-items-center gap-2 handle-text">
+    <span class="material-symbols-filled">gavel</span>
+    <%= t("request.handle_decision") %>
+  </h2>
+
+  <p class="text-muted mb-3">
+    <%= t("request.action_notice") %>
+  </p>
+
+  <%= form_with url: handle_landlord_request_path(request), method: :patch, id: "handle_request_form" do |f| %>
+    <!-- Action buttons container -->
+    <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
+      <!-- Approve Button -->
+      <%= button_tag type: :submit,
+            name: "decision",
+            value: "approved",
+            class: "btn btn-success d-inline-flex align-items-center gap-1 px-3 py-2 fw-bold",
+            data: { 
+              turbo_confirm: t("request.confirm_approve") 
+            } do %>
+        <span class="material-symbols-outlined fs-5">check_circle</span>
+        <%= t("request.approve") %>
+      <% end %>
+
+      <!-- Toggle Reject section -->
+      <button type="button"
+              class="btn btn-outline-danger d-inline-flex align-items-center gap-1 px-3 py-2"
+              data-action="click->request-handle#toggleReject">
+        <span class="material-symbols-outlined fs-5">cancel</span>
+        <%= t("request.reject") %>
+      </button>
+    </div>
+
+    <!-- Rejection Reason Section (Hidden by default until 'Từ chối' is clicked) -->
+    <div class="d-none border-top pt-3 mt-2" data-request-handle-target="rejectSection">
+      <div class="mb-3">
+        <%= label_tag :rejection_reason, t("request.reason"), class: "form-label small fw-semibold text-danger mb-1" %>
+        <span class="text-danger">*</span>
+        <%= text_area_tag :rejection_reason, "",
+              rows: 3,
+              class: "form-control",
+              placeholder: t("request.rejection_reason_placeholder"),
+              data: { request_handle_target: "reasonInput" } %>
+      </div>
+
+      <div class="d-flex justify-content-end gap-2">
+        <button type="button" class="btn btn-sm btn-light border" data-action="click->request-handle#hideReject">
+          <%= t("cancel") %>
+        </button>
+
+        <%= button_tag type: :submit,
+              name: "decision",
+              value: "rejected",
+              class: "btn btn-sm btn-danger d-inline-flex align-items-center gap-1",
+              data: { 
+                action: "click->request-handle#confirmReject",
+                turbo_confirm: t("request.confirm_reject") 
+              } do %>
+          <span class="material-symbols-outlined fs-6">block</span>
+          <%= t("request.reject", default: "Xác nhận từ chối") %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>

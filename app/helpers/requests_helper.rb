@@ -40,4 +40,16 @@ module RequestsHelper
 
     [ [ t("all", default: "Tất cả"), "" ] ] + current_year.downto(start_year).map { |y| [ y.to_s, y.to_s ] }
   end
+
+  def landlord_house_filter_options(houses)
+    [ [ t("all", default: "Tất cả"), "" ] ] + houses.map { |h| [ h.name, h.id.to_s ] }
+  end
+
+  def landlord_year_filter_options(landlord)
+    start_year = landlord&.user&.created_at&.year || Date.current.year
+    current_year = Date.current.year
+    start_year = current_year if start_year > current_year
+
+    [ [ t("all", default: "Tất cả"), "" ] ] + current_year.downto(start_year).map { |y| [ y.to_s, y.to_s ] }
+  end
 end

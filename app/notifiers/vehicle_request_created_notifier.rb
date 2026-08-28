@@ -14,6 +14,7 @@ class VehicleRequestCreatedNotifier < ApplicationNotifier
       if recipient.landlord?
         t("noti.messages.vehicle_request_created_landlord",
           tenant_name: params[:tenant_name],
+          house_name: params[:house_name],
           location: params[:location],
           license_plate: params[:license_plate])
       else

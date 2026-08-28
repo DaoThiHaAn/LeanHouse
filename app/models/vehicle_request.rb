@@ -26,6 +26,12 @@ class VehicleRequest < ApplicationRecord
     end
   end
 
+  def notification_details
+    {
+      license_plate: license_plate
+    }
+  end
+
   # Dynamic watermarked variant for document viewing
   def watermarked_registration_card
     return unless registration_card_image.attached?

@@ -1,2 +1,113 @@
-<h1>LandlordPortals::Requests#index</h1>
-<p>Find me in app/views/landlord_portals/requests/index.html.erb</p>
+<%= content_for :title, t("bar.request_handle", default: "Xử lý yêu cầu") %>
+
+<div class="request main-container w-95">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="mb-4 text-center w-100"><%= t("bar.request_handle", default: "Xử lý yêu cầu") %></h1>
+  </div>
+
+  <!-- Filter Form -->
+  <%= form_with url: filtered_landlord_requests_path,
+      method: :get,
+      class: "request-form d-flex align-items-center flex-wrap gap-5 mb-5 p-3 rounded-3",
+      data: { 
+        controller: "filter-form",
+        turbo_frame: "requests_table",
+        turbo_action: "advance"
+      } do |f| %>
+
+    <!-- 1. House Filter -->
+    <div class="d-flex flex-column gap-1">
+      <%= f.label :house_id, t("request.house_filter"), class: "form-label  fw-semibold mb-0" %>
+      <%= f.select :house_id,
+            landlord_house_filter_options(@houses),
+            { selected: params[:house_id] },
+            class: "form-select form-select-sm shadow-sm",
+            data: {
+              filter_form_target: "houseSelect",
+              action: "change->filter-form#changed"
+            } %>
+    </div>
+
+    <!-- 2. Sent Time Filter (Month + Year) -->
+    <div class="d-flex flex-column gap-1">
+      <%= f.label :month, t("request.sent_time"), class: "form-label  fw-semibold mb-0" %>
+
+      <div class="input-group flex-nowrap">
+        <span class="input-group-text"><%= t("request.sent_month") %></span>
+        <%= f.select :month,
+              [[t("all"), ""]] + (1..12).map { |m| [m.to_s.rjust(2, "0"), m.to_s] },
+              { selected: params[:month] },
+              class: "form-select form-select-sm shadow-sm",
+              data: {
+                filter_form_target: "monthSelect",
+                action: "change->filter-form#changed"
+              } %>
+
+        <span class="input-group-text"><%= t("request.sent_year") %></span>
+        <%= f.select :year,
+              landlord_year_filter_options(@landlord),
+              { selected: params[:year] },
+              class: "form-select form-select-sm shadow-sm",
+              data: {
+                filter_form_target: "yearSelect",
+                action: "change->filter-form#changed"
+              } %>
+      </div>
+    </div>
+
+    <!-- 3. Status Filter -->
+    <div class="d-flex flex-column gap-1">
+      <%= f.label :status, t("request.status"), class: "form-label  fw-semibold mb-0" %>
+      <%= f.select :status,
+            [[t("all"), ""]] + Request.status_options,
+            { selected: params[:status] },
+            class: "form-select form-select-sm shadow-sm",
+            data: {
+              filter_form_target: "statusSelect",
+              action: "change->filter-form#changed"
+            } %>
+    </div>
+
+    <!-- 4. Request Type Filter -->
+    <div class="d-flex flex-column gap-1">
+      <%= f.label :request_type, t("request.type"), class: "form-label  fw-semibold mb-0" %>
+      <%= f.select :request_type,
+            [[t("all"), ""]] + Request.request_type_options,
+            { selected: params[:request_type] },
+            class: "form-select form-select-sm shadow-sm",
+            data: {
+              filter_form_target: "requestTypeSelect",
+              action: "change->filter-form#changed"
+            } %>
+    </div>
+
+    <!-- Clear Filter Button (Dynamically toggled by Stimulus) -->
+    <div class="align-self-end ms-auto d-none" data-filter-form-target="clearButton">
+      <button type="button"
+              class="filter-off btn btn-sm btn-outline-secondary bg-light d-flex align-items-center gap-1"
+              data-action="click->filter-form#clear">
+        <span class="material-symbols-outlined fs-6">filter_alt_off</span>
+        <%= t("request.clear_filter") %>
+      </button>
+    </div>
+  <% end %>
+
+  <h2 class="mt-5"><%= t("request.list") %></h2>
+
+  <!-- Requests Table Section (Turbo Frame) -->
+  <%= turbo_frame_tag "requests_table",
+        src: filtered_landlord_requests_path(params.permit(:page, :house_id, :month, :year, :status, :request_type)),
+        loading: :lazy,
+        data: {
+          controller: "pagination-sync",
+          pagination_sync_canonical_url_value: landlord_requests_path,
+          pagination_sync_default_params_value: {}.to_json,
+          pagination_sync_query_params_value: ["house_id", "month", "year", "status", "request_type"].to_json,
+          pagination_sync_total_pages_selector_value: "[data-pagination-total-pages]",
+          action: "turbo:frame-load->pagination-sync#updateUrl"
+        } do %>
+    <%= loading_spinner %>
+  <% end %>
+</div>
+
+<%= turbo_frame_tag "request_detail_modal" %>

@@ -25,6 +25,8 @@ vi:
       contract_updated_landlord: "Cập nhật hợp đồng thành công"
       request_created_landlord: "Yêu cầu đăng ký xe mới"
       request_created_tenant: "Đã gửi yêu cầu đăng ký xe"
+      request_approved: "Yêu cầu đã được xét duyệt"
+      request_rejected: "Yêu cầu đã bị từ chối"
 
 
     messages:
@@ -48,5 +50,9 @@ vi:
       contract_overdue_closed_landlord: "Hợp đồng %{contract_name} với khách %{tenant_name} đã tự động kết thúc do quá hạn."
       contract_overdue_closed_tenant: "Hợp đồng %{contract_name} của bạn đã tự động kết thúc do quá hạn."
       invoice_creation_reminder: "Hôm nay là ngày tổng kết và lập hoá đơn cho nhà %{house_name}."
-      vehicle_request_created_landlord: "Khách thuê %{tenant_name} (%{location}) đã gửi yêu cầu đăng ký xe (Biển số: %{license_plate})."
+      vehicle_request_created_landlord: "Khách thuê %{tenant_name} tại %{house_name} (%{location}) đã gửi yêu cầu đăng ký xe (Biển số: %{license_plate})."
       vehicle_request_created_tenant: "Yêu cầu đăng ký xe (Biển số: %{license_plate}) tại %{house_name} đã được gửi thành công đến Chủ nhà."
+      vehicle_request_approved_tenant: "Chủ nhà đã duyệt yêu cầu đăng ký xe (Biển số: %{license_plate}) tại %{house_name}."
+      vehicle_request_rejected_tenant: "Chủ nhà đã từ chối yêu cầu đăng ký xe (Biển số: %{license_plate}) tại %{house_name}. Lý do: %{reason}"
+      request_approved_tenant: "Chủ nhà đã duyệt %{request_type} tại %{house_name}."
+      request_rejected_tenant: "Chủ nhà đã từ chối %{request_type} tại %{house_name}. Lý do: %{reason}"

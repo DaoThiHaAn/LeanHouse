@@ -17,6 +17,15 @@
   margin-top: 10px;
 }
 
+.handle-bg {
+  background-color: rgb(255, 247, 236);
+  border: 1px solid rgb(236, 215, 176)
+}
+
+.handle-text {
+  color: rgb(173, 80, 5)
+}
+
 @media (max-width: 768px) {
   .request.main-container {
     width: 90%
