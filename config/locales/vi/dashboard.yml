@@ -35,3 +35,13 @@ vi:
 
       # Fallback
       no_house_selected_tip: "Chọn một nhà để truy cập nhanh đến từng danh mục chi tiết."
+
+    tenant:
+      contract_due_title: "Thời hạn hợp đồng"
+      days_stayed: "Đã ở %{days} ngày"
+      days_stayed_detail: "Đã ở %{days}/%{total} ngày"
+      stay_progress: "Tiến độ ở"
+      no_contract: "Chưa có hợp đồng"
+      pending_requests_title: "Yêu cầu chờ xử lý"
+      view_contract: "Xem hợp đồng"
+      view_requests: "Xem danh sách yêu cầu"

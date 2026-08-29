@@ -35,3 +35,13 @@ en:
 
       # Fallback
       no_house_selected_tip: "Select a specific house to access detailed management pages."
+
+    tenant:
+      contract_due_title: "Contract Expiration"
+      days_stayed: "Stayed %{days} days"
+      days_stayed_detail: "Stayed %{days}/%{total} days"
+      stay_progress: "Stay progress"
+      no_contract: "No active contract"
+      pending_requests_title: "Pending Requests"
+      view_contract: "View contract"
+      view_requests: "View requests"

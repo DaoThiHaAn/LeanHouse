@@ -1,0 +1,96 @@
+<%# Local variables: contract, days_stayed, total_days, stay_progress_pct, pending_requests_count %>
+
+<div class="row g-4 mt-1 mb-4">
+  <!-- Card 1: Thời hạn hợp đồng & Tiến độ ở -->
+  <div class="col-12 col-lg-6">
+    <div class="dashboard-stat-card tenant-stat-card card-contract-due p-3 shadow-sm d-flex flex-column justify-content-between h-100">
+      <div class="d-flex align-items-start justify-content-between gap-3">
+        <div class="d-flex gap-3 align-items-center">
+          <div class="stat-card-icon-wrapper contract-icon-wrapper flex-shrink-0">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="8" y="6" width="28" height="36" rx="4" fill="#FFFFFF" stroke="#253858" stroke-width="2.5" />
+              <line x1="14" y1="14" x2="24" y2="14" stroke="#253858" stroke-width="2.5" stroke-linecap="round" />
+              <line x1="14" y1="20" x2="30" y2="20" stroke="#253858" stroke-width="2.5" stroke-linecap="round" />
+              <line x1="14" y1="26" x2="30" y2="26" stroke="#253858" stroke-width="2.5" stroke-linecap="round" />
+              <path d="M14 34C16 31 18 35 20 33" stroke="#253858" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              <circle cx="34" cy="34" r="7" fill="#E02424" stroke="#FFFFFF" stroke-width="2" />
+              <path d="M31.5 31.5L36.5 36.5M36.5 31.5L31.5 36.5" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" />
+            </svg>
+          </div>
+
+          <div>
+            <div class="stat-card-title contract-title mb-1"><%= t("dashboard.tenant.contract_due_title") %></div>
+            <div class="stat-value contract-value mb-1">
+              <%= contract&.due_date ? contract.due_date.strftime("%d/%m/%Y") : t("dashboard.tenant.no_contract") %>
+            </div>
+          </div>
+        </div>
+
+        <% if contract.present? %>
+          <%= link_to tenant_contract_path, class: "action-arrow-btn arrow-contract", title: t("dashboard.tenant.view_contract") do %>
+            <span class="material-symbols-outlined">arrow_forward</span>
+          <% end %>
+        <% else %>
+          <div class="action-arrow-btn arrow-contract disabled">
+            <span class="material-symbols-outlined">arrow_forward</span>
+          </div>
+        <% end %>
+      </div>
+
+      <!-- Counter of days stayed + Circular chart -->
+      <% if contract&.start_date.present? %>
+        <div class="stat-subtext mt-3 pt-2 border-top border-light-subtle d-flex align-items-center justify-content-between flex-wrap gap-2">
+          <div class="d-flex align-items-center gap-2">
+            <!-- Circular progress ring -->
+            <svg class="stay-progress-ring flex-shrink-0" viewBox="0 0 36 36" width="36" height="36">
+              <path class="ring-bg"
+                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                fill="none" stroke="#D3DDF8" stroke-width="3.5" />
+              <path class="ring-progress"
+                stroke-dasharray="<%= stay_progress_pct %>, 100"
+                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                fill="none" stroke="#2B368C" stroke-width="3.5" stroke-linecap="round" />
+              <text x="18" y="20.5" class="ring-text" text-anchor="middle" font-size="8.5" font-weight="bold" fill="#2B368C"><%= stay_progress_pct %>%</text>
+            </svg>
+
+            <div class="stay-days-info">
+              <span class="fw-bold text-dark"><%= t("dashboard.tenant.days_stayed", days: days_stayed) %></span>
+              <span class="text-muted small ms-1">(<%= t("dashboard.tenant.stay_progress") %>: <%= stay_progress_pct %>%)</span>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Card 2: Yêu cầu chờ xử lý -->
+  <div class="col-12 col-lg-6">
+    <div class="dashboard-stat-card tenant-stat-card card-pending-requests p-3 shadow-sm d-flex flex-column justify-content-between h-100">
+      <div class="d-flex align-items-start justify-content-between gap-3">
+        <div class="d-flex gap-3 align-items-center">
+          <div class="stat-card-icon-wrapper request-icon-wrapper flex-shrink-0">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M8 12C8 6.47715 12.4772 2 18 2H30C35.5228 2 40 6.47715 40 12V24C40 29.5228 35.5228 34 30 34H20L11 43V34H18C12.4772 34 8 29.5228 8 24V12Z" fill="#F59E0B" />
+              <path d="M24 10C21.7909 10 20 11.7909 20 14H23C23 13.4477 23.4477 13 24 13C24.5523 13 25 13.4477 25 14C25 15.5 22 16.5 22 19.5H25C25 17.5 28 16.5 28 14C28 11.7909 26.2091 10 24 10ZM22 22V25H25V22H22Z" fill="#FFFFFF" />
+            </svg>
+          </div>
+
+          <div>
+            <div class="stat-card-title request-title mb-1"><%= t("dashboard.tenant.pending_requests_title") %></div>
+            <div class="stat-value request-value mb-1">
+              <%= pending_requests_count %>
+            </div>
+          </div>
+        </div>
+
+        <%= link_to tenant_requests_path(status: "pending"), class: "action-arrow-btn arrow-requests", title: t("dashboard.tenant.view_requests") do %>
+          <span class="material-symbols-outlined">arrow_forward</span>
+        <% end %>
+      </div>
+
+      <div class="stat-subtext mt-3 pt-2 border-top border-light-subtle">
+        <span class="text-muted"><%= t("dashboard.tenant.view_requests") %></span>
+      </div>
+    </div>
+  </div>
+</div>

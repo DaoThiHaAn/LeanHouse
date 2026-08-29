@@ -156,6 +156,66 @@
   box-shadow: 0 4px 12px rgba(38, 112, 184, 0.3);
 }
 
+/* Tenant Dashboard Stat Cards */
+.tenant-stat-card {
+  min-height: 140px;
+  height: auto;
+}
+
+.card-contract-due {
+  background-color: #EDF2FE;
+  border-color: #D5E0FA;
+}
+.card-contract-due .contract-title {
+  color: #3B2865;
+}
+.card-contract-due .contract-value {
+  color: #273896;
+}
+.arrow-contract {
+  color: #3B2865;
+  border-color: #D5E0FA;
+}
+.arrow-contract:hover {
+  background-color: #3B2865;
+  color: #FFFFFF;
+  border-color: #3B2865;
+  box-shadow: 0 4px 12px rgba(59, 40, 101, 0.3);
+}
+
+.card-pending-requests {
+  background-color: #FFF4E6;
+  border-color: #FADEC0;
+}
+.card-pending-requests .request-title {
+  color: #4A3525;
+}
+.card-pending-requests .request-value {
+  color: #E07A1E;
+}
+.arrow-requests {
+  color: #6C4422;
+  border-color: #FADEC0;
+}
+.arrow-requests:hover {
+  background-color: #6C4422;
+  color: #FFFFFF;
+  border-color: #6C4422;
+  box-shadow: 0 4px 12px rgba(108, 68, 34, 0.3);
+}
+
+/* Stay Circular Progress Ring */
+.stay-progress-ring {
+  transform: rotate(-90deg);
+}
+.stay-progress-ring .ring-text {
+  transform: rotate(90deg);
+  transform-origin: center;
+}
+.stay-progress-ring .ring-progress {
+  transition: stroke-dasharray 0.5s ease-in-out;
+}
+
 .action-arrow-btn.disabled {
   opacity: 0.4;
   cursor: not-allowed;
@@ -164,6 +224,6 @@
 
 @media (max-width: 768px) {
   .dashboard-stat-card {
-    height: 120px;
+    height: auto;
   }
 }
