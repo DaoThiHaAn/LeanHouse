@@ -2,7 +2,7 @@
 
 <div class="d-flex justify-content-end">
   <!-- Add Room Button -->
-  <%= link_to new_landlord_house_room_path(house), class:"main-btn shadow-sm d-flex align-items-center gap-2 px-2 py-1" do %>
+  <%= link_to new_landlord_house_room_path(house), class:"main-btn shadow-sm d-flex align-items-center gap-2" do %>
     <span class="material-symbols-filled">add_circle</span>
     <%= t('form.room.add') %>
   <% end %>
@@ -17,8 +17,10 @@
 
     <%= f.select :state,
         [[t("all"), ""],
-          [t("form.room.available"), "available"],
-          [t("form.room.full"), "full"]],
+         [t("form.room.not_empty"), "not_empty"],
+         [t("form.room.available"), "available"],
+         [t("form.room.full"), "full"],
+         [t("form.room.empty"), "empty"]],
         { selected: params[:state] },
         class: "form-select w-auto shadow-sm",
         onchange: "this.form.requestSubmit()" %>

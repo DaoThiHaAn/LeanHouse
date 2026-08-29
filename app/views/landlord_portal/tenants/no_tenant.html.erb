@@ -9,14 +9,14 @@
 </p>
 
 <!-- Link Tenant Button -->
-<%= link_to new_landlord_house_tenant_path, class:"shadow-sm main-btn d-flex align-items-center gap-2 px-2 py-1",
+<%= link_to new_landlord_house_tenant_path, class:"shadow-sm main-btn d-flex align-items-center gap-2",
     data: { turbo_frame: "new_tenant_modal" } do %>
     <span class="material-symbols-filled">link</span>
     <%= t('form.tenant.link') %>
 <% end %>
 
 <!-- Create & Link Tenant Button -->
-<%= link_to landlord_house_create_new_tenant_path, class:"subtle main-btn d-flex align-items-center gap-2 px-2 py-1" do %>
+<%= link_to landlord_house_create_new_tenant_path, class:"subtle main-btn d-flex align-items-center gap-2" do %>
   <span class="material-symbols-filled">person_add</span>
   <%= t('form.tenant.create_and_link') %>
 <% end %>

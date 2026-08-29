@@ -8,8 +8,8 @@
     authorize_resource # only: [ :create ]
 
     def index
-      # Get all active houses sorted by name and matching query (if any)
-      @houses = @landlord.houses.sorted.search(params[:query])
+      # Get all active houses sorted by name, matching query and state filter
+      @houses = @landlord.houses.active.sorted.search(params[:query]).by_state(params[:state])
     end
 
 

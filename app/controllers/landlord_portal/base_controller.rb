@@ -26,8 +26,8 @@ module LandlordPortal
     end
 
     def set_house
-      # Guard against missing house_id parameter (e.g. root landlord pages)
-      return unless params[:house_id].present?
+      # Guard against missing or "all" house_id parameter (e.g. root landlord pages)
+      return unless params[:house_id].present? && params[:house_id] != "all"
 
       @house = House.find(params[:house_id])
     end

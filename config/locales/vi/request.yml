@@ -49,7 +49,7 @@ vi:
     sent_year: "Năm"
     updated_at: "Thời gian cập nhật"
     detail_title: "Chi tiết yêu cầu"
-    filter_strongpty: "Không tìm thấy yêu cầu nào phù hợp"
+    filter_empty: "Không tìm thấy yêu cầu nào phù hợp"
     clear_filter: "Xóa bộ lọc"
     documents_purged: "Ảnh giấy tờ đã được xóa tự động sau khi xét duyệt theo chính sách bảo mật."
     resolved_by: "Người duyệt"

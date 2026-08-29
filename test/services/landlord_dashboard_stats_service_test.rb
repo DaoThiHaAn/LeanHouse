@@ -216,6 +216,9 @@ class LandlordDashboardStatsServiceTest < ActiveSupport::TestCase
 
     # Pending requests: 1 pending (@req1), @req2 is approved
     assert_equal 1, stats[:pending_requests_count]
+    assert_not_nil stats[:pending_requests][:soonest_vehicle_request]
+    assert_equal @req1.id, stats[:pending_requests][:soonest_vehicle_request][:id]
+    assert_equal 6, stats[:pending_requests][:soonest_vehicle_request][:remaining_days]
 
     # Contracts: 1 overdue (@c_overdue), 1 nearly_due (@c_nearly), 1 future (@c_future)
     assert_equal 1, stats[:contracts][:overdue]
@@ -260,5 +263,42 @@ class LandlordDashboardStatsServiceTest < ActiveSupport::TestCase
     assert_equal 0.0, stats[:occupancy][:rate]
     assert_equal 0, stats[:occupancy][:total]
     assert_equal 0, stats[:occupancy][:occupied]
+  end
+
+  test "room transfer within the same house does not pollute new or leaved tenant counts" do
+    # Tenant 3 was staying in House 1 since last month
+    tenant_user3 = User.create!(
+      fullname: "Tenant C",
+      tel: "0933333333",
+      password: "Password123",
+      password_confirmation: "Password123",
+      role: "tenant",
+      sex: "male",
+      bday: 21.years.ago.to_date,
+      address: "Address C",
+      tel_verified_at: Time.current
+    )
+    tenant3 = Tenant.find_or_create_by!(id: tenant_user3.id)
+
+    # Initial stay in Room 1 from last month, checking out this month
+    TenantStay.create!(
+      tenant: tenant3,
+      rental_unit: @ru1,
+      checkin_at: 1.month.ago,
+      checkout_at: Time.current.beginning_of_month + 10.days
+    )
+    # New stay in Room 2 in the same house, checkin this month, currently active
+    TenantStay.create!(
+      tenant: tenant3,
+      rental_unit: @ru2,
+      checkin_at: Time.current.beginning_of_month + 10.days,
+      checkout_at: nil
+    )
+
+    stats = LandlordDashboardStatsService.call(landlord: @landlord, house_id: @house1.id)
+    # Tenant 3 was already a customer and is still a customer -> not new, not leaved!
+    # Original stats for House 1 was: 1 new (@stay1), 1 leaved (@stay2)
+    assert_equal 1, stats[:tenants_flow][:new_tenants]
+    assert_equal 1, stats[:tenants_flow][:leaved_tenants]
   end
 end

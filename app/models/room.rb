@@ -47,6 +47,9 @@ class Room < ApplicationRecord
 
   scope :available, -> { where("tenants_count < max_slots") }
   scope :full,      -> { where("tenants_count = max_slots") }
+  scope :not_empty, -> { where("tenants_count > 0") }
+  scope :occupied,  -> { where("tenants_count > 0") }
+  scope :empty,     -> { where("tenants_count = 0") }
 
   # Model method
 

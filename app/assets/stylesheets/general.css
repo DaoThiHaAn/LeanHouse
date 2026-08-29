@@ -121,14 +121,11 @@ main {
 
 h1 {
   font-family: "Playpen Sans", system-ui, sans-serif;
-  margin-bottom: 2rem;
-  color: var(--primary-text);
-}
-
-h1 {
   font-size: 1.6rem;
   margin-bottom: 0;
   font-weight: 800;
+  color: var(--primary-text);
+  text-transform: uppercase;
 }
 
 h2 {
@@ -275,6 +272,31 @@ textarea {
 
 .custom-secondary-btn:hover{
   background-color: whitesmoke;
+}
+
+.main-btn {
+  color: var(--primary-bg);
+  font-weight: bold;
+  font-size: 1.2rem;
+  border-radius: 10px;
+  background-color: rgb(232, 255, 246);
+  border: 1px solid rgb(196, 247, 227);
+  transition: background-color .2s ease, border-color .2s ease;
+  width: fit-content;
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  padding: 5px 15px;
+}
+
+.main-btn span {
+  font-size: 1.3rem;
+}
+
+.main-btn:hover {
+  background-color: rgb(210, 249, 234);
+  color: var(--primary-bg);
+  text-decoration: none;
 }
 
 .text-clamp-2 {

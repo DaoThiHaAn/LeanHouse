@@ -6,14 +6,15 @@
 </h1>
 
 <% if @vehicles.empty? %>
-  <div class="card border-0 bg-light rounded-4 text-center py-5 px-3 mx-auto" style="max-width: 600px;">
+  <div class="card border-0 bg-light rounded-4 text-center py-5 px-3 mx-auto w-75">
     <div class="mb-3">
-      <span class="material-symbols-outlined text-muted" style="font-size: 4rem;">two_wheeler</span>
+      <span class="material-symbols-outlined text-muted vehicle-icon">two_wheeler</span>
     </div>
-    <h2 class="fs-5 fw-bold text-dark mb-2"><%= t("vehicle.no_vehicles") %></h2>
-    <p class="text-muted small mb-0"><%= t("vehicle.no_vehicles_found") %></p>
+    <p class="fs-5 fw-bold mb-2"><%= t("vehicle.no_vehicles") %></p>
+    <p class="text-muted"><%= t("vehicle.no_vehicles_hint") %></p>
   </div>
 <% else %>
+
   <!-- Filter form toolbar -->
   <div class="d-flex justify-content-center px-4 align-items-center mb-4 gap-4">
     <%= form_with url: filtered_landlord_house_vehicles_path(@house),

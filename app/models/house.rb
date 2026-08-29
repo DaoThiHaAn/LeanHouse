@@ -37,6 +37,50 @@ class House < ApplicationRecord
       )
   end
 
+  scope :by_state, ->(state) do
+    return all if state.blank?
+
+    case state
+    when "available"
+      where(
+        id: Room.where(deleted: false)
+                .joins(:floor)
+                .group("floors.house_id")
+                .having("SUM(rooms.max_slots) > SUM(rooms.tenants_count)")
+                .select("floors.house_id")
+      )
+    when "full"
+      where(
+        id: Room.where(deleted: false)
+                .joins(:floor)
+                .group("floors.house_id")
+                .having("SUM(rooms.max_slots) > 0 AND SUM(rooms.max_slots) <= SUM(rooms.tenants_count)")
+                .select("floors.house_id")
+      )
+    when "not_empty", "occupied"
+      where(
+        id: Room.where(deleted: false)
+                .joins(:floor)
+                .group("floors.house_id")
+                .having("SUM(rooms.tenants_count) > 0")
+                .select("floors.house_id")
+      )
+    when "empty"
+      where.not(
+        id: Room.where(deleted: false)
+                .joins(:floor)
+                .where("rooms.tenants_count > 0")
+                .select("floors.house_id")
+      )
+    when "room"
+      where(mode: :room)
+    when "bed"
+      where(mode: :bed)
+    else
+      all
+    end
+  end
+
   # MODEL METHODS
 
   def reach_max_floors?

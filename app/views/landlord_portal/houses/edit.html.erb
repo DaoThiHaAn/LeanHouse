@@ -78,7 +78,7 @@
 
           <%# Add floor button %>
           <%= link_to new_landlord_house_floor_path(@house),
-                      class: "main-btn d-flex align-items-center gap-2 px-2 py-1",
+                      class: "main-btn d-flex align-items-center gap-2",
                       data: { turbo_frame: "new_floor_modal", turbo_prefetch: false } do %>
             <span class="material-symbols-outlined">add</span>
             <%= t("form.floor.add") %>

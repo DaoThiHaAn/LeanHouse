@@ -111,6 +111,16 @@ class LandlordPortal::RequestsControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "Tenant Le"
   end
 
+  test "filtered returns table with unfound message in tbody when no matching requests" do
+    sign_in_as(@landlord_user)
+
+    get filtered_landlord_requests_path, params: { status: "completed" }, headers: { "Turbo-Frame" => "requests_table" }
+    assert_response :success
+    assert_select "turbo-frame#requests_table"
+    assert_select "table thead th", count: 8
+    assert_select "table tbody tr td", text: I18n.t("request.filter_empty")
+  end
+
   test "landlord can view request detail modal with handle form" do
     sign_in_as(@landlord_user)
 

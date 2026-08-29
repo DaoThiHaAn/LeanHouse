@@ -12,11 +12,14 @@ class LandlordDashboardStatsService
   end
 
   def call
+    pending_reqs = calculate_pending_requests
+
     {
       house: selected_house,
       tenants_flow: calculate_tenant_flow,
       occupancy: calculate_occupancy,
-      pending_requests_count: calculate_pending_requests,
+      pending_requests: pending_reqs,
+      pending_requests_count: pending_reqs[:total],
       contracts: calculate_contract_stats
     }
   end
@@ -37,12 +40,12 @@ class LandlordDashboardStatsService
     @selected_house ||= landlord.houses.find_by(id: house_id) if house_id
   end
 
-  # 1. New & Leaved tenants in current month (Single SQL aggregation)
+  # 1. New & Leaved unique tenant accounts in current month
   def calculate_tenant_flow
     house_ids = target_houses.select(:id)
     return { new_tenants: 0, leaved_tenants: 0 } if house_ids.empty?
 
-    query = TenantStay.joins(
+    base_scope = TenantStay.joins(
       "INNER JOIN rental_units ON rental_units.id = tenant_stays.rental_unit_id
        LEFT JOIN rooms r_direct ON rental_units.rentable_type = 'Room' AND r_direct.id = rental_units.rentable_id
        LEFT JOIN beds b ON rental_units.rentable_type = 'Bed' AND b.id = rental_units.rentable_id
@@ -50,17 +53,30 @@ class LandlordDashboardStatsService
        INNER JOIN floors ON floors.id = COALESCE(r_direct.floor_id, r_bed.floor_id)"
     ).where(floors: { house_id: house_ids })
 
-    result = query.select(
-      ActiveRecord::Base.sanitize_sql_array([
-        "COUNT(*) FILTER (WHERE tenant_stays.checkin_at BETWEEN :m_start AND :m_end) AS new_tenants_count,
-         COUNT(*) FILTER (WHERE tenant_stays.checkout_at BETWEEN :m_start AND :m_end) AS leaved_tenants_count",
-        { m_start: month_start, m_end: month_end }
-      ])
-    ).take
+    # Unique new tenants: checked in this month and was not already staying before month_start
+    existing_tenant_ids = base_scope.where("tenant_stays.checkin_at < ?", month_start)
+                                     .where("tenant_stays.checkout_at IS NULL OR tenant_stays.checkout_at >= ?", month_start)
+                                     .select(:tenant_id)
+
+    new_tenants_count = base_scope.where(tenant_stays: { checkin_at: month_start..month_end })
+                                  .where.not(tenant_id: existing_tenant_ids)
+                                  .select(:tenant_id)
+                                  .distinct
+                                  .count
+
+    # Unique leaved tenants: checked out this month and does not have an active stay remaining in this house
+    active_tenant_ids = base_scope.where(tenant_stays: { checkout_at: nil })
+                                  .select(:tenant_id)
+
+    leaved_tenants_count = base_scope.where(tenant_stays: { checkout_at: month_start..month_end })
+                                     .where.not(tenant_id: active_tenant_ids)
+                                     .select(:tenant_id)
+                                     .distinct
+                                     .count
 
     {
-      new_tenants: result&.new_tenants_count.to_i,
-      leaved_tenants: result&.leaved_tenants_count.to_i
+      new_tenants: new_tenants_count,
+      leaved_tenants: leaved_tenants_count
     }
   end
 
@@ -87,12 +103,38 @@ class LandlordDashboardStatsService
     }
   end
 
-  # 3. Pending requests count
+  # 3. Pending requests count and soonest expiring vehicle request
   def calculate_pending_requests
     house_ids = target_houses.select(:id)
-    return 0 if house_ids.empty?
+    return { total: 0, soonest_vehicle_request: nil } if house_ids.empty?
 
-    Request.where(house_id: house_ids, status: :pending).count
+    pending_scope = Request.where(house_id: house_ids, status: :pending)
+    total = pending_scope.count
+
+    soonest_vr = pending_scope.where(requestable_type: "VehicleRequest")
+                              .where("created_at > ?", Request::EXPIRED_DAYS.days.ago)
+                              .order(created_at: :asc)
+                              .first
+
+    soonest_info = if soonest_vr
+      expiry_time = soonest_vr.created_at + Request::EXPIRED_DAYS.days
+      remaining_seconds = [ (expiry_time - Time.current).to_i, 0 ].max
+      remaining_days = remaining_seconds / 1.day
+      remaining_hours = (remaining_seconds % 1.day) / 1.hour
+
+      {
+        id: soonest_vr.id,
+        expiry_time: expiry_time,
+        remaining_days: remaining_days,
+        remaining_hours: remaining_hours,
+        is_urgent: remaining_seconds <= 2.days.to_i
+      }
+    end
+
+    {
+      total: total,
+      soonest_vehicle_request: soonest_info
+    }
   end
 
   # 4. Overdue and nearly-due contracts (Single SQL aggregation)

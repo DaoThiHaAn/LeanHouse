@@ -109,4 +109,33 @@ class LandlordPortal::VehiclesControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :unprocessable_entity
   end
+
+  test "shows empty card when house has no vehicles at all" do
+    empty_house = House.create!(
+      landlord: @landlord,
+      name: "Empty House",
+      mode: :room,
+      address_l1: "123 Main St",
+      address_l2: "Ward 1",
+      address_l3: "District 1",
+      floors_count: 1,
+      inv_creation_date: 1
+    )
+
+    sign_in_as(@landlord_user)
+    get landlord_house_vehicles_path(empty_house)
+
+    assert_response :success
+    assert_select "p", text: I18n.t("vehicle.no_vehicles")
+    assert_select "table", 0
+  end
+
+  test "shows unfound message in table row when filter yields no results" do
+    sign_in_as(@landlord_user)
+
+    get filtered_landlord_house_vehicles_path(@house, query: "NON_EXISTING_QUERY_12345")
+    assert_response :success
+    assert_select "table"
+    assert_select "tbody tr td", text: I18n.t("vehicle.no_vehicles_found")
+  end
 end

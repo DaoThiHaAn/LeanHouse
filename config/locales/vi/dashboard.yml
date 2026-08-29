@@ -11,8 +11,8 @@ vi:
       # Card 1: Tenant flow
       tenant_flow_title: "Biến động khách"
       tenant_flow_desc: "Lưu lượng khách trong tháng"
-      new_tenants_count: "+%{count} khách mới"
-      leaved_tenants_count: "-%{count} khách trả phòng"
+      new_tenants_count: "khách mới"
+      leaved_tenants_count: "khách trả phòng"
       view_tenants: "Xem danh sách khách thuê"
 
       # Card 2: Occupancy rate
@@ -23,6 +23,9 @@ vi:
       # Card 3: Pending requests
       pending_requests: "Yêu cầu chưa xử lý"
       view_requests: "Xem danh sách yêu cầu"
+      vehicle_request_due_in_days: "Đ/k xe hết hạn sau %{days} ngày"
+      vehicle_request_due_in_hours: "Đ/k xe hết hạn sau %{hours} giờ"
+      vehicle_request_due_today: "Đ/k xe hết hạn hôm nay!"
 
       # Card 4: Contracts
       contracts_alert: "Hợp đồng cần xử lý"

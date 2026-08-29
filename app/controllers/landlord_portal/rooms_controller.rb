@@ -167,6 +167,10 @@ class LandlordPortal::RoomsController < LandlordPortal::BaseController
       scope = scope.available
     when "full"
       scope = scope.full
+    when "not_empty", "occupied"
+      scope = scope.not_empty
+    when "empty"
+      scope = scope.empty
     end
 
     scope.order("floors.position ASC, rooms.name ASC")

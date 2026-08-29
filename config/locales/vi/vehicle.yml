@@ -20,9 +20,10 @@ vi:
     view_photo: "Xem ảnh xe"
     no_photo: "Không có ảnh"
     no_vehicles: "Chưa có phương tiện nào được đăng ký trong nhà này."
+    no_vehicles_hint: "Khi bạn chấp thuận yêu cầu Đăng ký gửi xe của khách thuê, thông tin xe sẽ tự động hiển thị ở đây"
     no_vehicles_found: "Không tìm thấy phương tiện nào phù hợp với bộ lọc."
     no_vehicles_tenant: "Bạn chưa có phương tiện nào được đăng ký tại nhà này."
-    register_prompt: "Bạn có thể gửi yêu cầu đăng ký phương tiện mới để sử dụng bãi đỗ xe của tòa nhà."
+    register_prompt: "Bạn có thể gửi yêu cầu đăng ký phương tiện mới để thêm vào danh sách quản lý của tòa nhà."
     register_btn: "Đăng ký gửi xe ngay"
     license_plate_placeholder: "VD: 59A-12345"
 

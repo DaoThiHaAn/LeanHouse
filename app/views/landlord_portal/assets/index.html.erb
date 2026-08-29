@@ -16,7 +16,7 @@
   <p class="fs-5 text-center fw-bold"><%= t("form.asset.none") %></p>
 
   <%= link_to new_landlord_house_asset_path(@house),
-     class: "main-btn px-2 py-1 d-flex align-items-center gap-2 mx-auto mt-3",
+     class: "main-btn d-flex align-items-center gap-2 mx-auto mt-3",
             data: {turbo_frame: "new_asset_modal"} do %>
         <span class="material-symbols-filled">add_circle</span>
         <%= t('form.asset.add') %>
@@ -27,7 +27,7 @@
 
   <div class="d-flex justify-content-center px-5 align-items-center mt-3 mb-5 gap-5">
     <%= link_to new_landlord_house_asset_path(@house),
-      class: "main-btn px-2 py-1 d-flex align-items-center gap-2 shadow-sm",
+      class: "main-btn d-flex align-items-center gap-2 shadow-sm",
               data: {turbo_frame: "new_asset_modal"} do %>
           <span class="material-symbols-filled">add_circle</span>
           <%= t('form.asset.add') %>

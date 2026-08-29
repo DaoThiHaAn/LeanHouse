@@ -23,6 +23,9 @@ en:
       # Card 3: Pending requests
       pending_requests: "Pending Requests"
       view_requests: "View requests list"
+      vehicle_request_due_in_days: "Vehicle req due in %{days}d"
+      vehicle_request_due_in_hours: "Vehicle req due in %{hours}h"
+      vehicle_request_due_today: "Vehicle req due today!"
 
       # Card 4: Contracts
       contracts_alert: "Actionable Contracts"
@@ -32,4 +35,3 @@ en:
 
       # Fallback
       no_house_selected_tip: "Select a specific house to access detailed management pages."
-

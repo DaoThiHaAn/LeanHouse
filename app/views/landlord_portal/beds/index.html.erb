@@ -24,7 +24,7 @@
 
     <!-- Add Bed Button -->
     <%= link_to new_landlord_house_bed_path(@house), 
-        class:"shadow-sm main-btn d-flex align-items-center gap-2 px-2 py-1",
+        class:"shadow-sm main-btn d-flex align-items-center gap-2",
         data: {turbo_frame: "new_bed_modal"} do %>
       <span class="material-symbols-filled">add_circle</span>
       <%= t('form.bed.add') %>

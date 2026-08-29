@@ -79,4 +79,13 @@ class LandlordPortal::DashboardsControllerTest < ActionDispatch::IntegrationTest
     assert_select "h1", text: I18n.t("dashboard.landlord.title")
     assert_select ".dashboard-stat-card", 4
   end
+
+  test "renders dashboard when house_id is explicitly 'all'" do
+    sign_in_as(@landlord_user)
+    get landlord_dashboard_path, params: { house_id: "all" }
+
+    assert_response :success
+    assert_select "h1", text: I18n.t("dashboard.landlord.title_all_houses")
+    assert_select ".dashboard-stat-card", 4
+  end
 end

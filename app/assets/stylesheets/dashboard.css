@@ -1,8 +1,3 @@
-.dashboard h1 {
-  font-weight: 800;
-  color: var(--primary-text);
-}
-
 .dashboard-header {
   border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 }
@@ -18,7 +13,7 @@
 .dashboard-stat-card {
   border: 1px solid transparent;
   border-radius: 16px;
-  min-height: 145px;
+  height: 140px;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   position: relative;
 }
@@ -63,16 +58,16 @@
 
 /* Stat Card Inner Elements */
 .stat-card-title {
-  font-size: 0.85rem;
+  font-size: 1rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   color: #555;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.45rem;
 }
 
 .stat-icon {
-  font-size: 2.2rem !important;
+  font-size: 3.5rem !important;
   line-height: 1;
 }
 
@@ -95,27 +90,80 @@
   width: 38px;
   height: 38px;
   border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  color: var(--primary-text);
+  background-color: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.08);
   text-decoration: none;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
   flex-shrink: 0;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
 }
 
 .action-arrow-btn .material-symbols-outlined {
   font-size: 1.25rem;
+  transition: transform 0.2s ease;
 }
 
 .action-arrow-btn:hover {
-  background-color: var(--primary-bg);
-  color: white;
-  border-color: var(--primary-bg);
-  transform: scale(1.08);
+  transform: scale(1.1);
+}
+
+.action-arrow-btn:hover .material-symbols-outlined {
+  transform: translateX(2px);
+}
+
+/* Card Theme Coordinated Arrow Buttons */
+.card-purple .action-arrow-btn {
+  color: #7B4397;
+  border-color: #E2D3EE;
+}
+.card-purple .action-arrow-btn:hover {
+  background-color: #7B4397;
+  color: #FFFFFF;
+  border-color: #7B4397;
+  box-shadow: 0 4px 12px rgba(123, 67, 151, 0.3);
+}
+
+.card-green .action-arrow-btn {
+  color: #198754;
+  border-color: #C6ECD9;
+}
+.card-green .action-arrow-btn:hover {
+  background-color: #198754;
+  color: #FFFFFF;
+  border-color: #198754;
+  box-shadow: 0 4px 12px rgba(25, 135, 84, 0.3);
+}
+
+.card-orange .action-arrow-btn {
+  color: #DC6B2F;
+  border-color: #FCD8C1;
+}
+.card-orange .action-arrow-btn:hover {
+  background-color: #DC6B2F;
+  color: #FFFFFF;
+  border-color: #DC6B2F;
+  box-shadow: 0 4px 12px rgba(220, 107, 47, 0.3);
+}
+
+.card-blue .action-arrow-btn {
+  color: #2670B8;
+  border-color: #C9E0F7;
+}
+.card-blue .action-arrow-btn:hover {
+  background-color: #2670B8;
+  color: #FFFFFF;
+  border-color: #2670B8;
+  box-shadow: 0 4px 12px rgba(38, 112, 184, 0.3);
 }
 
 .action-arrow-btn.disabled {
   opacity: 0.4;
   cursor: not-allowed;
   pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  .dashboard-stat-card {
+    height: 120px;
+  }
 }
