@@ -33,3 +33,8 @@ production:
   request_overdue_expire:
     class: RequestOverdueExpireJob
     schedule: every day at 3am
+
+  cleanup_notifications:
+    class: CleanupNotificationsJob
+    args: [ { read_days: 30, unread_days: 180 } ]
+    schedule: every day at 3:30am

@@ -34,7 +34,7 @@ Rails.application.routes.draw do
   resources :posts, only: [ :index, :show ]
   resources :users
 
-  resources :notifications, only: [] do
+  resources :notifications, only: [ :index ] do
     member do
       patch :mark_as_read
     end

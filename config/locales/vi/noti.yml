@@ -1,9 +1,15 @@
 vi:
   noti:
     self: "Thông báo"
+    notification_center: "Trung tâm thông báo"
+    view_all: "Xem tất cả thông báo"
     mark_all_as_read: "Đánh dấu tất cả đã đọc"
     mark_as_read: "Đánh dấu đã đọc"
     empty: "Không có thông báo."
+    no_notifications_in_filter: "Không có thông báo nào trong danh mục này."
+    all: "Tất cả"
+    unread: "Chưa đọc"
+    read: "Đã đọc"
 
     titles:
       linked_to_house: "Bạn đã được thêm vào nhà"

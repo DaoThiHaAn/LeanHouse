@@ -1,0 +1,61 @@
+<%# Local variables: filter, notifications_list, unread_count %>
+
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2 border-bottom pb-3">
+  <!-- Filter tabs -->
+  <div class="d-flex gap-2">
+    <%= link_to notifications_path(filter: "all"),
+          class: "btn btn-sm #{(filter == 'all' || filter.blank?) ? 'btn-primary' : 'btn-outline-secondary'} rounded-pill px-3" do %>
+      <%= t("noti.all") %>
+    <% end %>
+
+    <%= link_to notifications_path(filter: "unread"),
+          class: "btn btn-sm #{filter == 'unread' ? 'btn-primary' : 'btn-outline-secondary'} rounded-pill px-3 position-relative" do %>
+      <%= t("noti.unread") %>
+      <span id="unread_filter_badge">
+        <% if unread_count.to_i > 0 %>
+          <span class="badge bg-danger ms-1"><%= unread_count %></span>
+        <% end %>
+      </span>
+    <% end %>
+
+    <%= link_to notifications_path(filter: "read"),
+          class: "btn btn-sm #{filter == 'read' ? 'btn-primary' : 'btn-outline-secondary'} rounded-pill px-3" do %>
+      <%= t("noti.read") %>
+    <% end %>
+  </div>
+
+  <div id="mark_all_read_btn_container">
+    <% if unread_count.to_i > 0 %>
+      <%= button_to mark_all_as_read_notifications_path(filter: filter), method: :patch,
+            class: "btn btn-outline-danger btn-sm d-flex align-items-center gap-1 shadow-sm" do %>
+        <span class="material-symbols-outlined fs-6">done_all</span>
+        <span><%= t("noti.mark_all_as_read") %></span>
+      <% end %>
+    <% end %>
+  </div>
+</div>
+
+<!-- Notification list -->
+<div id="notifications_items_container">
+  <% if notifications_list.empty? %>
+    <div class="card shadow-sm border-0 py-5 text-center text-muted rounded-3">
+      <div class="card-body">
+        <span class="material-symbols-outlined fs-1 text-secondary mb-2 d-block">
+          notifications_off
+        </span>
+        <p class="mb-0 fw-medium">
+          <%= filter == 'all' ? t("noti.empty") : t("noti.no_notifications_in_filter") %>
+        </p>
+      </div>
+    </div>
+  <% else %>
+    <div class="d-flex flex-column gap-4 mb-4">
+      <%= render partial: "notifications/notification", collection: notifications_list, as: :notification %>
+    </div>
+
+    <!-- Pagination -->
+    <div class="d-flex justify-content-center mt-4">
+      <%= paginate notifications_list %>
+    </div>
+  <% end %>
+</div>

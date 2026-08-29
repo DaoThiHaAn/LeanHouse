@@ -1,0 +1,12 @@
+<%= content_for :title, t("noti.notification_center") %>
+
+<div class="notifications-page main-container w-65 py-4">
+  <h1 class="mt-3 mb-5 text-center"><%= t("noti.notification_center") %></h1>
+
+  <div id="notifications_page_content">
+    <%= render "notifications/page_content",
+          filter: @filter,
+          notifications_list: @notifications_list,
+          unread_count: current_user.notifications.unread.count %>
+  </div>
+</div>

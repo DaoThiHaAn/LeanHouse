@@ -1,0 +1,13 @@
+.detail-noti.card .badge {
+  width: 8px; height: 8px;
+}
+
+.detail-noti.card.unread {
+  background-color: #effaff;
+  border-color: rgb(184, 243, 243) !important;
+}
+
+.notification-full-message {
+  white-space: pre-line;
+  word-break: break-word;
+}

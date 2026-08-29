@@ -60,5 +60,12 @@
         </li>
       <% end %>
     <% end %>
+
+    <li class="py-2 px-3 text-center border-top bg-light dropdown-noti-footer">
+      <%= link_to notifications_path, class: "text-decoration-none fw-semibold small d-inline-flex align-items-center justify-content-center gap-1 text-primary w-100" do %>
+        <span><%= t("noti.view_all") %></span>
+        <span class="material-symbols-outlined fs-6">arrow_forward</span>
+      <% end %>
+    </li>
   </ul>
 </div>
