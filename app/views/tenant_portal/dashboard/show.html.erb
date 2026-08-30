@@ -1,8 +1,10 @@
 <%# Variables: @tenant, @tenant_stay, @house, @contract, @days_stayed, @total_days, @stay_progress_pct, @pending_requests_count %>
 <% content_for :title, t("dashboard.self") %>
 
-<div class="tenant-dashboard main-container w-75 py-3">
-  <h1 class="text-center mb-4"><%= t("dashboard.self") %></h1>
+<div class="tenant-dashboard main-container w-75 py-4">
+  <h1 class="text-center my-4"><%= t("dashboard.self") %></h1>
+
+  <%= render "tenant_portal/shared/room_info_zone", house: @house, tenant_stay: @tenant_stay %>
 
   <%= render "tenant_portal/dashboard/stats_grid",
         contract: @contract,
@@ -11,5 +13,4 @@
         stay_progress_pct: @stay_progress_pct,
         pending_requests_count: @pending_requests_count %>
 
-  <%= render "tenant_portal/shared/room_info_zone", house: @house, tenant_stay: @tenant_stay %>
 </div>
