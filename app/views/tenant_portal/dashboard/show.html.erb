@@ -1,4 +1,4 @@
-<%# Variables: @tenant, @tenant_stay, @house, @contract, @days_stayed, @total_days, @stay_progress_pct, @pending_requests_count %>
+<%# Variables: @tenant, @tenant_stay, @house, @contract, @days_stayed, @total_days, @stay_progress_pct, @pending_requests_count, @soonest_vehicle_request %>
 <% content_for :title, t("dashboard.self") %>
 
 <div class="tenant-dashboard main-container w-75 py-4">
@@ -11,6 +11,7 @@
         days_stayed: @days_stayed,
         total_days: @total_days,
         stay_progress_pct: @stay_progress_pct,
-        pending_requests_count: @pending_requests_count %>
+        pending_requests_count: @pending_requests_count,
+        soonest_vehicle_request: @soonest_vehicle_request %>
 
 </div>

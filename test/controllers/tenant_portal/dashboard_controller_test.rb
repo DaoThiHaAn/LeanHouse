@@ -125,6 +125,39 @@ class TenantPortal::DashboardControllerTest < ActionDispatch::IntegrationTest
     assert_select ".request-value", text: /2/
   end
 
+  test "linked tenant with nearly-overdue vehicle request displays expiration indicator" do
+    vehicle_req = VehicleRequest.new(
+      license_plate: "59A-99999",
+      vehicle_type: :motorbike,
+      consent_given_at: Time.current
+    )
+    vehicle_req.registration_card_image.attach(
+      io: File.open(Rails.root.join("test/fixtures/files/normal.png")),
+      filename: "reg.png",
+      content_type: "image/png"
+    )
+    vehicle_req.vehicle_photo.attach(
+      io: File.open(Rails.root.join("test/fixtures/files/normal.png")),
+      filename: "photo.png",
+      content_type: "image/png"
+    )
+    vehicle_req.save!
+
+    req = Request.create!(
+      tenant: @tenant,
+      house: @house,
+      requestable: vehicle_req,
+      status: :pending
+    )
+    req.update_columns(created_at: 4.days.ago)
+
+    sign_in_as(@tenant_user)
+
+    get tenant_dashboard_path
+    assert_response :success
+    assert_includes response.body, I18n.t("dashboard.tenant.vehicle_request_due_in_days", days: 2)
+  end
+
   test "tenant without contract shows fallback" do
     @contract.destroy!
     @tenant_stay.update!(has_contract: false)

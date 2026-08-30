@@ -1,4 +1,4 @@
-<%# Local variables: contract, days_stayed, total_days, stay_progress_pct, pending_requests_count %>
+<%# Local variables: contract, days_stayed, total_days, stay_progress_pct, pending_requests_count, soonest_vehicle_request %>
 
 <div class="row g-4 mt-1 mb-4">
   <!-- Card 1: Thời hạn hợp đồng & Tiến độ ở -->
@@ -77,7 +77,23 @@
       </div>
 
       <div class="stat-subtext mt-3 pt-2 border-top border-light-subtle">
-        <span class="text-muted"><%= t("dashboard.tenant.view_requests") %></span>
+        <% if soonest_vehicle_request %>
+          <% if soonest_vehicle_request[:remaining_days] > 0 %>
+            <span class="<%= soonest_vehicle_request[:is_urgent] ? 'text-danger fw-bold' : 'text-warning-emphasis fw-semibold' %>">
+              <%= t("dashboard.tenant.vehicle_request_due_in_days", days: soonest_vehicle_request[:remaining_days]) %>
+            </span>
+          <% elsif soonest_vehicle_request[:remaining_hours] > 0 %>
+            <span class="text-danger fw-bold">
+              <%= t("dashboard.tenant.vehicle_request_due_in_hours", hours: soonest_vehicle_request[:remaining_hours]) %>
+            </span>
+          <% else %>
+            <span class="text-danger fw-bold">
+              <%= t("dashboard.tenant.vehicle_request_due_today") %>
+            </span>
+          <% end %>
+        <% else %>
+          <span class="text-muted"><%= t("dashboard.tenant.view_requests") %></span>
+        <% end %>
       </div>
     </div>
   </div>

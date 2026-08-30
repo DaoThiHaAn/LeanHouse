@@ -45,3 +45,6 @@ en:
       pending_requests_title: "Pending Requests"
       view_contract: "View contract"
       view_requests: "View requests"
+      vehicle_request_due_in_days: "Vehicle req expires in %{days}d"
+      vehicle_request_due_in_hours: "Vehicle req expires in %{hours}h"
+      vehicle_request_due_today: "Vehicle req expires today!"
