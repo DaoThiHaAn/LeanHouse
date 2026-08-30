@@ -76,6 +76,10 @@ class User < ApplicationRecord
     )
   end
 
+  def human_sex
+    I18n.t("form.profile.#{sex}")
+  end
+
   private
 
   def pw_complexity

@@ -179,7 +179,20 @@ Rails.application.routes.draw do
     resources :vehicles, only: %i[index destroy]
   end
 
-  namespace :admin, module: :admin_area do
-    resources :dashboard, :houses
+  # ADMIN
+  namespace :admin, module: :admin_portal do
+    get "/login", to: "sessions#new", as: :login
+    post "/login", to: "sessions#create", as: :handle_login
+    delete "/logout", to: "sessions#destroy", as: :logout
+    get "/logout", to: "sessions#destroy"
+
+    root to: "dashboard#show"
+    resource :dashboard, only: [ :show ], controller: "dashboard"
+    resources :users, only: [ :index, :show ] do
+      member do
+        patch :toggle_active
+      end
+    end
+    resources :houses, only: [ :index, :show ]
   end
 end

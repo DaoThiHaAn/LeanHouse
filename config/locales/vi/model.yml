@@ -156,3 +156,8 @@ vi:
         electric_bike: "Xe đạp điện"
         bicycle: "Xe đạp"
         car: "Ô tô"
+
+    admin:
+      roles:
+        super_admin: "Quản trị viên hệ thống"
+        support: "Nhân viên"

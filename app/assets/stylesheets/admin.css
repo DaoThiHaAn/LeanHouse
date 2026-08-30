@@ -1,0 +1,165 @@
+/* --- Admin Authentication Page --- */
+.admin-auth-body {
+  background: linear-gradient(135deg, #e4edf1 0%, #d4e2e7 100%);
+  min-height: 100vh;
+}
+
+.admin-login-card {
+  width: 100%;
+  max-width: 440px;
+  border-radius: 16px;
+  background-color: #ffffff;
+  border: none;
+  box-shadow: 0 10px 25px rgba(22, 78, 93, 0.15);
+}
+
+.admin-portal-badge {
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  background-color: #142C3D;
+  color: #ffffff;
+  padding: 7px;
+}
+
+.admin-title {
+  color: var(--primary-text);
+  font-family: "Playpen Sans", system-ui, sans-serif;
+  font-weight: 700;
+}
+
+.admin-btn-primary {
+  background-color: var(--primary-text);
+  border: none;
+  border-radius: 8px;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 1rem;
+  transition: background-color 0.2s ease-in-out, transform 0.1s ease;
+}
+
+.admin-btn-primary:hover {
+  background-color: var(--primary-bg);
+  color: #ffffff;
+}
+
+.admin-security-box {
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  color: var(--info-text);
+  font-size: 0.85rem;
+}
+
+/* --- Admin Topbar & Navigation --- */
+.admin-navbar {
+  background-color: var(--bar-bg);
+  border-bottom: 1px solid #ADC3C9;
+}
+
+.admin-avatar {
+  width: 36px;
+  height: 36px;
+  background-color: var(--primary-text);
+  color: #ffffff;
+  font-weight: 700;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.admin-avatar-lg {
+  width: 5.5rem;
+  height: 5.5rem;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #ffffff;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* --- Admin Cards & KPIs --- */
+.admin-card {
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  padding: 10px;
+}
+
+.admin-stat-card {
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.admin-stat-purple {
+  background-color: #F8F5FF;
+  border-left: 4px solid #7B42BC;
+}
+.admin-stat-purple .admin-stat-icon {
+  color: #7B42BC;
+}
+.admin-stat-purple .admin-stat-number {
+  color: #4A1A88;
+}
+
+.admin-stat-green {
+  background-color: #F0FAF7;
+  border-left: 4px solid #1D9A6C;
+}
+.admin-stat-green .admin-stat-icon {
+  color: #1D9A6C;
+}
+.admin-stat-green .admin-stat-number {
+  color: #106345;
+}
+
+.admin-stat-blue {
+  background-color: #F0F7FC;
+  border-left: 4px solid #0087CA;
+}
+.admin-stat-blue .admin-stat-icon {
+  color: #0087CA;
+}
+.admin-stat-blue .admin-stat-number {
+  color: #005A87;
+}
+
+.admin-stat-orange {
+  background-color: #FFF8F0;
+  border-left: 4px solid #E67E22;
+}
+.admin-stat-orange .admin-stat-icon {
+  color: #E67E22;
+}
+.admin-stat-orange .admin-stat-number {
+  color: #A04000;
+}
+
+/* --- Role Badges --- */
+.badge-role-landlord {
+  background-color: #7B42BC;
+  color: #ffffff;
+  padding: 6px 10px;
+}
+
+.badge-role-tenant {
+  background-color: #1D9A6C;
+  color: #ffffff;
+  padding: 6px 10px;
+}
+
+.admin-filter-container {
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+

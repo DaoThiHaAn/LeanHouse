@@ -1,0 +1,241 @@
+<% content_for :title, t("page_titles.user_detail") %>
+
+<div class="main-container w-100">
+  <div class="d-flex align-items-center pb-4 mb-5 border-bottom">
+    <%= link_to admin_users_path, class: "turn-back link d-flex align-items-center gap-1" do %>
+      <span class="material-symbols-outlined">arrow_back</span>
+      <span><%= t("admin.users.back_to_list") %></span>
+    <% end %>
+    <h1 class="mb-0 flex-grow-1 text-center"><%= t("page_titles.user_detail") %></h1>
+  </div>
+
+  <div class="row g-4">
+    <!-- User Info Card -->
+    <div class="col-12 col-md-3 col-lg-4 col-xl-3">
+      <div class="card admin-card">
+        <div class="card-body text-center p-4">
+          <div class="mb-3">
+            <% if @user.avatar.attached? %>
+              <%= image_tag @user.avatar_thumb, class: "rounded-circle border shadow-sm", width: "5.5rem", height: "5.5rem", alt: "User avatar" %>
+            <% else %>
+              <div class="admin-avatar-lg shadow-sm <%= @user.landlord? ? 'badge-role-landlord' : 'badge-role-tenant' %>">
+                <%= @user.fullname.first.upcase rescue 'U' %>
+              </div>
+            <% end %>
+          </div>
+
+          <h2 class="h5 fw-bold mb-1"><%= @user.fullname %></h2>
+          <div class="mb-3">
+            <% if @user.landlord? %>
+              <span class="badge badge-role-landlord fs-6">
+                <%= t("role.landlord") %>
+              </span>
+            <% else %>
+              <span class="badge badge-role-tenant fs-6">
+                <%= t("role.tenant") %>
+              </span>
+            <% end %>
+          </div>
+
+          <%= button_to toggle_active_admin_user_path(@user), method: :patch,
+              data: { turbo_confirm: @user.is_active? ? t("admin.users.confirm_lock") : t("admin.users.confirm_unlock") },
+              class: "btn #{@user.is_active? ? 'btn-danger' : 'btn-success'} d-flex align-items-center gap-1 shadow-sm mx-auto mb-3" do %>
+            <span class="material-symbols-outlined fs-5"><%= @user.is_active? ? "lock" : "lock_open" %></span>
+            <span><%= @user.is_active? ? t("admin.users.lock_account") : t("admin.users.unlock_account") %></span>
+          <% end %>
+
+          <div class="text-start border-top pt-3 d-flex flex-column gap-2">
+            <!-- Status -->
+            <div class="d-flex flex-row flex-md-column justify-content-between align-items-center align-items-md-start gap-1 pb-3 border-bottom">
+              <p class="text-muted small mb-0"><%= t("form.house.state") %>:</p>
+              <% if @user.is_active? %>
+                <span class="badge bg-success-subtle text-success border border-success-subtle"><%= t("admin.users.status_active") %></span>
+              <% else %>
+                <span class="badge bg-danger-subtle text-danger border border-danger-subtle"><%= t("admin.users.status_inactive") %></span>
+              <% end %>
+            </div>
+
+            <!-- Telephone -->
+            <div class="d-flex flex-row flex-md-column justify-content-between align-items-center align-items-md-start gap-1 pb-3 border-bottom">
+              <p class="text-muted small mb-0"><%= t("form.profile.tel") %>:</p>
+              <div class="d-flex align-items-center gap-2 flex-wrap">
+                <p class="fw-semibold font-monospace"><%= @user.tel %></p>
+                <% if @user.tel_verified_at.present? %>
+                  <span class="badge bg-info-subtle text-info border border-info-subtle small"><%= t("admin.users.tel_verified") %></span>
+                <% end %>
+              </div>
+            </div>
+
+            <!-- Gender & Birthday -->
+            <div class="d-flex flex-row flex-md-column justify-content-between align-items-center align-items-md-start gap-1 pb-3 border-bottom">
+              <p class="text-muted small mb-0"><%= t("admin.users.sex_and_bday") %>:</p>
+              <p class="mb-0 text-start">
+                <%= @user.human_sex %> - <%= @user.bday ? l(@user.bday, format: :default) : t("admin.users.not_updated") %>
+              </p>
+            </div>
+
+            <!-- Address -->
+            <div class="d-flex flex-row flex-md-column justify-content-between align-items-center align-items-md-start gap-1 pb-3 border-bottom">
+              <p class="text-muted small mb-0 text-nowrap"><%= t("form.profile.address") %>:</p>
+              <p class="mb-0 text-end text-md-start text-break"><%= @user.address.presence || t("admin.users.not_updated") %></p>
+            </div>
+
+            <!-- Created At -->
+            <div class="d-flex flex-row flex-md-column justify-content-between align-items-center align-items-md-start gap-1 pb-3 border-bottom">
+              <p class="text-muted small mb-0"><%= t("admin.users.created_at") %>:</p>
+              <p class="mb-0"><%= l(@user.created_at, format: :default) rescue @user.created_at.strftime("%d/%m/%Y %H:%M") %></p>
+            </div>
+
+            <!-- Last Updated -->
+            <div class="d-flex flex-row flex-md-column justify-content-between align-items-center align-items-md-start gap-1">
+              <p class="text-muted small mb-0"><%= t("last_updated") %>:</p>
+              <p class="mb-0"><%= l(@user.updated_at, format: :default) rescue @user.updated_at.strftime("%d/%m/%Y %H:%M") %></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Related Data Card -->
+    <div class="col-12 col-md-9 col-lg-8 col-xl-9">
+      <% if @user.landlord? %>
+        <div class="card admin-card">
+          <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+            <h2 class="mb-0 fw-bold d-flex align-items-center gap-2">
+              <span class="material-symbols-filled">home_work</span>
+              <%= t("admin.users.owned_houses") %> (<%= @houses&.count || 0 %>)
+            </h2>
+          </div>
+
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th class="ps-3"><%= t("form.house.name") %></th>
+                    <th><%= t("form.house.addr") %></th>
+                    <th><%= t("form.house.mode") %></th>
+                    <th><%= t("admin.users.floors_and_rooms") %></th>
+                    <th class="text-end pe-3"><%= t("view") %></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% if @houses&.any? %>
+                    <% @houses.each do |house| %>
+                      <tr>
+                        <td class="ps-3 fw-bold"><%= house.name %></td>
+                        <td class="small text-muted"><%= house.full_address rescue [house.address_l1, house.address_l2].compact_blank.join(", ") %></td>
+                        <td>
+                          <span class="badge <%= house.room? ? 'bg-primary-subtle text-primary border border-primary-subtle' : 'bg-info-subtle text-info border border-info-subtle' %>">
+                            <%= house.room? ? t("admin.houses.mode_room") : t("admin.houses.mode_bed") %>
+                          </span>
+                        </td>
+                        <td><%= house.floors_count %> <%= t("form.floor.self").downcase %> - <%= house.floors.sum { |f| f.rooms.count } %> <%= t("form.room.self").downcase %></td>
+                        <td class="text-end pe-3">
+                          <%= link_to admin_house_path(house), class: "table-action" do %>
+                            <span class="material-symbols-filled fs-5">visibility</span>
+                          <% end %>
+                        </td>
+                      </tr>
+                    <% end %>
+                  <% else %>
+                    <tr>
+                      <td colspan="5" class="text-center text-muted py-4"><%= t("admin.users.no_houses_landlord") %></td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      <% elsif @user.tenant? %>
+        <!-- Current Stay -->
+        <div class="card admin-card mb-4">
+          <div class="card-header bg-white py-3 border-bottom">
+            <h2 class="h5 mb-0 fw-bold d-flex align-items-center gap-2">
+              <span class="material-symbols-outlined text-primary">hotel</span>
+              <%= t("admin.users.current_stay") %>
+            </h2>
+          </div>
+          <div class="card-body">
+            <% if @current_stay %>
+              <% rentable = @current_stay.rental_unit.rentable %>
+              <div class="row g-3">
+                <div class="col-12 col-sm-6">
+                  <p class="text-muted small mb-1"><%= t("form.house.self") %>:</p>
+                  <p class="fw-bold mb-0"><%= rentable.house.name rescue '-' %></p>
+                </div>
+                <div class="col-12 col-sm-6">
+                  <p class="text-muted small mb-1"><%= t("admin.users.room_or_bed") %>:</p>
+                  <p class="fw-bold mb-0"><%= rentable.is_a?(Room) ? rentable.name : (rentable.is_a?(Bed) ? "#{rentable.room.name} - #{rentable.name}" : '-') %></p>
+                </div>
+                <div class="col-12 col-sm-6">
+                  <p class="text-muted small mb-1"><%= t("admin.users.checkin_at") %>:</p>
+                  <p class="mb-0"><%= l(@current_stay.checkin_at.to_date, format: :default) rescue @current_stay.checkin_at.strftime("%d/%m/%Y") %></p>
+                </div>
+                <div class="col-12 col-sm-6">
+                  <p class="text-muted small mb-1"><%= t("admin.users.has_contract") %>:</p>
+                  <span class="badge <%= @current_stay.has_contract? ? 'bg-success' : 'bg-secondary' %>">
+                    <%= @current_stay.has_contract? ? t("admin.users.contract_signed") : t("admin.users.no_contract_yet") %>
+                  </span>
+                </div>
+              </div>
+            <% else %>
+              <p class="text-muted mb-0"><%= t("admin.users.no_stay_tenant") %></p>
+            <% end %>
+          </div>
+        </div>
+
+        <!-- Contracts -->
+        <div class="card admin-card">
+          <div class="card-header bg-white py-3 border-bottom">
+            <h2 class="h5 mb-0 fw-bold d-flex align-items-center gap-2">
+              <span class="material-symbols-outlined text-primary">description</span>
+              <%= t("admin.users.contract_history") %> (<%= @contracts&.count || 0 %>)
+            </h2>
+          </div>
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th class="ps-3"><%= t("admin.users.contract_name") %></th>
+                    <th><%= t("admin.users.contract_duration") %></th>
+                    <th><%= t("admin.users.contract_deposit") %></th>
+                    <th><%= t("admin.users.contract_status") %></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% if @contracts&.any? %>
+                    <% @contracts.each do |c| %>
+                      <tr>
+                        <td class="ps-3 fw-bold"><%= c.name %></td>
+                        <td><%= l(c.start_date, format: :default) rescue c.start_date.strftime("%d/%m/%Y") %> → <%= l(c.due_date, format: :default) rescue c.due_date.strftime("%d/%m/%Y") %></td>
+                        <td><%= c.deposit_paid? ? t("admin.users.deposit_paid") : t("admin.users.deposit_unpaid") %></td>
+                        <td>
+                          <% if c.end_date.present? %>
+                            <span class="badge bg-secondary"><%= t("admin.users.contract_ended") %></span>
+                          <% elsif c.due_date < Date.current %>
+                            <span class="badge bg-danger"><%= t("admin.users.contract_overdue") %></span>
+                          <% else %>
+                            <span class="badge bg-success"><%= t("admin.users.contract_active") %></span>
+                          <% end %>
+                        </td>
+                      </tr>
+                    <% end %>
+                  <% else %>
+                    <tr>
+                      <td colspan="4" class="text-center text-muted py-4"><%= t("admin.users.no_contracts") %></td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+

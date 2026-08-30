@@ -1,18 +1,27 @@
 module NavHelper
   def display_avatar(default_anomy_size: 128)
-    if current_user.avatar.attached?
-      image_tag current_user.avatar_thumb, alt: "Avatar", width: "40px"
+    user = current_user || (respond_to?(:current_admin) ? current_admin : nil)
+    return "" unless user
+
+    if user.respond_to?(:avatar) && user.avatar.attached?
+      image_tag user.avatar_thumb, alt: "Avatar", width: "40px"
     else
-      name = ERB::Util.url_encode(current_user.fullname)
+      name = ERB::Util.url_encode(user.fullname)
       image_tag "https://ui-avatars.com/api/?background=1F6274&name=#{name}&color=ffffff&bold=true&rounded=true&size=#{default_anomy_size}", alt: "Avatar", class: "nav-avatar"
     end
   end
 
-
   def get_role
-    return t("role.landlord") if current_user.role == "landlord"
-    return t("role.tenant") if current_user.role == "tenant"
-    t("role.admin")
+    if respond_to?(:current_admin) && current_admin.present?
+      return t("enums.admin.roles.#{current_admin.role}", default: current_admin.role.titleize)
+    end
+
+    if respond_to?(:current_user) && current_user.present?
+      return t("role.landlord") if current_user.role == "landlord"
+      return t("role.tenant") if current_user.role == "tenant"
+    end
+
+    t("role.admin", default: "Quản trị viên")
   end
 
 
@@ -42,7 +51,8 @@ module NavHelper
     end
   end
 
-
+  # @params full_name [String]
+  # @return formatted name [String]: First_name M.I.D... Last_name
   def format_name(full_name)
     # Format: Lastname M. Firstname
     parts = full_name.strip.split(/\s+/)

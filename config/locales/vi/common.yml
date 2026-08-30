@@ -56,6 +56,7 @@ vi:
     secondary_toggle_close: "Đóng thanh quản lý"
     back_house_index: "Quay về Danh sách Nhà"
     lang_switch: "Chuyển đổi ngôn ngữ"
+    backoffice: "Hệ thống quản trị nội bộ"
 
   sidebar:
     click_to_open: "Nhấp để đóng/mở thanh bên"
@@ -80,6 +81,7 @@ vi:
   none: "Không có"
   view_detail: "Xem chi tiết"
   view_all: "Xem tất cả"
+  view: "Xem"
   edit: "Chỉnh sửa"
   delete: "Xóa"
   total: "Tổng"
@@ -217,6 +219,12 @@ vi:
     maintenance_log_mng: "Quản lý Lịch sử sửa chữa, bão dưỡng"
     vehicle_mng: "Quản lý Phương tiện"
     my_vehicles: "Phương tiện của tôi"
+    admin_login: "Đăng nhập Quản trị viên"
+    user_detail: "Chi tiết Người dùng"
+    admin_dashboard: "Tổng quan Quản trị"
+    admin_users: "Quản lý Người dùng"
+    admin_houses: "Quản lý Nhà"
+    admin_house_detail: "Chi tiết Nhà - %{name}"
 
 
   pagination:

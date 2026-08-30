@@ -1,0 +1,230 @@
+<% content_for :title, t("page_titles.admin_dashboard") %>
+
+<div class="main-container w-95">
+  <div class="dashboard-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 pb-3 mb-4 border-bottom">
+    <div>
+      <h1 class="mb-1 admin-title"><%= t("admin.dashboard.title") %></h1>
+      <p class="text-muted mb-0">
+        <%= t("admin.dashboard.subtitle") %>
+      </p>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 fs-6 d-flex align-items-center gap-1">
+        <span class="material-symbols-outlined fs-5">cloud_done</span>
+        <span><%= t("admin.dashboard.system_healthy") %></span>
+      </span>
+    </div>
+  </div>
+
+  <!-- KPI Stat Cards Row -->
+  <div class="row g-4 mb-5">
+    <!-- Landlords Card -->
+    <div class="col-12 col-sm-6 col-lg-3">
+      <div class="admin-stat-card admin-stat-purple">
+        <div class="d-flex align-items-start justify-content-between">
+          <div class="d-flex gap-3 align-items-center">
+            <span class="material-symbols-filled fs-1 admin-stat-icon">real_estate_agent</span>
+            <div>
+              <div class="fw-bold text-muted small text-uppercase"><%= t("admin.dashboard.landlords") %></div>
+              <div class="fs-3 fw-bold admin-stat-number"><%= @total_landlords %></div>
+            </div>
+          </div>
+          <%= link_to admin_users_path(role: 'landlord'), class: "action-arrow-btn text-decoration-none text-muted", title: t("admin.dashboard.view_list") do %>
+            <span class="material-symbols-outlined">arrow_forward</span>
+          <% end %>
+        </div>
+        <div class="mt-3 pt-2 border-top small text-muted d-flex justify-content-between">
+          <span><%= t("admin.dashboard.active_count") %>: <strong class="text-success"><%= @active_landlords %></strong></span>
+          <span><%= t("admin.dashboard.locked_count") %>: <strong class="text-danger"><%= @total_landlords - @active_landlords %></strong></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tenants Card -->
+    <div class="col-12 col-sm-6 col-lg-3">
+      <div class="admin-stat-card admin-stat-green">
+        <div class="d-flex align-items-start justify-content-between">
+          <div class="d-flex gap-3 align-items-center">
+            <span class="material-symbols-filled fs-1 admin-stat-icon">groups</span>
+            <div>
+              <div class="fw-bold text-muted small text-uppercase"><%= t("admin.dashboard.tenants") %></div>
+              <div class="fs-3 fw-bold admin-stat-number"><%= @total_tenants %></div>
+            </div>
+          </div>
+          <%= link_to admin_users_path(role: 'tenant'), class: "action-arrow-btn text-decoration-none text-muted", title: t("admin.dashboard.view_list") do %>
+            <span class="material-symbols-outlined">arrow_forward</span>
+          <% end %>
+        </div>
+        <div class="mt-3 pt-2 border-top small text-muted d-flex justify-content-between">
+          <span><%= t("admin.dashboard.active_count") %>: <strong class="text-success"><%= @active_tenants %></strong></span>
+          <span><%= t("admin.dashboard.locked_count") %>: <strong class="text-danger"><%= @total_tenants - @active_tenants %></strong></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Houses Card -->
+    <div class="col-12 col-sm-6 col-lg-3">
+      <div class="admin-stat-card admin-stat-blue">
+        <div class="d-flex align-items-start justify-content-between">
+          <div class="d-flex gap-3 align-items-center">
+            <span class="material-symbols-filled fs-1 admin-stat-icon">home_work</span>
+            <div>
+              <div class="fw-bold text-muted small text-uppercase"><%= t("admin.dashboard.houses") %></div>
+              <div class="fs-3 fw-bold admin-stat-number"><%= @total_houses %></div>
+            </div>
+          </div>
+          <%= link_to admin_houses_path, class: "action-arrow-btn text-decoration-none text-muted", title: t("admin.dashboard.view_houses") do %>
+            <span class="material-symbols-outlined">arrow_forward</span>
+          <% end %>
+        </div>
+        <div class="mt-3 pt-2 border-top small text-muted d-flex justify-content-between">
+          <span><%= t("admin.dashboard.room_houses") %>: <strong><%= @room_houses %></strong></span>
+          <span><%= t("admin.dashboard.bed_houses") %>: <strong><%= @bed_houses %></strong></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Contracts & Rooms Card -->
+    <div class="col-12 col-sm-6 col-lg-3">
+      <div class="admin-stat-card admin-stat-orange">
+        <div class="d-flex align-items-start justify-content-between">
+          <div class="d-flex gap-3 align-items-center">
+            <span class="material-symbols-filled fs-1 admin-stat-icon">description</span>
+            <div>
+              <div class="fw-bold text-muted small text-uppercase"><%= t("admin.dashboard.contracts") %></div>
+              <div class="fs-3 fw-bold admin-stat-number"><%= @active_contracts %></div>
+            </div>
+          </div>
+          <span class="material-symbols-outlined text-muted">hotel</span>
+        </div>
+        <div class="mt-3 pt-2 border-top small text-muted d-flex justify-content-between">
+          <span><%= t("admin.dashboard.total_rooms") %>: <strong><%= @total_rooms %></strong></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lower Section: Recent Users & Recent Houses -->
+  <div class="row g-4">
+    <!-- Recent Users Table -->
+    <div class="col-12 col-lg-7">
+      <div class="card admin-card h-100">
+        <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center border-bottom">
+          <h2 class="h5 mb-0 fw-bold text-dark d-flex align-items-center gap-2">
+            <span class="material-symbols-outlined text-primary">person_add</span>
+            <%= t("admin.dashboard.recent_users") %>
+          </h2>
+          <%= link_to admin_users_path, class: "btn btn-sm btn-outline-secondary" do %>
+            <%= t("view_all") %>
+          <% end %>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th class="ps-3"><%= t("form.profile.fullname") %></th>
+                  <th><%= t("form.profile.tel") %></th>
+                  <th><%= t("form.profile.role") %></th>
+                  <th><%= t("form.house.state") %></th>
+                  <th class="text-end pe-3"><%= t("actions") %></th>
+                </tr>
+              </thead>
+              <tbody>
+                <% if @recent_users.any? %>
+                  <% @recent_users.each do |user| %>
+                    <tr>
+                      <td class="ps-3">
+                        <div class="fw-bold"><%= user.fullname %></div>
+                        <small class="text-muted"><%= l(user.created_at.to_date, format: :default) rescue user.created_at.strftime("%d/%m/%Y") %></small>
+                      </td>
+                      <td><%= user.tel %></td>
+                      <td>
+                        <% if user.landlord? %>
+                          <span class="badge badge-role-landlord"><%= t("role.landlord") %></span>
+                        <% else %>
+                          <span class="badge badge-role-tenant"><%= t("role.tenant") %></span>
+                        <% end %>
+                      </td>
+                      <td>
+                        <% if user.is_active? %>
+                          <span class="badge bg-success-subtle text-success border border-success-subtle"><%= t("admin.users.active_short") %></span>
+                        <% else %>
+                          <span class="badge bg-danger-subtle text-danger border border-danger-subtle"><%= t("admin.users.inactive_short") %></span>
+                        <% end %>
+                      </td>
+                      <td class="text-end pe-3">
+                        <%= link_to admin_user_path(user), class: "btn btn-sm btn-light border", title: t("view_detail") do %>
+                          <span class="material-symbols-outlined fs-6 align-middle">visibility</span>
+                        <% end %>
+                      </td>
+                    </tr>
+                  <% end %>
+                <% else %>
+                  <tr>
+                    <td colspan="5" class="text-center text-muted py-4"><%= t("admin.dashboard.no_users_yet") %></td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Houses Table -->
+    <div class="col-12 col-lg-5">
+      <div class="card admin-card h-100">
+        <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center border-bottom">
+          <h2 class="h5 mb-0 fw-bold text-dark d-flex align-items-center gap-2">
+            <span class="material-symbols-outlined text-primary">home</span>
+            <%= t("admin.dashboard.recent_houses") %>
+          </h2>
+          <%= link_to admin_houses_path, class: "btn btn-sm btn-outline-secondary" do %>
+            <%= t("view_all") %>
+          <% end %>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th class="ps-3"><%= t("form.house.name") %></th>
+                  <th><%= t("form.house.mode") %></th>
+                  <th class="text-end pe-3"><%= t("actions") %></th>
+                </tr>
+              </thead>
+              <tbody>
+                <% if @recent_houses.any? %>
+                  <% @recent_houses.each do |house| %>
+                    <tr>
+                      <td class="ps-3">
+                        <div class="fw-bold"><%= house.name %></div>
+                        <small class="text-muted"><%= [house.address_l1, house.address_l2].compact_blank.join(", ") %></small>
+                      </td>
+                      <td>
+                        <span class="badge <%= house.room? ? 'bg-primary-subtle text-primary border border-primary-subtle' : 'bg-info-subtle text-info border border-info-subtle' %>">
+                          <%= house.room? ? t("admin.houses.mode_room") : t("admin.houses.mode_bed") %>
+                        </span>
+                      </td>
+                      <td class="text-end pe-3">
+                        <%= link_to admin_house_path(house), class: "btn btn-sm btn-light border", title: t("view_detail") do %>
+                          <span class="material-symbols-outlined fs-6 align-middle">visibility</span>
+                        <% end %>
+                      </td>
+                    </tr>
+                  <% end %>
+                <% else %>
+                  <tr>
+                    <td colspan="3" class="text-center text-muted py-4"><%= t("admin.dashboard.no_houses_yet") %></td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

@@ -45,7 +45,10 @@ export default class extends Controller {
   // toggle password visibility
   togglePasswordVisibility(event) {
     const passwordInput = this.inputTarget
-    const toggleIcon = event.currentTarget
+    const target = event.currentTarget
+    const toggleIcon = target.classList.contains("material-symbols-outlined")
+      ? target
+      : (target.querySelector(".material-symbols-outlined") || target)
 
     if (passwordInput.type === "password") {
       passwordInput.type = "text"

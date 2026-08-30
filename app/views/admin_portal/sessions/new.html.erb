@@ -1,0 +1,72 @@
+<% content_for :title, t("page_titles.admin_login")%>
+
+<div class="card admin-login-card p-4 p-md-5 my-auto">
+  <!-- Header: Logo & Branding -->
+  <div class="text-center mb-4">
+    <div class="d-flex justify-content-center align-items-center gap-2 mb-2">
+      <%= image_tag "logo.png", alt: "LeanHouse Logo", height: "75px" %>
+    </div>
+    <span class="badge admin-portal-badge px-2 py-1 mb-4">
+      <%= t("admin.portal") %>
+    </span>
+    <h1 class="admin-title mt-2 mb-2">
+      <%= t("admin.auth.login_title") %>
+    </h1>
+    <p class="text-muted small mb-0">
+      <%= t("admin.auth.login_subtitle") %>
+    </p>
+  </div>
+
+  <!-- Login Form -->
+  <%= form_with url: admin_handle_login_path, method: :post, class: "d-flex flex-column gap-3" do |f| %>
+
+    <!-- Email -->
+    <div>
+      <label for="email" class="form-label small fw-semibold text-secondary mb-1">
+        <%= t("form.profile.email") %> <span class="text-danger">*</span>
+      </label>
+      <div class="input-group">
+        <span class="input-group-text bg-light border-end-0">
+          <span class="material-symbols-outlined fs-5 text-muted">mail</span>
+        </span>
+        <%= f.email_field :email,
+            value: params[:email],
+            class: "form-control border-start-0 ps-1",
+            placeholder: "admin@leanhouse.vn",
+            required: true,
+            autofocus: true %>
+      </div>
+    </div>
+
+    <!-- Password -->
+    <div data-controller="form">
+      <label for="password" class="form-label small fw-semibold text-secondary mb-1">
+        <%= t("form.profile.password") %> <span class="text-danger">*</span>
+      </label>
+      <div class="input-group position-relative">
+        <span class="input-group-text bg-light border-end-0">
+          <span class="material-symbols-outlined fs-5 text-muted">lock</span>
+        </span>
+        <%= f.password_field :password,
+            maxlength: 72,
+            required: true,
+            class: "form-control border-start-0 border-end-0 ps-1 pe-5",
+            placeholder: "••••••••",
+            data: {
+              form_target: "input",
+              action: "input->form#update"
+            } %>
+        <span class="input-group-text bg-white border-start-0 pe-3">
+          <span class="material-symbols-outlined text-muted fs-5 eye" style="cursor: pointer;"
+                data-action="click->form#togglePasswordVisibility">visibility</span>
+        </span>
+      </div>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="mt-2">
+      <%= f.submit t("auth.log_in"),
+          class: "btn admin-btn-primary w-100 py-2 shadow-sm" %>
+    </div>
+  <% end %>
+</div>

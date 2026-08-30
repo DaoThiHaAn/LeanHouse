@@ -8,11 +8,19 @@ module SessionHelper
   end
 
   def current_user
-    @current_user ||= User.kept.with_attached_avatar.find_by(id: session[:user_id], is_active: true)
+    @current_user ||= User.kept.with_attached_avatar.find_by(id: session[:user_id], is_active: true) if session[:user_id]
+  end
+
+  def current_admin
+    @current_admin ||= Admin.find_by(id: session[:admin_id], is_active: true) if session[:admin_id]
   end
 
   def logged_in?
     current_user.present?
+  end
+
+  def admin_logged_in?
+    current_admin.present?
   end
 
   def destroy_session

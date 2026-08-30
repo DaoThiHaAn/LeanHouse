@@ -23,6 +23,7 @@ class House < ApplicationRecord
   scope :active, -> { where(is_deleted: false) }
   scope :deleted, -> { where(is_deleted: true) }
   scope :sorted, -> { order(name: :asc) }
+  scope :by_mode, ->(mode) { where(mode: mode) if modes.key?(mode) }
 
   scope :search, ->(query) do
     return all if query.blank?

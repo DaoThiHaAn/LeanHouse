@@ -11,7 +11,7 @@
 puts "🌱 Running all seeds..."
 
 seed_files = %w[
-  service_units
+  admins
 ]
 
 seed_files.each do |seed|

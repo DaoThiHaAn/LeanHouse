@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="<%= I18n.locale %>">
+  <head>
+    <title><%= [content_for(:title), "LeanHouse Admin"].compact.join(" | ") %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <%= favicon_link_tag "logo.png", type: "image/png" %>
+
+    <!-- Bootstrap 5.3 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+    <!-- Google Material Symbols -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0..1,0">
+
+    <!-- Stylesheets -->
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "admin", "data-turbo-track": "reload" %>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="d-flex flex-column min-vh-100">
+    <div id="flash">
+      <%= render "layouts/shared_components/flash_message" %>
+    </div>
+
+    <!-- Admin Header Navbar -->
+    <nav class="navbar sticky-top navbar-expand-md navbar-light py-0 admin-navbar">
+      <div class="container-fluid px-4 gap-1 gap-sm-0">
+        <div class="d-flex align-items-center gap-3">
+          <%= link_to admin_dashboard_path, class: "navbar-brand d-flex align-items-center gap-2" do %>
+            <%= image_tag "logo.png", alt: "LeanHouse Logo", height: "45px" %>
+            <span class="badge admin-portal-badge"><%= t("admin.portal") %></span>
+          <% end %>
+        </div>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNavbarContent">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="adminNavbarContent">
+          <ul class="navbar-nav mx-auto mb-2 mb-md-0 d-flex align-items-center gap-1">
+            <li class="nav-item custom <%= 'active' if controller_name == 'dashboard' %>">
+              <%= link_to admin_dashboard_path, class: "nav-link d-flex align-items-center gap-1 px-3 py-2" do %>
+                <span class="material-symbols-filled fs-5">dashboard</span>
+                <span><%= t("admin.nav.dashboard") %></span>
+              <% end %>
+            </li>
+
+            <li class="nav-item custom <%= 'active' if controller_name == 'users' %>">
+              <%= link_to admin_users_path, class: "nav-link d-flex align-items-center gap-1 px-3 py-2" do %>
+                <span class="material-symbols-filled fs-5">group</span>
+                <span><%= t("admin.nav.users") %></span>
+              <% end %>
+            </li>
+
+            <li class="nav-item custom <%= 'active' if controller_name == 'houses' %>">
+              <%= link_to admin_houses_path, class: "nav-link d-flex align-items-center gap-1 px-3 py-2" do %>
+                <span class="material-symbols-filled fs-5">home_work</span>
+                <span><%= t("admin.nav.houses") %></span>
+              <% end %>
+            </li>
+          </ul>
+
+          <div class="d-flex align-items-center gap-3">
+            <% if current_admin %>
+              <div class="dropdown profile-dropdown">
+                <button class="btn dropdown-toggle d-flex align-items-center gap-2 p-1" type="button" id="adminDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                  <%= display_avatar %>
+                  <div class="text-start d-none d-sm-block">
+                    <div class="fullname fw-bold text-dark small"
+                        <%= tooltip("bottom",current_admin.fullname, html:true )%>>
+                      <%= format_name(current_admin.fullname) %>
+                    </div>
+                    <div class="role text-muted small"><%= get_role %></div>
+                  </div>
+                </button>
+
+                <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="adminDropdown">
+                  <li class="px-3 py-2 border-bottom">
+                    <p class="small text-muted mb-0"><%= current_admin.email %></p>
+                  </li>
+                  <li>
+                    <%= button_to admin_logout_path, method: :delete, class: "dropdown-item text-danger d-flex align-items-center gap-2 py-2" do %>
+                      <span class="material-symbols-outlined fs-5">logout</span>
+                      <span><%= t("auth.log_out") %></span>
+                    <% end %>
+                  </li>
+                </ul>
+              </div>
+            <% end %>
+
+            <!-- Language Switcher -->
+            <div class="nav-item dropdown lang-switcher">
+              <button class="nav-link lang-btn dropdown-toggle d-flex justify-content-center align-items-center gap-1"
+                      type="button" id="adminLangDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <span class="material-symbols-outlined">language</span>
+                <%= I18n.locale.to_s.upcase %>
+              </button>
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminLangDropdown">
+                <% ["en", "vi"].each do |loc| %>
+                  <li>
+                    <%= link_to loc.upcase,
+                                url_for(request.query_parameters.merge(lang: loc)),
+                                class: "dropdown-item #{'active' if I18n.locale.to_s == loc}" %>
+                  </li>
+                <% end %>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow-1 py-4">
+      <%= yield %>
+    </main>
+
+    <!-- Admin Footer -->
+    <footer class="footer py-3 text-center border-top mt-auto admin-navbar">
+      <div class="container text-muted small">
+        <span>
+          © <%= Date.current.year %> <strong>LeanHouse</strong> - 
+          <%= t("bar.backoffice") %>
+        </span>
+      </div>
+    </footer>
+  </body>
+</html>
