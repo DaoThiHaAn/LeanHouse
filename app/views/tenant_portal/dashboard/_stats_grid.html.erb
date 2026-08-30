@@ -1,4 +1,12 @@
-<%# Local variables: contract, days_stayed, total_days, stay_progress_pct, pending_requests_count, soonest_vehicle_request %>
+<%
+  stats = local_assigns[:stats] || @stats || {}
+  contract = local_assigns.key?(:contract) ? local_assigns[:contract] : stats[:contract]
+  days_stayed = local_assigns.key?(:days_stayed) ? local_assigns[:days_stayed] : stats[:days_stayed].to_i
+  total_days = local_assigns.key?(:total_days) ? local_assigns[:total_days] : stats[:total_days].to_i
+  stay_progress_pct = local_assigns.key?(:stay_progress_pct) ? local_assigns[:stay_progress_pct] : stats[:stay_progress_pct].to_i
+  pending_requests_count = local_assigns.key?(:pending_requests_count) ? local_assigns[:pending_requests_count] : stats[:pending_requests_count].to_i
+  soonest_vehicle_request = local_assigns.key?(:soonest_vehicle_request) ? local_assigns[:soonest_vehicle_request] : stats[:soonest_vehicle_request]
+%>
 
 <div class="row g-4 mt-1 mb-4">
   <!-- Card 1: Thời hạn hợp đồng & Tiến độ ở -->
