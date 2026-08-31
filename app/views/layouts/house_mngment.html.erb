@@ -8,7 +8,7 @@
     <%= render "layouts/shared_components/additional_nav", house: @house, other_houses: @other_houses %>
 
     <%# Yields the controller view %>
-    <div class="main-container <%= content_for(:container_width).presence %>">
+    <div class="house-main-container <%= content_for(:container_width).presence %>">
       <%= yield %>
     </div>
   </div>

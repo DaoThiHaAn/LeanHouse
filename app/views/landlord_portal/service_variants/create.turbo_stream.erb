@@ -1,0 +1,13 @@
+<%= turbo_stream.append "service_variants_list" do %>
+  <div class="col" id="<%= dom_id(@service_variant) %>_col">
+    <%= render "landlord_portal/service_variants/variant_card",
+               variant: @service_variant,
+               house: @house,
+               service: @service,
+               total_rooms: @total_house_rooms %>
+  </div>
+<% end %>
+
+<%= turbo_stream.remove "no_variants_prompt" %>
+<%= turbo_stream.update "service_variant_modal", "" %>
+

@@ -1,0 +1,84 @@
+<%# Variables: @house, @service, @service_variant %>
+
+<%= turbo_frame_tag "service_variant_modal" do %>
+  <div class="modal fade" id="editServiceVariantModal" tabindex="-1" aria-hidden="true"
+       data-controller="modal" data-modal-auto-open-value="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content px-2">
+        <div class="modal-header py-2">
+          <h1 class="modal-title fs-5 w-100 text-center">
+            <%= t("form.service.variant.edit_meta") %> (<%= @service.name %>)
+          </h1>
+          <button type="button" class="m-0 btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body p-3">
+          <%= form_with model: [@house, @service, @service_variant],
+                        url: landlord_house_service_service_variant_path(@house, @service, @service_variant),
+                        method: :patch,
+                        class: "d-flex flex-column gap-3",
+                        data: {
+                          controller: "loading",
+                          loading_text_value: t("saving", default: "Đang lưu...") + "...",
+                          action: "submit->loading#submit"
+                        } do |f| %>
+
+            <%# Fee %>
+            <div class="form-group">
+              <%= f.label :fee, class: "form-label fw-semibold" do %>
+                <%= t("form.service.price") %> <span class="text-danger">*</span>
+              <% end %>
+              <%= f.number_field :fee, min: 1, step: 100, required: true,
+                                 placeholder: t("form.service.price_placeholder"),
+                                 class: "form-control #{invalid_class(@service_variant, :fee)}" %>
+              <%= field_error(@service_variant, :fee) %>
+            </div>
+
+            <%# Unit %>
+            <div class="form-group">
+              <%= f.label :unit, class: "form-label fw-semibold" do %>
+                <%= t("form.service.unit") %> <span class="text-danger">*</span>
+              <% end %>
+              <%= f.select :unit, ServiceVariant.unit_options,
+                           {},
+                           class: "form-select #{invalid_class(@service_variant, :unit)}" %>
+              <%= field_error(@service_variant, :unit) %>
+            </div>
+
+            <%# Real Time %>
+            <div class="form-check form-switch mt-2">
+              <%= f.check_box :is_real_time, class: "form-check-input", role: "switch" %>
+              <%= f.label :is_real_time, class: "form-check-label fw-semibold" do %>
+                <%= t("form.service.real_time") %>
+              <% end %>
+            </div>
+
+            <%# Notify Affected Tenants %>
+            <% if @service_variant.rooms.any? %>
+              <div class="p-2 bg-light rounded border mt-2">
+                <div class="form-check">
+                  <%= check_box_tag :notify_tenants, "1", true, class: "form-check-input", id: "notify_tenants_checkbox" %>
+                  <%= label_tag :notify_tenants_checkbox, class: "form-check-label small fw-semibold text-secondary" do %>
+                    <%= t("form.service.variant.notify_tenants") %>
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+
+            <%# Submit %>
+            <div class="d-flex justify-content-end gap-2 mt-3 pt-2 border-top">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><%= t("cancel", default: "Hủy") %></button>
+              <%= f.button :submit,
+                           class: "custom-primary-btn d-flex align-items-center gap-2",
+                           data: { loading_target: "button" } do %>
+                <span data-loading-target="text"><%= t("save", default: "Lưu") %></span>
+                <span class="material-symbols-outlined spin d-none" data-loading-target="spinner">progress_activity</span>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
+

@@ -2,7 +2,7 @@
 
 <% content_for :title, t("page_titles.tenant_mng") %>
 
-<% provide :container_width, "w-95" %>
+<% provide :container_width, "full" %>
 <h1 class="text-center mb-5"> <%= t("page_titles.tenant_mng") %></h1>
 
 <div class="d-flex gap-5 mt-4">
@@ -111,7 +111,7 @@
           <%= f.search_field :query,
               value: params[:query],
               placeholder: "#{t("form.tenant.name_input")}...",
-              class: "form-control",
+              class: "form-control shadow-sm",
               data: {
                   search_target: "input",
                   action: "input->search#debounce"
@@ -126,7 +126,7 @@
                   [t("form.contract.overdue"), "overdue"],
                   [t("form.contract.nearly_due"), "nearly-due"]],
                 { selected: params[:contract_state] },
-                class: "form-select w-auto",
+                class: "form-select w-auto shadow-sm",
                 onchange: "this.form.requestSubmit()" %>
         </div>
 
@@ -139,7 +139,7 @@
                 [t("form.contract.overdue"), "overdue"],
                 [t("form.contract.nearly_due"), "nearly-due"]],
               { selected: params[:residence_state] },
-              class: "form-select w-auto",
+              class: "form-select w-auto shadow-sm",
               onchange: "this.form.requestSubmit()" %>
         </div>
       <% end %>

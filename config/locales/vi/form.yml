@@ -230,6 +230,28 @@ vi:
       delete_cf: "Bạn có chắc chắn muốn xóa dịch vụ %{name}?"
       delete_warning_1: "Tất cả phiên bản của dịch vụ này cũng sẽ bị xóa, và hành động này không thể hoàn tác."
       total: "Tổng cộng: %{val} dịch vụ"
+      search_placeholder: "Tìm kiếm dịch vụ..."
+      filter_empty: "Không tìm thấy dịch vụ nào phù hợp!"
+      select_service_prompt: "Chọn dịch vụ từ danh sách bên trái để xem và quản lý các phiên bản"
+      no_variants: "Chưa có phiên bản dịch vụ nào"
+      no_variants_prompt: "Hãy tạo phiên bản đầu tiên (đơn giá, đơn vị tính) để bắt đầu áp dụng cho các phòng."
+      variant:
+        self: "Phiên bản dịch vụ"
+        add: "Thêm phiên bản mới"
+        edit_meta: "Chỉnh sửa thông số"
+        edit_application: "Cài đặt phòng áp dụng"
+        delete: "Xóa phiên bản"
+        delete_cf: "Bạn có chắc chắn muốn xóa phiên bản dịch vụ %{fee}đ/%{unit}?"
+        delete_warning: "Phiên bản này sẽ bị hủy áp dụng khỏi tất cả phòng liên quan."
+        applied_rate: "Áp dụng: %{applied}/%{total} phòng"
+        fixed: "Cố định"
+        real_time_badge: "Đo thực tế"
+        eligible_rooms_info: "Màn hình chỉ hiển thị các phòng chưa áp dụng phiên bản khác của dịch vụ này."
+        no_eligible_rooms: "Tất cả phòng trong nhà đã được liên kết với các phiên bản khác của dịch vụ này."
+        notify_tenants: "Gửi thông báo cập nhật cho khách thuê đang ở các phòng bị ảnh hưởng"
+        select_all: "Chọn tất cả"
+        selected_count: "Đã chọn: %{count} phòng"
+
 
     file:
       view: "Xem tệp"      

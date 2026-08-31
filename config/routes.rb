@@ -72,7 +72,14 @@ Rails.application.routes.draw do
         get :check_deletion
       end
 
-      resources :services
+      resources :services do
+        resources :service_variants, only: %i[new create edit update destroy] do
+          member do
+            get :edit_application
+            patch :update_application
+          end
+        end
+      end
 
       resources :rooms do
         collection do # act on the collection of records

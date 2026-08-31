@@ -1,0 +1,10 @@
+<%= turbo_stream.replace dom_id(@service) do %>
+  <%= render "service_card", service: @service, house: @house, is_selected: true %>
+<% end %>
+
+<%= turbo_stream.update "service_workspace" do %>
+  <%= render "service_workspace", service: @service, house: @house, total_rooms: @house.rooms.active.count %>
+<% end %>
+
+<%= turbo_stream.update "edit_service_modal", "" %>
+

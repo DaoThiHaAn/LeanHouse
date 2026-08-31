@@ -16,7 +16,7 @@ vi:
     delete_confirm_title: "Xác nhận xóa phương tiện"
     delete_reason: "Lý do xóa phương tiện"
     delete_reason_placeholder: "Nhập lý do xóa phương tiện (bắt buộc)..."
-    delete_notice: "Lưu ý: Hành động này sẽ gỡ phương tiện khỏi danh sách quản lý của nhà và gửi thông báo kèm lý do cho các bên liên quan."
+    delete_notice: "Lưu ý: Hành động này sẽ gỡ phương tiện khỏi danh sách quản lý của nhà và gửi thông báo kèm lý do cho khách thuê."
     view_photo: "Xem ảnh xe"
     no_photo: "Không có ảnh"
     no_vehicles: "Chưa có phương tiện nào được đăng ký trong nhà này."

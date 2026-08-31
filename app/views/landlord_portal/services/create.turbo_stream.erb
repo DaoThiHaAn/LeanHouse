@@ -1,0 +1,10 @@
+<%= turbo_stream.append "services_list_items" do %>
+  <%= render "service_card", service: @service, house: @house, is_selected: false %>
+<% end %>
+
+<%= turbo_stream.update "sidebar_services_count" do %>
+  <%= t("form.service.total", val: @house.services.count) %>
+<% end %>
+
+<%= turbo_stream.update "new_service_modal", "" %>
+

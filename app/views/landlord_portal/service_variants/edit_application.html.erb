@@ -1,0 +1,123 @@
+<%# Variables: @house, @service, @service_variant, @eligible_rooms, @assigned_room_ids %>
+
+<%= turbo_frame_tag "service_variant_modal" do %>
+  <div class="modal fade" id="editApplicationModal" tabindex="-1" aria-hidden="true"
+       data-controller="modal" data-modal-auto-open-value="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+      <div class="modal-content px-2">
+        <div class="modal-header py-2">
+          <div>
+            <h1 class="modal-title fs-5 fw-bold m-0">
+              <%= t("form.service.variant.edit_application") %>
+            </h1>
+            <small class="text-muted">
+              <%= @service.name %>: <strong class="text-primary"><%= number_with_delimiter(@service_variant.fee) %>đ / <%= @service_variant.human_unit %></strong>
+            </small>
+          </div>
+          <button type="button" class="m-0 btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body p-3" data-controller="room-selection">
+          <%# Info banner %>
+          <div class="alert alert-info py-2 px-3 mb-3 d-flex align-items-center gap-2 small">
+            <span class="material-symbols-outlined fs-5 flex-shrink-0">info</span>
+            <span><%= t("form.service.variant.eligible_rooms_info") %></span>
+          </div>
+
+          <%= form_with url: update_application_landlord_house_service_service_variant_path(@house, @service, @service_variant),
+                        method: :patch,
+                        class: "d-flex flex-column gap-3",
+                        data: {
+                          controller: "loading",
+                          loading_text_value: t("saving", default: "Đang lưu...") + "...",
+                          action: "submit->loading#submit"
+                        } do |f| %>
+
+            <% if @eligible_rooms.empty? %>
+              <div class="text-center py-4 text-muted">
+                <span class="material-symbols-outlined fs-2 mb-1">domain_disabled</span>
+                <p class="m-0 fw-semibold"><%= t("form.service.variant.no_eligible_rooms") %></p>
+              </div>
+            <% else %>
+              <%# Selection Toolbar %>
+              <div class="d-flex justify-content-between align-items-center pb-2 border-bottom">
+                <div class="fw-semibold text-secondary small">
+                  <%= t("form.service.variant.selected_count", count: "").strip %>
+                  <span class="badge bg-primary fs-6 px-2 py-1" data-room-selection-target="countDisplay">0</span>
+                  <span class="text-muted">/ <%= @eligible_rooms.size %> phòng khả dụng</span>
+                </div>
+
+                <button type="button"
+                        class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1"
+                        data-action="click->room-selection#toggleAll">
+                  <span class="material-symbols-outlined fs-6">done_all</span>
+                  <span><%= t("form.service.variant.select_all") %></span>
+                </button>
+              </div>
+
+              <%# Floor Groups %>
+              <div class="d-flex flex-column gap-3 max-vh-50 overflow-y-auto pt-2">
+                <% @eligible_rooms.group_by(&:floor).each do |floor, rooms| %>
+                  <div class="floor-group p-3 border rounded-3 bg-light bg-opacity-50">
+                    <div class="d-flex justify-content-between align-items-center mb-2 pb-1 border-bottom">
+                      <span class="fw-bold text-dark"><%= floor&.name || t("form.floor.self") %></span>
+                      <button type="button"
+                              class="btn btn-link btn-sm text-decoration-none p-0 text-secondary"
+                              data-action="click->room-selection#toggleFloor">
+                        <small><%= t("form.service.variant.select_all") %></small>
+                      </button>
+                    </div>
+
+                    <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 g-2">
+                      <% rooms.each do |room| %>
+                        <% is_checked = @assigned_room_ids.include?(room.id) %>
+                        <div class="col">
+                          <label class="room-checkbox-label w-100 d-flex align-items-center gap-2 p-2 border rounded bg-white cursor-pointer hover-shadow transition">
+                            <%= check_box_tag "room_ids[]",
+                                              room.id,
+                                              is_checked,
+                                              class: "form-check-input m-0 flex-shrink-0",
+                                              id: "room_cb_#{room.id}",
+                                              data: {
+                                                room_selection_target: "checkbox",
+                                                action: "change->room-selection#updateCount"
+                                              } %>
+                            <span class="small fw-semibold text-truncate"><%= room.name %></span>
+                          </label>
+                        </div>
+                      <% end %>
+                    </div>
+                  </div>
+                <% end %>
+              </div>
+
+              <%# Optional Tenant Notification Checkbox %>
+              <div class="p-2 bg-light rounded border mt-2">
+                <div class="form-check">
+                  <%= check_box_tag :notify_tenants, "1", false, class: "form-check-input", id: "notify_app_tenants_checkbox" %>
+                  <%= label_tag :notify_app_tenants_checkbox, class: "form-check-label small fw-semibold text-secondary" do %>
+                    <%= t("form.service.variant.notify_tenants") %>
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+
+            <%# Submit Buttons %>
+            <div class="d-flex justify-content-end gap-2 mt-3 pt-2 border-top">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><%= t("cancel", default: "Hủy") %></button>
+              <% if @eligible_rooms.any? %>
+                <%= f.button :submit,
+                             class: "custom-primary-btn d-flex align-items-center gap-2",
+                             data: { loading_target: "button" } do %>
+                  <span data-loading-target="text"><%= t("save", default: "Lưu") %></span>
+                  <span class="material-symbols-outlined spin d-none" data-loading-target="spinner">progress_activity</span>
+                <% end %>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
+

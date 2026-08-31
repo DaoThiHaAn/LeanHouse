@@ -44,9 +44,12 @@ vi:
       repair_request_rejected: "Yêu cầu sửa chữa đã bị từ chối"
       vehicle_removed_landlord: "Phương tiện đã được xóa khỏi nhà"
       vehicle_removed_tenant: "Phương tiện đã được xóa khỏi nhà"
+      service_updated: "Thông tin dịch vụ được cập nhật"
 
 
     messages:
+      service_price_changed: "Dịch vụ %{service_name} tại %{house_name} đã đổi đơn giá thành: %{new_fee}đ/%{unit}."
+      service_application_changed: "Danh sách phòng áp dụng dịch vụ %{service_name} tại %{house_name} vừa được cập nhật."
       tenant_added: "Bạn đã được thêm vào %{house}, tầng %{floor}, %{rental_unit}."
       tenant_moved: "Bạn đã được chuyển vào %{house}, tầng %{floor}, %{rental_unit}."
       tenant_removed: "Chủ nhà đã xóa bạn ra khỏi %{house}, tầng %{floor}, %{rental_unit}."

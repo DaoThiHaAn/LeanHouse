@@ -12,7 +12,7 @@ class Service < ApplicationRecord
               case_sensitive: false
             }
 
-  scope :name_sorted, -> { order(name: asc) }
+  scope :name_sorted, -> { order(name: :asc) }
 
   private
 

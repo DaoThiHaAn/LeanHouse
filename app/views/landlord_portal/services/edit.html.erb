@@ -1,21 +1,21 @@
 <%# Variables: @house, @service %>
 
-<%= turbo_frame_tag "new_service_modal" do %>
-  <div class="modal fade" id="newServiceModal" tabindex="-1" aria-hidden="true"
+<%= turbo_frame_tag "edit_service_modal" do %>
+  <div class="modal fade" id="editServiceModal" tabindex="-1" aria-hidden="true"
        data-controller="modal" data-modal-auto-open-value="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content px-2">
         <div class="modal-header py-2">
-          <h1 class="modal-title fs-5 w-100 text-center" id="newServiceModalLabel">
-            <%= t("form.service.new") %>
+          <h1 class="modal-title fs-5 w-100 text-center" id="editServiceModalLabel">
+            <%= t("form.service.edit") %>
           </h1>
           <button type="button" class="m-0 btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
 
         <div class="modal-body p-3">
           <%= form_with model: [@house, @service],
-                        url: landlord_house_services_path(@house),
-                        method: :post,
+                        url: landlord_house_service_path(@house, @service),
+                        method: :patch,
                         class: "d-flex flex-column gap-3",
                         data: {
                           controller: "loading",
@@ -29,7 +29,6 @@
                 <%= t("form.service.self") %> <span class="text-danger">*</span>
               <% end %>
               <%= f.text_field :name, required: true,
-                               placeholder: "Ví dụ: Điện, Nước, WiFi...",
                                class: "form-control #{invalid_class(@service, :name)}" %>
               <%= field_error(@service, :name) %>
             </div>
@@ -38,7 +37,6 @@
             <div class="form-group">
               <%= f.label :note, t("note", default: "Ghi chú"), class: "form-label fw-semibold" %>
               <%= f.text_area :note, rows: 3,
-                              placeholder: "Ghi chú thêm về dịch vụ này...",
                               class: "form-control #{invalid_class(@service, :note)}" %>
               <%= field_error(@service, :note) %>
             </div>
@@ -59,3 +57,4 @@
     </div>
   </div>
 <% end %>
+

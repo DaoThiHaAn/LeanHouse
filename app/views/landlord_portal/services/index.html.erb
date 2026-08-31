@@ -1,26 +1,32 @@
-<!-- Variables: @services -->
+<%# Variables: @house, @services, @selected_service, @total_house_rooms %>
 
 <% content_for :title, t("page_titles.service_mng") %>
 
-<% provide :container_width, "d-flex flex-column vh-100 w-95 px-0 pb-0" %>
+<% provide :container_width, "full d-flex flex-column vh-100 px-0 pb-0" %>
 
-<h1 class="text-center mb-5"> <%= t("page_titles.service_mng") %></h1>
+<h1 class="text-center mb-4"><%= t("page_titles.service_mng") %></h1>
 
 <% if @services.empty? %>
-  <p class="fs-5 text-center fw-bold"><%= t("form.asset.none") %></p>
+  <div class="text-center py-5">
+    <div class="empty-state-icon mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle bg-light border shadow-sm" style="width: 80px; height: 80px;">
+      <span class="material-symbols-outlined fs-1 text-muted">shoppingmode</span>
+    </div>
+    <p class="fs-5 text-center fw-bold text-secondary mb-2"><%= t("form.asset.none") %></p>
+    <p class="text-muted small mb-4"><%= t("form.service.info_1") %></p>
 
-  <!-- Add service btn -->
-  <%= link_to new_landlord_house_service_path(@house),
-      class: "shadow-sm main-btn d-flex align-items-center gap-2 mx-auto mt-3",
-      data: {turbo_frame: "new_service_modal"} do %>
-    <span class="material-symbols-filled">add_circle</span>
-    <%= t('form.service.add') %>
-  <% end %>
+    <!-- Add service btn -->
+    <%= link_to new_landlord_house_service_path(@house),
+        class: "shadow-sm main-btn d-inline-flex align-items-center gap-2 mx-auto",
+        data: { turbo_frame: "new_service_modal" } do %>
+      <span class="material-symbols-filled">add_circle</span>
+      <%= t('form.service.add') %>
+    <% end %>
+  </div>
 <% else %>
-  <div class="d-flex h-100 position-relative" data-controller="sidebar">
+  <div class="d-flex h-100 position-relative border rounded-3 overflow-hidden shadow-sm bg-white"
+       data-controller="sidebar service-filter">
     <!-- Sidebar -->
     <aside id="sidebar" class="sidebar" data-sidebar-target="sidebar">
-
       <!-- Tag-styled Toggle Button with Arrow -->
       <button id="sidebarToggle"
           class="sidebar-toggle-tag"
@@ -33,88 +39,81 @@
       </button>
 
       <!-- Sidebar Inner Content -->
-      <div class="sidebar-content w-100 h-100 overflow-y-auto">
-          <div class="d-flex gap-1 m-4 w-80 align-items-center">
-            <h2 class="fw-bold text-center fs-5 flex-grow-1 m-0">
-              <%= t("form.service.list") %>
-            </h2>
+      <div class="sidebar-content w-100 h-100 d-flex flex-column">
+        <div class="d-flex gap-2 p-3 align-items-center justify-content-between border-bottom">
+          <h2 class="fw-bold fs-6 m-0 text-truncate">
+            <%= t("form.service.list") %>
+          </h2>
 
-            <!-- Add service btn -->
-            <%= link_to new_landlord_house_service_path(@house),
-                title: t("form.service.add"),
-                class: "add-sv-btn shadow-sm d-flex align-items-center justify-content-center rounded-circle",
-                data: {turbo_frame: "new_service_modal"} do %>
-              <span class="material-symbols-filled">add_circle</span>
-            <% end %>
-          </div>
-
-        <nav class="sidebar-nav mt-2 px-3">
-          <!-- Service card list -->
-          <%= turbo_frame_tag "service_list" do %>
-            <p class="fw-semibold text-center mb-3">
-              <%= t("form.service.total", val: @services.length) %>
-            </p>
-
-            <div class="d-flex flex-column gap-3 h-100 overflow-y-auto">
-              <% @services.each do |service| %>
-                <!-- Service card -->
-                <div class="d-flex gap-1 align-items-center service-card <%= selected?() %> w-100 py-2 ps-3 pe-2">
-                  <span class="material-symbols-filled tag-icon">shoppingmode</span>
-                  <%= link_to landlord_house_service_path(@house, service),
-                      class: "d-block flex-grow-1",
-                      title: t("click_choose") do %>
-                    <%= service.name %>
-                  <% end %>
-
-                  <div class="service-actions d-flex flex-column align-items-center gap-2 ms-auto">
-                    <% unless service.note.blank? %>
-                      <%= image_tag 'note.png', alt: "Note icon", width: "25px",
-                          class: "d-block", data: {**tooltip("right", service.note)} %>
-                    <% end %>
-
-                    <%= link_to edit_landlord_house_service_path(@house, service),
-                          data: { 
-                            turbo_frame: "edit_service_modal",
-                          },
-                          title: t("form.service.edit"),
-                          class: "service-btn p-1 rounded-circle" do %>
-                      <span class="material-symbols-filled">edit</span>
-                    <% end %>
-
-                    <%= button_to landlord_house_service_path(@house, service), method: :delete,
-                              class: "service-btn p-1 rounded-circle",
-                              title: t("form.service.delete"),
-                              data: {
-                                turbo_confirm: [
-                                  t("form.service.delete_cf", name: service.name),
-                                  t("form.service.delete_warning_1")
-                                ].join("\n\n") ,
-                                turbo_frame: "_top"} do %>
-                      <span class="material-symbols-filled">delete</span>
-                    <% end %>
-                  </div>
-                </div>
-
-              <% end %>
-            </div>
-
+          <!-- Add service btn -->
+          <%= link_to new_landlord_house_service_path(@house),
+              title: t("form.service.add"),
+              class: "add-sv-btn shadow-sm d-flex align-items-center justify-content-center rounded-circle",
+              data: { turbo_frame: "new_service_modal" } do %>
+            <span class="material-symbols-filled">add_circle</span>
           <% end %>
+        </div>
 
-          <!-- Variant zone -->
+        <!-- Search Bar -->
+        <div class="px-3 pt-3 pb-2">
+          <div class="input-group input-group-sm">
+            <span class="input-group-text bg-white border-end-0 text-muted">
+              <span class="material-symbols-outlined fs-6">search</span>
+            </span>
+            <input type="text"
+                   class="form-control border-start-0 ps-0"
+                   placeholder="<%= t('form.service.search_placeholder') %>"
+                   data-service-filter-target="input"
+                   data-action="input->service-filter#filter">
+          </div>
+        </div>
 
-          <!-- Room-service table -->
+        <p id="sidebar_services_count" class="fw-semibold text-center mb-2 px-3 small text-muted">
+          <%= t("form.service.total", val: @services.length) %>
+        </p>
 
-        </nav>
+        <!-- Service Cards List -->
+        <div id="services_list_items" class="d-flex flex-column gap-1 overflow-y-auto px-2 pb-3 flex-grow-1">
+          <% @services.each do |service| %>
+            <%= render "service_card",
+                       service: service,
+                       house: @house,
+                       is_selected: (@selected_service&.id == service.id) %>
+          <% end %>
+        </div>
+
+        <!-- Filter Empty Message -->
+        <div data-service-filter-target="emptyMessage" class="text-center text-muted small py-3 px-2 d-none">
+          <%= t("form.service.filter_empty") %>
+        </div>
       </div>
-     </aside>
+    </aside>
 
-    <!-- Main zone -->
-    <div class="flex-grow-1">
-        MAIN ZONE
+    <!-- Main Workspace Area -->
+    <div class="flex-grow-1 h-100 bg-light bg-opacity-25 overflow-y-auto">
+      <%= turbo_frame_tag "service_workspace", class: "d-block h-100" do %>
+        <% if @selected_service.present? %>
+          <%= render "service_workspace",
+                     service: @selected_service,
+                     house: @house,
+                     total_rooms: @total_house_rooms %>
+        <% else %>
+          <!-- Empty State Prompt -->
+          <div class="d-flex flex-column align-items-center justify-content-center h-100 text-muted p-5">
+            <div class="empty-state-icon mb-3 d-flex align-items-center justify-content-center rounded-circle bg-white border shadow-sm" style="width: 70px; height: 70px;">
+              <span class="material-symbols-outlined fs-1 text-primary">touch_app</span>
+            </div>
+            <h5 class="fw-bold text-dark mb-2 text-center"><%= t("form.service.select_service_prompt") %></h5>
+            <p class="text-muted small text-center mb-0" style="max-width: 380px;">
+              <%= t("form.service.info_2") %>
+            </p>
+          </div>
+        <% end %>
+      <% end %>
     </div>
-
   </div>
 <% end %>
 
 <%= turbo_frame_tag "new_service_modal" %>
 <%= turbo_frame_tag "edit_service_modal" %>
+<%= turbo_frame_tag "service_variant_modal" %>

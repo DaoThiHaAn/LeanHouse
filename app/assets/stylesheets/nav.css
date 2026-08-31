@@ -157,6 +157,10 @@
     width: 20px;
 }
 
+.secondary-nav-container {
+    background-color: white;
+}
+
 .secondary-nav-wrapper {
     background-color: var(--primary-bg);
     color: white;
