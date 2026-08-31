@@ -27,10 +27,6 @@
   border-right: 1px solid #ecf0f2;
 }
 
-.custom.table-responsive {
-  min-width: 400px;
-}
-
 .colspan td {
   background-color: #D7E6EA;
   color: #3C8BC3;
@@ -140,4 +136,10 @@
 
 .tenant-room .table-responsive {
   max-height: 400px
+}
+
+@media (max-width: 768px) {
+  .custom-room.table-responsive {
+    width: 100% !important;
+  }
 }

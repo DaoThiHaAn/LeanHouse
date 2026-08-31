@@ -1,6 +1,6 @@
 <%# Variables: house %>
 
-<div class="d-flex justify-content-between mb-5 align-items-center">
+<div class="d-flex justify-content-between mb-5 align-items-center flex-wrap gap-3">
   <%# query: state=? %>
   <%= form_with url: filtered_landlord_house_rooms_path(house),
                 method: :get,

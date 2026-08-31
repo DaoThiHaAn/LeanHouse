@@ -102,8 +102,16 @@
                   </span>
                   <input type="text" class="form-control bg-light" value="<%= @room.max_slots %>" readonly disabled>
                 </div>
-                <small class="text-muted d-block mt-1">
-                  <%= t("form.room.bed_mode_capacity_hint") %>
+                <small class="text-muted w-100 d-flex align-items-center mt-2 ms-1 gap-2">
+                  <span class="material-symbols-outlined fs-6">info</span>
+                  <div class="w-100">
+                    <%= t("form.room.bed_mode_capacity_hint") %>
+                    <%= link_to landlord_house_beds_path(@house),
+                        data: { turbo_frame: "_top" },
+                        class: "d-inline-block fw-bold" do %>
+                      <%= t("form.bed.mng") %>
+                    <% end %>
+                  </div>
                 </small>
               </div>
             <% end %>
