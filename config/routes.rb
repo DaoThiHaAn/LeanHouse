@@ -191,6 +191,7 @@ Rails.application.routes.draw do
     resources :users, only: [ :index, :show ] do
       member do
         patch :toggle_active
+        patch :recycle_phone
       end
     end
     resources :houses, only: [ :index, :show ]

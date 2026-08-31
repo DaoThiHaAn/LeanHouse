@@ -28,7 +28,7 @@ class User < ApplicationRecord
 
   validates :tel,
             presence: true,
-            format: { with: /\A0\d{9}\z/, message: :invalid },
+            format: { with: /\A0\d{9}\z/, message: :invalid, unless: :tel_recycled? },
             on: [ :create, :change_tel, :login ]
   validates :tel, uniqueness: {
               scope: :role,
@@ -78,6 +78,14 @@ class User < ApplicationRecord
 
   def human_sex
     I18n.t("form.profile.#{sex}")
+  end
+
+  def tel_recycled?
+    tel.to_s.include?("_recycled")
+  end
+
+  def display_tel
+    tel.to_s.split("_recycled").first
   end
 
   private

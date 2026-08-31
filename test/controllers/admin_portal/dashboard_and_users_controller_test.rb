@@ -59,6 +59,20 @@ class AdminPortal::DashboardAndUsersControllerTest < ActionDispatch::Integration
     assert @user.is_active?
   end
 
+  test "should recycle user phone" do
+    post admin_handle_login_url, params: { email: @admin.email, password: "Password123!" }
+
+    original_tel = @user.tel
+    patch recycle_phone_admin_user_url(@user)
+    assert_redirected_to admin_user_url(@user)
+    assert_equal I18n.t("admin.users.recycle_success", tel: original_tel), flash[:notice]
+
+    @user.reload
+    assert_not @user.is_active?
+    assert @user.tel_recycled?
+    assert_equal original_tel, @user.display_tel
+  end
+
   test "should access houses list when authenticated" do
     post admin_handle_login_url, params: { email: @admin.email, password: "Password123!" }
 

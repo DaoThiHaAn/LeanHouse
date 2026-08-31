@@ -1,6 +1,6 @@
 module AdminPortal
   class UsersController < BaseController
-    before_action :set_user, only: [ :show, :toggle_active ]
+    before_action :set_user, only: [ :show, :toggle_active, :recycle_phone ]
 
     def index
       @role_filter = params[:role].presence || "all"
@@ -41,6 +41,18 @@ module AdminPortal
 
       msg = new_status ? "Đã mở khóa tài khoản #{@user.fullname}." : "Đã khóa tài khoản #{@user.fullname}."
       redirect_back fallback_location: admin_users_path, notice: msg
+    end
+
+    def recycle_phone
+      result = PhoneRecycling.new(@user, admin: current_admin, reason: params[:reason]).call
+
+      if result.success?
+        flash[:notice] = t("admin.users.recycle_success", tel: result.old_tel)
+      else
+        flash[:alert] = t("admin.users.recycle_failed", error: result.error)
+      end
+
+      redirect_back fallback_location: admin_user_path(@user)
     end
 
     private

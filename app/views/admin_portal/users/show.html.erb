@@ -39,9 +39,18 @@
 
           <%= button_to toggle_active_admin_user_path(@user), method: :patch,
               data: { turbo_confirm: @user.is_active? ? t("admin.users.confirm_lock") : t("admin.users.confirm_unlock") },
-              class: "btn #{@user.is_active? ? 'btn-danger' : 'btn-success'} d-flex align-items-center gap-1 shadow-sm mx-auto mb-3" do %>
+              class: "btn #{@user.is_active? ? 'btn-danger' : 'btn-success'} d-flex align-items-center gap-1 shadow-sm mx-auto mb-2" do %>
             <span class="material-symbols-outlined fs-5"><%= @user.is_active? ? "lock" : "lock_open" %></span>
             <span><%= @user.is_active? ? t("admin.users.lock_account") : t("admin.users.unlock_account") %></span>
+          <% end %>
+
+          <% unless @user.tel_recycled? %>
+            <%= button_to recycle_phone_admin_user_path(@user), method: :patch,
+                data: { turbo_confirm: t("admin.users.confirm_recycle_phone") },
+                class: "btn btn-outline-warning btn-sm d-flex align-items-center gap-1 shadow-sm mx-auto mb-3" do %>
+              <span class="material-symbols-filled fs-6">phone_disabled</span>
+              <span><%= t("admin.users.recycle_phone") %></span>
+            <% end %>
           <% end %>
 
           <div class="text-start border-top pt-3 d-flex flex-column gap-2">
@@ -59,8 +68,10 @@
             <div class="d-flex flex-row flex-md-column justify-content-between align-items-center align-items-md-start gap-1 pb-3 border-bottom">
               <p class="text-muted small mb-0"><%= t("form.profile.tel") %>:</p>
               <div class="d-flex align-items-center gap-2 flex-wrap">
-                <p class="fw-semibold font-monospace"><%= @user.tel %></p>
-                <% if @user.tel_verified_at.present? %>
+                <p class="fw-semibold font-monospace mb-0"><%= @user.display_tel %></p>
+                <% if @user.tel_recycled? %>
+                  <span class="badge bg-warning-subtle text-warning border border-warning-subtle small"><%= t("admin.users.tel_recycled") %></span>
+                <% elsif @user.tel_verified_at.present? %>
                   <span class="badge bg-info-subtle text-info border border-info-subtle small"><%= t("admin.users.tel_verified") %></span>
                 <% end %>
               </div>
