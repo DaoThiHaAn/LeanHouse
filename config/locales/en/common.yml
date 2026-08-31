@@ -70,6 +70,7 @@ en:
   actions: "Actions"
   filter: "Filter"
   clear_filter: "Clear filter"
+  turn_back: "Back"
   ago: "ago"
   success_messages:
     room_created: "Room created successfully!"

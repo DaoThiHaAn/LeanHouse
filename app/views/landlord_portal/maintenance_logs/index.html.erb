@@ -5,10 +5,7 @@
 <% provide :container_width, "h-100 w-90" %>
 
 <div class="d-flex mb-4 px-3 align-items-center">
-  <%= link_to landlord_house_assets_path(@house), class: "align-self-start d-flex align-items-center gap-1 turn-back link" do %>
-    <span class="material-symbols-outlined ms-2">arrow_left_alt</span>
-    <%= t('turn_back') %>
-  <% end %>
+  <%= back_link_to landlord_house_assets_path(@house), class: "align-self-start" %>
 
   <h1 class="text-center w-100 mb-0"><%= t("page_titles.maintenance_log_mng") %></h1>
 </div>

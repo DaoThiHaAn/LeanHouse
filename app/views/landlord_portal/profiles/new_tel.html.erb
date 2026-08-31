@@ -1,20 +1,17 @@
 <% content_for :title, t('form.profile.new_tel') %>
 
-<div class="custom card px-5 py-4 m-5 mx-auto">
+<div class="custom card py-4 my-5 mx-auto w-50">
   <div class="card-body d-flex flex-column gap-3">
-    <div class="d-flex align-items-center mb-4">
-      <%= link_to landlord_profile_path, class: "d-flex align-items-center gap-1 turn-back link" do %>
-        <span class="material-symbols-outlined ms-2">arrow_left_alt</span>
-        <%= t('turn_back') %>
-      <% end %>
+    <div class="d-flex align-items-center mb-4 gap-3">
+      <%= back_link_to landlord_profile_path %>
       <h1 class="text-center flex-grow-1"><%= t('form.profile.new_tel') %></h1>
     </div>
 
     <%= form_with url: change_tel_landlord_profile_path, method: :post, local: true,
-          class: "d-flex align-items-center flex-column gap-4" do |f| %>
+          class: "px-5 d-flex align-items-center flex-column gap-4" do |f| %>
 
       <!-- Tel -->
-      <div class="form-group w-100" data-controller="form">
+      <div class="form-group w-75" data-controller="form">
         <%= f.label :tel, class: "form-label d-flex justify-content-between" do %>
           <div>
             <%= t("form.profile.new_tel") %>:<span class="asterisk">*</span>

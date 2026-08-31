@@ -87,10 +87,7 @@
         <%end%>
 
         <% back_path = logged_in? ? (current_user.landlord? ? landlord_profile_path : tenant_profile_path) : forgot_pw_path %>
-        <%= link_to back_path, class: "mx-auto d-flex align-items-center forgot-pw link" do%>
-            <span class="material-symbols-outlined">arrow_left_alt</span>
-            <%=t('turn_back')%>
-        <%end%>
+        <%= back_link_to back_path, class: "mx-auto mt-3" %>
 
         </div>
     </div>

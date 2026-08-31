@@ -5,12 +5,9 @@
 <% provide :container_width, "new-room w-50" %> <%# Change the main container's width %>
 
 <div class="d-flex align-items-center mb-4">
-  <%= link_to :back, class: "d-flex align-items-center gap-1 turn-back link" do%>
-            <span class="material-symbols-outlined ms-2">arrow_left_alt</span>
-            <%=t('turn_back')%>
-  <%end%>
+  <%= back_link_to %>
   <h1 class="text-center flex-grow-1">
-    <%=t('page_titles.new_room') %> - <%= @house.name %>
+    <%= t('page_titles.new_room') %> - <%= @house.name %>
   </h1>
 </div>  
 

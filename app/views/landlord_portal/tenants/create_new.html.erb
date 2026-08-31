@@ -4,10 +4,7 @@
 
 <div class="mx-auto d-flex flex-column align-items-center shadow create-new-form-container">
 <div class="d-flex align-items-center mb-5">
-  <%= link_to :back, class: "d-flex align-items-center gap-1 turn-back link" do %>
-    <span class="material-symbols-outlined ms-2">arrow_left_alt</span>
-    <%= t('turn_back') %>
-  <% end %>
+  <%= back_link_to %>
   <h1 class="text-center w-75"><%= t('form.tenant.create_and_link') %></h1>
 </div>
 

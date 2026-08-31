@@ -58,9 +58,6 @@
         </div>
 
         <%= button_to t('form.profile.resend_otp'), resend_otp_path, data: { turbo: false }, class:"custom-secondary-btn" %>
-        <%= link_to :back, class: "mx-auto d-flex align-items-center forgot-pw link" do %>
-            <span class="material-symbols-outlined">arrow_left_alt</span>
-            <%= t('turn_back') %>
-        <% end %>
+        <%= back_link_to :back, class: "mx-auto mt-3" %>
     </div>
 </div>

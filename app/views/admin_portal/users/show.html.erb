@@ -2,10 +2,7 @@
 
 <div class="main-container w-100">
   <div class="d-flex align-items-center pb-4 mb-5 border-bottom">
-    <%= link_to admin_users_path, class: "turn-back link d-flex align-items-center gap-1" do %>
-      <span class="material-symbols-outlined">arrow_back</span>
-      <span><%= t("admin.users.back_to_list") %></span>
-    <% end %>
+    <%= back_link_to admin_users_path, t("admin.users.back_to_list") %>
     <h1 class="mb-0 flex-grow-1 text-center"><%= t("page_titles.user_detail") %></h1>
   </div>
 

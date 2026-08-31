@@ -1,6 +1,9 @@
 <%# locals: (user:, update_profile_url:) %>
 <div class="py-4">
-  <h2 class="mb-4"><%= t("form.profile.personal_info") %></h2>
+  <h2 class="mb-4">
+    <span class="material-symbols-filled fs-2">user_attributes</span>
+    <%= t("form.profile.personal_info") %>
+  </h2>
 
   <%= form_with model: user, url: update_profile_url, method: :patch, local: true,
         class: "d-flex flex-column gap-3 mx-auto", style: "max-width: 600px;" do |f| %>
