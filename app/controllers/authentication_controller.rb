@@ -13,7 +13,7 @@ class AuthenticationController < ApplicationController
   def log_out
     destroy_session
     flash[:notice] = t("success_messages.logout")
-    redirect_to root_path
+    redirect_to root_path, status: :see_other
   end
 
   def forgot_pw
@@ -61,23 +61,18 @@ class AuthenticationController < ApplicationController
   end
 
   def handle_forgot_pw
-    user_params = login_params
-    existing_acc = User.find_acc(user_params[:tel], user_params[:role])
+    result = PasswordRecovery.new(forgot_pw_params).request_otp
 
-    return render_login_error(t("errors.tel_unregistered")) unless existing_acc
-    return render_login_error(t("errors.inactive_acc")) unless existing_acc.active?
+    if result.success?
+      session[:pending_tel] = result.user.tel
+      session[:pending_role] = result.user.role
+      session[:is_reset_pw] = true
+      flash[:development_otp] = result.otp if Rails.env.development?
 
-    result = PhoneVerification.new(
-      tel: user_params[:tel],
-      role: user_params[:role]
-    ).create_otp(existing_acc)
-
-    session[:pending_tel] = existing_acc.tel
-    session[:pending_role] = existing_acc.role
-    session[:is_reset_pw] = true
-    flash[:development_otp] = result.otp if Rails.env.development?
-
-    redirect_to otp_input_path, notice: t("success_messages.send_otp")
+      redirect_to otp_input_path, notice: t("success_messages.send_otp")
+    else
+      render_auth_error(result.error_message, template: :forgot_pw)
+    end
   end
 
 
@@ -87,19 +82,25 @@ class AuthenticationController < ApplicationController
     params.require(:user).permit(:tel, :password, :role)
   end
 
-
-  def redirect_after_login
-    if current_user.landlord?
-      redirect_to landlord_dashboard_path
-    elsif current_user.tenant?
-      redirect_to tenant_dashboard_path
-    else
-      redirect_to root_path
-    end
+  def forgot_pw_params
+    params.require(:user).permit(:tel, :role, :fullname, :bday)
   end
 
 
-  def render_login_error(message)
+  def redirect_after_login
+    target = if current_user.landlord?
+      landlord_dashboard_path
+    elsif current_user.tenant?
+      tenant_dashboard_path
+    else
+      root_path
+    end
+
+    redirect_to target, status: :see_other
+  end
+
+
+  def render_auth_error(message, template: :log_in)
     flash.now[:alert] = message
 
     respond_to do |format|
@@ -112,8 +113,12 @@ class AuthenticationController < ApplicationController
 
       format.html do
         @user = User.new
-        render :log_in, status: :unprocessable_entity
+        render template, status: :unprocessable_entity
       end
     end
+  end
+
+  def render_login_error(message)
+    render_auth_error(message, template: :log_in)
   end
 end

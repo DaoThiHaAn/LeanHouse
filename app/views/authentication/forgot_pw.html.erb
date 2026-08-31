@@ -2,45 +2,71 @@
 
 <div class="custom card px-5 py-4 m-5 mx-auto">
     <div class="card-body d-flex flex-column gap-3">
-        <h1 class="card-title text-center"><%= t('form.profile.forgot_pw_title').upcase %></h1>
+        <h1 class="text-center"><%= t('form.profile.forgot_pw_title').upcase %></h1>
 
-        <!-- TODO handle-->
         <%= form_with model: @user, url: handle_forgot_pw_path, local: true,
-              class: "signup-form d-flex align-items-center justify-content-center flex-column gap-4" do |f| %>
+              class: "signup-form d-flex align-items-center justify-content-center flex-column gap-3" do |f| %>
 
-            <!-- Role -->
-            <div class="form-group w-100 gap-2 d-flex flex-column align-items-center mb-2">
-                <%= f.label :role, class: "form-label" do %>
-                <%= t("form.profile.role") %>:
-                <span class="asterisk">*</span>
-                <% end %>
+            <div class="p-4 border rounded w-100 forgot-pw-main-info">
+                <!-- Role -->
+                <div class="form-group w-100 gap-3 d-flex flex-wrap align-items-center mb-3">
+                    <%= f.label :role, class: "form-label mb-0" do %>
+                        <%= t("form.profile.role") %>:&nbsp;
+                        <span class="asterisk">*</span>
+                    <% end %>
 
-                <div class="d-flex gap-4 w-100">
-                <label class="d-flex align-items-center gap-2">
-                    <%= f.radio_button :role, "tenant", checked: true %>
-                    <%= t("role.tenant") %>
-                </label>
+                    <div class="d-flex gap-4">
+                        <label class="d-flex align-items-center gap-2">
+                            <%= f.radio_button :role, "tenant", checked: true %>
+                            <%= t("role.tenant") %>
+                        </label>
 
-                <label class="d-flex align-items-center gap-2">
-                    <%= f.radio_button :role, "landlord" %>
-                    <%= t("role.landlord") %>
-                </label>
+                        <label class="d-flex align-items-center gap-2">
+                            <%= f.radio_button :role, "landlord" %>
+                            <%= t("role.landlord") %>
+                        </label>
+                    </div>
+                </div>
+
+
+                <!-- Tel -->
+                <div class="form-group w-100">
+                    <%= f.label :tel, class: "form-label" do %>
+                        <%= t("form.profile.reg_tel") %>:&nbsp;
+                        <span class="asterisk">*</span>
+                    <% end %>
+
+                    <%= f.telephone_field :tel,
+                        minlength: 10, maxlength: 10,
+                        required: true, autofocus: true,
+                        class: "form-control",
+                        placeholder: "0xxxxxxxxx" %>
                 </div>
             </div>
 
-
-            <!-- Tel -->
-            <div class="form-group w-100">
-                <%= f.label :tel, class: "form-label" do %>
-                    <%= t("form.profile.tel") %>:<span class="asterisk">*</span>
-                <% end %>
-
-                <%= f.telephone_field :tel,
-                    minlength: 10,
-                    maxlength: 10,
+            <p class="fw-bold mt-2 fs-5"><%= t("form.profile.sec_questions") %></p>
+            <p class="fw-semibold text-danger"><%= t("form.profile.sec_questions_note") %></p>
+            
+            <!-- Fullname -->
+            <div class="form-floating w-100">
+                <%= f.text_field :fullname,
+                    maxlength: 50,
                     required: true,
                     class: "form-control",
-                    placeholder: t("form.profile.tel_login_placeholder") %>
+                    placeholder: t("form.profile.fname_ans") %>
+                
+                <%= f.label :fullname, class: "form-label" do %>
+                    <%= t("form.profile.fullname") %>:<span class="asterisk">*</span>
+                <% end %>
+            </div>
+
+            <!-- Birthday -->
+            <div class="form-floating w-100">
+                <%= f.date_field :bday, max: 15.years.ago.to_date, class: "date form-control w-100", required: true %>
+                <%= f.label :bday, class: "form-label" do %>
+                    <%= t("form.profile.bday") %>:&nbsp;
+                    <span class="asterisk">*</span>
+                <% end %>
             </div>
 
             <%= f.submit t("form.profile.send_otp"), class: "mx-auto custom-primary-btn" %>

@@ -65,6 +65,8 @@ vi:
     sign_up: "Đăng Ký"
     log_in: "Đăng Nhập"
     log_out: "Đăng Xuất"
+    auth_fields_reminder: "Lưu ý: Họ và tên cùng Ngày sinh sẽ được sử dụng để xác minh danh tính khi khôi phục tài khoản (Quên mật khẩu). Vui lòng nhập chính xác thông tin thực tế và ghi nhớ thông tin này."
+    auth_fields_reminder_html: "Lưu ý: <strong>Họ và tên</strong> cùng <strong>Ngày sinh</strong> sẽ được sử dụng để xác minh danh tính khi khôi phục tài khoản (Quên mật khẩu). Vui lòng nhập chính xác thông tin thực tế và ghi nhớ thông tin này."
 
   role:
     self: "Vai trò"
@@ -133,6 +135,10 @@ vi:
     signup_failed: "Đăng ký thất bại! Hãy thử lại."
     wrong_pw: "Số điện thoại hoặc mật khẩu bị sai!"
     tel_unregistered: "Số điện thoại chưa được đăng ký!"
+    identity_mismatch: "Thông tin xác thực (Họ tên hoặc Ngày sinh) không khớp với tài khoản!"
+    identity_mismatch_with_remaining: "Thông tin xác thực không đúng! Bạn còn %{remaining} lần thử trước khi bị tạm khóa."
+    too_many_forgot_pw_attempts: "Bạn đã nhập sai quá nhiều lần! Vui lòng thử lại sau %{minutes} phút hoặc liên hệ CSKH."
+    missing_verification_fields: "Vui lòng nhập đầy đủ Số điện thoại, Họ tên và Ngày sinh!"
     inactive_acc: |
       Tài khoản bị vô hiệu!
       Hãy liên hệ với chúng tôi để biết thêm chi tiết!

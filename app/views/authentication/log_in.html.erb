@@ -8,7 +8,7 @@
         </div>
         <h1><%= t("auth.log_in").upcase %></h1>
 
-        <%= form_with(model: @user, url: handle_login_path, method: :post, class: "signup-form w-100 d-flex align-items-center justify-content-center flex-column gap-4") do |f| %>
+        <%= form_with(model: @user, url: handle_login_path, method: :post, data: { turbo: false }, class: "signup-form w-100 d-flex align-items-center justify-content-center flex-column gap-4") do |f| %>
 
             <!-- Role selection -->
             <div data-controller="role-selector" class="form-group gap-2 d-flex flex-column align-items-center mb-2">

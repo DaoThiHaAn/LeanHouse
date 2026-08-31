@@ -44,6 +44,19 @@ en:
     landlord: "Landlord"
     tenant: "Tenant"
     admin: "Admin"
+  auth:
+    sign_up: "Sign Up"
+    log_in: "Log In"
+    log_out: "Log Out"
+    auth_fields_reminder: "Note: Full Name and Date of Birth will be used for identity verification when recovering your account (Forgot Password). Please provide accurate information and keep it in mind."
+    auth_fields_reminder_html: "Note: <strong>Full Name</strong> and <strong>Date of Birth</strong> will be used for identity verification when recovering your account (Forgot Password). Please provide accurate information and keep it in mind."
+  errors:
+    tel_unregistered: "Phone number is not registered!"
+    identity_mismatch: "Identity verification failed: Full Name or Date of Birth does not match the account!"
+    identity_mismatch_with_remaining: "Identity verification failed! You have %{remaining} attempts remaining before temporary lockout."
+    too_many_forgot_pw_attempts: "Too many failed attempts! Please try again in %{minutes} minutes or contact support."
+    missing_verification_fields: "Please provide Telephone, Full Name, and Date of Birth!"
+    inactive_acc: "Your account is disabled! Please contact support for assistance."
   page_titles:
     admin_login: "Administrator Login"
     user_detail: "User Detail"

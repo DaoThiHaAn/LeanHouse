@@ -5,6 +5,7 @@ vi:
       title: "Đăng Ký Tài Khoản Mới"
       fullname: "Họ và Tên"
       tel: "Số điện thoại"
+      reg_tel: "Số điện thoại đã đăng ký"
       password: "Mật khẩu"
       password_confirmation: "Xác nhận mật khẩu"
       address: "Địa chỉ thường trú"
@@ -45,6 +46,9 @@ vi:
       new_tel: "Số điện thoại mới"
       personal_info: "Thông tin cá nhân"
       security: "Bảo mật tài khoản"
+      sec_questions: "Câu hỏi bảo mật"
+      sec_questions_note: "Bạn có tối đa 3 lần thử"
+      fname_ans: "Nhập đúng theo tài khoản đã đăng ký, không phân biệt chữ in hoa, chữ thường"
  
     house:
       add: "Tạo nhà mới"

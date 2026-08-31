@@ -92,3 +92,7 @@
 .pw.form-group .form-control.is-invalid + span {
     margin-right: 30px !important;
 }
+
+.forgot-pw-main-info {
+    background-color: rgb(245, 255, 255);
+}
