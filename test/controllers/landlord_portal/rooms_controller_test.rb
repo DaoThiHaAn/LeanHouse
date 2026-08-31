@@ -231,4 +231,60 @@ class LandlordPortal::RoomsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 35, bed_room.area
     assert_equal 3, bed_room.max_slots # preserved counter cache
   end
+
+  test "syncs services during room edit (adding, switching variant, and removing)" do
+    service = @house.services.create!(name: "Electricity")
+    variant1 = service.service_variants.create!(fee: 3_500, unit: :per_kwh, is_real_time: true)
+    variant2 = service.service_variants.create!(fee: 4_000, unit: :per_kwh, is_real_time: true)
+
+    service_wifi = @house.services.create!(name: "Wifi")
+    variant_wifi = service_wifi.service_variants.create!(fee: 100_000, unit: :per_month, is_real_time: false)
+
+    sign_in_as(@landlord_user)
+
+    # 1. Apply variant1 and wifi
+    patch landlord_house_room_path(@house, @room_empty), params: {
+      room: {
+        name: "Gamma",
+        floor_id: @floor.id,
+        area: 25,
+        max_slots: 2,
+        rent: 3_000_000,
+        deposit: 3_000_000,
+        service_selections: {
+          service.id.to_s => { selected: "1", variant_id: variant1.id.to_s },
+          service_wifi.id.to_s => { selected: "1", variant_id: variant_wifi.id.to_s }
+        }
+      }
+    }
+
+    assert_redirected_to landlord_house_rooms_path(@house)
+    @room_empty.reload
+    assert_equal 2, @room_empty.room_services.count
+    assert_includes @room_empty.service_variants, variant1
+    assert_includes @room_empty.service_variants, variant_wifi
+
+    # 2. Switch electricity from variant1 to variant2 and uncheck wifi
+    patch landlord_house_room_path(@house, @room_empty), params: {
+      room: {
+        name: "Gamma",
+        floor_id: @floor.id,
+        area: 25,
+        max_slots: 2,
+        rent: 3_000_000,
+        deposit: 3_000_000,
+        service_selections: {
+          service.id.to_s => { selected: "1", variant_id: variant2.id.to_s },
+          service_wifi.id.to_s => { selected: "0", variant_id: "" }
+        }
+      }
+    }
+
+    assert_redirected_to landlord_house_rooms_path(@house)
+    @room_empty.reload
+    assert_equal 1, @room_empty.room_services.count
+    assert_includes @room_empty.service_variants, variant2
+    assert_not_includes @room_empty.service_variants, variant1
+    assert_not_includes @room_empty.service_variants, variant_wifi
+  end
 end
