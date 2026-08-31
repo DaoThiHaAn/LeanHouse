@@ -46,4 +46,20 @@ module HousesHelper
     "- #{floor.rooms_count} #{t('form.room.self')} " +
     "(#{t("form.floor.total_slots")}: #{floor.total_slots})"
   end
+
+  def room_rent_display(house, room)
+    if house.room?
+      rent = room.rental_unit&.rent
+      rent ? format_money(rent) : "-"
+    else
+      bed_rents = room.beds.map { |b| b.rental_unit&.rent }.compact
+      if bed_rents.empty?
+        "-"
+      elsif bed_rents.min == bed_rents.max
+        "#{format_money(bed_rents.first)} / #{t('admin.houses.mode_bed', default: 'giường').downcase}"
+      else
+        "#{format_money(bed_rents.min)} - #{format_money(bed_rents.max)} / #{t('admin.houses.mode_bed', default: 'giường').downcase}"
+      end
+    end
+  end
 end

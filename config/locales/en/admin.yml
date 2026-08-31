@@ -102,6 +102,8 @@ en:
       floors_and_rooms_structure: "Floors & Rooms Structure"
       max_slots: "Max slots"
       occupied_slots: "Occupied"
+      room_rent: "Room rent"
+      bed_rent: "Bed rent"
       no_floors: "No floors created yet."
       no_houses_found: "No matching properties found."
       filter_all_modes: "All models"

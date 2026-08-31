@@ -76,7 +76,7 @@
                   <%= display_avatar %>
                   <div class="text-start d-none d-sm-block">
                     <div class="fullname fw-bold text-dark small"
-                        <%= tooltip("bottom",current_admin.fullname, html:true )%>>
+                        <%= tooltip("bottom",current_admin.fullname, html:true ) %>>
                       <%= format_name(current_admin.fullname) %>
                     </div>
                     <div class="role text-muted small"><%= get_role %></div>
@@ -120,7 +120,7 @@
     </nav>
 
     <!-- Main Content -->
-    <main class="flex-grow-1 py-4">
+    <main class="admin-container flex-grow-1 p-4">
       <%= yield %>
     </main>
 
@@ -128,7 +128,7 @@
     <footer class="footer py-3 text-center border-top mt-auto admin-navbar">
       <div class="container text-muted small">
         <span>
-          © <%= Date.current.year %> <strong>LeanHouse</strong> - 
+          © <%= Date.current.year %> <strong>LeanHouse</strong> -
           <%= t("bar.backoffice") %>
         </span>
       </div>

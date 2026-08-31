@@ -1,147 +1,158 @@
-<% content_for :title, t("page_titles.admin_house_detail", name: @house.name) %>
+<% content_for :title, t("page_titles.admin_house_detail") %>
 
-<div class="main-container w-95">
-  <div class="d-flex align-items-center justify-content-between pb-3 mb-4 border-bottom">
-    <div class="d-flex align-items-center gap-3">
-      <%= link_to admin_houses_path, class: "turn-back link d-flex align-items-center gap-1" do %>
-        <span class="material-symbols-outlined">arrow_back</span>
-        <span><%= t("admin.houses.back_to_list") %></span>
-      <% end %>
-      <h1 class="h3 mb-0 admin-title"><%= @house.name %></h1>
-    </div>
-  </div>
+<div class="d-flex align-items-center gap-3 mb-5">
+  <%= link_to admin_houses_path, class: "turn-back link d-flex align-items-center gap-1" do %>
+    <span class="material-symbols-outlined">arrow_back</span>
+    <span><%= t("admin.houses.back_to_list") %></span>
+  <% end %>
+  <h1 class="flex-grow-1 text-center"><%= t("page_titles.admin_house_detail") %></h1>
+</div>
 
-  <div class="row g-4">
-    <!-- House Info Card -->
-    <div class="col-12 col-lg-4">
-      <div class="card admin-card">
-        <div class="card-header bg-white py-3 border-bottom">
-          <h2 class="h5 mb-0 fw-bold d-flex align-items-center gap-2">
-            <span class="material-symbols-outlined text-primary">info</span>
-            <%= t("admin.houses.house_info") %>
-          </h2>
+<div class="row g-4">
+  <!-- House Info Card -->
+  <div class="col-12 col-md-3 col-lg-4 col-xl-3">
+    <div class="card admin-card">
+      <div class="card-header bg-white py-3 border-bottom">
+        <h2 class="mb-0 d-flex align-items-center gap-2">
+          <span class="material-symbols-outlined fs-5">info</span>
+          <%= t("admin.houses.house_info") %>
+        </h2>
+      </div>
+      <div class="card-body p-4 d-flex flex-column gap-2">
+        <div class="d-flex flex-row flex-md-column justify-content-between align-items-center align-items-md-start gap-1 pb-3 border-bottom">
+          <p class="text-muted small mb-0"><%= t("form.house.name") %>:</p>
+          <strong class="fs-5 mb-0 text-end text-md-start"><%= @house.name %></strong>
         </div>
-        <div class="card-body p-4">
-          <div class="mb-3">
-            <span class="text-muted small d-block"><%= t("form.house.name") %>:</span>
-            <strong class="fs-5"><%= @house.name %></strong>
-          </div>
 
-          <div class="mb-3">
-            <span class="text-muted small d-block"><%= t("admin.houses.owner") %>:</span>
+        <div class="d-flex flex-row flex-md-column justify-content-between align-items-center align-items-md-start gap-1 pb-3 border-bottom">
+          <p class="text-muted small mb-0"><%= t("admin.houses.owner") %>:</p>
+          <div class="text-end text-md-start">
             <% if @house.landlord&.user %>
               <%= link_to @house.landlord.user.fullname, admin_user_path(@house.landlord.user), class: "link fw-bold" %>
-              <div class="small text-muted"><%= @house.landlord.user.tel %></div>
+              <div class="small text-muted font-monospace"><%= @house.landlord.user.tel %></div>
             <% else %>
               <span class="text-muted">-</span>
             <% end %>
           </div>
-
-          <div class="mb-3">
-            <span class="text-muted small d-block mb-1"><%= t("admin.houses.rental_mode") %>:</span>
-            <span class="badge <%= @house.room? ? 'bg-primary-subtle text-primary border border-primary-subtle' : 'bg-info-subtle text-info border border-info-subtle' %> fs-6 px-3 py-2 fw-semibold">
-              <%= @house.room? ? t("admin.houses.mode_room") : t("admin.houses.mode_bed") %>
-            </span>
-          </div>
-
-          <div class="mb-3">
-            <span class="text-muted small d-block"><%= t("form.house.addr") %>:</span>
-            <span><%= [@house.address_l1, @house.address_l2, @house.address_l3].compact_blank.join(", ") %></span>
-          </div>
-
-          <div class="mb-3">
-            <span class="text-muted small d-block"><%= t("admin.houses.scale") %>:</span>
-            <span><%= @house.floors_count %> <%= t("form.floor.self").downcase %> - <%= @house.floors.sum { |f| f.rooms.count } %> <%= t("form.room.self").downcase %></span>
-          </div>
-
-          <div class="mb-0">
-            <span class="text-muted small d-block"><%= t("admin.houses.created_at") %>:</span>
-            <span><%= l(@house.created_at, format: :default) rescue @house.created_at.strftime("%d/%m/%Y %H:%M") %></span>
-          </div>
         </div>
-      </div>
 
-      <!-- Services Card -->
-      <div class="card admin-card mt-4">
-        <div class="card-header bg-white py-3 border-bottom">
-          <h2 class="h5 mb-0 fw-bold d-flex align-items-center gap-2">
-            <span class="material-symbols-outlined text-primary">bolt</span>
-            <%= t("admin.houses.services_and_amenities") %> (<%= @house.services.count %>)
-          </h2>
+        <div class="d-flex flex-row flex-md-column justify-content-between align-items-center align-items-md-start gap-1 pb-3 border-bottom">
+          <p class="text-muted small mb-0"><%= t("admin.houses.rental_mode") %>:</p>
+          <span class="badge <%= @house.room? ? 'bg-primary-subtle text-primary border border-primary-subtle' : 'bg-info-subtle text-info border border-info-subtle' %> fs-6 px-3 py-1 fw-semibold">
+            <%= @house.room? ? t("admin.houses.mode_room") : t("admin.houses.mode_bed") %>
+          </span>
         </div>
-        <div class="card-body p-0">
-          <ul class="list-group list-group-flush">
-            <% if @house.services.any? %>
-              <% @house.services.each do |svc| %>
-                <li class="list-group-item d-flex justify-content-between align-items-center px-4 py-3">
-                  <div>
-                    <strong><%= svc.name %></strong>
-                    <% if svc.note.present? %>
-                      <small class="text-muted d-block"><%= svc.note %></small>
-                    <% end %>
-                  </div>
-                  <div>
-                    <% svc.service_variants.each do |variant| %>
-                      <span class="badge bg-light text-dark border">
-                        <%= number_to_currency(variant.fee, unit: "₫", precision: 0) rescue "#{variant.fee}đ" %> / <%= variant.unit %>
-                      </span>
-                    <% end %>
-                  </div>
-                </li>
-              <% end %>
-            <% else %>
-              <li class="list-group-item text-center text-muted py-3"><%= t("admin.houses.no_services") %></li>
-            <% end %>
-          </ul>
+
+        <div class="d-flex flex-row flex-md-column justify-content-between align-items-center align-items-md-start gap-1 pb-3 border-bottom">
+          <p class="text-muted small mb-0 text-nowrap"><%= t("form.house.addr") %>:</p>
+          <p class="mb-0 text-end text-md-start text-break"><%= [@house.address_l1, @house.address_l2, @house.address_l3].compact_blank.join(", ") %></p>
+        </div>
+
+        <div class="d-flex flex-row flex-md-column justify-content-between align-items-center align-items-md-start gap-1 pb-3 border-bottom">
+          <p class="text-muted small mb-0"><%= t("admin.houses.scale") %>:</p>
+          <p class="mb-0 text-end text-md-start"><%= @house.floors_count %> <%= t("form.floor.self").downcase %> - <%= @house.floors.sum { |f| f.rooms.count } %> <%= t("form.room.self").downcase %></p>
+        </div>
+
+        <div class="d-flex flex-row flex-md-column justify-content-between align-items-center align-items-md-start gap-1 pb-3 border-bottom">
+          <p class="text-muted small mb-0"><%= t("created_at") %>:</p>
+          <p class="mb-0 text-end text-md-start"><%= l(@house.created_at, format: :default) rescue @house.created_at.strftime("%d/%m/%Y %H:%M") %></p>
+        </div>
+
+        <div class="d-flex flex-row flex-md-column justify-content-between align-items-center align-items-md-start gap-1">
+          <p class="text-muted small mb-0"><%= t("last_updated") %>:</p>
+          <p class="mb-0 text-end text-md-start"><%= l(@house.updated_at, format: :default) rescue @house.updated_at.strftime("%d/%m/%Y %H:%M") %></p>
         </div>
       </div>
     </div>
 
-    <!-- Floors & Rooms Structure Card -->
-    <div class="col-12 col-lg-8">
-      <div class="card admin-card">
-        <div class="card-header bg-white py-3 border-bottom">
-          <h2 class="h5 mb-0 fw-bold d-flex align-items-center gap-2">
-            <span class="material-symbols-outlined text-primary">layers</span>
-            <%= t("admin.houses.floors_and_rooms_structure") %>
-          </h2>
-        </div>
-        <div class="card-body p-3">
-          <% if @house.floors.any? %>
-            <% @house.floors.order(:position).each do |floor| %>
-              <div class="border rounded-3 p-3 mb-3 bg-light">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                  <h3 class="h6 fw-bold mb-0 text-dark">
-                    <span class="material-symbols-outlined fs-5 align-middle text-secondary">stairs</span>
-                    <%= floor.name %>
-                  </h3>
-                  <span class="badge bg-secondary"><%= floor.rooms.count %> <%= t("form.room.self").downcase %></span>
-                </div>
-
-                <div class="row g-2">
-                  <% floor.rooms.where(deleted: false).each do |room| %>
-                    <div class="col-12 col-md-6 col-xl-4">
-                      <div class="bg-white border rounded p-2 shadow-sm">
-                        <div class="d-flex justify-content-between align-items-center mb-1">
-                          <strong class="text-primary"><%= room.name %></strong>
-                          <small class="text-muted"><%= room.area %> m²</small>
-                        </div>
-                        <div class="small text-muted d-flex justify-content-between">
-                          <span><%= t("admin.houses.max_slots") %>: <strong><%= room.max_slots %></strong></span>
-                          <span><%= t("admin.houses.occupied_slots") %>: <strong><%= room.tenants_count %></strong></span>
-                        </div>
-                      </div>
-                    </div>
+    <!-- Services Card -->
+    <div class="card admin-card mt-4">
+      <div class="card-header bg-white py-3 border-bottom">
+        <h2 class="h5 mb-0 fw-bold d-flex align-items-center gap-2">
+          <span class="material-symbols-outlined text-primary">bolt</span>
+          <%= t("admin.houses.services_and_amenities") %> (<%= @house.services.count %>)
+        </h2>
+      </div>
+      <div class="card-body p-0">
+        <ul class="list-group list-group-flush">
+          <% if @house.services.any? %>
+            <% @house.services.each do |svc| %>
+              <li class="list-group-item d-flex justify-content-between align-items-center px-4 py-3">
+                <div>
+                  <strong><%= svc.name %></strong>
+                  <% if svc.note.present? %>
+                    <small class="text-muted d-block"><%= svc.note %></small>
                   <% end %>
                 </div>
-              </div>
+                <div>
+                  <% svc.service_variants.each do |variant| %>
+                    <span class="badge bg-light text-dark border">
+                      <%= number_to_currency(variant.fee, unit: "₫", precision: 0) rescue "#{variant.fee}đ" %> / <%= variant.unit %>
+                    </span>
+                  <% end %>
+                </div>
+              </li>
             <% end %>
           <% else %>
-            <p class="text-muted text-center py-4 mb-0"><%= t("admin.houses.no_floors") %></p>
+            <li class="list-group-item text-center text-muted py-3"><%= t("admin.houses.no_services") %></li>
           <% end %>
-        </div>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floors & Rooms Structure Card -->
+  <div class="col-12 col-md-9 col-lg-8 col-xl-9">
+    <div class="card admin-card">
+      <div class="card-header bg-white py-3 border-bottom">
+        <h2 class="mb-0 d-flex align-items-center gap-2">
+          <span class="material-symbols-outlined fs-4">layers</span>
+          <%= t("admin.houses.floors_and_rooms_structure") %>
+        </h2>
+      </div>
+      <div class="card-body p-3">
+        <% if @house.floors.any? %>
+          <div class="mt-2 mb-3 d-flex align-items-center gap-2">
+            <span class="material-symbols-outlined">list_arrow</span>
+            <%= t("form.floor.order") %>
+          </div>
+
+          <% @house.floors.pos_order.each do |floor| %>
+            <div class="border rounded-3 p-3 mb-3 bg-light">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <h3 class="fs-5 fw-bold mb-0">
+                  <span class="material-symbols-outlined fs-4">stairs</span>&nbsp;
+                  <%= floor.title_name %>
+                </h3>
+                <span class="badge bg-secondary"><%= floor.rooms.count %> <%= t("form.room.self").downcase %></span>
+              </div>
+
+              <div class="row g-2">
+                <% floor.rooms.reject(&:deleted?).each do |room| %>
+                  <div class="col-12 col-sm-6 col-md-5 col-xl-4">
+                    <div class="bg-white border rounded p-2 shadow-sm">
+                      <div class="d-flex justify-content-between align-items-center mb-1">
+                        <strong class="text-primary"><%= room.title_name %></strong>
+                        <small class="text-muted"><%= room.area %> m²</small>
+                      </div>
+                      <div class="small text-muted d-flex justify-content-between mb-1">
+                        <span><%= @house.bed? ? t("form.room.beds_count", default: "Số giường") : t("admin.houses.max_slots") %>: <strong><%= room.max_slots %></strong></span>
+                        <span><%= t("admin.houses.occupied_slots") %>: <strong><%= room.tenants_count %></strong></span>
+                      </div>
+                      <div class="small text-muted d-flex justify-content-between align-items-center pt-1 border-top">
+                        <span><%= @house.room? ? t("admin.houses.room_rent", default: "Giá phòng") : t("admin.houses.bed_rent", default: "Giá giường") %>:</span>
+                        <strong class="text-dark"><%= room_rent_display(@house, room) %></strong>
+                      </div>
+                    </div>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        <% else %>
+          <p class="text-muted text-center py-4 mb-0"><%= t("admin.houses.no_floors") %></p>
+        <% end %>
       </div>
     </div>
   </div>
 </div>
-

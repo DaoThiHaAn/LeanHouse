@@ -1,133 +1,133 @@
 <% content_for :title, t("page_titles.admin_houses") %>
 
-<div class="main-container w-95">
-  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 pb-3 mb-4 border-bottom">
-    <div>
-      <h1 class="mb-1 admin-title"><%= t("admin.houses.title") %></h1>
-      <p class="text-muted mb-0">
-        <%= t("admin.houses.subtitle") %>
-      </p>
-    </div>
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 pb-3 mb-4 border-bottom">
+  <div>
+    <h1 class="mb-3"><%= t("admin.houses.title") %></h1>
+    <p class="text-muted">
+      <%= t("admin.houses.subtitle") %>
+    </p>
   </div>
+</div>
 
-  <!-- Search & Filter Form (AJAX via Turbo Frame and Stimulus SearchController) -->
-  <div class="admin-filter-container mb-4">
-    <%= form_with url: admin_houses_path, method: :get,
-                  class: "row g-3 align-items-center",
-                  data: {
-                    controller: "search",
-                    turbo_frame: "admin_houses_table",
-                    turbo_action: "advance"
-                  } do |f| %>
-      <div class="col-12 col-md-7">
-        <div class="input-group">
-          <span class="input-group-text bg-white border-end-0">
-            <span class="material-symbols-outlined fs-5 text-muted">search</span>
-          </span>
-          <%= f.search_field :q,
-              value: @query,
-              placeholder: t("admin.houses.search_placeholder"),
-              class: "form-control border-start-0",
-              data: {
-                search_target: "input",
-                action: "input->search#debounce"
-              } %>
-        </div>
+<!-- Search & Filter Form (AJAX via Turbo Frame and Stimulus SearchController) -->
+<div class="admin-filter-container mb-4">
+  <%= form_with url: admin_houses_path, method: :get,
+                class: "row g-3 align-items-center",
+                data: {
+                  controller: "search",
+                  turbo_frame: "admin_houses_table",
+                  turbo_action: "advance"
+                } do |f| %>
+    <div class="col-12 col-sm-7 col-md-6">
+      <div class="input-group">
+        <span class="input-group-text bg-white">
+          <span class="material-symbols-outlined fs-5 text-muted">search</span>
+        </span>
+        <%= f.search_field :q,
+            value: @query,
+            placeholder: t("admin.houses.search_placeholder"),
+            class: "form-control shadow-sm",
+            data: {
+              search_target: "input",
+              action: "input->search#debounce search->search#debounce"
+            } %>
       </div>
-
-      <div class="col-6 col-md-3">
-        <%= f.select :mode,
-            options_for_select([
-              [t("admin.houses.filter_all_modes"), ""],
-              [t("admin.houses.filter_room"), "room"],
-              [t("admin.houses.filter_bed"), "bed"]
-            ], @mode_filter),
-            {},
-            class: "form-select",
-            onchange: "this.form.requestSubmit()" %>
-      </div>
-
-      <div class="col-6 col-md-2 d-flex gap-2">
-        <%= f.submit t("filter"), class: "btn admin-btn-primary w-100 py-2" %>
-        <% if @query.present? || @mode_filter.present? %>
-          <%= link_to t("admin.houses.clear_filter"), admin_houses_path,
-                      class: "btn btn-outline-secondary",
-                      data: { turbo_frame: "admin_houses_table", turbo_action: "advance" } %>
-        <% end %>
-      </div>
-    <% end %>
-  </div>
-
-  <!-- Houses Table with Turbo Frame for AJAX updates -->
-  <%= turbo_frame_tag "admin_houses_table" do %>
-    <div class="d-flex justify-content-end mb-3">
-      <span class="badge bg-light text-dark border p-2 fs-6">
-        <%= t("admin.houses.total_houses", count: @houses.count) %>
-      </span>
     </div>
 
-    <div class="card admin-card">
-      <div class="card-body p-0">
-        <div class="table-responsive">
-          <table class="table table-hover align-middle mb-0">
-            <thead class="table-light">
-              <tr>
-                <th class="ps-3"><%= t("form.house.name") %></th>
-                <th><%= t("role.landlord") %></th>
-                <th><%= t("form.house.addr") %></th>
-                <th><%= t("form.house.mode") %></th>
-                <th><%= t("form.floor.rooms_count") %></th>
-                <th><%= t("admin.houses.created_at") %></th>
-                <th class="text-end pe-3"><%= t("actions") %></th>
-              </tr>
-            </thead>
-            <tbody>
-              <% if @houses.any? %>
-                <% @houses.each do |house| %>
-                  <tr>
-                    <td class="ps-3 fw-bold">
-                      <%= link_to house.name, admin_house_path(house), class: "text-dark text-decoration-none hover-underline", data: { turbo_frame: "_top" } %>
-                    </td>
-                    <td>
-                      <% if house.landlord&.user %>
-                        <%= link_to house.landlord.user.fullname, admin_user_path(house.landlord.user), class: "link fw-semibold", data: { turbo_frame: "_top" } %>
-                        <small class="d-block text-muted"><%= house.landlord.user.tel %></small>
-                      <% else %>
-                        <span class="text-muted">-</span>
-                      <% end %>
-                    </td>
-                    <td>
-                      <div class="text-truncate" style="max-width: 250px;" title="<%= [house.address_l1, house.address_l2, house.address_l3].compact_blank.join(', ') %>">
-                        <%= [house.address_l1, house.address_l2, house.address_l3].compact_blank.join(", ").presence || "-" %>
-                      </div>
-                    </td>
-                    <td>
-                      <span class="badge <%= house.room? ? 'bg-primary-subtle text-primary border border-primary-subtle' : 'bg-info-subtle text-info border border-info-subtle' %>">
-                        <%= house.room? ? t("admin.houses.mode_room") : t("admin.houses.mode_bed") %>
-                      </span>
-                    </td>
-                    <td><%= house.floors_count %> <%= t("form.floor.self").downcase %> / <%= house.floors.sum { |f| f.rooms.count } %> <%= t("form.room.self").downcase %></td>
-                    <td><%= l(house.created_at.to_date, format: :default) rescue house.created_at.strftime("%d/%m/%Y") %></td>
-                    <td class="text-end pe-3">
-                      <%= link_to admin_house_path(house), class: "btn btn-sm btn-light border", title: t("view_detail"), data: { turbo_frame: "_top" } do %>
-                        <span class="material-symbols-outlined fs-6 align-middle">visibility</span>
-                      <% end %>
-                    </td>
-                  </tr>
-                <% end %>
-              <% else %>
-                <tr>
-                  <td colspan="7" class="text-center text-muted py-5">
-                    <span class="material-symbols-outlined fs-1 d-block mb-2 text-secondary">home</span>
-                    <%= t("admin.houses.no_houses_found") %>
-                  </td>
-                </tr>
-              <% end %>
-            </tbody>
-          </table>
-        </div>
-      </div>
+    <div class="col-6 col-sm-5 col-md-3">
+      <%= f.select :mode,
+          options_for_select([
+            [t("admin.houses.filter_all_modes"), ""],
+            [t("admin.houses.filter_room"), "room"],
+            [t("admin.houses.filter_bed"), "bed"]
+          ], @mode_filter),
+          {},
+          class: "form-select shadow-sm",
+          data: {
+            action: "change->search#changed"
+          } %>
+    </div>
+
+    <div class="col-6 col-md-2 d-flex gap-2">
+      <button type="button"
+              class="btn btn-outline-secondary d-flex align-items-center gap-1 <%= 'd-none' unless @query.present? || @mode_filter.present? %>"
+              data-search-target="clearButton"
+              data-action="click->search#clear">
+        <span class="material-symbols-outlined fs-6">filter_alt_off</span>
+        <%= t("admin.houses.clear_filter") %>
+      </button>
     </div>
   <% end %>
 </div>
 
+<!-- Houses Table with Turbo Frame for AJAX updates -->
+<%= turbo_frame_tag "admin_houses_table" do %>
+  <div class="d-flex justify-content-end mb-3">
+    <span class="badge bg-light text-dark border p-2 fs-6">
+      <%= t("admin.houses.total_houses", count: @houses.count) %>
+    </span>
+  </div>
+
+      <div class="table-responsive border">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th class="ps-3"><%= t("form.house.name") %></th>
+              <th><%= t("role.landlord") %></th>
+              <th><%= t("form.house.addr") %></th>
+              <th><%= t("form.house.mode") %></th>
+              <th><%= t("form.floor.rooms_count") %></th>
+              <th><%= t("admin.houses.created_at") %></th>
+              <th class="text-center"><%= t("actions") %></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if @houses.any? %>
+              <% @houses.each do |house| %>
+                <tr>
+                  <td class="ps-3 fw-bold">
+                    <%= link_to house.name, admin_house_path(house), class: "text-dark text-decoration-none hover-underline", data: { turbo_frame: "_top" } %>
+                  </td>
+
+                  <td>
+                    <% if house.landlord&.user %>
+                      <%= link_to house.landlord.user.fullname, admin_user_path(house.landlord.user), class: "link fw-semibold", data: { turbo_frame: "_top" } %>
+                      <small class="d-block text-muted"><%= house.landlord.user.tel %></small>
+                    <% else %>
+                      <span class="text-muted">-</span>
+                    <% end %>
+                  </td>
+
+                  <td>
+                    <div class="text-truncate" style="max-width: 250px;" title="<%= [house.address_l1, house.address_l2, house.address_l3].compact_blank.join(', ') %>">
+                      <%= [house.address_l1, house.address_l2, house.address_l3].compact_blank.join(", ").presence || "-" %>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="badge <%= house.room? ? 'bg-primary-subtle text-primary border border-primary-subtle' : 'bg-info-subtle text-info border border-info-subtle' %>">
+                      <%= house.room? ? t("admin.houses.mode_room") : t("admin.houses.mode_bed") %>
+                    </span>
+                  </td>
+
+                  <td><%= house.floors_count %> <%= t("form.floor.self").downcase %> - <%= house.floors.sum { |f| f.rooms.count } %> <%= t("form.room.self").downcase %></td>
+                  <td><%= l(house.created_at.to_date, format: :default) rescue house.created_at.strftime("%d/%m/%Y") %></td>
+
+                  <td class="text-center">
+                    <%= link_to admin_house_path(house), class: "btn btn-sm btn-light border", title: t("view_detail"), data: { turbo_frame: "_top" } do %>
+                      <span class="material-symbols-outlined fs-6 align-middle">visibility</span>
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+            <% else %>
+              <tr>
+                <td colspan="7" class="text-center text-muted py-5">
+                  <span class="material-symbols-outlined fs-1 d-block mb-2 text-secondary">home</span>
+                  <%= t("admin.houses.no_houses_found") %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+<% end %>

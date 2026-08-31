@@ -67,6 +67,7 @@ vi:
     log_out: "Đăng Xuất"
 
   role:
+    self: "Vai trò"
     landlord: "Chủ Nhà"
     tenant: "Khách Thuê"
     admin: "Quản Trị Viên"
@@ -78,6 +79,7 @@ vi:
   and: "và"
   turn_back: "Quay lại"
   last_updated: "Cập nhật lần cuối lúc"
+  created_at: "Thời gian tạo"
   none: "Không có"
   view_detail: "Xem chi tiết"
   view_all: "Xem tất cả"
@@ -224,7 +226,7 @@ vi:
     admin_dashboard: "Tổng quan Quản trị"
     admin_users: "Quản lý Người dùng"
     admin_houses: "Quản lý Nhà"
-    admin_house_detail: "Chi tiết Nhà - %{name}"
+    admin_house_detail: "Chi tiết Nhà"
 
 
   pagination:

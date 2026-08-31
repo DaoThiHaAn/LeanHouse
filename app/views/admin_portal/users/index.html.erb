@@ -1,173 +1,178 @@
 <% content_for :title, t("page_titles.admin_users") %>
 
-<div class="main-container w-85">
-  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 pb-3 mb-4 border-bottom">
-    <div>
-      <h1 class="mb-1 admin-title"><%= t("admin.users.title") %></h1>
-      <p class="text-muted mb-0">
-        <%= t("admin.users.subtitle") %>
-      </p>
-    </div>
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 pb-3 mb-4 border-bottom">
+  <div>
+    <h1 class="mb-3 admin-title"><%= t("admin.users.title") %></h1>
+    <p class="text-muted mb-0">
+      <%= t("admin.users.subtitle") %>
+    </p>
   </div>
+</div>
 
-  <!-- Search and Filter Form (AJAX via Turbo Frame and Stimulus SearchController) -->
-  <div class="admin-filter-container mb-4">
-    <%= form_with url: admin_users_path, method: :get,
-                  class: "row g-3 align-items-center",
-                  data: {
-                    controller: "search",
-                    turbo_frame: "admin_users_table",
-                    turbo_action: "advance"
-                  } do |f| %>
-      <div class="col-12 col-md-5">
-        <div class="input-group">
-          <span class="input-group-text bg-white border-end-0">
-            <span class="material-symbols-outlined fs-5 text-muted">search</span>
-          </span>
-          <%= f.search_field :q,
-              value: @query,
-              placeholder: t("admin.users.search_placeholder"),
-              class: "form-control border-start-0",
-              data: {
-                search_target: "input",
-                action: "input->search#debounce"
-              } %>
-        </div>
+<!-- Search and Filter Form (AJAX via Turbo Frame and Stimulus SearchController) -->
+<div class="admin-filter-container mb-4">
+  <%= form_with url: admin_users_path, method: :get,
+                class: "row g-3 align-items-center",
+                data: {
+                  controller: "search",
+                  turbo_frame: "admin_users_table",
+                  turbo_action: "advance"
+                } do |f| %>
+    <div class="col-12 col-sm-6 col-lg-4">
+      <div class="input-group">
+        <span class="input-group-text bg-white">
+          <span class="material-symbols-outlined fs-5 text-muted">search</span>
+        </span>
+        <%= f.search_field :q,
+            value: @query,
+            placeholder: t("admin.users.search_placeholder"),
+            class: "form-control shadow-sm",
+            data: {
+              search_target: "input",
+              action: "input->search#debounce search->search#debounce"
+            } %>
       </div>
-
-      <div class="col-6 col-md-3">
-        <%= f.select :role,
-            options_for_select([
-              [t("admin.users.filter_all_roles"), "all"],
-              [t("admin.users.filter_landlord"), "landlord"],
-              [t("admin.users.filter_tenant"), "tenant"]
-            ], @role_filter),
-            {},
-            class: "form-select",
-            onchange: "this.form.requestSubmit()" %>
-      </div>
-
-      <div class="col-6 col-md-2">
-        <%= f.select :status,
-            options_for_select([
-              [t("admin.users.filter_all_statuses"), "all"],
-              [t("admin.users.status_active"), "active"],
-              [t("admin.users.status_inactive"), "inactive"]
-            ], @status_filter),
-            {},
-            class: "form-select",
-            onchange: "this.form.requestSubmit()" %>
-      </div>
-
-      <div class="col-12 col-md-2 d-flex gap-2">
-        <%= f.submit t("filter"), class: "btn admin-btn-primary w-100 py-2" %>
-        <% if @query.present? || @role_filter != "all" || @status_filter != "all" %>
-          <%= link_to t("admin.users.clear_filter"), admin_users_path,
-                      class: "btn btn-outline-secondary",
-                      data: { turbo_frame: "admin_users_table", turbo_action: "advance" } %>
-        <% end %>
-      </div>
-    <% end %>
-  </div>
-
-  <!-- Users Table with Turbo Frame for AJAX updates -->
-  <%= turbo_frame_tag "admin_users_table" do %>
-    <div class="d-flex justify-content-end mb-3">
-      <span class="badge bg-light text-dark border p-2 fs-6">
-        <%= t("admin.users.total_users", count: @users.count) %>
-      </span>
     </div>
 
-    <div class="card admin-card">
-      <div class="card-body p-0">
-        <div class="table-responsive">
-          <table class="table table-hover align-middle mb-0">
-            <thead class="table-light">
-              <tr>
-                <th class="ps-3"><%= t("form.profile.fullname") %></th>
-                <th><%= t("form.profile.tel") %></th>
-                <th><%= t("form.profile.role") %></th>
-                <th><%= t("form.profile.address") %></th>
-                <th><%= t("admin.users.joined_date") %></th>
-                <th><%= t("form.house.state") %></th>
-                <th class="text-end pe-3"><%= t("actions") %></th>
-              </tr>
-            </thead>
-            <tbody>
-              <% if @users.any? %>
-                <% @users.each do |user| %>
-                  <tr>
-                    <td class="ps-3">
-                      <div class="d-flex align-items-center gap-3">
-                        <% if user.avatar.attached? %>
-                          <%= image_tag user.avatar_thumb, class: "rounded-circle border", width: 40, height: 40, alt: "Avatar" %>
-                        <% else %>
-                          <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold text-white shadow-sm <%= user.landlord? ? 'badge-role-landlord' : 'badge-role-tenant' %>" style="width: 40px; height: 40px;">
-                            <%= user.fullname.first.upcase rescue 'U' %>
-                          </div>
-                        <% end %>
-                        <div>
-                          <div class="fw-bold"><%= link_to user.fullname, admin_user_path(user), class: "text-dark text-decoration-none hover-underline", data: { turbo_frame: "_top" } %></div>
-                          <small class="text-muted"><%= user.male? ? t("form.profile.male") : t("form.profile.female") %></small>
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      <span class="font-monospace"><%= user.tel %></span>
-                      <% if user.tel_verified_at.present? %>
-                        <span class="material-symbols-outlined fs-6 text-success align-middle" title="<%= t("admin.users.verified") %>">verified</span>
-                      <% end %>
-                    </td>
-                    <td>
-                      <% if user.landlord? %>
-                        <span class="badge badge-role-landlord"><%= t("role.landlord") %></span>
-                      <% else %>
-                        <span class="badge badge-role-tenant"><%= t("role.tenant") %></span>
-                      <% end %>
-                    </td>
-                    <td>
-                      <div class="text-truncate" style="max-width: 220px;" title="<%= user.address %>">
-                        <%= user.address.presence || "-" %>
-                      </div>
-                    </td>
-                    <td>
-                      <%= l(user.created_at.to_date, format: :default) rescue user.created_at.strftime("%d/%m/%Y") %>
-                    </td>
-                    <td>
-                      <% if user.is_active? %>
-                        <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1"><%= t("admin.users.active_short") %></span>
-                      <% else %>
-                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1"><%= t("admin.users.inactive_short") %></span>
-                      <% end %>
-                    </td>
-                    <td class="text-end pe-3">
-                      <div class="d-inline-flex gap-1 align-items-center">
-                        <%= link_to admin_user_path(user), class: "btn btn-sm btn-light border", title: t("view_detail"), data: { turbo_frame: "_top" } do %>
-                          <span class="material-symbols-outlined fs-6 align-middle">visibility</span>
-                        <% end %>
+    <div class="col-5 col-md-3 col-lg-2">
+      <%= f.select :role,
+          options_for_select([
+            [t("admin.users.filter_all_roles"), "all"],
+            [t("admin.users.filter_landlord"), "landlord"],
+            [t("admin.users.filter_tenant"), "tenant"]
+          ], @role_filter),
+          {},
+          class: "form-select shadow-sm",
+          data: {
+            action: "change->search#changed"
+          } %>
+    </div>
 
-                        <%= button_to toggle_active_admin_user_path(user), method: :patch,
-                            data: { turbo_confirm: user.is_active? ? t("admin.users.confirm_lock_user", name: user.fullname) : t("admin.users.confirm_unlock_user", name: user.fullname) },
-                            class: "btn btn-sm #{user.is_active? ? 'btn-outline-danger' : 'btn-outline-success'}",
-                            title: user.is_active? ? t("admin.users.lock_account") : t("admin.users.unlock_account") do %>
-                          <span class="material-symbols-outlined fs-6 align-middle"><%= user.is_active? ? "lock" : "lock_open" %></span>
-                        <% end %>
-                      </div>
-                    </td>
-                  </tr>
-                <% end %>
-              <% else %>
-                <tr>
-                  <td colspan="7" class="text-center text-muted py-5">
-                    <span class="material-symbols-outlined fs-1 d-block mb-2 text-secondary">person_search</span>
-                    <%= t("admin.users.no_users_found") %>
-                  </td>
-                </tr>
-              <% end %>
-            </tbody>
-          </table>
-        </div>
-      </div>
+    <div class="col-6 col-md-4 col-lg-3">
+      <%= f.select :status,
+          options_for_select([
+            [t("admin.users.filter_all_statuses"), "all"],
+            [t("admin.users.status_active"), "active"],
+            [t("admin.users.status_inactive"), "inactive"]
+          ], @status_filter),
+          {},
+          class: "form-select shadow-sm",
+          data: {
+            action: "change->search#changed"
+          } %>
+    </div>
+
+    <div class="col-4 col-md-2 ms-5">
+      <button type="button"
+              class="btn btn-outline-secondary d-flex align-items-center gap-1 <%= 'd-none' unless @query.present? || (@role_filter.present? && @role_filter != 'all') || (@status_filter.present? && @status_filter != 'all') %>"
+              data-search-target="clearButton"
+              data-action="click->search#clear">
+        <span class="material-symbols-outlined fs-6">filter_alt_off</span>
+        <%= t("admin.users.clear_filter") %>
+      </button>
     </div>
   <% end %>
 </div>
+
+<!-- Users Table with Turbo Frame for AJAX updates -->
+<%= turbo_frame_tag "admin_users_table" do %>
+  <div class="d-flex justify-content-end mb-3">
+    <span class="badge bg-light text-dark border p-2 fs-6">
+      <%= t("admin.users.total_users", count: @users.count) %>
+    </span>
+  </div>
+
+  <div class="table-responsive border">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th class="ps-3"><%= t("form.profile.fullname") %></th>
+          <th><%= t("form.profile.tel") %></th>
+          <th><%= t("role.self") %></th>
+          <th><%= t("form.profile.address") %></th>
+          <th><%= t("admin.users.joined_date") %></th>
+          <th><%= t("form.house.state") %></th>
+          <th class="text-center"><%= t("actions") %></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if @users.any? %>
+          <% @users.each do |user| %>
+            <tr>
+              <td class="ps-3">
+                <div class="d-flex align-items-center gap-3">
+                  <% if user.avatar.attached? %>
+                    <%= image_tag user.avatar_thumb, class: "rounded-circle border", width: 40, height: 40, alt: "Avatar" %>
+                  <% else %>
+                    <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold text-white shadow-sm <%= user.landlord? ? 'badge-role-landlord' : 'badge-role-tenant' %>" style="width: 40px; height: 40px;">
+                      <%= user.fullname.first.upcase rescue 'U' %>
+                    </div>
+                  <% end %>
+                  <div>
+                    <div class="fw-bold"><%= link_to user.fullname, admin_user_path(user), class: "text-dark text-decoration-none hover-underline", data: { turbo_frame: "_top" } %></div>
+                    <small class="text-muted"><%= user.male? ? t("form.profile.male") : t("form.profile.female") %></small>
+                  </div>
+                </div>
+              </td>
+
+              <td>
+                <span class="font-monospace"><%= user.tel %></span>
+                <% if user.tel_verified_at.present? %>
+                  <span class="material-symbols-filled fs-6 text-success" title="<%= t("admin.users.verified") %>">verified</span>
+                <% end %>
+              </td>
+
+              <td>
+                <% if user.landlord? %>
+                  <span class="badge badge-role-landlord"><%= t("role.landlord") %></span>
+                <% else %>
+                  <span class="badge badge-role-tenant"><%= t("role.tenant") %></span>
+                <% end %>
+              </td>
+
+              <td>
+                <div class="text-truncate" style="max-width: 220px;" title="<%= user.address %>">
+                  <%= user.address.presence || "-" %>
+                </div>
+              </td>
+
+              <td>
+                <%= l(user.created_at.to_date, format: :default) rescue user.created_at.strftime("%d/%m/%Y") %>
+              </td>
+
+              <td>
+                <% if user.is_active? %>
+                  <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1"><%= t("admin.users.active_short") %></span>
+                <% else %>
+                  <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1"><%= t("admin.users.inactive_short") %></span>
+                <% end %>
+              </td>
+
+              <td class="text-center">
+                <div class="d-inline-flex gap-1 align-items-center">
+                  <%= link_to admin_user_path(user), class: "btn btn-sm btn-light border", title: t("view_detail"), data: { turbo_frame: "_top" } do %>
+                    <span class="material-symbols-outlined fs-6 align-middle">visibility</span>
+                  <% end %>
+
+                  <%= button_to toggle_active_admin_user_path(user), method: :patch,
+                      data: { turbo_confirm: user.is_active? ? t("admin.users.confirm_lock_user", name: user.fullname) : t("admin.users.confirm_unlock_user", name: user.fullname) },
+                      class: "btn btn-sm #{user.is_active? ? 'btn-outline-danger' : 'btn-outline-success'}",
+                      title: user.is_active? ? t("admin.users.lock_account") : t("admin.users.unlock_account") do %>
+                    <span class="material-symbols-outlined fs-6 align-middle"><%= user.is_active? ? "lock" : "lock_open" %></span>
+                  <% end %>
+                </div>
+              </td>
+            </tr>
+          <% end %>
+        <% else %>
+          <tr>
+            <td colspan="7" class="text-center text-muted py-5">
+              <span class="material-symbols-outlined fs-1 d-block mb-2 text-secondary">person_search</span>
+              <%= t("admin.users.no_users_found") %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>
