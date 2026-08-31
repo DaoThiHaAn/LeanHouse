@@ -10,6 +10,7 @@ class LandlordPortal::TenantsController < LandlordPortal::BaseController
   def index
     return render :no_tenant if @house.occupied_slots.zero?
 
+    @stats = @house.tenant_summary_stats
     @signed_tenants = @house.all_linked_tenants(signed_contract: true)
     @unsigned_tenants = @house.all_linked_tenants(signed_contract: false)
     render :index
@@ -65,6 +66,9 @@ class LandlordPortal::TenantsController < LandlordPortal::BaseController
   def create_new
     @user = User.new
     @available_slots = AvailableSlotsBuilder.call(house: @house)
+    @floors = @available_slots.floors
+    @room_options = @available_slots.room_options
+    @bed_options = @available_slots.bed_options
   end
 
   # Link a tenant to a rental unit

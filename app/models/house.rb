@@ -150,9 +150,6 @@ class House < ApplicationRecord
     end
   end
 
-  # Return all linked tenants with/without signing contracts
-  # @param signed_contract [Boolean]
-  # @return tenants [Array<Tenant>]
   def all_linked_tenants(signed_contract:)
     rentable_records = room? ? rooms : beds
     rental_units = RentalUnit.where(rentable: rentable_records)
@@ -167,6 +164,23 @@ class House < ApplicationRecord
       })
       .name_sorted
       .distinct
+  end
+
+  def tenant_summary_stats
+    signed = all_linked_tenants(signed_contract: true).size
+    unsigned = all_linked_tenants(signed_contract: false).size
+    total_occupied = signed + unsigned
+    total = total_slots
+    vacant = [ total - total_occupied, 0 ].max
+    pending_requests = requests.where(status: :pending).count
+
+    {
+      total_tenants: total_occupied,
+      signed_count: signed,
+      unsigned_count: unsigned,
+      vacant_slots: vacant,
+      pending_requests_count: pending_requests
+    }
   end
 
   # @param tenant_id [int]

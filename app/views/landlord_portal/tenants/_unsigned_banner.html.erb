@@ -1,0 +1,73 @@
+<%# Locals: unsigned_tenants, house %>
+
+<% if unsigned_tenants.any? %>
+  <div id="unsigned_tenants_section" class="card border-warning border-opacity-50 rounded-3 mb-5 overflow-hidden">
+    <%# Always visible trigger header %>
+    <div class="card-header bg-warning-subtle border-warning d-flex align-items-center justify-content-between p-3 cursor-pointer"
+         data-bs-toggle="collapse"
+         data-bs-target="#unsignedTenantsCollapse"
+         aria-expanded="false"
+         aria-controls="unsignedTenantsCollapse">
+      <div class="d-flex align-items-center gap-2">
+        <span class="material-symbols-filled warning-pulse text-danger fs-4">warning</span>
+        <span class="fw-semibold text-dark">
+          <%= t("form.tenant.stats.unsigned_warning_title", count: unsigned_tenants.size) %>
+        </span>
+        <span class="badge bg-danger rounded-pill"><%= unsigned_tenants.size %></span>
+      </div>
+
+      <button type="button" class="btn btn-sm btn-link text-decoration-none text-secondary p-0 d-flex align-items-center gap-1">
+        <span class="fw-medium text-muted"><%= t("form.tenant.stats.view_details") %></span>
+        <span class="material-symbols-outlined fs-5">expand_more</span>
+      </button>
+    </div>
+
+    <%# Collapsed by default body %>
+    <div class="tenant collapse" id="unsignedTenantsCollapse">
+      <div class="p-3 overflow-y-auto body">
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-2">
+          <% unsigned_tenants.each do |tenant| %>
+            <div class="col" id="unsigned_tenant_<%= tenant.id %>">
+              <div class="unsigned-card d-flex align-items-center justify-content-between p-2 rounded-2 border shadow-xs bg-white h-100">
+                <div class="overflow-hidden me-2">
+                  <p class="fw-bold mb-0 text-dark small text-truncate"><%= vn_name(tenant.user.fullname) %></p>
+                  <small class="text-muted text-truncate d-block"><%= tenant.current_staying_info %></small>
+                </div>
+
+                <div class="d-flex align-items-center gap-1 flex-shrink-0">
+                  <%= link_to new_landlord_house_tenant_contract_path(house, tenant),
+                              class: "d-inline-flex align-items-center p-1 rounded-circle",
+                              title: t("form.contract.sign"),
+                              data: { **tooltip("top", t("form.contract.sign")) } do %>
+                    <span class="material-symbols-filled fs-5">ink_pen</span>
+                  <% end %>
+
+                  <%= link_to move_landlord_house_tenant_path(house, tenant),
+                              class: "d-inline-flex align-items-center p-1 rounded-circle",
+                              data: { turbo_frame: "move_tenant_modal", **tooltip("top", t("form.tenant.move")) },
+                              title: t("form.tenant.move") do %>
+                    <span class="material-symbols-filled fs-5">move_location</span>
+                  <% end %>
+
+                  <%= button_to landlord_house_tenant_path(house, tenant),
+                                method: :delete,
+                                title: t("form.tenant.remove"),
+                                class: "d-inline-flex align-items-center p-1 rounded-circle border-0",
+                                data: {
+                                  turbo_confirm: [
+                                    t("form.tenant.remove_cf"),
+                                    t("form.tenant.remove_warning_1") + "\n" + t("form.tenant.remove_warning_2")
+                                  ].join("\n\n"),
+                                  **tooltip("top", t("form.tenant.remove"))
+                                } do %>
+                    <span class="material-symbols-filled text-danger fs-5">person_remove</span>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

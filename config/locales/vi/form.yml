@@ -164,6 +164,7 @@ vi:
 
     tenant:
       self: "Khách thuê"
+      mng_note: "Nơi quản lý tất cả Khách thuê lưu trú tại nhà bạn"
       acc_info: "Thông tin tài khoản"
       tel: "Số điện thoại khách thuê"
       link: "Liên kết với khách thuê"
@@ -187,10 +188,27 @@ vi:
       new_rental_unit: "Chỗ thuê mới:"
       info: "Thông tin Khách thuê"
       move: "Chuyển chỗ"
-      moving: "Đang chuyển"
       unfound: "Không tìm thấy khách thuê nào!"
       no_house: "Bạn chưa được kết nối với Nhà nào!"
       let_link: "Hãy liên hệ với chủ nhà để bắt đầu nhận phòng và theo dõi quá trình lưu trú của bạn ở đây."
+      stats:
+        total_tenants: "Tổng khách thuê"
+        signed_contracts: "Đã ký hợp đồng"
+        unsigned_contracts: "Chưa ký hợp đồng"
+        vacant_slots: "Chỗ còn trống"
+        pending_requests: "Yêu cầu chờ duyệt"
+        view_pending_requests: "Mở danh sách yêu cầu cần xử lý của nhà này (tab mới)"
+        needs_action: "Cần xử lý yêu cầu"
+        no_pending: "Không có yêu cầu chờ"
+        staying_active: "Đang lưu trú tại nhà"
+        valid_contract: "Hợp đồng còn hiệu lực"
+        needs_signing: "Cần lập hợp đồng ngay"
+        all_signed: "Tất cả đã có hợp đồng"
+        ready_for_rent: "Sẵn sàng đón khách mới"
+        unsigned_warning_title: "Cần xử lý: Có %{count} khách thuê chưa ký hợp đồng"
+        view_details: "Xem chi tiết"
+        collapse_view: "Thu gọn"
+        click_to_view: "Nhấp để xem danh sách"
 
     bed:
       self: "Giường"

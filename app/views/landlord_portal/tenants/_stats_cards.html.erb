@@ -1,0 +1,86 @@
+<%# Locals: stats, house %>
+
+<div id="tenant_stats_grid" class="row row-cols-2 row-cols-lg-4 g-3 mb-4">
+  <%# 1. Total Tenants (Teal Theme) %>
+  <div class="col">
+    <div class="card stat-card stat-card-teal shadow-sm h-100 rounded-3 p-3">
+      <div class="d-flex align-items-center justify-content-between mb-2">
+        <span class="stat-card-title fw-bold"><%= t("form.tenant.stats.total_tenants") %></span>
+        <div class="stat-icon-wrap rounded-circle d-flex align-items-center justify-content-center">
+          <span class="material-symbols-filled fs-3">groups</span>
+        </div>
+      </div>
+      <div class="d-flex align-items-baseline gap-2">
+        <span class="fs-3 fw-bold stat-card-value"><%= stats[:total_tenants] %></span>
+        <p class="stat-card-subtext fw-semibold"><%= t("person_unit") %></p>
+      </div>
+      <small class="text-muted mt-1 fst-italic"><%= t("form.tenant.stats.staying_active") %></small>
+    </div>
+  </div>
+
+  <%# 2. Signed Contracts (Green Theme) %>
+  <div class="col">
+    <div class="card stat-card stat-card-green shadow-sm h-100 rounded-3 p-3">
+      <div class="d-flex align-items-center justify-content-between mb-2">
+        <span class="stat-card-title fw-bold small"><%= t("form.tenant.stats.signed_contracts") %></span>
+        <div class="stat-icon-wrap rounded-circle d-flex align-items-center justify-content-center">
+          <span class="material-symbols-filled fs-3">assignment_turned_in</span>
+        </div>
+      </div>
+      <div class="d-flex align-items-baseline gap-2">
+        <span class="fs-3 fw-bold stat-card-value"><%= stats[:signed_count] %></span>
+        <p class="stat-card-subtext fw-semibold"><%= t("person_unit") %></p>
+      </div>
+      <small class="text-muted mt-1 fst-italic"><%= t("form.tenant.stats.valid_contract") %></small>
+    </div>
+  </div>
+
+  <%# 3. Pending Requests in House (Orange Theme with Link to New Tab) %>
+  <div class="col">
+    <%= link_to landlord_requests_path(house_id: house.id, status: :pending),
+                target: "_blank",
+                class: "text-decoration-none d-block h-100",
+                title: t("form.tenant.stats.view_pending_requests") do %>
+      <div class="card stat-card stat-card-orange shadow-sm h-100 rounded-3 p-3 cursor-pointer">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <div>
+            <span class="stat-card-title fw-bold small">
+              <%= t("form.tenant.stats.pending_requests") %>
+            </span>&nbsp;
+            <span class="material-symbols-outlined fs-6 stat-card-value">open_in_new</span>
+          </div>
+
+          <div class="stat-icon-wrap rounded-circle d-flex align-items-center justify-content-center">
+            <span class="material-symbols-filled fs-5 <%= 'warning-pulse' if stats[:pending_requests_count].to_i.positive? %>">pending_actions</span>
+          </div>
+        </div>
+        <div class="d-flex align-items-baseline gap-2">
+          <span class="fs-3 fw-bold stat-card-value">
+            <%= stats[:pending_requests_count] %>
+          </span>
+          <p class="stat-card-subtext fw-semibold"><%= t("request.self") %></p>
+        </div>
+        <small class="text-muted mt-1 fst-italic">
+          <%= stats[:pending_requests_count].to_i.positive? ? t("form.tenant.stats.needs_action") : t("form.tenant.stats.no_pending") %>
+        </small>
+      </div>
+    <% end %>
+  </div>
+
+  <%# 4. Vacant Slots (Blue Theme) %>
+  <div class="col">
+    <div class="card stat-card stat-card-blue shadow-sm h-100 rounded-3 p-3">
+      <div class="d-flex align-items-center justify-content-between mb-2">
+        <span class="stat-card-title fw-bold small"><%= t("form.tenant.stats.vacant_slots") %></span>
+        <div class="stat-icon-wrap rounded-circle d-flex align-items-center justify-content-center">
+          <span class="material-symbols-filled fs-3">meeting_room</span>
+        </div>
+      </div>
+      <div class="d-flex align-items-baseline gap-2">
+        <span class="fs-3 fw-bold stat-card-value"><%= stats[:vacant_slots] %></span>
+        <p class="stat-card-subtext fw-semibold"><%= t("form.bed.self") %></p>
+      </div>
+      <small class="text-muted mt-1 fst-italic"><%= t("form.tenant.stats.ready_for_rent") %></small>
+    </div>
+  </div>
+</div>

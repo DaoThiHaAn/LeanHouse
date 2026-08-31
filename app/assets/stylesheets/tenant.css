@@ -121,30 +121,129 @@
   }
 }
  
-.create-new-form-container{
-  max-width: 500px;
+/* Tenant dashboard of landlord */
+.stat-card {
+  border-radius: 12px;
+  border-width: 1px;
+  border-style: solid;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* Collapsible effect */
-.unsigned.alert {
-  max-width: 320px;
-  min-width: 260px;
-  max-height: 70vh;
-  transition: all 0.5 s ease-in-out;
-  border-color: #ffe69c;
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08) !important;
 }
-/* Khi thu gọn: co lại thành hộp nhỏ 52px */
-.unsigned.alert.is-collapsed {
-  min-width: 52px !important;
-  max-width: 52px !important;
-  cursor: pointer;
-  background-color: #fff3cd;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+.stat-card-teal {
+  background-color: #e9e6f7;
+  border-color: #c2c3eb;
 }
-.unsigned.alert.is-collapsed:hover {
-  background-color: #ffe09c;
+.stat-card-teal .stat-card-title {
+  color: #16285d;
 }
+.stat-card-teal .stat-card-value {
+  color: #16215d;
+}
+.stat-card-teal .stat-card-subtext {
+  color: #282770;
+}
+.stat-card-teal .stat-icon-wrap {
+  background-color: #FFFFFF;
+  color: #164E5D;
+}
+
+.stat-card-green {
+  background-color: #EAF8F1;
+  border-color: #C6ECD9;
+}
+.stat-card-green .stat-card-title {
+  color: #146c43;
+}
+.stat-card-green .stat-card-value {
+  color: #198754;
+}
+.stat-card-green .stat-card-subtext {
+  color: #1f6e4a;
+}
+.stat-card-green .stat-icon-wrap {
+  background-color: #FFFFFF;
+  color: #198754;
+}
+
+.stat-card-orange {
+  background-color: #FFF4E6;
+  border-color: #FADEC0;
+}
+.stat-card-orange .stat-card-title {
+  color: #6C4422;
+}
+.stat-card-orange .stat-card-value {
+  color: #E07A1E;
+}
+.stat-card-orange .stat-card-subtext {
+  color: #7d4e27;
+}
+.stat-card-orange .stat-icon-wrap {
+  background-color: #FFFFFF;
+  color: #E07A1E;
+}
+
+.stat-card-blue {
+  background-color: #EDF4FC;
+  border-color: #C9E0F7;
+}
+.stat-card-blue .stat-card-title {
+  color: #1e5892;
+}
+.stat-card-blue .stat-card-value {
+  color: #2670B8;
+}
+.stat-card-blue .stat-card-subtext {
+  color: #2b5f94;
+}
+.stat-card-blue .stat-icon-wrap {
+  background-color: #FFFFFF;
+  color: #2670B8;
+}
+
+.stat-icon-wrap {
+  width: 38px;
+  height: 38px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
+}
+
+.max-w-1400 {
+  max-width: 1400px;
+}
+
+.shadow-xs {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.unsigned-card {
+  transition: all 0.15s ease-in-out;
+  border-color: #f1f5f9;
+}
+
+.unsigned-card:hover {
+  border-color: #e2e8f0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.tenant.collapse {
+  background-color: #fffcf1;
+}
+
+.tenant.collapse {
+  max-height: 220px;
+}
+
 .cursor-pointer {
   cursor: pointer;
+}
+
+.create-new-form-container {
+  width: 50%;
+  min-width: 300px;
+  padding: 20px;
 }

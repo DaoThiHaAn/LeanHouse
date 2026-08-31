@@ -2,18 +2,18 @@
 
 <% content_for :title, t("page_titles.new_contract") %>
 
-<% provide :container_width, "contract-container w-50" %>
+<div class="contract-container w-50 shadow">
+  <div class="d-flex align-items-center mb-5">
+    <%= link_to :back, class: "d-flex align-items-center gap-1 turn-back link" do %>
+      <span class="material-symbols-outlined ms-2">arrow_left_alt</span>
+      <%= t('turn_back') %>
+    <% end %>
+    <h1 class="text-center flex-grow-1"><%= t('page_titles.new_contract') %></h1>
+  </div>
 
-<div class="d-flex align-items-center mb-5">
-  <%= link_to :back, class: "d-flex align-items-center gap-1 turn-back link" do %>
-    <span class="material-symbols-outlined ms-2">arrow_left_alt</span>
-    <%= t('turn_back') %>
-  <% end %>
-  <h1 class="text-center flex-grow-1"><%= t('page_titles.new_contract') %></h1>
+  <%= render "tenant_info_card", user: @user %>
+
+  <%= render "form",
+            contract: @contract,
+            url: landlord_house_tenant_contract_path(@house, @user.tenant) %>
 </div>
-
-<%= render "tenant_info_card", user: @user %>
-
-<%= render "form",
-           contract: @contract,
-           url: landlord_house_tenant_contract_path(@house, @user.tenant) %>

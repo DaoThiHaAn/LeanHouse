@@ -123,6 +123,7 @@ vi:
   not_yet: "Chưa"
   month: "Tháng"
   year: "Năm"  
+  person_unit: "Người"
 
   errors:
     session_expired: |

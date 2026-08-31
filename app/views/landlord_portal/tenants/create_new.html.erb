@@ -2,20 +2,22 @@
 
 <% content_for :title,  t('form.tenant.create_and_link') %>
 
-<% provide :container_width, "create-new-form-container d-flex flex-column align-items-center" %>
-
+<div class="mx-auto d-flex flex-column align-items-center shadow create-new-form-container">
 <div class="d-flex align-items-center mb-5">
   <%= link_to :back, class: "d-flex align-items-center gap-1 turn-back link" do %>
     <span class="material-symbols-outlined ms-2">arrow_left_alt</span>
     <%= t('turn_back') %>
   <% end %>
-  <h1 class="text-center flex-grow-1"><%= t('form.tenant.create_and_link') %></h1>
+  <h1 class="text-center w-75"><%= t('form.tenant.create_and_link') %></h1>
 </div>
 
 <%= form_with model: @user, local: true, 
       class:"px-5 d-flex flex-column gap-4" do |form| %>
 
-  <h2 class="fs-5 my-0 "><%= t("form.tenant.acc_info") %></h2>
+  <h2 class="fs-5 my-0">
+    <span class="material-symbols-filled fs-2">user_attributes</span>&nbsp;
+    <%= t("form.tenant.acc_info") %>
+  </h2>
 
   <!-- Role -->
   <%= form.hidden_field :role, value: "tenant" %>
@@ -34,7 +36,7 @@
     <% end %>
 
     <div class="field-info mb-2 d-flex align-items-center gap-1">
-      <span class="material-symbols-outlined">info</span>
+      <span class="material-symbols-outlined fs-6">info</span>
       <small><%= t('form.profile.zalo') %></small>
     </div>
 
@@ -78,7 +80,7 @@
     <%= field_error(@user, :password) %>
 
     <div class="field-info m-2 d-flex align-items-center gap-1">
-      <span class="material-symbols-outlined">info</span>
+      <span class="material-symbols-outlined fs-6">info</span>
       <p><%= t('form.profile.required_pw') %></p>
     </div>
 
@@ -161,13 +163,18 @@
     <%= form.date_field :bday, max: 15.years.ago.to_date, class: "date form-control", required: true %>
   </div>
 
-  <h2 class="fs-5 mb-1 mx-auto"><%= t("form.tenant.select_unit") %></h2>
+  <h2 class="fs-5 mb-1 mx-auto">
+    <span class="material-symbols-filled fs-2">person_pin_circle</span>&nbsp;
+    <%= t("form.tenant.select_unit") %>
+  </h2>
+  
   <div class="w-75 mx-auto"
         data-controller="dependent-rental-unit"
-        data-dependent-rental-unit-rooms-value="<%= @room_options.to_json %>"
-        data-dependent-rental-unit-beds-value="<%= @bed_options.to_json %>"
+        data-dependent-rental-unit-rooms-value="<%= @available_slots.room_options.to_json %>"
+        data-dependent-rental-unit-beds-value="<%= @available_slots.bed_options.to_json %>"
         data-dependent-rental-unit-bed-mode-value="<%= @house.bed? %>">
-    <%= render 'rental_unit_fields', house: @house, floors: @floors %>
+    <%= hidden_field_tag :rental_unit_id, nil, data: { dependent_rental_unit_target: "rentalUnit" } %>
+    <%= render 'rental_unit_fields', house: @house, floors: @available_slots.floors %>
   </div>
 
   <%= form.button :submit, 
@@ -183,3 +190,4 @@
 <% end %>
 
 <%= render "layouts/shared_components/new_tel_owner" %>
+</div>

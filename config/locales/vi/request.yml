@@ -1,5 +1,6 @@
 vi:
   request:
+    self: "Yêu cầu"
     mine: "Yêu cầu của tôi"
     id: "Mã yêu cầu"
     type: "Loại"

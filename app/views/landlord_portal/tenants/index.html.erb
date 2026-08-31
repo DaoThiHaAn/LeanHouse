@@ -1,165 +1,105 @@
-<%# Variables: @signed_tenants, @unsigned_tenants @house %>
+<%# Variables: @signed_tenants, @unsigned_tenants, @house, @stats %>
 
 <% content_for :title, t("page_titles.tenant_mng") %>
 
-<% provide :container_width, "full" %>
-<h1 class="text-center mb-5"> <%= t("page_titles.tenant_mng") %></h1>
 
-<div class="d-flex gap-5 mt-4">
-  <%# Unsigned tenants %>
-  <% unless @unsigned_tenants.empty? %>
-    <div class="unsigned alert alert-warning card p-0 align-self-start shadow-sm"
-         data-controller="collapsible">
+<h1 class="text-center mb-3"><%= t("page_titles.tenant_mng") %></h1>
+<p class="text-muted text-center border-bottom pb-2 mb-5"><%= t("form.tenant.mng_note")%></p>
 
-      <%# 1. Khung hiển thị đầy đủ (Expanded) %>
-      <div class="unsigned-expanded d-flex flex-column h-100" data-collapsible-target="expanded">
-        <div class="card-header d-flex align-items-center justify-content-between py-2 px-3">
-          <h2 class="fs-6 fw-bold mb-0 d-flex align-items-center gap-2 text-warning-emphasis">
-            <span class="material-symbols-outlined warning-pulse">warning</span>
-            <%= t("form.tenant.without_contract") %>!
-            <span class="badge bg-warning text-dark rounded-pill"><%= @unsigned_tenants.size %></span>
-          </h2>
+<%# 1. KPI Summary Cards %>
+<%= render "stats_cards", stats: @stats, house: @house %>
 
-          <%# Nút bấm thu gọn %>
-          <button type="button" 
-                  class="btn btn-sm btn-link p-0 text-secondary d-flex align-items-center"
-                  data-action="click->collapsible#toggle"
-                  title="Thu gọn">
-            <span class="material-symbols-outlined fs-5">chevron_left</span>
-          </button>
-        </div>
+<%# 2. Collapsible Unsigned Tenants Strip (displayed only when unsigned tenants exist) %>
+<%= render "unsigned_banner", unsigned_tenants: @unsigned_tenants, house: @house %>
 
-        <div class="card-body overflow-y-auto d-flex flex-column gap-2 align-items-center p-3">
-          <% @unsigned_tenants.each do |tenant| %>
-            <div class="unsigned-card py-2 px-2 rounded w-100">
-              <!-- Name + Actions -->
-              <div class="d-flex align-items-center gap-2">
-                <p class="flex-grow-1 text-wrap fw-semibold mb-0"><%= vn_name(tenant.user.fullname) %></p>
+<%# 3. Unified Action & Filter Toolbar Card %>
+<div class="card border rounded-3 p-4 mb-4 bg-white">
+  <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
+    <%# Search & Filters %>
+    <%= form_with url: filtered_landlord_house_tenants_path(@house),
+                  method: :get,
+                  class: "d-flex flex-column gap-3 flex-grow-1",
+                  data: { 
+                    controller: "search", turbo_frame: "tenant_table", turbo_action: "advance"
+                  } do |f| %>
 
-                <div class="d-flex gap-1 align-items-center w-auto">
-                  <%= link_to new_landlord_house_tenant_contract_path(@house, tenant),
-                      class: "d-block",
-                      title: t("form.contract.sign") do %>
-                    <span class="material-symbols-filled">ink_pen</span>
-                  <% end %>
-
-                  <%= link_to move_landlord_house_tenant_path(@house, tenant),
-                      class: "d-block",
-                      data: { turbo_frame: "move_tenant_modal" },
-                      title: t("form.tenant.move") do %>
-                    <span class="material-symbols-filled">move_location</span>
-                  <% end %>
-
-                  <%= button_to landlord_house_tenant_path(@house, tenant), method: :delete,
-                      title: t("form.tenant.remove"),
-                      class: "border-0 bg-transparent p-0",
-                      data: { turbo_confirm: t("form.tenant.remove_cf") } do %>
-                    <span class="material-symbols-filled text-danger">person_remove</span>
-                  <% end %>
-                </div>
-              </div>
-
-              <!-- Staying info -->
-              <p class="text-muted fst-italic staying-info mb-0 mt-1"><%= tenant.current_staying_info %></p>
-            </div>
-          <% end %>
-        </div>
+      <%# Search bar %>
+      <div class="input-group input-group-sm search-bar">
+        <span class="input-group-text bg-white text-muted">
+          <span class="material-symbols-outlined fs-6">search</span>
+        </span>
+        <%= f.search_field :query,
+            value: params[:query],
+            placeholder: "#{t("form.tenant.name_input")}...",
+            class: "form-control",
+            data: {
+              search_target: "input",
+              action: "input->search#debounce"
+            } %>
       </div>
 
-      <%# 2. Khung nhỏ khi thu gọn (Collapsed: Chỉ có icon warning + số lượng) %>
-      <div class="unsigned-collapsed d-none flex-column align-items-center justify-content-center py-3 px-1 cursor-pointer"
-           data-collapsible-target="collapsed"
-           data-action="click->collapsible#toggle"
-           title="<%= t("form.tenant.without_contract") %> (<%= @unsigned_tenants.size %>) - <%= t("click_expand") %> ">
-        <span class="material-symbols-outlined warning-pulse fs-4">warning</span>
-        <span class="badge bg-danger rounded-pill my-2" style="font-size: 0.75rem;"><%= @unsigned_tenants.size %></span>
-        <span class="material-symbols-outlined text-secondary fs-5">chevron_right</span>
-      </div>
-    </div>
-  <% end %>
-
-  <%# Main tenant table container (contract signed) %>
-  <div class="flex-grow-1 main-table-zone">
-    <!-- Link Tenant Button -->
-    <%= link_to new_landlord_house_tenant_path(@house), class:"main-btn shadow-sm d-flex align-items-center gap-2 px-2 py-1 mb-3 ms-auto",
-        data: { turbo_frame: "new_tenant_modal" } do %>
-        <span class="material-symbols-filled">link</span>
-        <%= t('form.tenant.link') %>
-    <% end %>
-
-    <!-- Create & Link Tenant Button -->
-    <%= link_to landlord_house_create_new_tenant_path(@house), class:"shadow-sm subtle main-btn d-flex align-items-center gap-2 px-2 py-1 mb-2 ms-auto",
-        data: {**tooltip("top", :"form.tenant.create_link_info")} do %>
-      <span class="material-symbols-filled">person_add</span>
-      <%= t('form.tenant.create_and_link') %>
-    <% end %>
-
-    <% unless @signed_tenants.empty? %>
-      <%= form_with url: filtered_landlord_house_tenants_path(@house),
-          method: :get,
-          class:"d-flex aign-items-center flex-wrap gap-4 my-5 align-items-center",
-          data: { 
-            controller: "search", turbo_frame: "tenant_table", turbo_action: "advance"
-          } do |f| %>
-
-        <%# Search bar: name %>
-        <div class="input-group search-bar w-40 flex-grow-1">
-          <span class="input-group-text">
-              <span class="material-symbols-outlined">search</span>
-          </span>
-
-          <%= f.search_field :query,
-              value: params[:query],
-              placeholder: "#{t("form.tenant.name_input")}...",
-              class: "form-control shadow-sm",
-              data: {
-                  search_target: "input",
-                  action: "input->search#debounce"
-              } %>
-        </div>
-
-        <!-- Contract State -->
-        <div class="d-flex gap-2 align-items-center">
-          <%= f.label :contract_state, t("form.contract.contract_state"), class:"fw-semibold" %>
+      <div class="d-flex align-items-center flex-wrap gap-3">
+        <%# Contract State %>
+        <div class="d-flex align-items-center gap-2">
+          <%= f.label :contract_state, t("form.contract.contract_state"), class: "small fw-semibold text-secondary m-0 text-nowrap" %>
           <%= f.select :contract_state,
                 [[t("all"), ""],
                   [t("form.contract.overdue"), "overdue"],
                   [t("form.contract.nearly_due"), "nearly-due"]],
                 { selected: params[:contract_state] },
-                class: "form-select w-auto shadow-sm",
+                class: "form-select form-select-sm w-auto",
                 onchange: "this.form.requestSubmit()" %>
         </div>
 
-        <!-- Temporary residence State -->
-        <div class="d-flex gap-2 align-items-center">
-          <%= f.label :residence_state, t("form.contract.resid_register_due"), class:"fw-semibold" %>
+        <%# Temporary residence State %>
+        <div class="d-flex align-items-center gap-2">
+          <%= f.label :residence_state, t("form.contract.resid_register_due"), class: "small fw-semibold text-secondary m-0 text-nowrap" %>
           <%= f.select :residence_state,
               [[t("all"), ""],
                 [t("form.contract.no_register"), "none"],
                 [t("form.contract.overdue"), "overdue"],
                 [t("form.contract.nearly_due"), "nearly-due"]],
               { selected: params[:residence_state] },
-              class: "form-select w-auto shadow-sm",
+              class: "form-select form-select-sm w-auto",
               onchange: "this.form.requestSubmit()" %>
         </div>
+      </div>
+    <% end %>
+
+    <%# Action Buttons Inline %>
+    <div class="d-flex flex-column align-items-end gap-3">
+      <%= link_to new_landlord_house_tenant_path(@house),
+                  class: "custom-primary-btn d-inline-flex align-items-center gap-1 shadow-xs",
+                  data: { turbo_frame: "new_tenant_modal" } do %>
+        <span class="material-symbols-filled fs-5">link</span>
+        <span><%= t('form.tenant.link') %></span>
       <% end %>
 
-      <%= turbo_frame_tag "tenant_table",
-            src: filtered_landlord_house_tenants_path(@house, params.permit(:page, :contract_state, :query, :residence_state)),
-            loading: :lazy,
-            data: {
-              controller: "pagination-sync",
-              pagination_sync_canonical_url_value: landlord_house_tenants_path(@house),
-              pagination_sync_default_params_value: { contract_state: "all", residence_state: "all" }.to_json,
-              pagination_sync_query_params_value: ["contract_state", "residence_state", "query"].to_json,
-              pagination_sync_total_pages_selector_value: "[data-pagination-total-pages]",
-              action: "turbo:frame-load->pagination-sync#updateUrl"
-            } do %>
-          <!-- Loading icon -->
-        <%= loading_spinner %>
+      <%= link_to landlord_house_create_new_tenant_path(@house),
+                  class: "main-btn d-inline-flex align-items-center gap-1 shadow-xs",
+                  data: { **tooltip("top", :"form.tenant.create_link_info") } do %>
+        <span class="material-symbols-filled fs-6">person_add</span>
+        <span class="fs-6"><%= t('form.tenant.create_and_link') %></span>
       <% end %>
-    <% end %>
+    </div>
   </div>
+</div>
+
+<%# 4. Main Table Zone %>
+<div class="main-table-zone">
+  <%= turbo_frame_tag "tenant_table",
+        src: filtered_landlord_house_tenants_path(@house, params.permit(:page, :contract_state, :query, :residence_state)),
+        loading: :lazy,
+        data: {
+          controller: "pagination-sync",
+          pagination_sync_canonical_url_value: landlord_house_tenants_path(@house),
+          pagination_sync_default_params_value: { contract_state: "all", residence_state: "all" }.to_json,
+          pagination_sync_query_params_value: ["contract_state", "residence_state", "query"].to_json,
+          pagination_sync_total_pages_selector_value: "[data-pagination-total-pages]",
+          action: "turbo:frame-load->pagination-sync#updateUrl"
+        } do %>
+    <%= loading_spinner %>
+  <% end %>
 </div>
 
 <%= turbo_frame_tag "new_tenant_modal" %>
