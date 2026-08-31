@@ -10,6 +10,10 @@ class Bed < ApplicationRecord
           source: :tenant_stays
   has_one :staying_tenant, through: :staying_tenant_stay, source: :tenant
 
+  attr_accessor :rent, :deposit
+
+  before_validation :normalize_name
+
   validates :name, presence: true
 
   scope :active, -> { where(deleted: false) }
@@ -43,5 +47,11 @@ class Bed < ApplicationRecord
       update!(is_available: false)
       room.increment!(:tenants_count)
     end
+  end
+
+  private
+
+  def normalize_name
+    self.name = name&.squish
   end
 end

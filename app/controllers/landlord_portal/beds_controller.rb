@@ -2,6 +2,7 @@ class LandlordPortal::BedsController < LandlordPortal::BaseController
   layout "house_mngment"
 
   before_action :house_in_bed_mode
+  before_action :set_bed, only: %i[edit update destroy]
 
   BEDS_PER_PAGE = 15
 
@@ -34,8 +35,8 @@ class LandlordPortal::BedsController < LandlordPortal::BaseController
   end
 
   def create
-    @form = BedCreationForm.new(bed_params)
-    @form.room = @house.rooms.active.includes(:floor).find_by(id: bed_params[:room_id])
+    @form = BedCreationForm.new(bed_creation_params)
+    @form.room = @house.rooms.active.includes(:floor).find_by(id: bed_creation_params[:room_id])
 
     @rooms = @house.rooms.active.includes(:floor).where("rooms.max_slots < ?", BedCreationForm::MAX_SLOTS)
     @floors = @rooms.map(&:floor).uniq.sort_by(&:position)
@@ -69,16 +70,61 @@ class LandlordPortal::BedsController < LandlordPortal::BaseController
       )
     end
 
-    redirect_to landlord_house_rooms_path(@house), notice: t("success_messages.room_created")
+    redirect_to landlord_house_rooms_path(@house), notice: t("success_messages.bed_created")
   end
 
   def edit
+    @rental_unit = @bed.rental_unit || @bed.build_rental_unit(rent: 0, deposit: 0)
   end
 
   def update
+    @rental_unit = @bed.rental_unit || @bed.build_rental_unit
+    @bed.name = bed_update_params[:name]
+    @rental_unit.rent = parse_currency(rental_params[:rent])
+    @rental_unit.deposit = parse_currency(rental_params[:deposit])
+
+    bed_valid = @bed.valid?
+    rental_valid = @rental_unit.valid?
+
+    if bed_valid && rental_valid
+      ActiveRecord::Base.transaction do
+        @bed.save!
+        @rental_unit.save!
+      end
+
+      flash.now[:notice] = t("success_messages.bed_updated")
+
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: [
+            turbo_stream.replace(
+              ActionView::RecordIdentifier.dom_id(@bed),
+              partial: "landlord_portal/beds/bed_row",
+              locals: { house: @house, bed: @bed }
+            ),
+            turbo_stream.append(
+              "events",
+              partial: "layouts/shared_components/event",
+              locals: { event: "close-modal" }
+            ),
+            turbo_stream.update("flash", partial: "layouts/shared_components/flash_message")
+          ]
+        end
+        format.html do
+          redirect_to landlord_house_rooms_path(@house),
+                      notice: t("success_messages.bed_updated")
+        end
+      end
+    else
+      flash.now[:alert] = t("errors.unprocessable_entity")
+      render turbo_stream: turbo_stream.replace(
+        "edit_bed_modal",
+        template: "landlord_portal/beds/edit"
+      ), status: :unprocessable_entity
+    end
   end
 
-  def delete
+  def destroy
   end
 
   def filtered
@@ -87,11 +133,30 @@ class LandlordPortal::BedsController < LandlordPortal::BaseController
     render partial: "bed_table", locals: { house: @house, beds: @beds }
   end
 
-
   private
 
-  def bed_params
+  def set_bed
+    @bed = @house.beds.active.includes(room: :floor, rental_unit: :tenant_stays).find(params[:id])
+    authorize! :manage, @bed
+  end
+
+  def bed_creation_params
     params.expect(bed_creation_form: [ :beds_count, :floor_id, :room_id ])
+  end
+
+  def bed_update_params
+    params.expect(bed: [ :name ])
+  end
+
+  def rental_params
+    params.expect(bed: [ :rent, :deposit ])
+  end
+
+  def parse_currency(value)
+    return value if value.is_a?(Numeric)
+    return nil if value.blank?
+
+    value.to_s.gsub(/[^\d]/, "").to_i
   end
 
   def house_in_bed_mode

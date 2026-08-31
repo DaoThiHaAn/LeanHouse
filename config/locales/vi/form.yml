@@ -155,6 +155,9 @@ vi:
       create_info_1: "Phòng mới chỉ được thêm vào các tầng đang có ít hơn 100 phòng."
       create_info_2: "Tất cả phòng trong cùng 1 tầng phải có tên khác nhau."
       create_info_3: "Mỗi phòng chỉ được áp dụng một phiên bản cho mỗi loại dịch vụ."
+      occupied_capacity_hint: "Đang có %{count} khách ở. Sức chứa tối thiểu: %{min}."
+      empty_capacity_hint: "Phòng trống - Sức chứa từ 1 đến 20."
+      bed_mode_capacity_hint: "Sức chứa được tính theo số giường. Quản lý tại danh sách giường."
       select_floor: "Chọn tầng"
       unfound: "Không tìm thấy phòng nào!"
 
@@ -192,11 +195,14 @@ vi:
     bed:
       self: "Giường"
       name: "Tên giường"
+      input: "Nhập tên giường"
       add: "Tạo giường mới"
+      edit: "Chỉnh sửa giường"
       state: "Tình trạng giường"
       list: "Danh sách giường"
       add_info_1: "1 phòng chỉ có tối đa 20 giường"
       add_info_2: "Các giường mới tạo ra sẽ có tên mặc định dựa vào thứ tự tiếp theo trong phòng"
+      edit_info_1: "Chỉnh sửa thông tin tên giường, tiền thuê và tiền cọc của giường này."
       unfound: "Không tìm thấy giường nào!"
 
     service:

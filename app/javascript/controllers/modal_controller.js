@@ -18,10 +18,19 @@ export default class extends Controller {
 
   disconnect() {
     window.removeEventListener("close-modal", this.closeHandler)
-    this.modal.dispose()
+    if (this.modal) {
+      this.modal.hide()
+      this.modal.dispose()
+    }
+    document.querySelectorAll(".modal-backdrop").forEach(el => el.remove())
+    document.body.classList.remove("modal-open")
+    document.body.style.removeProperty("overflow")
+    document.body.style.removeProperty("padding-right")
   }
 
   close() {
-    this.modal.hide()
+    if (this.modal) {
+      this.modal.hide()
+    }
   }
 }

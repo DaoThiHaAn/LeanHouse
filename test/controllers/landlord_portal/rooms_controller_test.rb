@@ -4,7 +4,7 @@ class LandlordPortal::RoomsControllerTest < ActionDispatch::IntegrationTest
   setup do
     @landlord_user = User.create!(
       fullname: "Landlord Nguyen",
-      tel: "0901234567",
+      tel: "090#{SecureRandom.random_number(10_000_000).to_s.rjust(7, '0')}",
       password: "Password123",
       password_confirmation: "Password123",
       role: "landlord",
@@ -104,5 +104,131 @@ class LandlordPortal::RoomsControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "Phòng Beta"
     assert_not_includes response.body, "Phòng Alpha"
     assert_not_includes response.body, "Phòng Gamma"
+  end
+
+  test "updates empty room capacity successfully (increase and decrease)" do
+    sign_in_as(@landlord_user)
+
+    patch landlord_house_room_path(@house, @room_empty), params: {
+      room: {
+        name: "Gamma Updated",
+        floor_id: @floor.id,
+        area: 30,
+        max_slots: 1,
+        rent: 3_500_000,
+        deposit: 3_500_000
+      }
+    }
+
+    assert_redirected_to landlord_house_rooms_path(@house)
+    @room_empty.reload
+    assert_equal "Gamma Updated", @room_empty.name
+    assert_equal 1, @room_empty.max_slots
+    assert_equal 30, @room_empty.area
+  end
+
+  test "updates room with turbo_stream replacing row in place and closing modal" do
+    sign_in_as(@landlord_user)
+
+    patch landlord_house_room_path(@house, @room_empty), params: {
+      room: {
+        name: "Gamma Stream Updated",
+        floor_id: @floor.id,
+        area: 32,
+        max_slots: 1,
+        rent: 3_800_000,
+        deposit: 3_800_000
+      }
+    }, as: :turbo_stream
+
+    assert_response :success
+    assert_equal "text/vnd.turbo-stream.html; charset=utf-8", response.content_type
+    assert_includes response.body, %(action="replace" target="room_#{@room_empty.id}")
+    assert_includes response.body, "Gamma Stream Updated"
+    assert_includes response.body, %(action="append" target="events")
+    assert_includes response.body, "close-modal"
+    assert_includes response.body, %(action="update" target="flash")
+
+    @room_empty.reload
+    assert_equal "Gamma Stream Updated", @room_empty.name
+    assert_equal 1, @room_empty.max_slots
+    assert_equal 32, @room_empty.area
+  end
+
+  test "updates occupied room capacity down to tenants_count successfully" do
+    sign_in_as(@landlord_user)
+
+    # @room_occupied has max_slots: 2, tenants_count: 1 -> reducing to 1 should succeed
+    patch landlord_house_room_path(@house, @room_occupied), params: {
+      room: {
+        name: "Alpha",
+        floor_id: @floor.id,
+        area: 25,
+        max_slots: 1,
+        rent: 3_000_000,
+        deposit: 3_000_000
+      }
+    }
+
+    assert_redirected_to landlord_house_rooms_path(@house)
+    @room_occupied.reload
+    assert_equal 1, @room_occupied.max_slots
+  end
+
+  test "fails to reduce occupied room capacity below tenants_count" do
+    sign_in_as(@landlord_user)
+
+    # @room_full has max_slots: 2, tenants_count: 2 -> reducing to 1 should fail
+    patch landlord_house_room_path(@house, @room_full), params: {
+      room: {
+        name: "Beta",
+        floor_id: @floor.id,
+        area: 25,
+        max_slots: 1,
+        rent: 3_000_000,
+        deposit: 3_000_000
+      }
+    }
+
+    assert_response :unprocessable_entity
+    @room_full.reload
+    assert_equal 2, @room_full.max_slots
+  end
+
+  test "updates room attributes in bed mode without altering bed counter cache" do
+    bed_house = House.create!(
+      landlord: @landlord,
+      name: "Dorm House",
+      mode: :bed,
+      address_l1: "456 Dorm St",
+      address_l2: "Ward 2",
+      address_l3: "District 2",
+      floors_count: 1,
+      inv_creation_date: 1
+    )
+    bed_floor = bed_house.floors.create!(name: "Tầng 1", position: 1)
+    bed_room = bed_floor.rooms.create!(name: "Room 101", area: 30, max_slots: 0, tenants_count: 0)
+    bed_room.create_beds(count: 3, rent: 1_500_000, deposit: 1_500_000)
+    bed_room.reload
+    assert_equal 3, bed_room.max_slots
+
+    sign_in_as(@landlord_user)
+
+    patch landlord_house_room_path(bed_house, bed_room), params: {
+      room: {
+        name: "Room 101 Renovated",
+        floor_id: bed_floor.id,
+        area: 35,
+        max_slots: 10, # Bed mode ignores max_slots from room edit
+        rent: 1_600_000,
+        deposit: 1_600_000
+      }
+    }
+
+    assert_redirected_to landlord_house_rooms_path(bed_house)
+    bed_room.reload
+    assert_equal "Room 101 Renovated", bed_room.name
+    assert_equal 35, bed_room.area
+    assert_equal 3, bed_room.max_slots # preserved counter cache
   end
 end

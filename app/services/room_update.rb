@@ -16,7 +16,7 @@ class RoomUpdate
 
     ActiveRecord::Base.transaction do
       room.save!
-      create_new_beds! if house.bed? && requested_max_slots > previous_max_slots
+      room.update_column(:max_slots, requested_max_slots) if house.room?
       update_rental_units!
       sync_services!
     end
@@ -36,29 +36,45 @@ class RoomUpdate
     attributes = house.bed? ? room_attributes.except(:max_slots) : room_attributes
     room.assign_attributes(attributes)
     room.service_selections = service_selections
-    room.rent = rental_attributes[:rent]
-    room.deposit = rental_attributes[:deposit]
+    cleaned_rental = rental_attributes.merge(
+      rent: parse_currency(rental_attributes[:rent]),
+      deposit: parse_currency(rental_attributes[:deposit])
+    )
+    room.rent = cleaned_rental[:rent]
+    room.deposit = cleaned_rental[:deposit]
 
-    rental_units.each { |unit| unit.assign_attributes(rental_attributes) }
+    rental_units.each { |unit| unit.assign_attributes(cleaned_rental) }
+  end
+
+  def parse_currency(value)
+    return value if value.is_a?(Numeric)
+    return nil if value.blank?
+
+    value.to_s.gsub(/[^\d]/, "").to_i
   end
 
   def valid?
     room.valid?(:service_selection)
     requested_capacity_is_valid
-    capacity_is_not_reduced
+    capacity_not_less_than_staying_tenants
     valid_rental_units
     selected_variants_belong_to_house
     room.errors.empty?
   end
 
-  def capacity_is_not_reduced
-    return unless requested_max_slots < previous_max_slots
+  def capacity_not_less_than_staying_tenants
+    return if house.bed?
 
-    room.errors.add(:max_slots, :greater_than_or_equal_to, count: previous_max_slots)
+    if requested_max_slots < room.tenants_count
+      room.errors.add(
+        :max_slots,
+        I18n.t("errors.capacity_below_tenants", count: room.tenants_count, default: "Không thể giảm sức chứa xuống dưới số khách hiện tại (#{room.tenants_count} người)!")
+      )
+    end
   end
 
   def requested_capacity_is_valid
-    return unless house.bed?
+    return if house.bed?
     return if room_attributes[:max_slots].to_s.match?(/\A\d+\z/) &&
               requested_max_slots.between?(1, 20)
 
@@ -107,15 +123,6 @@ class RoomUpdate
     @available_service_variants ||= house.service_variants
       .where(id: selected_variant_ids)
       .index_by(&:id)
-  end
-
-  def create_new_beds!
-    room.create_beds(
-      count: requested_max_slots - previous_max_slots,
-      start_at: previous_max_slots,
-      rent: rental_attributes[:rent],
-      deposit: rental_attributes[:deposit]
-    )
   end
 
   def update_rental_units!

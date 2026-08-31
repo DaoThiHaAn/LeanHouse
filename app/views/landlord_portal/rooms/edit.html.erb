@@ -67,19 +67,46 @@
                 <%= t("form.room.area") %> (m²)
               </span>
               <%= f.number_field :area,
-                    class: "form-control",
+                    class: "form-control #{invalid_class(@room, :area)}",
                     required: true, step: "any" %>
             </div>
+            <%= field_error(@room, :area, classes: "ms-4 mt-1") %>
 
-            <div class="ms-4 input-group w-50">
-              <span class="input-group-text" 
-                    data-label-capacity-target="label">
-                <%= bed_field_title(@house) %>
-              </span>
-              <%= f.number_field :max_slots, min: 1, max: 20, step: 1, placeholder: "1-20",
-                    class: "form-control",
-                    required: true %>
-            </div>
+            <% if @house.room? %>
+              <% min_slots = [@room.tenants_count, 1].max %>
+              <div class="ms-4">
+                <div class="input-group w-50">
+                  <span class="input-group-text">
+                    <%= t("form.room.max_tenants_count") %>
+                  </span>
+                  <%= f.number_field :max_slots, min: min_slots, max: 20, step: 1, placeholder: "#{min_slots}-20",
+                        class: "form-control #{invalid_class(@room, :max_slots)}",
+                        required: true %>
+                </div>
+                <%= field_error(@room, :max_slots, classes: "mt-1") %>
+                <% if @room.tenants_count > 0 %>
+                  <small class="text-muted d-block mt-1">
+                    <%= t("form.room.occupied_capacity_hint", count: @room.tenants_count, min: min_slots) %>
+                  </small>
+                <% else %>
+                  <small class="text-muted d-block mt-1">
+                    <%= t("form.room.empty_capacity_hint") %>
+                  </small>
+                <% end %>
+              </div>
+            <% else %>
+              <div class="ms-4">
+                <div class="input-group w-50">
+                  <span class="input-group-text">
+                    <%= t("form.room.beds_count") %>
+                  </span>
+                  <input type="text" class="form-control bg-light" value="<%= @room.max_slots %>" readonly disabled>
+                </div>
+                <small class="text-muted d-block mt-1">
+                  <%= t("form.room.bed_mode_capacity_hint") %>
+                </small>
+              </div>
+            <% end %>
 
             <div class="ms-4 room input-group w-65">
               <span class="input-group-text">

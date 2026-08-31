@@ -57,6 +57,7 @@ en:
     too_many_forgot_pw_attempts: "Too many failed attempts! Please try again in %{minutes} minutes or contact support."
     missing_verification_fields: "Please provide Telephone, Full Name, and Date of Birth!"
     inactive_acc: "Your account is disabled! Please contact support for assistance."
+    capacity_below_tenants: "Cannot reduce capacity below the current number of staying tenants (%{count})!"
   page_titles:
     admin_login: "Administrator Login"
     user_detail: "User Detail"
@@ -70,3 +71,8 @@ en:
   filter: "Filter"
   clear_filter: "Clear filter"
   ago: "ago"
+  success_messages:
+    room_created: "Room created successfully!"
+    room_updated: "Room updated successfully!"
+    bed_created: "Bed created successfully!"
+    bed_updated: "Bed updated successfully!"

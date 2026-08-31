@@ -95,8 +95,30 @@ class LandlordPortal::RoomsController < LandlordPortal::BaseController
     )
 
     if updater.call
-      redirect_to landlord_house_rooms_path(@house),
-                  notice: t("success_messages.room_updated")
+      flash.now[:notice] = t("success_messages.room_updated")
+      row_partial = @house.bed? ? "landlord_portal/rooms/room_row_bed" : "landlord_portal/rooms/room_row"
+
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: [
+            turbo_stream.replace(
+              ActionView::RecordIdentifier.dom_id(@room),
+              partial: row_partial,
+              locals: { house: @house, room: @room }
+            ),
+            turbo_stream.append(
+              "events",
+              partial: "layouts/shared_components/event",
+              locals: { event: "close-modal" }
+            ),
+            turbo_stream.update("flash", partial: "layouts/shared_components/flash_message")
+          ]
+        end
+        format.html do
+          redirect_to landlord_house_rooms_path(@house),
+                      notice: t("success_messages.room_updated")
+        end
+      end
     else
       prepare_edit_form(service_selections: service_selections)
       flash.now[:alert] = t("errors.unprocessable_entity")
@@ -129,11 +151,7 @@ class LandlordPortal::RoomsController < LandlordPortal::BaseController
   end
 
   def service_selections
-    params.expect(
-      room: [
-        service_selections: {}
-      ]
-    )[:service_selections]
+    params.dig(:room, :service_selections)&.to_unsafe_h || {}
   end
 
   def prepare_edit_form(service_selections: nil)
