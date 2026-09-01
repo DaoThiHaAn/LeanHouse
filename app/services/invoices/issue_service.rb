@@ -30,17 +30,20 @@ module Invoices
         total_addition = 0
 
         raw_items = params[:items] || []
-        # If passed as hash from form (e.g. params[:items] = {"0" => {...}, "1" => {...}})
-        items_list = raw_items.is_a?(Hash) ? raw_items.values : Array(raw_items)
+        # If passed as hash or ActionController::Parameters (e.g. params[:items] = {"0" => {...}, "item_123" => {...}})
+        items_list = raw_items.respond_to?(:values) ? raw_items.values : Array(raw_items)
 
         items_list.each do |item_param|
           selected = item_param[:selected].to_s == "1" || item_param[:selected] == true || item_param[:selected].to_s == "true"
           next unless selected
 
-          qty = item_param[:quantity].to_f
-          unit_price = item_param[:unit_price].to_i
           item_type = item_param[:item_type].to_s
           name = item_param[:name].to_s.strip
+          next if name.blank? && %w[addition discount].include?(item_type)
+          next if name.blank?
+
+          qty = item_param[:quantity].to_f
+          unit_price = item_param[:unit_price].to_i
           unit = item_param[:unit].to_s.strip
           amount = item_param[:amount].present? ? item_param[:amount].to_i : (qty * unit_price).round
           item_start_date = item_param[:start_date].presence || start_date

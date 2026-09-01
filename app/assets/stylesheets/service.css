@@ -322,4 +322,81 @@
   }
 }
 
+/* Dynamic Invoice Fee Rows Animations & Pastel Styling */
+@keyframes fadeInRow {
+  0% {
+    opacity: 0;
+    transform: translateY(-8px);
+    background-color: #fef9c3;
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
+.fee-row-animated {
+  animation: fadeInRow 0.35s ease-out;
+}
+
+.fee-row-removing {
+  opacity: 0;
+  transform: translateX(10px);
+  transition: all 0.2s ease-out;
+}
+
+/* Addition Fee Rows - Pastel Sky-Blue Theme */
+.addition-section-header {
+  background-color: #e0f2fe !important;
+  border-top: 1px solid #bae6fd !important;
+  border-bottom: 1px solid #bae6fd !important;
+}
+
+.item-row.addition-row td {
+  background-color: #f0f9ff !important;
+  border-bottom: 1px solid #e0f2fe !important;
+}
+
+.item-row.addition-row {
+  border-left: 3px solid #0ea5e9;
+}
+
+.item-row.addition-row .form-control,
+.item-row.addition-row .form-select {
+  background-color: #ffffff;
+  border-color: #bae6fd;
+}
+
+.item-row.addition-row .form-control:focus,
+.item-row.addition-row .form-select:focus {
+  border-color: #0284c7;
+  box-shadow: 0 0 0 0.2rem rgba(14, 165, 233, 0.15);
+}
+
+/* Subtraction / Discount Rows - Pastel Rose Theme */
+.discount-section-header {
+  background-color: #ffe4e6 !important;
+  border-top: 1px solid #fecdd3 !important;
+  border-bottom: 1px solid #fecdd3 !important;
+}
+
+.item-row.discount-row td {
+  background-color: #fff1f2 !important;
+  border-bottom: 1px solid #ffe4e6 !important;
+}
+
+.item-row.discount-row {
+  border-left: 3px solid #f43f5e;
+}
+
+.item-row.discount-row .form-control,
+.item-row.discount-row .form-select {
+  background-color: #ffffff;
+  border-color: #fecdd3;
+}
+
+.item-row.discount-row .form-control:focus,
+.item-row.discount-row .form-select:focus {
+  border-color: #e11d48;
+  box-shadow: 0 0 0 0.2rem rgba(244, 63, 94, 0.15);
+}

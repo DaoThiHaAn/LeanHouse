@@ -30,6 +30,21 @@ class ServiceVariant < ApplicationRecord
     end
   end
 
+  # Returns localized unit labels [[label, label], ...] for invoice items or views storing unit string values
+  def self.display_unit_options
+    units.keys.map do |unit|
+      label = I18n.t("enums.room_service.unit.#{unit}", default: unit.to_s)
+      [ label, label ]
+    end
+  end
+
+  # Returns array of localized unit strings)
+  def self.human_units
+    units.keys.map do |unit|
+      I18n.t("enums.room_service.unit.#{unit}", default: unit.to_s)
+    end
+  end
+
   def human_unit
     I18n.t("enums.room_service.unit.#{unit}", default: unit.to_s)
   end

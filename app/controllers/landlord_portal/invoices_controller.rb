@@ -41,6 +41,9 @@ class LandlordPortal::InvoicesController < LandlordPortal::BaseController
     @room = @house.rooms.find(params[:room_id])
     @invoice_type = params[:invoice_type].presence || "room"
     @tenant = @room.tenants.find_by(id: params[:tenant_id]) if params[:tenant_id].present?
+    if @tenant.nil? && @invoice_type == "individual"
+      @tenant = @room.tenants.first
+    end
 
     calculator = Invoices::DraftCalculator.new(
       room: @room,
@@ -65,6 +68,7 @@ class LandlordPortal::InvoicesController < LandlordPortal::BaseController
 
     @invoice = Invoices::IssueService.call(
       room: @room,
+      billing_month: @billing_month,
       landlord: current_user,
       params: invoice_params
     )
@@ -72,6 +76,15 @@ class LandlordPortal::InvoicesController < LandlordPortal::BaseController
     redirect_to landlord_house_invoice_path(@house, @invoice), notice: "Đã xuất hóa đơn #{@invoice.code} thành công!"
   rescue ActiveRecord::RecordInvalid => e
     flash.now[:alert] = "Không thể tạo hóa đơn: #{e.record.errors.full_messages.to_sentence}"
+    @invoice_type = params[:invoice]&.[](:invoice_type).presence || "room"
+    @tenant = @room&.tenants&.find_by(id: params[:invoice]&.[](:tenant_id)) if params[:invoice]&.[](:tenant_id).present?
+    calculator = Invoices::DraftCalculator.new(
+      room: @room,
+      billing_month: @billing_month,
+      invoice_type: @invoice_type,
+      tenant: @tenant
+    )
+    @draft_items = calculator.build_items
     @bank_accounts = @landlord.bank_accounts.includes(:bank).default_first
     render :new, status: :unprocessable_entity
   end

@@ -35,11 +35,16 @@ module Invoices
       if invoice_type == "individual" && tenant.present?
         stay = house.tenant_stay_for(tenant.id)
         rent_amount = stay&.rental_unit&.rent || 0
-        location = stay&.rental_unit&.location_info || room.title_name
+        location = if house.bed?
+                     stay&.rental_unit&.location_info || "#{room.title_name} (Giường)"
+        else
+                     stay&.rental_unit&.location_info || room.title_name
+        end
+        unit_label = house.bed? ? "giường" : "tháng"
         {
           item_type: :rent,
           name: "Tiền thuê #{location}",
-          unit: "tháng",
+          unit: unit_label,
           unit_price: rent_amount,
           quantity: 1.0,
           amount: rent_amount,
@@ -48,7 +53,12 @@ module Invoices
           selected: true
         }
       else
-        rent_amount = room.rental_unit&.rent || 0
+        rent_amount = if house.bed?
+                        bed_rents = room.beds.joins(:rental_unit).sum("rental_units.rent")
+                        bed_rents.positive? ? bed_rents : (room.rental_unit&.rent || 0)
+        else
+                        room.rental_unit&.rent || 0
+        end
         {
           item_type: :rent,
           name: "Tiền thuê #{room.title_name}",
@@ -117,12 +127,26 @@ module Invoices
     def build_metered_service_items
       items = []
       room.service_variants.where(is_real_time: true).includes(:service).each do |variant|
+        # 1. Look for log explicitly in this billing_month
         log = room.service_usage_logs.find_by(
           service_id: variant.service_id,
           billing_month: billing_month
         )
 
-        prev_num = log&.prev_reading || previous_month_reading(variant.service_id)
+        # 2. If no log for this exact billing_month, look for the most recent log on or before billing_month
+        log ||= room.service_usage_logs
+                    .where(service_id: variant.service_id)
+                    .where("billing_month <= ?", billing_month)
+                    .order(billing_month: :desc)
+                    .first
+
+        prev_num = if log&.prev_reading.present?
+                     log.prev_reading
+        else
+                     cutoff_month = log ? log.billing_month : billing_month
+                     previous_month_reading(variant.service_id, cutoff_month)
+        end
+
         latest_num = log&.latest_reading
         has_log = log.present?
         is_confirmed = log&.is_confirmed? || false
@@ -153,10 +177,10 @@ module Invoices
       items
     end
 
-    def previous_month_reading(service_id)
+    def previous_month_reading(service_id, cutoff_month = billing_month)
       room.service_usage_logs
           .where(service_id: service_id)
-          .where("billing_month < ?", billing_month)
+          .where("billing_month < ?", cutoff_month)
           .order(billing_month: :desc)
           .pick(:latest_reading) || 0
     end

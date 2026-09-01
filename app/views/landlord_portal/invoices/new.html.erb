@@ -17,18 +17,43 @@
     </div>
   <% end %>
 
-  <%= form_with url: landlord_house_invoices_path(@house), method: :post, local: true do |f| %>
+  <%= form_with url: landlord_house_invoices_path(@house), method: :post, local: true,
+                data: {
+                  controller: "invoice-form",
+                  invoice_form_preview_url_value: preview_landlord_house_invoices_path(@house)
+                } do |f| %>
     <!-- Thông tin chung của hóa đơn -->
     <div class="card shadow-sm border-0 rounded-3 p-4 mb-4 bg-light">
       <div class="row g-3">
-        <div class="col-md-3">
-          <%= f.label "invoice[billing_month]", t('common.month', default: 'Tháng tính toán'), class: "form-label fw-bold" %>
-          <%= f.month_field "invoice[billing_month]", value: @billing_month.strftime("%Y-%m"), class: "form-control shadow-sm", required: true, onchange: "updateDraftPreview()" %>
+        <div class="col-md-6">
+          <%= f.label "invoice[title]", t('invoice.reason', default: 'Tiêu đề / Lý do thu tiền'), class: "form-label fw-bold" %>
+          <%= f.text_field "invoice[title]", value: t('invoice.default_title', default: 'Thu tiền hàng tháng'), class: "form-control shadow-sm", placeholder: t('invoice.default_title', default: 'Thu tiền hàng tháng') %>
         </div>
 
         <div class="col-md-3">
+          <div class="d-flex align-items-center justify-content-between mb-1">
+            <%= f.label "invoice[billing_month]", t('common.month', default: 'Tháng tính toán'), class: "form-label fw-bold mb-0" %>
+            <button type="button" class="btn btn-link p-0 text-decoration-none d-inline-flex align-items-center text-primary" data-bs-toggle="modal" data-bs-target="#billingMonthInfoModal" title="<%= t('invoice.billing_month_info_title', default: 'Tìm hiểu về Tháng tính toán') %>">
+              <span class="material-symbols-outlined fs-6">help</span>
+            </button>
+          </div>
+          <%= f.month_field "invoice[billing_month]", value: @billing_month.strftime("%Y-%m"), class: "form-control shadow-sm", required: true,
+                            data: {
+                              invoice_form_target: "monthInput",
+                              action: "change->invoice-form#updatePreview"
+                            } %>
+        </div>
+
+        <div class="col-md-3">
+          <%= f.label "invoice[due_date]", t('invoice.due_date'), class: "form-label fw-bold" %>
+          <%= f.date_field "invoice[due_date]", value: Date.current + 5.days, class: "form-control shadow-sm", required: true %>
+        </div>
+
+        <div class="col-md-4">
           <%= f.label "invoice[room_id]", t('invoice.room'), class: "form-label fw-bold" %>
-          <select name="invoice[room_id]" id="room_select" class="form-select shadow-sm" required onchange="updateDraftPreview()">
+          <select name="invoice[room_id]" id="room_select" class="form-select shadow-sm" required
+                  data-invoice-form-target="roomSelect"
+                  data-action="change->invoice-form#updatePreview">
             <% @house.rooms.active.sorted.each do |r| %>
               <option value="<%= r.id %>" <%= 'selected' if @room&.id == r.id %> data-tenants-count="<%= r.tenants_count %>">
                 <%= r.title_name %> (<%= r.tenants_count %> <%= t('invoice.quantity').downcase %>)
@@ -37,17 +62,39 @@
           </select>
         </div>
 
-        <div class="col-md-3">
+        <div class="col-md-4">
           <%= f.label "invoice[invoice_type]", t('invoice.target_mode'), class: "form-label fw-bold" %>
-          <select name="invoice[invoice_type]" id="invoice_type_select" class="form-select shadow-sm" onchange="updateDraftPreview()">
+          <select name="invoice[invoice_type]" id="invoice_type_select" class="form-select shadow-sm"
+                  data-invoice-form-target="invoiceTypeSelect"
+                  data-action="change->invoice-form#updatePreview">
             <option value="room" <%= 'selected' if @invoice_type == 'room' %>><%= t('invoice.mode_room_desc') %></option>
             <option value="individual" <%= 'selected' if @invoice_type == 'individual' %>><%= t('invoice.mode_individual_desc') %></option>
           </select>
         </div>
 
-        <div class="col-md-3">
-          <%= f.label "invoice[due_date]", t('invoice.due_date'), class: "form-label fw-bold" %>
-          <%= f.date_field "invoice[due_date]", value: Date.current + 5.days, class: "form-control shadow-sm", required: true %>
+        <div class="col-md-4" id="tenant_select_wrapper"
+             data-invoice-form-target="tenantWrapper"
+             style="<%= 'display: none;' unless @invoice_type == 'individual' %>">
+          <%= f.label "invoice[tenant_id]", t('invoice.tenant', default: 'Người thuê / Giường'), class: "form-label fw-bold" %>
+          <select name="invoice[tenant_id]" id="tenant_select" class="form-select shadow-sm"
+                  data-invoice-form-target="tenantSelect"
+                  data-action="change->invoice-form#updatePreview">
+            <% if @room %>
+              <% if @house.bed? %>
+                <% @room.all_staying_bed_tenants.each do |item| %>
+                  <option value="<%= item[:tenant].id %>" <%= 'selected' if @tenant&.id == item[:tenant].id %>>
+                    <%= item[:tenant].user.fullname %> (Giường <%= item[:bed].name %>)
+                  </option>
+                <% end %>
+              <% else %>
+                <% @room.all_staying_tenants.each do |t| %>
+                  <option value="<%= t.id %>" <%= 'selected' if @tenant&.id == t.id %>>
+                    <%= t.user.fullname %>
+                  </option>
+                <% end %>
+              <% end %>
+            <% end %>
+          </select>
         </div>
 
         <div class="col-md-6">
@@ -88,23 +135,58 @@
   <% end %>
 </div>
 
-<script>
-  function updateDraftPreview() {
-    const month = document.querySelector("input[name='invoice[billing_month]']").value;
-    const roomId = document.getElementById("room_select").value;
-    const invoiceType = document.getElementById("invoice_type_select").value;
-    const url = `<%= preview_landlord_house_invoices_path(@house) %>?room_id=${roomId}&month=${month}&invoice_type=${invoiceType}`;
+<!-- Modal Hướng dẫn Tháng tính toán -->
+<div class="modal fade" id="billingMonthInfoModal" tabindex="-1" aria-labelledby="billingMonthInfoModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header bg-primary-subtle text-primary border-bottom py-3">
+        <h5 class="modal-title fw-bold d-flex align-items-center gap-2" id="billingMonthInfoModalLabel">
+          <span class="material-symbols-outlined">help_outline</span>
+          <%= t('invoice.billing_month_modal_title') %>
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-4">
+        <div class="d-flex flex-column gap-3">
+          <div class="p-3 bg-light rounded-3 border-start border-4 border-primary">
+            <h6 class="fw-bold text-primary mb-1 d-flex align-items-center gap-1">
+              <span class="material-symbols-outlined fs-5">calendar_month</span>
+              <%= t('invoice.billing_cycle_title') %>
+            </h6>
+            <p class="text-muted mb-0 small"><%= t('invoice.billing_cycle_desc') %></p>
+          </div>
 
-    fetch(url, { headers: { "Accept": "text/vnd.turbo-stream.html, text/html" } })
-      .then(res => res.text())
-      .then(html => {
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, "text/html");
-        const newFrame = doc.querySelector("turbo-frame#draft_items_form");
-        const currentFrame = document.querySelector("turbo-frame#draft_items_form");
-        if (newFrame && currentFrame) {
-          currentFrame.replaceWith(newFrame);
-        }
-      });
-  }
-</script>
+          <div class="p-3 bg-light rounded-3 border-start border-4 border-info">
+            <h6 class="fw-bold text-info-emphasis mb-1 d-flex align-items-center gap-1">
+              <span class="material-symbols-outlined fs-5">swap_horiz</span>
+              <%= t('invoice.rent_vs_service_title') %>
+            </h6>
+            <div class="text-muted mb-0 small" style="white-space: pre-line;"><%= t('invoice.rent_vs_service_desc') %></div>
+          </div>
+
+          <div class="p-3 bg-light rounded-3 border-start border-4 border-success">
+            <h6 class="fw-bold text-success mb-1 d-flex align-items-center gap-1">
+              <span class="material-symbols-outlined fs-5">electric_meter</span>
+              <%= t('invoice.auto_meter_sync_title') %>
+            </h6>
+            <p class="text-muted mb-0 small"><%= t('invoice.auto_meter_sync_desc') %></p>
+          </div>
+
+          <div class="p-3 bg-light rounded-3 border-start border-4 border-warning">
+            <h6 class="fw-bold text-warning-emphasis mb-1 d-flex align-items-center gap-1">
+              <span class="material-symbols-outlined fs-5">qr_code_2</span>
+              <%= t('invoice.qr_code_sync_title') %>
+            </h6>
+            <p class="text-muted mb-0 small"><%= t('invoice.qr_code_sync_desc') %></p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer bg-light border-top py-2">
+        <button type="button" class="btn btn-primary px-4 fw-semibold d-inline-flex align-items-center gap-1" data-bs-dismiss="modal">
+          <span class="material-symbols-outlined fs-6">check</span>
+          <%= t('invoice.understood') %>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
