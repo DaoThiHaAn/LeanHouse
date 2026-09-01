@@ -13,7 +13,7 @@
 <%= render "unsigned_banner", unsigned_tenants: @unsigned_tenants, house: @house %>
 
 <%# 3. Unified Action & Filter Toolbar Card %>
-<div class="card border rounded-3 p-4 mb-4 bg-white">
+<div class="card border rounded-3 p-4 mb-4 bg-light">
   <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
     <%# Search & Filters %>
     <%= form_with url: filtered_landlord_house_tenants_path(@house),
@@ -31,7 +31,7 @@
         <%= f.search_field :query,
             value: params[:query],
             placeholder: "#{t("form.tenant.name_input")}...",
-            class: "form-control",
+            class: "form-control shadow-sm",
             data: {
               search_target: "input",
               action: "input->search#debounce"
@@ -47,7 +47,7 @@
                   [t("form.contract.overdue"), "overdue"],
                   [t("form.contract.nearly_due"), "nearly-due"]],
                 { selected: params[:contract_state] },
-                class: "form-select form-select-sm w-auto",
+                class: "form-select form-select-sm w-auto shadow-sm",
                 onchange: "this.form.requestSubmit()" %>
         </div>
 
@@ -60,7 +60,7 @@
                 [t("form.contract.overdue"), "overdue"],
                 [t("form.contract.nearly_due"), "nearly-due"]],
               { selected: params[:residence_state] },
-              class: "form-select form-select-sm w-auto",
+              class: "form-select form-select-sm w-auto shadow-sm",
               onchange: "this.form.requestSubmit()" %>
         </div>
       </div>
@@ -69,7 +69,7 @@
     <%# Action Buttons Inline %>
     <div class="d-flex flex-column align-items-end gap-3">
       <%= link_to new_landlord_house_tenant_path(@house),
-                  class: "custom-primary-btn d-inline-flex align-items-center gap-1 shadow-xs",
+                  class: "custom-primary-btn d-inline-flex align-items-center gap-1 shadow",
                   data: { turbo_frame: "new_tenant_modal" } do %>
         <span class="material-symbols-filled fs-5">link</span>
         <span><%= t('form.tenant.link') %></span>

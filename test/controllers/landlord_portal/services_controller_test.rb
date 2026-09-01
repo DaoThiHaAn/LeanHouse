@@ -51,6 +51,7 @@ class LandlordPortal::ServicesControllerTest < ActionDispatch::IntegrationTest
     sign_in_as(@landlord_user)
     get landlord_house_service_path(@house, @service), headers: { "Turbo-Frame" => "service_workspace" }
     assert_response :success
+    assert_select "turbo-frame#service_workspace"
     assert_select ".service-workspace-container"
     assert_select "h2", /#{@service.name}/
   end

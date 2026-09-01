@@ -1,3 +1,22 @@
 <%= turbo_stream.remove "#{dom_id(@service_variant)}_col" %>
 <%= turbo_stream.remove dom_id(@service_variant) %>
 
+<%= turbo_stream.update "service_variants_count" do %>
+  <%= t("form.service.total_variants", val: @service.service_variants.count) %>
+<% end %>
+
+<% if @service.service_variants.count.zero? %>
+  <%= turbo_stream.remove "no_variants_prompt" %>
+  <%= turbo_stream.after "service_variants_list" do %>
+    <div id="no_variants_prompt" class="text-center py-5">
+      <span class="empty-state-icon material-symbols-outlined text-muted mb-3">category</span>
+      
+      <p class="fw-bold text-secondary mb-2 fs-5"><%= t("form.service.no_variants") %></p>
+      <p class="text-muted mx-auto mb-4">
+        <%= t("form.service.no_variants_prompt") %>
+      </p>
+    </div>
+  <% end %>
+<% end %>
+
+

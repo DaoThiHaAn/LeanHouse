@@ -4,20 +4,22 @@
 
 <div class="service-workspace-container d-flex flex-column h-100 p-3 p-md-4">
   <%# Service Header %>
-  <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 pb-3 mb-4 border-bottom">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 pb-3 mb-4 ms-3 border-bottom">
     <div class="d-flex align-items-center gap-3">
+      <!-- Service icon -->
       <div class="service-header-icon rounded-circle d-flex align-items-center justify-content-center">
         <span class="material-symbols-filled fs-2 text-primary">shoppingmode</span>
       </div>
+
       <div>
-        <div class="d-flex align-items-center gap-2">
+        <div class="d-flex align-items-center gap-3">
           <h2 class="fs-4 fw-bold m-0 text-dark"><%= service.name %></h2>
-          <span class="badge bg-light text-secondary border">
-            <%= t("form.service.total", val: variants.size) %>
+          <span id="service_variants_count" class="badge bg-light text-secondary border">
+            <%= t("form.service.total_variants", val: variants.size) %>
           </span>
         </div>
         <% if service.note.present? %>
-          <div class="d-flex align-items-center gap-1 mt-1 text-muted small">
+          <div class="d-flex align-items-center gap-1 mt-2 text-muted small">
             <span class="material-symbols-outlined fs-6">note</span>
             <span><%= service.note %></span>
           </div>
@@ -54,19 +56,12 @@
 
     <%# Empty State if no variants %>
     <div id="no_variants_prompt" class="text-center py-5 <%= 'd-none' if variants.any? %>">
-      <div class="empty-state-icon mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle bg-light">
-        <span class="material-symbols-outlined fs-1 text-muted">tune</span>
-      </div>
-      <h5 class="fw-bold text-secondary mb-2"><%= t("form.service.no_variants") %></h5>
-      <p class="text-muted small mx-auto mb-4" style="max-width: 420px;">
+      <span class="empty-state-icon material-symbols-outlined text-muted mb-3">category</span>
+      
+      <p class="fw-bold text-secondary mb-2 fs-5"><%= t("form.service.no_variants") %></p>
+      <p class="text-muted mx-auto mb-4">
         <%= t("form.service.no_variants_prompt") %>
       </p>
-      <%= link_to new_landlord_house_service_service_variant_path(house, service),
-                  class: "btn btn-outline-primary d-inline-flex align-items-center gap-2",
-                  data: { turbo_frame: "service_variant_modal" } do %>
-        <span class="material-symbols-filled">add</span>
-        <span><%= t("form.service.variant.add") %></span>
-      <% end %>
     </div>
   </div>
 </div>

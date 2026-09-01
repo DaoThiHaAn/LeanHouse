@@ -82,11 +82,26 @@ class LandlordPortal::ServiceVariantsControllerTest < ActionDispatch::Integratio
     assert_equal [ @room1.id, @room2.id ].sort, @variant.rooms.pluck(:id).sort
   end
 
-  test "destroy removes variant and responds with stream or redirect" do
+  test "create responds with turbo stream updating service_variants_count" do
+    sign_in_as(@landlord_user)
+    post landlord_house_service_service_variants_path(@house, @service),
+         params: {
+           service_variant: { fee: 4000, unit: "per_kwh", is_real_time: "1" }
+         },
+         as: :turbo_stream
+    assert_response :success
+    assert_includes response.body, "service_variants_count"
+    assert_includes response.body, I18n.t("form.service.total_variants", val: 2)
+  end
+
+  test "destroy removes variant and responds with stream updating service_variants_count" do
     sign_in_as(@landlord_user)
     assert_difference -> { @service.service_variants.count }, -1 do
-      delete landlord_house_service_service_variant_path(@house, @service, @variant)
+      delete landlord_house_service_service_variant_path(@house, @service, @variant), as: :turbo_stream
     end
-    assert_redirected_to landlord_house_service_path(@house, @service)
+    assert_response :success
+    assert_includes response.body, "service_variants_count"
+    assert_includes response.body, I18n.t("form.service.total_variants", val: 0)
+    assert_includes response.body, "no_variants_prompt"
   end
 end

@@ -1,9 +1,9 @@
 <!-- Variables: @unsigned_tenants, @has_contracts -->
 
 <% content_for :title, t("page_titles.contract_mng") %>
-<% provide :container_width, "h-100 full" %>
 
-<h1 class="text-center mb-5"><%= t("page_titles.contract_mng") %></h1>
+<h1 class="text-center mb-3"><%= t("page_titles.contract_mng") %></h1>
+<p class="text-muted text-center border-bottom pb-2 mb-3"><%= t("form.contract.mng_note") %></p>
 
 <div class="d-flex gap-5">
   <%# 1. Unsigned tenants collapsible sidebar ... %>
@@ -31,9 +31,10 @@
 
         <div class="card-body overflow-y-auto d-flex flex-column gap-2 align-items-center p-3">
           <% @unsigned_tenants.each do |tenant| %>
-            <div class="unsigned-card py-2 px-2 rounded w-100">
+            <div class="contract unsigned-card py-2 px-2 rounded w-100">
               <!-- Name + Actions -->
               <div class="d-flex align-items-center gap-2">
+                <span class="material-symbols-filled fs-5 text-danger-emphasis">person</span>
                 <p class="flex-grow-1 text-wrap fw-semibold mb-0"><%= vn_name(tenant.user.fullname) %></p>
 
                 <%= link_to new_landlord_house_tenant_contract_path(@house, tenant),

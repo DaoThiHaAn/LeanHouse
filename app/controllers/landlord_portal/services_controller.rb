@@ -16,7 +16,7 @@ class LandlordPortal::ServicesController < LandlordPortal::BaseController
     respond_to do |format|
       format.html do
         if turbo_frame_request?
-          render partial: "service_workspace", locals: { service: @selected_service, house: @house, total_rooms: @total_house_rooms }
+          render :show
         else
           render :index
         end

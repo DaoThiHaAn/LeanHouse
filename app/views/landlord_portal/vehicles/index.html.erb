@@ -1,9 +1,11 @@
 <% content_for :title, t("page_titles.vehicle_mng") %>
-<% provide :container_width, "h-100 full" %>
+<% provide :container_width, "h-100" %>
 
-<h1 class="text-center mb-4">
+<h1 class="text-center mb-3">
   <%= t("page_titles.vehicle_mng") %>
 </h1>
+<p class="text-muted text-center border-bottom pb-2 mb-5"><%= t("vehicle.mng_note") %></p>
+
 
 <% if @vehicles.empty? %>
   <div class="card border-0 bg-light rounded-4 text-center py-5 px-3 mx-auto w-75">
@@ -47,5 +49,6 @@
     <% end %>
   </div>
 
+  <h2 class="mb-3 ms-2"> <%= t("vehicle.list") %></h2>
   <%= render "vehicle_table", house: @house, vehicles: @vehicles %>
 <% end %>

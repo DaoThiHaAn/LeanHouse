@@ -2,17 +2,13 @@
 
 <% content_for :title, t("page_titles.service_mng") %>
 
-<% provide :container_width, "full d-flex flex-column vh-100 px-0 pb-0" %>
-
-<h1 class="text-center mb-4"><%= t("page_titles.service_mng") %></h1>
+<h1 class="text-center mb-3"><%= t("page_titles.service_mng") %></h1>
+<p class="text-muted text-center border-bottom pb-2 mb-5"><%= t("form.service.mng_note") %></p>
 
 <% if @services.empty? %>
-  <div class="text-center py-5">
-    <div class="empty-state-icon mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle bg-light border shadow-sm" style="width: 80px; height: 80px;">
-      <span class="material-symbols-outlined fs-1 text-muted">shoppingmode</span>
-    </div>
-    <p class="fs-5 text-center fw-bold text-secondary mb-2"><%= t("form.asset.none") %></p>
-    <p class="text-muted small mb-4"><%= t("form.service.info_1") %></p>
+  <div class="text-center pb-3">
+    <%= image_tag 'services.png', alt: "Services icon", width: "150px" %>
+    <p class="fs-5 text-center fw-bold my-3"><%= t("form.service.none") %></p>
 
     <!-- Add service btn -->
     <%= link_to new_landlord_house_service_path(@house),
@@ -22,8 +18,9 @@
       <%= t('form.service.add') %>
     <% end %>
   </div>
+
 <% else %>
-  <div class="d-flex h-100 position-relative border rounded-3 overflow-hidden shadow-sm bg-white"
+  <div class="d-flex position-relative shadow-sm bg-light"
        data-controller="sidebar service-filter">
     <!-- Sidebar -->
     <aside id="sidebar" class="sidebar" data-sidebar-target="sidebar">
@@ -55,20 +52,18 @@
         </div>
 
         <!-- Search Bar -->
-        <div class="px-3 pt-3 pb-2">
-          <div class="input-group input-group-sm">
-            <span class="input-group-text bg-white border-end-0 text-muted">
-              <span class="material-symbols-outlined fs-6">search</span>
-            </span>
-            <input type="text"
-                   class="form-control border-start-0 ps-0"
-                   placeholder="<%= t('form.service.search_placeholder') %>"
-                   data-service-filter-target="input"
-                   data-action="input->service-filter#filter">
-          </div>
+        <div class="input-group input-group-sm my-3 w-85 mx-auto">
+          <span class="input-group-text bg-white border-end-0 text-muted">
+            <span class="material-symbols-outlined fs-6">search</span>
+          </span>
+          <input type="text" autocomplete="off"
+                  class="form-control border-start-0 ps-0"
+                  placeholder="<%= t('form.service.search_placeholder') %>"
+                  data-service-filter-target="input"
+                  data-action="input->service-filter#filter">
         </div>
 
-        <p id="sidebar_services_count" class="fw-semibold text-center mb-2 px-3 small text-muted">
+        <p id="sidebar_services_count" class="fw-semibold text-center mb-3 px-3 small text-muted">
           <%= t("form.service.total", val: @services.length) %>
         </p>
 
@@ -101,12 +96,9 @@
           <!-- Empty State Prompt -->
           <div class="d-flex flex-column align-items-center justify-content-center h-100 text-muted p-5">
             <div class="empty-state-icon mb-3 d-flex align-items-center justify-content-center rounded-circle bg-white border shadow-sm" style="width: 70px; height: 70px;">
-              <span class="material-symbols-outlined fs-1 text-primary">touch_app</span>
+              <span class="material-symbols-outlined fs-1 text-primary">left_click</span>
             </div>
             <h5 class="fw-bold text-dark mb-2 text-center"><%= t("form.service.select_service_prompt") %></h5>
-            <p class="text-muted small text-center mb-0" style="max-width: 380px;">
-              <%= t("form.service.info_2") %>
-            </p>
           </div>
         <% end %>
       <% end %>

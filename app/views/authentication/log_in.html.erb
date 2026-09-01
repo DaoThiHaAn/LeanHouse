@@ -44,7 +44,8 @@
             <!-- Tel -->
             <div class="form-group">
                 <%= f.label :tel, t('form.profile.tel') + ":", class: "form-label" %> <span class="asterisk">*</span>
-                <%= f.telephone_field :tel, 
+                <%= f.telephone_field :tel,
+                    autocomplete: "tel", 
                     class: "form-control #{invalid_class(@user, :tel)}", 
                     placeholder: t('form.profile.tel_login_placeholder'), 
                     required: true, autofocus: true %>
@@ -63,6 +64,7 @@
                     <%= f.password_field :password, maxlength: 72, required: true,
                         class: "form-control pe-5 #{invalid_class(@user, :password)}",
                         placeholder: t('form.profile.pw_placeholder'),
+                        autocomplete: "current-password",
                         data: {
                             form_target: "input",
                             action: "input->form#update"

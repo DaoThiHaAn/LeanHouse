@@ -39,7 +39,7 @@
 
     <%= render "layouts/shared_components/header",
         unread_count: @unread_count, notifications: @notifications %>
-    <main class="flex-grow-1 d-flex">
+    <main class="flex-grow-1 d-flex flex-column">
       <%# If a sub-layout captured content into :content, render that; otherwise render default yield %>
       <%= content_for?(:content) ? yield(:content) : yield %>
     </main>

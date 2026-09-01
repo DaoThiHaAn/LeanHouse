@@ -226,6 +226,8 @@ vi:
 
     service:
       self: "Dịch vụ"
+      mng_note: "Nơi quản lý các dịch vụ trong nhà của bạn"
+      none: "Chưa có dịch vụ nào trong Nhà"
       applied_sv: "Dịch vụ áp dụng"
       info_1: "Dưới đây là những dịch vụ cơ bản, tick để chọn dịch vụ bạn muốn."
       info_2: "Tất cả dịch vụ được áp dụng như nhau cho tất cả các phòng, bạn có thể tùy chỉnh sau."
@@ -247,6 +249,7 @@ vi:
       list: "Danh sách dịch vụ"
       delete_cf: "Bạn có chắc chắn muốn xóa dịch vụ %{name}?"
       delete_warning_1: "Tất cả phiên bản của dịch vụ này cũng sẽ bị xóa, và hành động này không thể hoàn tác."
+      total_variants: "Tổng cộng: %{val} phiên bản"
       total: "Tổng cộng: %{val} dịch vụ"
       search_placeholder: "Tìm kiếm dịch vụ..."
       filter_empty: "Không tìm thấy dịch vụ nào phù hợp!"
@@ -277,7 +280,7 @@ vi:
     asset:
       self: "Tài sản"
       list: "Danh sách Tài sản"
-      mng_note: "Giúp bạn ghi nhận, quản lý các tài sản có giá trị trong phòng như nội thất, thiết bị gia dụng,..."
+      mng_note: "Nơi quản lý các tài sản có giá trị trong nhà bạn"
       in_room: "Tài sản trong phòng"
       cat: "Loại"
       location: "Vị trí"
@@ -321,6 +324,7 @@ vi:
 
     contract:
       self: "Hợp đồng"
+      mng_note: "Nơi quản lý hợp đồng của tất cả khách thuê lưu trú ở nhà bạn"
       list: "Danh sách Hợp đồng"
       id: "Mã hợp đồng"
       id_note: "Mã hợp đồng được hệ thống tự động sinh ra, đảm bảo tính duy nhất và không trùng lặp."

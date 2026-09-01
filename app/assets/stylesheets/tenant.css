@@ -74,7 +74,7 @@
   overflow-x: auto;
 }
 
-.unsigned-card {
+.contract.unsigned-card {
   background-color: #ffe09c;
   color: rgb(90, 47, 16);
   border: 1px solid #fbd582
@@ -95,7 +95,7 @@
 }
 
 .unsigned-card .staying-info {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
 }
 
 .input-group.search-bar {
@@ -149,7 +149,7 @@
 }
 .stat-card-teal .stat-icon-wrap {
   background-color: #FFFFFF;
-  color: #164E5D;
+  color: #23165d;
 }
 
 .stat-card-green {

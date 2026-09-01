@@ -1,7 +1,7 @@
 .sidebar {
   position: relative;
   width: 250px;
-  height: 100%;
+  align-self: stretch;
   transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   flex-shrink: 0;
   background-color: #ecf5f8;
@@ -130,7 +130,8 @@
 }
 
 .service-card .tag-icon {
-  font-size: 1.2rem;
+  font-size: 1rem;
+  align-self: center;
 }
 
 
@@ -209,8 +210,8 @@
 }
 
 .empty-state-icon {
-  width: 72px;
-  height: 72px;
+  font-size: 4rem;
+  display: block;
 }
 
 @media (max-width: 768px) {

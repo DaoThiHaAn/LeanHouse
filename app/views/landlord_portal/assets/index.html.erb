@@ -4,13 +4,10 @@
 
 <% provide :container_width, "h-100 full" %>
 
-<h1 class="text-center mb-5">
+<h1 class="text-center mb-3">
   <%= t("page_titles.asset_mng") %>
- <span class="material-symbols-outlined fs-4"
-    <%= tooltip("top", :"form.asset.mng_note", html: true) %>>
-    help
-  </span>
 </h1>
+<p class="text-muted text-center border-bottom pb-2 mb-5"><%= t("form.asset.mng_note") %></p>
 
 <% if @assets.empty? %>
   <p class="fs-5 text-center fw-bold"><%= t("form.asset.none") %></p>

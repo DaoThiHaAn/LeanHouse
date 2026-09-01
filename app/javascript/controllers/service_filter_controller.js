@@ -34,6 +34,16 @@ export default class extends Controller {
     }
   }
 
+  selectCard(event) {
+    this.element.querySelectorAll(".service-card").forEach(card => {
+      card.classList.remove("selected")
+    })
+    const clickedCard = event.currentTarget.closest(".service-card")
+    if (clickedCard) {
+      clickedCard.classList.add("selected")
+    }
+  }
+
   normalize(str) {
     return (str || "")
       .toLowerCase()

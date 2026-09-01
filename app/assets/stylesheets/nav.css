@@ -236,7 +236,11 @@
     color: white;
     border-bottom-left-radius: 15px;
     border-bottom-right-radius: 15px;
-    transition: transform 0.2s;
+    transition: all 0.2s;
+}
+
+.toggle-nav-btn:hover {
+    background-color: #5e7b76ef;
 }
 
 .toggle-nav-btn[aria-expanded="false"] .toggle-icon {

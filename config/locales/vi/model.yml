@@ -146,8 +146,8 @@ vi:
         pending: "Chờ xét duyệt"
         handling: "Đang xử lý"
         completed: "Đã hoàn thành"
-        approved: "Đã duyệt"
-        rejected: "Đã duyệt từ chối"
+        approved: "Đã chấp thuận"
+        rejected: "Đã từ chối"
         overdue: "Hết hạn"
 
     vehicle:

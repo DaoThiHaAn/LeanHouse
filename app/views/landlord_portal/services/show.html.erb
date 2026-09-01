@@ -1,1 +1,6 @@
-<%= render template: "landlord_portal/services/index" %>
+<%= turbo_frame_tag "service_workspace", class: "d-block h-100" do %>
+  <%= render "service_workspace",
+             service: @selected_service,
+             house: @house,
+             total_rooms: @total_house_rooms %>
+<% end %>

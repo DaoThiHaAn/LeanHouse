@@ -5,25 +5,21 @@
      class="service-card-item w-100 mb-2"
      data-service-filter-target="card"
      data-service-name="<%= service.name %>">
-  <div class="d-flex align-items-center service-card <%= 'selected' if is_selected %> w-100 py-2 ps-3 pe-2">
+  <div class="d-flex align-items-center gap-2 service-card <%= 'selected' if is_selected %> w-100 py-2 px-2">
     <span class="material-symbols-filled tag-icon me-2">shoppingmode</span>
 
     <%= link_to landlord_house_service_path(house, service),
-                class: "service-title-link flex-grow-1 text-truncate",
-                title: t("click_choose", default: "Nhấp để chọn"),
+                class: "service-title-link flex-grow-1 text-wrap",
+                title: t("click_choose"),
                 data: {
                   turbo_frame: "service_workspace",
-                  turbo_action: "advance"
+                  turbo_action: "advance",
+                  action: "click->service-filter#selectCard"
                 } do %>
-      <span class="fw-semibold"><%= service.name %></span>
+      <p class="fw-semibold"><%= service.name %></p>
     <% end %>
 
-    <div class="service-actions d-flex align-items-center gap-1 ms-auto">
-      <% if service.note.present? %>
-        <%= image_tag "note.png", alt: "Note icon", width: "20px", height: "20px",
-            class: "d-block opacity-75", data: { **tooltip("top", service.note) } %>
-      <% end %>
-
+    <div class="service-actions d-flex flex-column align-items-center gap-1 ms-auto">
       <%= link_to edit_landlord_house_service_path(house, service),
                   data: { turbo_frame: "edit_service_modal" },
                   title: t("form.service.edit"),

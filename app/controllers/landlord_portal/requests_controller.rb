@@ -50,6 +50,11 @@ class LandlordPortal::RequestsController < LandlordPortal::BaseController
             partial: "landlord_portal/requests/request_row",
             locals: { request: @request }
           ),
+          turbo_stream.replace(
+            "request_stats_grid",
+            partial: "landlord_portal/requests/stats_cards",
+            locals: { stats: LandlordRequestStatsService.call(landlord: @landlord) }
+          ),
           turbo_stream.update("flash", partial: "layouts/shared_components/flash_message")
         ]
       end

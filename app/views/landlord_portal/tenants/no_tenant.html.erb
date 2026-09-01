@@ -1,25 +1,26 @@
 <% content_for :title, t("page_titles.tenant_mng") %>
 
-<% provide :container_width, "new-room w-50 d-flex flex-grow-1 flex-column gap-4 align-items-center justify-content-cente" %>
+<div class="new-room d-flex flex-grow-1 flex-column gap-4 align-items-center justify-content-center">
+  <h1> <%= t("page_titles.tenant_mng") %></h1>
+  <p class="text-muted text-center border-bottom pb-2 w-100"><%= t("form.tenant.mng_note") %></p>
 
-<h1 class="mb-3"> <%= t("page_titles.tenant_mng") %></h1>
+  <p class="no-house-text fs-5 fw-medium">
+    <%= t("form.tenant.none") %>
+  </p>
 
-<p class="no-house-text">
-  <%= t("form.tenant.none") %>
-</p>
+  <!-- Link Tenant Button -->
+  <%= link_to new_landlord_house_tenant_path, class:"shadow-sm main-btn d-flex align-items-center gap-2",
+      data: { turbo_frame: "new_tenant_modal" } do %>
+      <span class="material-symbols-filled">link</span>
+      <%= t('form.tenant.link') %>
+  <% end %>
 
-<!-- Link Tenant Button -->
-<%= link_to new_landlord_house_tenant_path, class:"shadow-sm main-btn d-flex align-items-center gap-2",
-    data: { turbo_frame: "new_tenant_modal" } do %>
-    <span class="material-symbols-filled">link</span>
-    <%= t('form.tenant.link') %>
-<% end %>
-
-<!-- Create & Link Tenant Button -->
-<%= link_to landlord_house_create_new_tenant_path, class:"subtle main-btn d-flex align-items-center gap-2" do %>
-  <span class="material-symbols-filled">person_add</span>
-  <%= t('form.tenant.create_and_link') %>
-<% end %>
-<%= field_info([t("form.tenant.create_link_info")], extra_classes: "create-link-info w-50 gap-2") %>
+  <!-- Create & Link Tenant Button -->
+  <%= link_to landlord_house_create_new_tenant_path, class:"subtle main-btn d-flex align-items-center gap-2" do %>
+    <span class="material-symbols-filled">person_add</span>
+    <%= t('form.tenant.create_and_link') %>
+  <% end %>
+  <%= field_info([t("form.tenant.create_link_info")], extra_classes: "create-link-info w-50 gap-2") %>
+</div>
 
 <%= turbo_frame_tag "new_tenant_modal" %>

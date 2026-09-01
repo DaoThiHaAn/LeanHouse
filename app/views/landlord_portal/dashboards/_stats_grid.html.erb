@@ -6,11 +6,11 @@
 <%= turbo_frame_tag "dashboard_stats" do %>
   <div class="row g-4">
     <!-- Card 1: Khách mới & Trả phòng (Grouped) -->
-    <div class="col-12 col-sm-6 col-lg-4">
+    <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
       <div class="dashboard-stat-card card-purple p-3 shadow-sm d-flex flex-column justify-content-between ">
         <div class="d-flex align-items-start justify-content-between">
           <div class="d-flex gap-4 align-items-center">
-            <%= image_tag 'tenants.png', alt: "People icon", width: "50px" %>
+            <%= image_tag 'tenants.png', alt: "People icon", width: "45px" %>
 
             <div>
               <h2 class="stat-card-title"><%= t('dashboard.landlord.tenant_flow_title') %></h2>
@@ -39,11 +39,11 @@
     </div>
 
     <!-- Card 2: Tỉ lệ lấp chỗ trống -->
-    <div class="col-12 col-sm-6 col-lg-4">
+    <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
       <div class="dashboard-stat-card card-green p-3 shadow-sm d-flex flex-column justify-content-between ">
         <div class="d-flex align-items-start justify-content-between">
           <div class="d-flex gap-3 align-items-center">
-            <%= image_tag 'occupied.png', alt: "Occupied icon", width: "50px" %>
+            <%= image_tag 'occupied.png', alt: "Occupied icon", width: "45px" %>
             <div>
               <div class="stat-card-title"><%= t('dashboard.landlord.occupied_rate') %></div>
               <div class="stat-value text-success mb-1"><%= stats[:occupancy][:rate] %>%</div>
@@ -69,7 +69,7 @@
     </div>
 
     <!-- Card 3: Yêu cầu chưa xử lý -->
-    <div class="col-12 col-sm-6 col-lg-4">
+    <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
       <div class="dashboard-stat-card card-orange p-3 shadow-sm d-flex flex-column justify-content-between ">
         <div class="d-flex align-items-start justify-content-between">
           <div class="d-flex gap-3 align-items-center">
@@ -107,7 +107,7 @@
     </div>
 
     <!-- Card 4: Hợp đồng sắp hết hạn & Quá hạn -->
-    <div class="col-12 col-sm-6 col-lg-4">
+    <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
       <div class="dashboard-stat-card card-blue p-3 shadow-sm d-flex flex-column justify-content-between ">
         <div class="d-flex align-items-start justify-content-between">
           <div class="d-flex gap-3 align-items-center">

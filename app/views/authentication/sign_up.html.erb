@@ -61,6 +61,7 @@
 
                 <%= form.telephone_field :tel, minlength: 10, maxlength: 10, class: "mb-1 form-control #{invalid_class(@user, :tel)}", 
                     placeholder: t('form.profile.tel_placeholder'), required: true, autofocus: true,
+                    autocomplete: "tel",
                     data: {
                         form_target: "input",
                         action: "input->form#update"
@@ -87,6 +88,7 @@
                     <%= form.password_field :password, minlength: 8, maxlength: 72, required: true,
                         class: "form-control pe-5 #{invalid_class(@user, :password)}",
                         placeholder: t('form.profile.pw_placeholder'),
+                        autocomplete: "new-password",
                         data: {
                             form_target: "input",
                             action: "input->form#update"
@@ -128,6 +130,7 @@
                 <div class="position-relative">
                     <%= form.password_field :password_confirmation, minlength: 8, maxlength: 72, required: true,
                         class: "form-control pe-5 #{invalid_class(@user, :password_confirmation)}",
+                        autocomplete: "new-password",   
                         placeholder: t('form.profile.pw_cf_placeholder'),
                         data: {
                             form_target: "input",
@@ -159,6 +162,7 @@
                 
                 <%= form.text_field :fullname, maxlength: 50, class: "form-control #{invalid_class(@user, :fullname)}", 
                     placeholder: t('form.profile.fullname_placeholder'), required: true,
+                    autocomplete: "name",
                     data: {
                         form_target: "input",
                         action: "input->form#update"
@@ -183,6 +187,7 @@
 
                 <%= form.text_field :address, maxlength: 100, class: "form-control", 
                     placeholder: t('form.profile.address_placeholder'), required: true,
+                    autocomplete: "street-address",
                     data: {
                         form_target: "input",
                         action: "input->form#update"

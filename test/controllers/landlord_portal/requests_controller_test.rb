@@ -148,6 +148,7 @@ class LandlordPortal::RequestsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :success
+    assert_includes response.body, "request_stats_grid"
     @landlord_request.reload
     assert_equal "approved", @landlord_request.status
     assert_equal @landlord_user, @landlord_request.resolved_by

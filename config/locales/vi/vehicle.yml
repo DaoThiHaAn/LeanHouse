@@ -3,6 +3,8 @@ vi:
     title: "Phương tiện"
     mine: "Phương tiện của tôi"
     mng: "Quản lý Phương tiện"
+    mng_note: "Nơi quản lý các phương tiện được khách thuê đăng ký gửi ở nhà của bạn"
+    list: "Danh sách phương tiện"
     type: "Loại xe"
     all_types: "Tất cả loại xe"
     plate_number: "Biển số xe"
