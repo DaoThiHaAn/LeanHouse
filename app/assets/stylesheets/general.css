@@ -332,6 +332,7 @@ textarea {
   padding: 10px 20px 20px 20px;
   max-width: 1400px;
   min-height: 100%;
+  flex-grow: 1;
 }
 
 /* Polished Turn-Back / Back Navigation Link */
@@ -497,5 +498,91 @@ thead {
   }
   .main-container {
     width: 95%;
+  }
+}
+
+/* =========================================================
+   BULLETPROOF INVOICE PRINT STYLING
+   ========================================================= */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 10mm 15mm;
+  }
+
+  /* 1. Hide everything on the page */
+  body * {
+    visibility: hidden !important;
+  }
+
+  /* 2. Show only the printable invoice card */
+  #invoice-printable,
+  #invoice-printable * {
+    visibility: visible !important;
+  }
+
+  /* 3. Re-position invoice card to the top-left of the paper */
+  #invoice-printable {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    background-color: #ffffff !important;
+    page-break-inside: avoid;
+  }
+
+  /* 4. Force collapse elements open */
+  #invoice-printable .collapse {
+    display: block !important;
+    visibility: visible !important;
+    height: auto !important;
+  }
+
+  /* 5. Hide elements marked d-print-none */
+  #invoice-printable .d-print-none,
+  .d-print-none {
+    display: none !important;
+    visibility: hidden !important;
+  }
+
+  /* 6. Clean table borders */
+  #invoice-printable .table-responsive {
+    overflow: visible !important;
+  }
+
+  #invoice-printable .table {
+    border-collapse: collapse !important;
+    width: 100% !important;
+  }
+
+  #invoice-printable .table td,
+  #invoice-printable .table th {
+    border: 1px solid #cbd5e1 !important;
+    padding: 6px 10px !important;
+    color: #0f172a !important;
+    background-color: transparent !important;
+  }
+
+  #invoice-printable .table thead th {
+    background-color: #f1f5f9 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  #invoice-printable .badge {
+    border: 1px solid #94a3b8 !important;
+    color: #0f172a !important;
+    background-color: transparent !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  a[href]::after {
+    content: none !important;
   }
 }

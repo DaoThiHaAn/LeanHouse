@@ -47,7 +47,11 @@ class Invoice < ApplicationRecord
   def self.generate_code(room, month)
     prefix = "HD#{month.strftime('%y%m')}"
     clean_room = room.name.gsub(/[^0-9A-Za-z]/, "").upcase[0..5]
-    random = SecureRandom.hex(2).upcase
-    "#{prefix}-#{clean_room}-#{random}"
+
+    loop do
+      random_suffix = SecureRandom.alphanumeric(4).upcase
+      candidate_code = "#{prefix}-#{clean_room}-#{random_suffix}"
+      return candidate_code unless Invoice.exists?(code: candidate_code)
+    end
   end
 end

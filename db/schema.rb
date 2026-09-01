@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_09_02_040004) do
+ActiveRecord::Schema[8.0].define(version: 2026_09_02_041001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "unaccent"
@@ -163,6 +163,11 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_02_040004) do
     t.bigint "amount", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.date "start_date"
+    t.date "end_date"
+    t.integer "prev_reading"
+    t.integer "latest_reading"
+    t.string "note"
     t.index ["invoice_id"], name: "index_invoice_items_on_invoice_id"
     t.index ["service_variant_id"], name: "index_invoice_items_on_service_variant_id"
   end
@@ -189,6 +194,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_02_040004) do
     t.datetime "discarded_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.date "start_date"
+    t.date "end_date"
+    t.string "title", default: "Thu tiền hàng tháng"
     t.index ["bank_account_id"], name: "index_invoices_on_bank_account_id"
     t.index ["code"], name: "index_invoices_on_code", unique: true
     t.index ["created_by_id"], name: "index_invoices_on_created_by_id"

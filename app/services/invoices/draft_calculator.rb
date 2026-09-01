@@ -43,6 +43,8 @@ module Invoices
           unit_price: rent_amount,
           quantity: 1.0,
           amount: rent_amount,
+          start_date: billing_month.beginning_of_month,
+          end_date: billing_month.end_of_month,
           selected: true
         }
       else
@@ -54,6 +56,8 @@ module Invoices
           unit_price: rent_amount,
           quantity: 1.0,
           amount: rent_amount,
+          start_date: billing_month.beginning_of_month,
+          end_date: billing_month.end_of_month,
           selected: true
         }
       end
@@ -77,6 +81,8 @@ module Invoices
           unit_price: price,
           quantity: qty,
           amount: amount,
+          start_date: billing_month.beginning_of_month,
+          end_date: billing_month.end_of_month,
           selected: true
         }
       end
@@ -130,7 +136,7 @@ module Invoices
           service_variant_id: variant.id,
           service_usage_log_id: log&.id,
           item_type: :metered_service,
-          name: "Tiền #{variant.service.name}",
+          name: variant.service.name,
           unit: variant.human_unit,
           unit_price: variant.fee,
           prev_reading: prev_num,
@@ -139,6 +145,8 @@ module Invoices
           has_log: has_log,
           quantity: qty,
           amount: amount,
+          start_date: log&.start_date || billing_month.beginning_of_month,
+          end_date: log&.end_date || billing_month.end_of_month,
           selected: true
         }
       end

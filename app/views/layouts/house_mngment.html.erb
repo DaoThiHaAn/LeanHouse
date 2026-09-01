@@ -3,7 +3,7 @@
 
 <!-- Pass the width to the :container_width, otherwise "w-75" -->
 <% content_for :content do %>
-  <div class="w-100 d-flex flex-column">
+  <div class="w-100 d-flex flex-column flex-grow-1">
     <%# Additional sub-navigation %>
     <%= render "layouts/shared_components/additional_nav", house: @house, other_houses: @other_houses %>
 

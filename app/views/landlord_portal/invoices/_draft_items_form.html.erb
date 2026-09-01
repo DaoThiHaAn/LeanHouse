@@ -2,7 +2,7 @@
   <div class="card shadow-sm border-0 rounded-3 mb-4">
     <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
       <h5 class="fw-bold mb-0 text-dark">
-        Các khoản thu tháng <%= billing_month.strftime("%m/%Y") %> - <%= room.title_name %>
+        <%= t('invoice.item_or_service') %> (<%= t('common.month', default: 'Tháng') %> <%= billing_month.strftime("%m/%Y") %> - <%= room.title_name %>)
       </h5>
       <span class="badge bg-light text-muted border">Tự động tính từ phòng & chỉ số</span>
     </div>
@@ -10,12 +10,12 @@
       <table class="table align-middle mb-0">
         <thead class="table-light">
           <tr>
-            <th class="ps-3" style="width: 40px;">Thu</th>
-            <th>Khoản thu / Dịch vụ</th>
-            <th>Đơn vị</th>
-            <th>Đơn giá (VNĐ)</th>
-            <th style="width: 140px;">Số lượng / Chỉ số</th>
-            <th class="text-end pe-3" style="width: 150px;">Thành tiền (VNĐ)</th>
+            <th class="ps-3" style="width: 40px;"><%= t('invoice.actions.done', default: 'Thu') %></th>
+            <th><%= t('invoice.item_or_service') %></th>
+            <th><%= t('invoice.unit') %></th>
+            <th><%= t('invoice.unit_price') %></th>
+            <th style="width: 140px;"><%= t('invoice.reading_or_qty') %></th>
+            <th class="text-end pe-3" style="width: 150px;"><%= t('invoice.amount') %></th>
           </tr>
         </thead>
         <tbody>
@@ -27,6 +27,8 @@
                 <input type="hidden" name="invoice[items][<%= idx %>][item_type]" value="<%= item[:item_type] %>" />
                 <input type="hidden" name="invoice[items][<%= idx %>][service_variant_id]" value="<%= item[:service_variant_id] %>" />
                 <input type="hidden" name="invoice[items][<%= idx %>][service_usage_log_id]" value="<%= item[:service_usage_log_id] %>" />
+                <input type="hidden" name="invoice[items][<%= idx %>][start_date]" value="<%= item[:start_date] %>" />
+                <input type="hidden" name="invoice[items][<%= idx %>][end_date]" value="<%= item[:end_date] %>" />
               </td>
               <td>
                 <input type="text" name="invoice[items][<%= idx %>][name]" value="<%= item[:name] %>" class="form-control form-control-sm fw-semibold" />
@@ -41,12 +43,12 @@
                 <% if item[:item_type] == :metered_service %>
                   <div class="d-flex flex-column gap-1">
                     <div class="input-group input-group-sm">
-                      <span class="input-group-text">Cũ</span>
-                      <input type="number" name="invoice[items][<%= idx %>][prev_reading]" value="<%= item[:prev_reading] %>" class="form-control font-monospace" placeholder="Cũ" />
+                      <span class="input-group-text"><%= t('invoice.prev_reading') %></span>
+                      <input type="number" name="invoice[items][<%= idx %>][prev_reading]" value="<%= item[:prev_reading] %>" class="form-control font-monospace" placeholder="<%= t('invoice.prev_reading') %>" />
                     </div>
                     <div class="input-group input-group-sm">
-                      <span class="input-group-text text-primary fw-bold">Mới</span>
-                      <input type="number" name="invoice[items][<%= idx %>][latest_reading]" value="<%= item[:latest_reading] %>" class="form-control font-monospace fw-bold" placeholder="Mới" />
+                      <span class="input-group-text text-primary fw-bold"><%= t('invoice.latest_reading') %></span>
+                      <input type="number" name="invoice[items][<%= idx %>][latest_reading]" value="<%= item[:latest_reading] %>" class="form-control font-monospace fw-bold" placeholder="<%= t('invoice.latest_reading') %>" />
                     </div>
                   </div>
                   <input type="hidden" name="invoice[items][<%= idx %>][quantity]" value="<%= item[:quantity] %>" />
@@ -67,7 +69,7 @@
               <input type="hidden" name="invoice[items][99][item_type]" value="addition" />
             </td>
             <td>
-              <input type="text" name="invoice[items][99][name]" placeholder="Phụ phí phát sinh (ví dụ: sửa khóa, gửi xe thêm)" class="form-control form-control-sm" />
+              <input type="text" name="invoice[items][99][name]" placeholder="<%= t('invoice.addition_placeholder') %>" class="form-control form-control-sm" />
             </td>
             <td>
               <input type="text" name="invoice[items][99][unit]" value="lần" class="form-control form-control-sm" style="max-width: 80px;" />
@@ -89,7 +91,7 @@
               <input type="hidden" name="invoice[items][100][item_type]" value="discount" />
             </td>
             <td>
-              <input type="text" name="invoice[items][100][name]" placeholder="Giảm trừ (ví dụ: khuyến mãi, hỗ trợ mùa dịch)" class="form-control form-control-sm text-danger" />
+              <input type="text" name="invoice[items][100][name]" placeholder="<%= t('invoice.discount_placeholder') %>" class="form-control form-control-sm text-danger" />
             </td>
             <td>
               <input type="text" name="invoice[items][100][unit]" value="lần" class="form-control form-control-sm" style="max-width: 80px;" />
@@ -109,4 +111,3 @@
     </div>
   </div>
 <% end %>
-

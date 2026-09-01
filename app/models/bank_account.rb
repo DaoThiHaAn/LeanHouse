@@ -5,6 +5,8 @@ class BankAccount < ApplicationRecord
   belongs_to :bank
   has_many :invoices, dependent: :nullify
 
+  alias_attribute :account_name, :account_holder
+
   before_validation :normalize_inputs
   before_save :ensure_single_default
 

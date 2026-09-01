@@ -234,3 +234,92 @@
   }
 }
 
+/* =========================================================
+   INVOICE PRINT STYLING
+   ========================================================= */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 12mm 15mm;
+  }
+
+  header,
+  footer,
+  nav,
+  #flash,
+  #events,
+  .d-print-none,
+  .sidebar,
+  .sidebar-toggle-tag,
+  .additional-nav-container,
+  .modal,
+  .btn,
+  .btn-close,
+  a.btn {
+    display: none !important;
+  }
+
+  body,
+  main,
+  .house-main-container,
+  .container {
+    background-color: #ffffff !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-shadow: none !important;
+  }
+
+  #invoice-printable {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    page-break-inside: avoid;
+  }
+
+  .collapse {
+    display: block !important;
+    height: auto !important;
+    visibility: visible !important;
+  }
+
+  .table-responsive {
+    overflow: visible !important;
+  }
+
+  .table {
+    border-collapse: collapse !important;
+    width: 100% !important;
+  }
+
+  .table td,
+  .table th {
+    border: 1px solid #cbd5e1 !important;
+    padding: 6px 10px !important;
+    color: #0f172a !important;
+    background-color: transparent !important;
+  }
+
+  .table thead th {
+    background-color: #f1f5f9 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .badge {
+    border: 1px solid #94a3b8 !important;
+    color: #0f172a !important;
+    background-color: transparent !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  a[href]::after {
+    content: none !important;
+  }
+}
+
+

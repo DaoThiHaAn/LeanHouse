@@ -6,8 +6,12 @@ module Invoices
       ActiveRecord::Base.transaction do
         code = Invoice.generate_code(room, month)
 
+        start_date = params[:start_date].presence || month.beginning_of_month
+        end_date = params[:end_date].presence || month.end_of_month
+
         invoice = Invoice.create!(
           code: code,
+          title: params[:title].presence || "Thu tiền hàng tháng",
           house: room.house,
           room: room,
           tenant_id: params[:tenant_id].presence,
@@ -15,6 +19,8 @@ module Invoices
           created_by: landlord,
           invoice_type: params[:invoice_type].presence || "room",
           billing_month: month,
+          start_date: start_date,
+          end_date: end_date,
           due_date: params[:due_date].presence || (Date.current + 5.days),
           note: params[:note].presence
         )
@@ -37,6 +43,10 @@ module Invoices
           name = item_param[:name].to_s.strip
           unit = item_param[:unit].to_s.strip
           amount = item_param[:amount].present? ? item_param[:amount].to_i : (qty * unit_price).round
+          item_start_date = item_param[:start_date].presence || start_date
+          item_end_date = item_param[:end_date].presence || end_date
+          prev_rd = item_param[:prev_reading].presence&.to_i
+          latest_rd = item_param[:latest_reading].presence&.to_i
 
           # Handle metered service log linking or creation
           if item_type == "metered_service"
@@ -52,10 +62,10 @@ module Invoices
               log.service_name = name
               log.unit = unit
               log.unit_price = unit_price
-              log.start_date ||= month.beginning_of_month
-              log.end_date ||= month.end_of_month
-              log.prev_reading = item_param[:prev_reading].to_i
-              log.latest_reading = item_param[:latest_reading].to_i
+              log.start_date ||= item_start_date
+              log.end_date ||= item_end_date
+              log.prev_reading = prev_rd || 0
+              log.latest_reading = latest_rd
               log.is_confirmed = true
               log.confirmed_at ||= Time.current
               log.confirmed_by ||= landlord
@@ -73,7 +83,12 @@ module Invoices
             unit: unit.presence,
             unit_price: unit_price,
             quantity: qty,
-            amount: amount
+            amount: amount,
+            start_date: item_start_date,
+            end_date: item_end_date,
+            prev_reading: prev_rd,
+            latest_reading: latest_rd,
+            note: item_param[:note].presence
           )
 
           case item_type

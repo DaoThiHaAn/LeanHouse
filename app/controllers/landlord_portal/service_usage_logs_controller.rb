@@ -102,11 +102,20 @@ class LandlordPortal::ServiceUsageLogsController < LandlordPortal::BaseControlle
   private
 
   def set_billing_month
-    @billing_month = if params[:month].present?
-                       Date.parse("#{params[:month]}-01").beginning_of_month rescue Date.current.beginning_of_month
+    @billing_month = parse_month(params[:month])
+  end
+
+  def parse_month(str)
+    return Date.current.beginning_of_month if str.blank?
+
+    str_val = str.to_s.strip
+    if str_val.match?(/\A\d{4}-\d{2}\z/)
+      Date.parse("#{str_val}-01").beginning_of_month
     else
-                       Date.current.beginning_of_month
+      Date.parse(str_val).beginning_of_month
     end
+  rescue StandardError
+    Date.current.beginning_of_month
   end
 
   def load_logs
