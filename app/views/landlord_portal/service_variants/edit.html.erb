@@ -23,27 +23,7 @@
                           action: "submit->loading#submit"
                         } do |f| %>
 
-            <%# Fee %>
-            <div class="form-group">
-              <%= f.label :fee, class: "form-label fw-semibold" do %>
-                <%= t("form.service.price") %> <span class="text-danger">*</span>
-              <% end %>
-              <%= f.number_field :fee, min: 1, step: 100, required: true,
-                                 placeholder: t("form.service.price_placeholder"),
-                                 class: "form-control #{invalid_class(@service_variant, :fee)}" %>
-              <%= field_error(@service_variant, :fee) %>
-            </div>
-
-            <%# Unit %>
-            <div class="form-group">
-              <%= f.label :unit, class: "form-label fw-semibold" do %>
-                <%= t("form.service.unit") %> <span class="text-danger">*</span>
-              <% end %>
-              <%= f.select :unit, ServiceVariant.unit_options,
-                           {},
-                           class: "form-select #{invalid_class(@service_variant, :unit)}" %>
-              <%= field_error(@service_variant, :unit) %>
-            </div>
+            <%= render "landlord_portal/service_variants/form_fields", f: f, service_variant: @service_variant %>
 
             <%# Real Time %>
             <div class="form-check form-switch mt-2">
@@ -81,4 +61,3 @@
     </div>
   </div>
 <% end %>
-

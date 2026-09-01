@@ -49,22 +49,10 @@ class LandlordPortal::AssetsController < LandlordPortal::BaseController
   def update
     if @asset.update(asset_params)
       flash.now[:notice] = t("success_messages.asset_updated")
-      render turbo_stream: [
-        # 1. Cập nhật đúng dòng asset vừa sửa
-        turbo_stream.replace(
-          ActionView::RecordIdentifier.dom_id(@asset),
-          partial: "landlord_portal/assets/asset_row",
-          locals: { house: @house, asset: @asset }
-        ),
-        # 2. Đóng / clear modal
-        turbo_stream.append(
-          "events",
-          partial: "layouts/shared_components/event",
-          locals: { event: "close-modal" }
-        ),
-        # 3. Hiển thị thông báo flash
-        turbo_stream.update("flash", partial: "layouts/shared_components/flash_message")
-      ]
+      respond_to do |format|
+        format.turbo_stream
+        format.html { redirect_to landlord_house_assets_path(@house), notice: t("success_messages.asset_updated") }
+      end
     else
       prepare_form_fields
       render :edit, status: :unprocessable_entity
@@ -74,12 +62,10 @@ class LandlordPortal::AssetsController < LandlordPortal::BaseController
   def destroy
     @asset.destroy
     flash.now[:notice] = t("success_messages.asset_deleted")
-    render turbo_stream: [
-      # 1. Xóa trực tiếp dòng tài sản khỏi bảng dựa vào dom_id (ví dụ: #asset_12)
-      turbo_stream.remove(ActionView::RecordIdentifier.dom_id(@asset)),
-      # 2. Cập nhật thông báo flash màu xanh trên đầu trang
-      turbo_stream.update("flash", partial: "layouts/shared_components/flash_message")
-    ]
+    respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_to landlord_house_assets_path(@house), notice: t("success_messages.asset_deleted") }
+    end
   end
 
   private

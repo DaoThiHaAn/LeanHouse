@@ -1,0 +1,26 @@
+<%# Locals: f, service_variant %>
+
+<%# Fee %>
+<div class="form-group d-flex gap-3 align-items-center">
+  <%= f.label :fee, class: "form-label fw-semibold flex-shrink-0" do %>
+    <%= t("form.service.price") %>:&nbsp;
+    <span class="text-danger">*</span>
+  <% end %>
+  <%= f.number_field :fee, min: 1, step: 1, required: true,
+                     placeholder: t("form.service.price_placeholder"),
+                     class: "form-control #{invalid_class(service_variant, :fee)}" %>
+  <%= field_error(service_variant, :fee) %>
+</div>
+
+<%# Unit %>
+<div class="form-group d-flex gap-3 align-items-center">
+  <%= f.label :unit, class: "form-label fw-semibold flex-shrink-0" do %>
+    <%= t("form.service.unit") %>:&nbsp;
+    <span class="text-danger">*</span>
+  <% end %>
+  <%= f.select :unit, ServiceVariant.unit_options,
+               {},
+               class: "form-select #{invalid_class(service_variant, :unit)}" %>
+  <%= field_error(service_variant, :unit) %>
+</div>
+

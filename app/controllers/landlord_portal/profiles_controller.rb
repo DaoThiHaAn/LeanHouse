@@ -20,19 +20,12 @@ class LandlordPortal::ProfilesController < LandlordPortal::BaseController
     if @user.update(avatar_params)
       # Rails Active Storage auto purges the old attachment
       respond_to do |format|
-        format.turbo_stream do
-          render turbo_stream: [
-            turbo_stream.replace("profile_avatar", partial: "avatar", locals: { user: @user }),
-            turbo_stream.update("navbar_avatar", partial: "layouts/shared_components/navbar_avatar")
-          ]
-        end
+        format.turbo_stream
         format.html { render partial: "avatar", locals: { user: @user } }
       end
     else
       respond_to do |format|
-        format.turbo_stream do
-          render turbo_stream: turbo_stream.replace("profile_avatar", partial: "avatar", locals: { user: @user }), status: :unprocessable_entity
-        end
+        format.turbo_stream { render :update_avatar, status: :unprocessable_entity }
         format.html { render partial: "avatar", locals: { user: @user }, status: :unprocessable_entity }
       end
     end

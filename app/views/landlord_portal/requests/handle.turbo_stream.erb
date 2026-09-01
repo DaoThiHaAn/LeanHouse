@@ -1,0 +1,15 @@
+<%= turbo_stream.replace "request_detail_modal" do %>
+  <%= render template: "landlord_portal/requests/show" %>
+<% end %>
+
+<%= turbo_stream.replace "request_row_#{@request.id}" do %>
+  <%= render "landlord_portal/requests/request_row", request: @request %>
+<% end %>
+
+<%= turbo_stream.replace "request_stats_grid" do %>
+  <%= render "landlord_portal/requests/stats_cards", stats: @request_stats %>
+<% end %>
+
+<%= turbo_stream.update "flash" do %>
+  <%= render "layouts/shared_components/flash_message" %>
+<% end %>

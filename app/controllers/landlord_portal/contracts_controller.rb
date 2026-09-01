@@ -74,24 +74,6 @@ class LandlordPortal::ContractsController < LandlordPortal::BaseController
       format.turbo_stream do
         @tenant_stay = @house.tenant_stay_for(@contract.tenant_id)
         flash.now[:notice] = t("success_messages.contract_extended", default: "Gia hạn hợp đồng thành công!")
-        render turbo_stream: [
-          turbo_stream.replace(
-            ActionView::RecordIdentifier.dom_id(@contract),
-            partial: "landlord_portal/contracts/contract_row",
-            locals: { house: @house, contract: @contract }
-          ),
-          turbo_stream.replace(
-            "contract_detail",
-            partial: "landlord_portal/contracts/detail",
-            locals: { house: @house, contract: @contract, tenant_stay: @tenant_stay }
-          ),
-          turbo_stream.append(
-            "events",
-            partial: "layouts/shared_components/event",
-            locals: { event: "close-modal" }
-          ),
-          turbo_stream.update("flash", partial: "layouts/shared_components/flash_message")
-        ]
       end
       format.html do
         redirect_to landlord_house_contracts_path(@house),

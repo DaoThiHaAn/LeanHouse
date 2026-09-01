@@ -29,28 +29,9 @@ class LandlordPortal::FloorsController < LandlordPortal::BaseController
     end
 
     flash.now[:notice] = t("success_messages.floor_created")
-    render turbo_stream: [
-        turbo_stream.replace(
-          "floor_list",
-          partial: "landlord_portal/floors/floor_list",
-          locals: {
-            floors: @house.floors.pos_order,
-            house: @house
-          }),
-        turbo_stream.update(
-          "flash",
-          partial: "layouts/shared_components/flash_message"
-        ),
-        # Close the modal of new form
-        turbo_stream.append(
-            "events",
-            partial: "layouts/shared_components/event",
-            locals: {
-              event: "close-modal"
-            }
-          ) ],
-      status: :ok
-
+    respond_to do |format|
+      format.turbo_stream
+    end
   rescue ActiveRecord::RecordInvalid
     render :new, status: :unprocessable_entity
   end
@@ -58,35 +39,15 @@ class LandlordPortal::FloorsController < LandlordPortal::BaseController
 
   def update
     # The request comes from inside a turbo frame
-
     if @floor.update(floor_params)
       flash.now[:notice] = t("success_messages.floor_updated")
-
-      render turbo_stream: [
-        turbo_stream.replace(
-          helpers.dom_id(@floor),
-          partial: "landlord_portal/floors/floor",
-          locals: {
-            floor: @floor,
-            house: @house,
-            index: @floor.position - 1
-          }),
-        turbo_stream.update(
-          "flash",
-          partial: "layouts/shared_components/flash_message"
-        ) ],
-      status: :ok
+      respond_to do |format|
+        format.turbo_stream
+      end
     else
-      render turbo_stream:
-              turbo_stream.replace(
-                helpers.dom_id(@floor),
-                partial: "landlord_portal/floors/floor",
-                locals: {
-                  floor: @floor,
-                  house: @house,
-                  index: @floor.position - 1
-                }),
-              status: :unprocessable_entity
+      respond_to do |format|
+        format.turbo_stream { render :update, status: :unprocessable_entity }
+      end
     end
   end
 

@@ -95,21 +95,7 @@ class LandlordPortal::BedsController < LandlordPortal::BaseController
       flash.now[:notice] = t("success_messages.bed_updated")
 
       respond_to do |format|
-        format.turbo_stream do
-          render turbo_stream: [
-            turbo_stream.replace(
-              ActionView::RecordIdentifier.dom_id(@bed),
-              partial: "landlord_portal/beds/bed_row",
-              locals: { house: @house, bed: @bed }
-            ),
-            turbo_stream.append(
-              "events",
-              partial: "layouts/shared_components/event",
-              locals: { event: "close-modal" }
-            ),
-            turbo_stream.update("flash", partial: "layouts/shared_components/flash_message")
-          ]
-        end
+        format.turbo_stream
         format.html do
           redirect_to landlord_house_rooms_path(@house),
                       notice: t("success_messages.bed_updated")

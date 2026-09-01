@@ -20,7 +20,7 @@
         </div>
         <% if service.note.present? %>
           <div class="d-flex align-items-center gap-1 mt-2 text-muted small">
-            <span class="material-symbols-outlined fs-6">note</span>
+            <span class="material-symbols-outlined fs-6" title="<%= t("note") %>">note</span>
             <span><%= service.note %></span>
           </div>
         <% end %>
@@ -40,7 +40,7 @@
 
   <%# Variants List %>
   <div class="flex-grow-1 overflow-y-auto">
-    <div id="service_variants_list" class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-3">
+    <div id="service_variants_list" class="w-100 row row-cols-1 row-cols-md-2 row-cols-xl-3 g-2">
       <% if variants.any? %>
         <% variants.each do |variant| %>
           <div class="col" id="<%= dom_id(variant) %>_col">
@@ -65,4 +65,3 @@
     </div>
   </div>
 </div>
-

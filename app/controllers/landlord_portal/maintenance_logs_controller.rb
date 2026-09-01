@@ -39,19 +39,10 @@ class LandlordPortal::MaintenanceLogsController < LandlordPortal::BaseController
     @log = @maintenance_log
     if @log.update(log_params)
       flash.now[:notice] = t("success_messages.maintenance_log_updated")
-      render turbo_stream: [
-        turbo_stream.replace(
-          ActionView::RecordIdentifier.dom_id(@log),
-          partial: "landlord_portal/maintenance_logs/log_row",
-          locals: { house: @house, asset: @asset, log: @log }
-        ),
-        turbo_stream.append(
-          "events",
-          partial: "layouts/shared_components/event",
-          locals: { event: "close-modal" }
-        ),
-        turbo_stream.update("flash", partial: "layouts/shared_components/flash_message")
-      ]
+      respond_to do |format|
+        format.turbo_stream
+        format.html { redirect_to landlord_house_asset_maintenance_logs_path(@house, @asset), notice: t("success_messages.maintenance_log_updated") }
+      end
     else
       render :edit, status: :unprocessable_entity
     end
@@ -61,10 +52,10 @@ class LandlordPortal::MaintenanceLogsController < LandlordPortal::BaseController
     @log = @maintenance_log
     @log.destroy
     flash.now[:notice] = t("success_messages.maintenance_log_deleted")
-    render turbo_stream: [
-      turbo_stream.remove(ActionView::RecordIdentifier.dom_id(@log)),
-      turbo_stream.update("flash", partial: "layouts/shared_components/flash_message")
-    ]
+    respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_to landlord_house_asset_maintenance_logs_path(@house, @asset), notice: t("success_messages.maintenance_log_deleted") }
+    end
   end
 
   private

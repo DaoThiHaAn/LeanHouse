@@ -99,21 +99,7 @@ class LandlordPortal::RoomsController < LandlordPortal::BaseController
       row_partial = @house.bed? ? "landlord_portal/rooms/room_row_bed" : "landlord_portal/rooms/room_row"
 
       respond_to do |format|
-        format.turbo_stream do
-          render turbo_stream: [
-            turbo_stream.replace(
-              ActionView::RecordIdentifier.dom_id(@room),
-              partial: row_partial,
-              locals: { house: @house, room: @room }
-            ),
-            turbo_stream.append(
-              "events",
-              partial: "layouts/shared_components/event",
-              locals: { event: "close-modal" }
-            ),
-            turbo_stream.update("flash", partial: "layouts/shared_components/flash_message")
-          ]
-        end
+        format.turbo_stream
         format.html do
           redirect_to landlord_house_rooms_path(@house),
                       notice: t("success_messages.room_updated")

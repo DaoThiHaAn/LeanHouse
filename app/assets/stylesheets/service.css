@@ -193,6 +193,16 @@
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08) !important;
 }
 
+.variant-card .fee {
+  color: rgb(15, 141, 172);
+}
+
+.applied-rooms-container {
+  background-color: rgb(243, 250, 255);
+  border: 1px solid rgb(238, 245, 247);
+  color: rgb(92, 127, 158);
+}
+
 .room-checkbox-label {
   cursor: pointer;
   transition: all 0.15s ease-in-out;
@@ -207,6 +217,10 @@
 .room-checkbox-label:has(.form-check-input:checked) {
   border-color: #3b82f6;
   background-color: #eff6ff;
+}
+
+.tenant-noti, .tenant-noti .form-check-input {
+  border: 1px solid #a37b69 !important
 }
 
 .empty-state-icon {

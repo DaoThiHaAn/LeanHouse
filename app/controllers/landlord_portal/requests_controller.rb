@@ -40,23 +40,7 @@ class LandlordPortal::RequestsController < LandlordPortal::BaseController
     respond_to do |format|
       format.turbo_stream do
         flash.now[:notice] = flash_message
-        render turbo_stream: [
-          turbo_stream.replace(
-            "request_detail_modal",
-            template: "landlord_portal/requests/show"
-          ),
-          turbo_stream.replace(
-            "request_row_#{@request.id}",
-            partial: "landlord_portal/requests/request_row",
-            locals: { request: @request }
-          ),
-          turbo_stream.replace(
-            "request_stats_grid",
-            partial: "landlord_portal/requests/stats_cards",
-            locals: { stats: LandlordRequestStatsService.call(landlord: @landlord) }
-          ),
-          turbo_stream.update("flash", partial: "layouts/shared_components/flash_message")
-        ]
+        @request_stats = LandlordRequestStatsService.call(landlord: @landlord)
       end
       format.html do
         redirect_to landlord_requests_path, notice: flash_message

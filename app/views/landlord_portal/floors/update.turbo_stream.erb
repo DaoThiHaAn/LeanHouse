@@ -1,0 +1,10 @@
+<%= turbo_stream.replace helpers.dom_id(@floor) do %>
+  <%= render "landlord_portal/floors/floor", floor: @floor, house: @house, index: @floor.position - 1 %>
+<% end %>
+
+<% if @floor.valid? %>
+  <%= turbo_stream.update "flash" do %>
+    <%= render "layouts/shared_components/flash_message" %>
+  <% end %>
+<% end %>
+

@@ -27,10 +27,6 @@ class LandlordPortal::VehiclesController < LandlordPortal::BaseController
     respond_to do |format|
       format.turbo_stream do
         flash.now[:notice] = t("success_messages.vehicle_deleted", default: "Đã xóa phương tiện thành công!")
-        render turbo_stream: [
-          turbo_stream.remove("vehicle_row_#{@vehicle.id}"),
-          turbo_stream.update("flash", partial: "layouts/shared_components/flash_message")
-        ]
       end
       format.html do
         redirect_to landlord_house_vehicles_path(@house), notice: t("success_messages.vehicle_deleted", default: "Đã xóa phương tiện thành công!")

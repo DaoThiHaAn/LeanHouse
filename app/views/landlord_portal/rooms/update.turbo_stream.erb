@@ -1,0 +1,14 @@
+<% row_partial = @house.bed? ? "landlord_portal/rooms/room_row_bed" : "landlord_portal/rooms/room_row" %>
+
+<%= turbo_stream.replace ActionView::RecordIdentifier.dom_id(@room) do %>
+  <%= render row_partial, house: @house, room: @room %>
+<% end %>
+
+<%= turbo_stream.append "events" do %>
+  <%= render "layouts/shared_components/event", event: "close-modal" %>
+<% end %>
+
+<%= turbo_stream.update "flash" do %>
+  <%= render "layouts/shared_components/flash_message" %>
+<% end %>
+
