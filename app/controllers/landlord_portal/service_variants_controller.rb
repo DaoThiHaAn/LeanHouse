@@ -14,7 +14,9 @@ class LandlordPortal::ServiceVariantsController < LandlordPortal::BaseController
 
     if @service_variant.save
       respond_to do |format|
-        format.turbo_stream
+        format.turbo_stream do
+          flash.now[:notice] = t("success_messages.variant_created", default: "Thêm phiên bản dịch vụ thành công!")
+        end
         format.html { redirect_to landlord_house_service_path(@house, @service), notice: t("success_messages.variant_created", default: "Thêm phiên bản dịch vụ thành công!") }
       end
     else
@@ -28,7 +30,9 @@ class LandlordPortal::ServiceVariantsController < LandlordPortal::BaseController
   def update
     if ServiceVariantUpdater.update_meta(@service_variant, variant_params, notify: params[:notify_tenants] == "1")
       respond_to do |format|
-        format.turbo_stream
+        format.turbo_stream do
+          flash.now[:notice] = t("success_messages.variant_updated", default: "Cập nhật phiên bản dịch vụ thành công!")
+        end
         format.html { redirect_to landlord_house_service_path(@house, @service), notice: t("success_messages.variant_updated", default: "Cập nhật phiên bản dịch vụ thành công!") }
       end
     else
@@ -46,7 +50,9 @@ class LandlordPortal::ServiceVariantsController < LandlordPortal::BaseController
     @service_variant.reload
 
     respond_to do |format|
-      format.turbo_stream
+      format.turbo_stream do
+        flash.now[:notice] = t("success_messages.application_updated", default: "Cập nhật phòng áp dụng thành công!")
+      end
       format.html { redirect_to landlord_house_service_path(@house, @service), notice: t("success_messages.application_updated", default: "Cập nhật phòng áp dụng thành công!") }
     end
   end
@@ -55,7 +61,9 @@ class LandlordPortal::ServiceVariantsController < LandlordPortal::BaseController
     @service_variant.destroy
 
     respond_to do |format|
-      format.turbo_stream
+      format.turbo_stream do
+        flash.now[:notice] = t("success_messages.variant_deleted", default: "Đã xóa phiên bản dịch vụ!")
+      end
       format.html { redirect_to landlord_house_service_path(@house, @service), notice: t("success_messages.variant_deleted", default: "Đã xóa phiên bản dịch vụ!") }
     end
   end

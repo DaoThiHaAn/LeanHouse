@@ -7,3 +7,7 @@
 <% end %>
 
 <%= turbo_stream.update "service_variant_modal", "" %>
+
+<%= turbo_stream.update "flash" do %>
+  <%= render "layouts/shared_components/flash_message" %>
+<% end %>

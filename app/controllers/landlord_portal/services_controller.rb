@@ -33,7 +33,9 @@ class LandlordPortal::ServicesController < LandlordPortal::BaseController
 
     if @service.save
       respond_to do |format|
-        format.turbo_stream
+        format.turbo_stream do
+          flash.now[:notice] = t("success_messages.service_created", default: "Tạo dịch vụ thành công!")
+        end
         format.html { redirect_to landlord_house_service_path(@house, @service), notice: t("success_messages.service_created", default: "Tạo dịch vụ thành công!") }
       end
     else
@@ -47,7 +49,9 @@ class LandlordPortal::ServicesController < LandlordPortal::BaseController
   def update
     if @service.update(service_params)
       respond_to do |format|
-        format.turbo_stream
+        format.turbo_stream do
+          flash.now[:notice] = t("success_messages.service_updated", default: "Cập nhật dịch vụ thành công!")
+        end
         format.html { redirect_to landlord_house_service_path(@house, @service), notice: t("success_messages.service_updated", default: "Cập nhật dịch vụ thành công!") }
       end
     else
@@ -59,7 +63,9 @@ class LandlordPortal::ServicesController < LandlordPortal::BaseController
     @service.destroy
 
     respond_to do |format|
-      format.turbo_stream
+      format.turbo_stream do
+        flash.now[:notice] = t("success_messages.service_deleted", default: "Đã xóa dịch vụ!")
+      end
       format.html { redirect_to landlord_house_services_path(@house), notice: t("success_messages.service_deleted", default: "Đã xóa dịch vụ!") }
     end
   end
