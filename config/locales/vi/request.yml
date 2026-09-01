@@ -105,4 +105,17 @@ vi:
     leave_house_no_contract_notice: "Khi yêu cầu này được duyệt, hệ thống sẽ tự động làm thủ tục trả phòng cho khách thuê."
     confirm_approve_leave_house_with_contract: "Bạn có chắc chắn muốn DUYỆT yêu cầu rời nhà? Hợp đồng thuê hiện tại của khách sẽ bị chấm dứt và khách sẽ được trả phòng."
     confirm_approve_leave_house: "Bạn có chắc chắn muốn DUYỆT yêu cầu rời nhà? Khách thuê sẽ được làm thủ tục trả phòng."
+    stats:
+      pending: "Chờ duyệt"
+      pending_subtext: "Cần phản hồi sớm"
+      expiring_soon: "Sắp hết hạn"
+      due_today_count: "hết hạn hôm nay"
+      due_after_today_count: "sau hôm nay"
+      no_expiring: "Không có yêu cầu sắp hết hạn"
+      handling: "Đang xử lý"
+      handling_subtext: "Sự cố đang được khắc phục"
+      resolved_month: "Đã xử lý tháng này"
+      resolved_subtext: "Đã giải quyết trong tháng %{month}"
+      due_today: "Hết hạn hôm nay!"
+      due_in_days: "Còn %{days} ngày"
 

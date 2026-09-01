@@ -3,6 +3,7 @@ class LandlordPortal::RequestsController < LandlordPortal::BaseController
 
   def index
     @houses = @landlord.houses.sorted
+    @stats = LandlordRequestStatsService.call(landlord: @landlord)
   end
 
   def filtered

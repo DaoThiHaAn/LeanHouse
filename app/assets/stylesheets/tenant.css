@@ -206,6 +206,25 @@
   color: #2670B8;
 }
 
+.stat-card-red {
+  background-color: #ffede8;
+  border-color: #f7c9c9;
+}
+.stat-card-red .stat-card-title {
+  color: #921e1e;
+}
+.stat-card-red .stat-card-value {
+  color: #b82626;
+}
+.stat-card-red .stat-card-subtext {
+  color: #942b2b;
+}
+.stat-card-red .stat-icon-wrap {
+  background-color: #FFFFFF;
+  color: #b83a26;
+}
+
+
 .stat-icon-wrap {
   width: 38px;
   height: 38px;

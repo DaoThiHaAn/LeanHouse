@@ -28,7 +28,10 @@
 
   <!-- Status -->
   <td class="px-3 text-center">
-    <%= request_status_badge(request.status) %>
+    <div class="d-flex flex-column align-items-center justify-content-center">
+      <%= request_status_badge(request.status) %>
+      <%= request_expiry_badge(request) %>
+    </div>
   </td>
 
   <!-- Sent Time -->

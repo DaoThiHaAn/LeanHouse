@@ -1,0 +1,97 @@
+<%# Locals: stats %>
+
+<div id="request_stats_grid" class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-3 mb-5">
+  <%# 1. Pending Requests (Orange Theme) %>
+  <div class="col">
+    <div class="card stat-card stat-card-orange shadow-sm h-100 rounded-3 p-3">
+      <div class="d-flex align-items-center justify-content-between mb-2">
+        <span class="stat-card-title fw-bold small">
+          <%= t("request.stats.pending") %>
+        </span>
+        <div class="stat-icon-wrap rounded-circle d-flex align-items-center justify-content-center">
+          <span class="material-symbols-filled fs-3 <%= 'warning-pulse' if stats[:pending_count].to_i.positive? %>">
+            pending_actions
+          </span>
+        </div>
+      </div>
+      <div class="d-flex align-items-baseline gap-2">
+        <span class="fs-3 fw-bold stat-card-value"><%= stats[:pending_count] %></span>
+        <p class="stat-card-subtext fw-semibold mb-0"><%= t("request.self") %></p>
+      </div>
+      <small class="text-muted mt-1 fst-italic"><%= t("request.stats.pending_subtext") %></small>
+    </div>
+  </div>
+
+  <%# 2. Expiring Soon / About to due (Warning / Red Theme with Breakdown) %>
+  <div class="col">
+    <div class="card stat-card stat-card-red shadow-sm h-100 rounded-3 p-3 <%= 'border-danger' if stats[:due_today_count].to_i.positive? %>">
+      <div class="d-flex align-items-center justify-content-between mb-2">
+        <span class="stat-card-title fw-bold small">
+          <%= t("request.stats.expiring_soon") %>
+        </span>
+        <div class="stat-icon-wrap rounded-circle d-flex align-items-center justify-content-center <%= 'text-danger' if stats[:due_today_count].to_i.positive? %>">
+          <span class="material-symbols-outlined fs-3 <%= 'warning-pulse' if stats[:expiring_total_count].to_i.positive? %>">
+            clock_loader_90
+          </span>
+        </div>
+      </div>
+      <div class="d-flex align-items-baseline gap-2">
+        <span class="fs-3 fw-bold stat-card-value <%= 'text-danger' if stats[:due_today_count].to_i.positive? %>">
+          <%= stats[:expiring_total_count] %>
+        </span>
+        <p class="stat-card-subtext fw-semibold mb-0"><%= t("request.self") %></p>
+      </div>
+      <div class="small mt-1 fst-italic">
+        <% if stats[:expiring_total_count].to_i.positive? %>
+          <span class="text-danger fw-semibold">
+            <%= stats[:due_today_count] %> <%= t("request.stats.due_today_count") %>
+          </span>
+          <span class="text-muted"> · </span>
+          <span class="text-warning-emphasis fw-semibold"><%= stats[:expiring_after_today_count] %> <%= t("request.stats.due_after_today_count") %></span>
+        <% else %>
+          <span class="text-muted"><%= t("request.stats.no_expiring") %></span>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <%# 3. Handling Requests (Blue Theme) %>
+  <div class="col">
+    <div class="card stat-card stat-card-blue shadow-sm h-100 rounded-3 p-3">
+      <div class="d-flex align-items-center justify-content-between mb-2">
+        <span class="stat-card-title fw-bold small"><%= t("request.stats.handling") %></span>
+        <div class="stat-icon-wrap rounded-circle d-flex align-items-center justify-content-center">
+          <span class="material-symbols-filled fs-3">sync</span>
+        </div>
+      </div>
+      <div class="d-flex align-items-baseline gap-2">
+        <span class="fs-3 fw-bold stat-card-value"><%= stats[:handling_count] %></span>
+        <p class="stat-card-subtext fw-semibold mb-0"><%= t("request.self") %></p>
+      </div>
+      <small class="text-muted mt-1 fst-italic"><%= t("request.stats.handling_subtext") %></small>
+    </div>
+  </div>
+
+  <%# 4. Resolved this month (Green Theme) %>
+  <div class="col">
+    <div class="card stat-card stat-card-green shadow-sm h-100 rounded-3 p-3">
+      <div class="d-flex align-items-center justify-content-between mb-2">
+        <span class="stat-card-title fw-bold small">
+          <%= t("request.stats.resolved_month") %>
+        </span>
+        <div class="stat-icon-wrap rounded-circle d-flex align-items-center justify-content-center">
+          <span class="material-symbols-filled fs-3">task_alt</span>
+        </div>
+      </div>
+      <div class="d-flex align-items-baseline gap-2">
+        <span class="fs-3 fw-bold stat-card-value">
+          <%= stats[:resolved_this_month_count] %>
+        </span>
+        <p class="stat-card-subtext fw-semibold mb-0"><%= t("request.self") %></p>
+      </div>
+      <small class="text-muted mt-1 fst-italic">
+        <%= t("request.stats.resolved_subtext", month: Date.current.strftime("%m/%Y")) %>
+      </small>
+    </div>
+  </div>
+</div>

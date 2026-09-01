@@ -85,12 +85,16 @@ class LandlordPortal::RequestsControllerTest < ActionDispatch::IntegrationTest
     }
   end
 
-  test "landlord can view requests index page" do
+  test "landlord can view requests index page with stats cards" do
     sign_in_as(@landlord_user)
 
     get landlord_requests_path
     assert_response :success
     assert_select "h1", text: I18n.t("bar.request_handle")
+    assert_select "#request_stats_grid"
+    assert_select ".stat-card", count: 4
+    assert_select ".stat-card-title", text: I18n.t("request.stats.pending")
+    assert_select ".stat-card-title", text: I18n.t("request.stats.expiring_soon")
     assert_select "form[action='#{filtered_landlord_requests_path}']"
     assert_select "select[name='house_id']"
     assert_select "select[name='month']"
@@ -100,7 +104,7 @@ class LandlordPortal::RequestsControllerTest < ActionDispatch::IntegrationTest
     assert_select "turbo-frame#requests_table"
   end
 
-  test "filtered returns request table partial for landlord" do
+  test "filtered returns request table partial with row expiry badge for landlord" do
     sign_in_as(@landlord_user)
 
     get filtered_landlord_requests_path, headers: { "Turbo-Frame" => "requests_table" }
@@ -109,6 +113,7 @@ class LandlordPortal::RequestsControllerTest < ActionDispatch::IntegrationTest
     assert_select "table tbody tr", count: 1
     assert_includes response.body, "Happy House"
     assert_includes response.body, "Tenant Le"
+    assert_select ".badge.bg-light" # normal pending vehicle request
   end
 
   test "filtered returns table with unfound message in tbody when no matching requests" do

@@ -22,6 +22,37 @@ module RequestsHelper
     end
   end
 
+  def request_expiry_badge(request)
+    return unless request.pending? && request.requestable_type == "VehicleRequest"
+
+    status = request.expiry_status
+    case status
+    when :due_today
+      content_tag(:span, class: "badge bg-danger text-white d-inline-flex align-items-center gap-1 shadow-xs px-2 py-1 mt-1") do
+        safe_join([
+          content_tag(:span, "alarm", class: "material-symbols-filled fs-6 warning-pulse"),
+          content_tag(:span, I18n.t("request.stats.due_today", default: "Hết hạn hôm nay!"))
+        ])
+      end
+    when :nearly_due
+      days = [ request.remaining_expiry_days, 1 ].max
+      content_tag(:span, class: "badge bg-warning text-dark d-inline-flex align-items-center gap-1 shadow-xs px-2 py-1 mt-1") do
+        safe_join([
+          content_tag(:span, "schedule", class: "material-symbols-outlined fs-6"),
+          content_tag(:span, I18n.t("request.stats.due_in_days", days: days, default: "Còn #{days} ngày"))
+        ])
+      end
+    when :normal
+      days = request.remaining_expiry_days
+      content_tag(:span, class: "badge bg-light text-secondary border d-inline-flex align-items-center gap-1 px-2 py-1 mt-1 small") do
+        safe_join([
+          content_tag(:span, "schedule", class: "material-symbols-outlined fs-6 text-muted"),
+          content_tag(:span, I18n.t("request.stats.due_in_days", days: days, default: "Còn #{days} ngày"))
+        ])
+      end
+    end
+  end
+
   def tenant_house_filter_options(houses, current_house)
     options = [ [ t("all"), "" ] ]
     houses.each do |house|

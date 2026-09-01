@@ -14,6 +14,7 @@ class Request < ApplicationRecord
   }, default: :pending
 
   EXPIRED_DAYS = 7
+  NEARLY_DUE_DAYS = 2
   TERMINAL_STATUSES = %w[approved rejected completed overdue].freeze
 
   # Require rejection reason only when rejected
@@ -86,6 +87,30 @@ class Request < ApplicationRecord
     transaction do
       update!(status: :overdue)
       requestable.try(:purge_documents!)
+    end
+  end
+
+  def remaining_expiry_days
+    return nil unless requestable_type == "VehicleRequest" && pending?
+
+    expiry_time = created_at + EXPIRED_DAYS.days
+    return 0 if expiry_time <= Time.current
+
+    ((expiry_time - Time.current) / 1.day).to_i
+  end
+
+  def expiry_status
+    return nil unless requestable_type == "VehicleRequest" && pending?
+
+    expiry_time = created_at + EXPIRED_DAYS.days
+    if expiry_time <= Time.current
+      :overdue
+    elsif expiry_time <= Time.current.end_of_day
+      :due_today
+    elsif expiry_time <= (Time.current + NEARLY_DUE_DAYS.days).end_of_day
+      :nearly_due
+    else
+      :normal
     end
   end
 

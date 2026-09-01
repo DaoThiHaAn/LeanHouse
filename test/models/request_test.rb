@@ -145,4 +145,36 @@ class RequestTest < ActiveSupport::TestCase
     assert_not_nil variant
     assert variant.send(:processed?)
   end
+
+  test "expiry_status and remaining_expiry_days calculate correctly for vehicle request" do
+    # Newly created request (today)
+    assert_equal :normal, @request.expiry_status
+    assert_equal 6, @request.remaining_expiry_days
+
+    # Expiring after today (e.g. created 5 days ago, expires in 2 days)
+    @request.update_columns(created_at: 5.days.ago)
+    assert_equal :nearly_due, @request.expiry_status
+    assert_equal 1, @request.remaining_expiry_days
+
+    # Due today (created within 7 days, expires today e.g. 2 hours from now)
+    @request.update_columns(created_at: (7.days.ago + 2.hours))
+    assert_equal :due_today, @request.expiry_status
+    assert_equal 0, @request.remaining_expiry_days
+
+    # Overdue (created 8 days ago)
+    @request.update_columns(created_at: 8.days.ago)
+    assert_equal :overdue, @request.expiry_status
+    assert_equal 0, @request.remaining_expiry_days
+  end
+
+  test "expiry_status returns nil for non-vehicle or non-pending requests" do
+    repair_req = RepairRequest.create!(title: "Sửa vòi", content: "Hỏng vòi")
+    repair_request = Request.create!(tenant: @tenant, house: @house, requestable: repair_req, status: :pending)
+    assert_nil repair_request.expiry_status
+    assert_nil repair_request.remaining_expiry_days
+
+    @request.update!(status: :approved, resolved_by: @landlord_user, resolved_at: Time.current)
+    assert_nil @request.expiry_status
+    assert_nil @request.remaining_expiry_days
+  end
 end
