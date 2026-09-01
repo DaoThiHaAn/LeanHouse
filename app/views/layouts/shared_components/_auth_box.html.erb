@@ -16,7 +16,7 @@
         <ul class="dropdown-menu">
           <% if current_user.role == "landlord" %>
             <li><a class="dropdown-item" href="<%= landlord_profile_path %>"><%= t('bar.my_profile') %></a></li>
-            <li><a class="dropdown-item" href="<%= landlord_profile_path %>"><%= t("bar.my_bank_acc") %></a></li>
+            <li><a class="dropdown-item" href="<%= landlord_bank_accounts_path %>"><%= t("bar.my_bank_acc") %></a></li>
           <% else %>
             <li><a class="dropdown-item" href="<%= tenant_profile_path %>"><%= t('bar.my_profile') %></a></li>
             <li><a class="dropdown-item" href="<%= tenant_vehicles_path %>"><%= t("bar.my_vehicle") %></a></li>

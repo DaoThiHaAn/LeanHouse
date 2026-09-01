@@ -1,0 +1,57 @@
+<% content_for :title, "Quản lý Hóa đơn - #{@house.name}" %>
+<% provide :container_width, "h-100" %>
+
+<div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+  <div>
+    <h2 class="fw-bold mb-1 d-flex align-items-center gap-2">
+      <span class="material-symbols-outlined text-primary">receipt_long</span>
+      Quản lý Hóa đơn & Thu tiền
+    </h2>
+    <p class="text-muted mb-0">Xuất hóa đơn, theo dõi trạng thái thanh toán và mã chuyển khoản VietQR.</p>
+  </div>
+  <div class="d-flex gap-2">
+    <%= link_to landlord_house_service_usage_logs_path(@house, month: @billing_month.strftime("%Y-%m")), class: "btn btn-outline-secondary d-flex align-items-center gap-1 shadow-sm" do %>
+      <span class="material-symbols-outlined fs-6">electric_meter</span> Chỉ số điện nước
+    <% end %>
+    <%= link_to new_landlord_house_invoice_path(@house, month: @billing_month.strftime("%Y-%m")), class: "btn btn-primary d-flex align-items-center gap-1 shadow-sm" do %>
+      <span class="material-symbols-outlined fs-6">add</span> Xuất hóa đơn mới
+    <% end %>
+  </div>
+</div>
+
+<% if flash[:notice] %>
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <%= flash[:notice] %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+<% end %>
+
+<!-- Toolbar lọc tháng, phòng và trạng thái -->
+<div class="card bg-light border-0 rounded-3 p-3 mb-4">
+  <%= form_with url: filtered_landlord_house_invoices_path(@house),
+                method: :get,
+                class: "d-flex gap-3 align-items-center flex-wrap",
+                data: { turbo_frame: "invoices_table" } do |f| %>
+    
+    <!-- Chọn tháng -->
+    <div class="d-flex align-items-center gap-2">
+      <%= f.label :month, "Tháng:", class: "fw-bold text-nowrap" %>
+      <%= f.month_field :month, value: @billing_month.strftime("%Y-%m"), class: "form-control shadow-sm w-auto", onchange: "this.form.requestSubmit()" %>
+    </div>
+
+    <!-- Chọn phòng -->
+    <div class="d-flex align-items-center gap-2">
+      <%= f.label :room_id, "Phòng:", class: "fw-bold text-nowrap" %>
+      <%= f.select :room_id, [["Tất cả các phòng", ""]] + @house.rooms.active.sorted.map { |r| [r.title_name, r.id] }, { selected: params[:room_id] }, class: "form-select shadow-sm w-auto", onchange: "this.form.requestSubmit()" %>
+    </div>
+
+    <!-- Trạng thái -->
+    <div class="d-flex align-items-center gap-2">
+      <%= f.label :status, "Trạng thái:", class: "fw-bold text-nowrap" %>
+      <%= f.select :status, [["Tất cả", ""], ["Chưa thanh toán", "pending"], ["Đã thanh toán", "paid"], ["Đã hủy", "cancelled"]], { selected: params[:status] }, class: "form-select shadow-sm w-auto", onchange: "this.form.requestSubmit()" %>
+    </div>
+  <% end %>
+</div>
+
+<%= render "invoices_table", house: @house, invoices: @invoices, billing_month: @billing_month %>
+

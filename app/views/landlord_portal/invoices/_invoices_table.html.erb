@@ -1,0 +1,95 @@
+<%= turbo_frame_tag "invoices_table" do %>
+  <% if invoices.empty? %>
+    <div class="card bg-light border-0 text-center py-5 rounded-4 mx-auto">
+      <span class="material-symbols-outlined text-muted fs-1 mb-2">receipt</span>
+      <p class="fs-5 fw-bold mb-1">Chưa có hóa đơn nào trong tháng <%= billing_month.strftime("%m/%Y") %></p>
+      <p class="text-muted small">Bấm nút "Xuất hóa đơn mới" để tạo hóa đơn cho các phòng.</p>
+    </div>
+  <% else %>
+    <div class="table-responsive bg-white rounded-3 shadow-sm border">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th class="ps-3">Mã HĐ</th>
+            <th>Phòng / Đối tượng</th>
+            <th>Tháng</th>
+            <th>Hạn thanh toán</th>
+            <th>Tổng tiền</th>
+            <th>Trạng thái</th>
+            <th class="text-end pe-3">Hành động</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% invoices.each do |inv| %>
+            <tr class="<%= 'opacity-50 text-decoration-line-through' if inv.cancelled? %>">
+              <td class="ps-3 fw-bold font-monospace text-primary">
+                <%= link_to inv.code, landlord_house_invoice_path(house, inv), class: "text-decoration-none" %>
+              </td>
+              <td>
+                <div class="fw-semibold text-dark"><%= inv.room.title_name %></div>
+                <div class="text-muted small">
+                  <% if inv.individual? && inv.tenant %>
+                    <span class="badge bg-info-subtle text-info-emphasis border">Cá nhân: <%= inv.tenant.user.fullname %></span>
+                  <% else %>
+                    <span class="badge bg-light text-muted border">Cả phòng</span>
+                  <% end %>
+                </div>
+              </td>
+              <td class="font-monospace"><%= inv.billing_month.strftime("%m/%Y") %></td>
+              <td>
+                <span class="<%= 'text-danger fw-bold' if inv.overdue? %>">
+                  <%= inv.due_date.strftime("%d/%m/%Y") %>
+                </span>
+              </td>
+              <td>
+                <span class="fs-6 fw-bold text-dark font-monospace">
+                  <%= number_to_currency(inv.total_amount, unit: "đ", format: "%n %u") %>
+                </span>
+              </td>
+              <td>
+                <% case inv.status %>
+                <% when "paid" %>
+                  <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 d-inline-flex align-items-center gap-1">
+                    <span class="material-symbols-outlined fs-6">check_circle</span> Đã thanh toán
+                  </span>
+                <% when "pending" %>
+                  <% if inv.overdue? %>
+                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1 d-inline-flex align-items-center gap-1">
+                      <span class="material-symbols-outlined fs-6">error</span> Quá hạn
+                    </span>
+                  <% else %>
+                    <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle px-2 py-1 d-inline-flex align-items-center gap-1">
+                      <span class="material-symbols-outlined fs-6">hourglass_top</span> Chờ thanh toán
+                    </span>
+                  <% end %>
+                <% when "cancelled" %>
+                  <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle px-2 py-1">
+                    Đã hủy
+                  </span>
+                <% end %>
+              </td>
+              <td class="text-end pe-3">
+                <div class="d-inline-flex gap-1">
+                  <%= link_to landlord_house_invoice_path(house, inv), class: "btn btn-sm btn-outline-primary", title: "Xem chi tiết" do %>
+                    <span class="material-symbols-outlined fs-6">visibility</span> Xem
+                  <% end %>
+
+                  <% if inv.pending? %>
+                    <%= button_to mark_paid_landlord_house_invoice_path(house, inv), method: :patch, class: "btn btn-sm btn-success", title: "Đánh dấu đã thanh toán" do %>
+                      <span class="material-symbols-outlined fs-6">done</span> Đã thu
+                    <% end %>
+
+                    <%= button_to cancel_landlord_house_invoice_path(house, inv), method: :patch, data: { turbo_confirm: "Hủy hóa đơn này? Các chỉ số điện nước sẽ được giải phóng." }, class: "btn btn-sm btn-outline-danger", title: "Hủy hóa đơn" do %>
+                      <span class="material-symbols-outlined fs-6">cancel</span>
+                    <% end %>
+                  <% end %>
+                </div>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+<% end %>
+

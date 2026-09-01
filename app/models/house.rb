@@ -10,6 +10,8 @@ class House < ApplicationRecord
   has_many :contracts,  inverse_of: :house, dependent: :destroy
   has_many :requests,   inverse_of: :house, dependent: :destroy
   has_many :vehicles,   inverse_of: :house, dependent: :destroy
+  has_many :invoices,   inverse_of: :house, dependent: :destroy
+  has_many :service_usage_logs, through: :rooms
 
   # Rails auto generates helper methods for enum values
   enum :mode, { room: "room", bed: "bed" }

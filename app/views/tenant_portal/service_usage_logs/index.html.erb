@@ -1,0 +1,105 @@
+<% content_for :title, "Chỉ số Điện & Nước phòng #{@room.name}" %>
+
+<div class="container py-4" style="max-width: 900px;">
+  <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+    <div>
+      <h2 class="fw-bold mb-1 d-flex align-items-center gap-2">
+        <span class="material-symbols-outlined text-primary">electric_meter</span>
+        Chỉ số Điện & Nước (<%= @room.title_name %>)
+      </h2>
+      <p class="text-muted mb-0">Theo dõi lượng tiêu thụ điện nước và nộp ảnh chụp đồng hồ hàng tháng.</p>
+    </div>
+  </div>
+
+  <% if flash[:notice] %>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      <%= flash[:notice] %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  <% end %>
+
+  <% if flash[:alert] %>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      <%= flash[:alert] %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  <% end %>
+
+  <% if @logs.empty? %>
+    <div class="card bg-light border-0 text-center py-5 rounded-4">
+      <span class="material-symbols-outlined text-muted fs-1 mb-2">fact_check</span>
+      <p class="fs-5 fw-bold mb-1">Chưa có bản ghi chỉ số nào cho phòng của bạn</p>
+      <p class="text-muted small">Chỉ số sẽ xuất hiện khi bắt đầu chu kỳ chốt tiền phòng hàng tháng.</p>
+    </div>
+  <% else %>
+    <div class="table-responsive bg-white rounded-3 shadow-sm border">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th class="ps-3">Tháng</th>
+            <th>Dịch vụ</th>
+            <th>Chỉ số cũ</th>
+            <th>Chỉ số mới</th>
+            <th>Tiêu thụ</th>
+            <th>Ảnh công tơ</th>
+            <th>Trạng thái</th>
+            <th class="text-end pe-3">Hành động</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @logs.each do |log| %>
+            <tr>
+              <td class="ps-3 fw-bold font-monospace"><%= log.billing_month.strftime("%m/%Y") %></td>
+              <td>
+                <span class="badge bg-secondary-subtle text-secondary border">
+                  <%= log.service_name %>
+                </span>
+              </td>
+              <td class="font-monospace text-muted"><%= log.prev_reading %></td>
+              <td class="font-monospace fw-bold text-primary">
+                <%= log.latest_reading.presence || "Chưa nhập" %>
+              </td>
+              <td>
+                <% if log.usage_quantity %>
+                  <span class="fw-bold text-success font-monospace">+<%= log.usage_quantity %> <%= log.unit %></span>
+                <% else %>
+                  <span class="text-muted">-</span>
+                <% end %>
+              </td>
+              <td>
+                <% if log.reading_photo.attached? %>
+                  <a href="<%= url_for(log.reading_photo) %>" target="_blank">
+                    <%= image_tag log.reading_photo.variant(resize_to_limit: [50, 50]), class: "rounded border shadow-sm", alt: "Ảnh công tơ" %>
+                  </a>
+                <% else %>
+                  <span class="text-muted small italic">Chưa nộp ảnh</span>
+                <% end %>
+              </td>
+              <td>
+                <% if log.is_confirmed? %>
+                  <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 d-inline-flex align-items-center gap-1">
+                    <span class="material-symbols-outlined fs-6">lock</span> Đã chốt số
+                  </span>
+                <% else %>
+                  <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle px-2 py-1 d-inline-flex align-items-center gap-1">
+                    <span class="material-symbols-outlined fs-6">edit</span> Có thể chỉnh sửa
+                  </span>
+                <% end %>
+              </td>
+              <td class="text-end pe-3">
+                <% if log.can_be_edited_by_tenant? %>
+                  <%= link_to edit_tenant_service_usage_log_path(log), class: "btn btn-sm btn-primary d-inline-flex align-items-center gap-1" do %>
+                    <span class="material-symbols-outlined fs-6">photo_camera</span> Nộp chỉ số / Ảnh
+                  <% end %>
+                <% else %>
+                  <span class="text-muted small">Đã khóa</span>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+</div>
+

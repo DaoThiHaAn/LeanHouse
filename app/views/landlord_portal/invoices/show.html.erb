@@ -1,0 +1,198 @@
+<% content_for :title, "Hóa đơn #{@invoice.code} - #{@house.name}" %>
+<% provide :container_width, "h-100" %>
+
+<div class="container py-3" style="max-width: 900px;">
+  <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+    <div class="d-flex align-items-center gap-3">
+      <h3 class="fw-bold mb-0 text-dark">
+        Hóa đơn <span class="font-monospace text-primary"><%= @invoice.code %></span>
+      </h3>
+      <% case @invoice.status %>
+      <% when "paid" %>
+        <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 fs-6">
+          <span class="material-symbols-outlined fs-6 align-middle">check_circle</span> Đã thanh toán
+        </span>
+      <% when "pending" %>
+        <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle px-3 py-2 fs-6">
+          <span class="material-symbols-outlined fs-6 align-middle">hourglass_top</span> Chờ thanh toán
+        </span>
+      <% when "cancelled" %>
+        <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle px-3 py-2 fs-6">
+          Đã hủy
+        </span>
+      <% end %>
+    </div>
+
+    <div class="d-flex gap-2">
+      <%= link_to "Quay lại", landlord_house_invoices_path(@house, month: @invoice.billing_month.strftime("%Y-%m")), class: "btn btn-outline-secondary btn-sm" %>
+      <button onclick="window.print()" class="btn btn-outline-dark btn-sm d-flex align-items-center gap-1">
+        <span class="material-symbols-outlined fs-6">print</span> In Hóa Đơn
+      </button>
+    </div>
+  </div>
+
+  <% if flash[:notice] %>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      <%= flash[:notice] %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  <% end %>
+
+  <div class="card shadow-sm border-0 rounded-4 p-4 mb-4 bg-white">
+    <!-- Thông tin khách & phòng -->
+    <div class="row g-4 mb-4 pb-4 border-bottom">
+      <div class="col-md-6">
+        <div class="text-muted small">CƠ SỞ CHO THUÊ</div>
+        <div class="fw-bold fs-5 text-dark"><%= @house.name %></div>
+        <div class="text-muted"><%= @house.full_address %></div>
+      </div>
+      <div class="col-md-6 text-md-end">
+        <div class="text-muted small">ĐỐI TƯỢNG THANH TOÁN</div>
+        <div class="fw-bold fs-5 text-dark"><%= @invoice.room.title_name %></div>
+        <% if @invoice.individual? && @invoice.tenant %>
+          <div class="text-primary fw-semibold">Khách: <%= @invoice.tenant.user.fullname %> (SĐT: <%= @invoice.tenant.user.tel %>)</div>
+        <% else %>
+          <div class="text-muted">Hình thức: Cả phòng đại diện</div>
+        <% end %>
+      </div>
+      <div class="col-md-4">
+        <span class="text-muted small">Kỳ thanh toán:</span>
+        <div class="fw-bold font-monospace fs-6">Tháng <%= @invoice.billing_month.strftime("%m/%Y") %></div>
+      </div>
+      <div class="col-md-4 text-md-center">
+        <span class="text-muted small">Ngày lập:</span>
+        <div class="fw-semibold"><%= @invoice.created_at.strftime("%d/%m/%Y") %></div>
+      </div>
+      <div class="col-md-4 text-md-end">
+        <span class="text-muted small">Hạn thanh toán:</span>
+        <div class="fw-bold <%= 'text-danger' if @invoice.overdue? %>">
+          <%= @invoice.due_date.strftime("%d/%m/%Y") %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bảng chi tiết dòng tiền -->
+    <h5 class="fw-bold mb-3">Chi tiết bảng kê</h5>
+    <div class="table-responsive mb-4">
+      <table class="table table-bordered align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th class="text-center" style="width: 50px;">STT</th>
+            <th>Khoản mục / Dịch vụ</th>
+            <th class="text-center" style="width: 80px;">ĐVT</th>
+            <th class="text-end" style="width: 140px;">Đơn giá</th>
+            <th class="text-center" style="width: 100px;">Số lượng</th>
+            <th class="text-end" style="width: 160px;">Thành tiền (VNĐ)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @items.each_with_index do |item, index| %>
+            <tr>
+              <td class="text-center text-muted"><%= index + 1 %></td>
+              <td class="fw-semibold <%= 'text-danger' if item.discount? %>">
+                <%= item.name %>
+              </td>
+              <td class="text-center text-muted"><%= item.unit %></td>
+              <td class="text-end font-monospace">
+                <%= number_to_currency(item.unit_price, unit: "", precision: 0) %>
+              </td>
+              <td class="text-center font-monospace"><%= item.quantity %></td>
+              <td class="text-end font-monospace fw-bold <%= 'text-danger' if item.discount? %>">
+                <%= item.discount? ? "-#{number_to_currency(item.amount.abs, unit: '', precision: 0)}" : number_to_currency(item.amount, unit: '', precision: 0) %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+        <tfoot class="table-group-divider">
+          <tr>
+            <td colspan="5" class="text-end fw-semibold">Cộng tiền dịch vụ & tiền phòng:</td>
+            <td class="text-end font-monospace fw-semibold">
+              <%= number_to_currency(@invoice.subtotal, unit: "đ", format: "%n %u") %>
+            </td>
+          </tr>
+          <% if @invoice.total_addition > 0 %>
+            <tr>
+              <td colspan="5" class="text-end fw-semibold text-primary">Phụ phí phát sinh:</td>
+              <td class="text-end font-monospace fw-semibold text-primary">
+                +<%= number_to_currency(@invoice.total_addition, unit: "đ", format: "%n %u") %>
+              </td>
+            </tr>
+          <% end %>
+          <% if @invoice.total_discount > 0 %>
+            <tr>
+              <td colspan="5" class="text-end fw-semibold text-danger">Giảm trừ khuyến mại:</td>
+              <td class="text-end font-monospace fw-semibold text-danger">
+                -<%= number_to_currency(@invoice.total_discount, unit: "đ", format: "%n %u") %>
+              </td>
+            </tr>
+          <% end %>
+          <tr class="table-primary">
+            <td colspan="5" class="text-end fw-bold fs-5">TỔNG TIỀN THANH TOÁN:</td>
+            <td class="text-end font-monospace fw-bold fs-5 text-primary">
+              <%= number_to_currency(@invoice.total_amount, unit: "đ", format: "%n %u") %>
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <!-- Khối VietQR & Thông tin Chuyển khoản -->
+    <% if @bank_account %>
+      <div class="card bg-light border rounded-3 p-4 mb-4">
+        <div class="row align-items-center g-4">
+          <div class="col-md-5 text-center">
+            <% qr_url = VietqrService.generate_url(
+                 bank_account: @bank_account,
+                 amount: @invoice.total_amount,
+                 description: @invoice.transfer_note
+               ) %>
+            <% if qr_url %>
+              <img src="<%= qr_url %>" alt="Mã thanh toán VietQR" class="rounded-3 shadow-sm border bg-white p-2" style="max-width: 240px; width: 100%;">
+              <div class="text-muted small mt-2">Quét mã bằng bất kỳ App Ngân hàng</div>
+            <% end %>
+          </div>
+          <div class="col-md-7">
+            <h6 class="fw-bold text-dark mb-3 d-flex align-items-center gap-2">
+              <span class="material-symbols-outlined text-primary">account_balance</span>
+              Thông tin Chuyển khoản (VietQR)
+            </h6>
+            <p class="mb-2"><strong>Ngân hàng:</strong> <%= @bank_account.bank.name %> (<%= @bank_account.bank.short_name %>)</p>
+            <p class="mb-2"><strong>Số tài khoản:</strong> <span class="font-monospace fs-5 fw-bold text-primary"><%= @bank_account.account_number %></span></p>
+            <p class="mb-2"><strong>Chủ tài khoản:</strong> <span class="fw-semibold"><%= @bank_account.account_holder %></span></p>
+            <p class="mb-2"><strong>Số tiền:</strong> <span class="fw-bold text-danger font-monospace"><%= number_to_currency(@invoice.total_amount, unit: "đ", format: "%n %u") %></span></p>
+            <p class="mb-0"><strong>Nội dung CK:</strong> <span class="badge bg-primary fs-6 font-monospace"><%= @invoice.transfer_note %></span></p>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+    <% if @invoice.note.present? %>
+      <div class="alert alert-secondary mb-4">
+        <strong>Ghi chú:</strong> <%= simple_format(@invoice.note) %>
+      </div>
+    <% end %>
+
+    <!-- Nút hành động -->
+    <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+      <div>
+        <% if @invoice.pending? %>
+          <%= button_to cancel_landlord_house_invoice_path(@house, @invoice), method: :patch, data: { turbo_confirm: "Bạn có chắc chắn muốn hủy hóa đơn này? Các chỉ số điện nước sẽ được mở khóa." }, class: "btn btn-outline-danger d-flex align-items-center gap-1" do %>
+            <span class="material-symbols-outlined fs-6">delete_forever</span> Hủy Hóa Đơn
+          <% end %>
+        <% end %>
+      </div>
+
+      <div class="d-flex gap-2">
+        <% if @invoice.pending? %>
+          <%= button_to mark_paid_landlord_house_invoice_path(@house, @invoice, payment_method: "cash"), method: :patch, class: "btn btn-success d-flex align-items-center gap-1 px-4 py-2 fw-semibold" do %>
+            <span class="material-symbols-outlined fs-6">payments</span> Xác nhận Đã Thu Tiền Mặt
+          <% end %>
+          <%= button_to mark_paid_landlord_house_invoice_path(@house, @invoice, payment_method: "bank_transfer"), method: :patch, class: "btn btn-primary d-flex align-items-center gap-1 px-4 py-2 fw-semibold" do %>
+            <span class="material-symbols-outlined fs-6">check_circle</span> Xác nhận Đã Nhận Chuyển Khoản
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+

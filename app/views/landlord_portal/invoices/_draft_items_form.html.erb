@@ -1,0 +1,112 @@
+<%= turbo_frame_tag "draft_items_form" do %>
+  <div class="card shadow-sm border-0 rounded-3 mb-4">
+    <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+      <h5 class="fw-bold mb-0 text-dark">
+        Các khoản thu tháng <%= billing_month.strftime("%m/%Y") %> - <%= room.title_name %>
+      </h5>
+      <span class="badge bg-light text-muted border">Tự động tính từ phòng & chỉ số</span>
+    </div>
+    <div class="table-responsive">
+      <table class="table align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th class="ps-3" style="width: 40px;">Thu</th>
+            <th>Khoản thu / Dịch vụ</th>
+            <th>Đơn vị</th>
+            <th>Đơn giá (VNĐ)</th>
+            <th style="width: 140px;">Số lượng / Chỉ số</th>
+            <th class="text-end pe-3" style="width: 150px;">Thành tiền (VNĐ)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% draft_items.each_with_index do |item, idx| %>
+            <tr>
+              <td class="ps-3">
+                <input type="hidden" name="invoice[items][<%= idx %>][selected]" value="0" />
+                <input type="checkbox" name="invoice[items][<%= idx %>][selected]" value="1" <%= 'checked' if item[:selected] %> class="form-check-input item-select-check" />
+                <input type="hidden" name="invoice[items][<%= idx %>][item_type]" value="<%= item[:item_type] %>" />
+                <input type="hidden" name="invoice[items][<%= idx %>][service_variant_id]" value="<%= item[:service_variant_id] %>" />
+                <input type="hidden" name="invoice[items][<%= idx %>][service_usage_log_id]" value="<%= item[:service_usage_log_id] %>" />
+              </td>
+              <td>
+                <input type="text" name="invoice[items][<%= idx %>][name]" value="<%= item[:name] %>" class="form-control form-control-sm fw-semibold" />
+              </td>
+              <td>
+                <input type="text" name="invoice[items][<%= idx %>][unit]" value="<%= item[:unit] %>" class="form-control form-control-sm w-auto" style="max-width: 80px;" />
+              </td>
+              <td>
+                <input type="number" name="invoice[items][<%= idx %>][unit_price]" value="<%= item[:unit_price] %>" class="form-control form-control-sm font-monospace item-price" style="max-width: 110px;" />
+              </td>
+              <td>
+                <% if item[:item_type] == :metered_service %>
+                  <div class="d-flex flex-column gap-1">
+                    <div class="input-group input-group-sm">
+                      <span class="input-group-text">Cũ</span>
+                      <input type="number" name="invoice[items][<%= idx %>][prev_reading]" value="<%= item[:prev_reading] %>" class="form-control font-monospace" placeholder="Cũ" />
+                    </div>
+                    <div class="input-group input-group-sm">
+                      <span class="input-group-text text-primary fw-bold">Mới</span>
+                      <input type="number" name="invoice[items][<%= idx %>][latest_reading]" value="<%= item[:latest_reading] %>" class="form-control font-monospace fw-bold" placeholder="Mới" />
+                    </div>
+                  </div>
+                  <input type="hidden" name="invoice[items][<%= idx %>][quantity]" value="<%= item[:quantity] %>" />
+                <% else %>
+                  <input type="number" step="0.1" name="invoice[items][<%= idx %>][quantity]" value="<%= item[:quantity] %>" class="form-control form-control-sm font-monospace item-qty" style="max-width: 90px;" />
+                <% end %>
+              </td>
+              <td class="text-end pe-3 font-monospace fw-bold">
+                <input type="number" name="invoice[items][<%= idx %>][amount]" value="<%= item[:amount] %>" class="form-control form-control-sm font-monospace text-end item-amount fw-bold" />
+              </td>
+            </tr>
+          <% end %>
+
+          <!-- Dòng thêm phụ phí / giảm giá động -->
+          <tr class="bg-light-subtle">
+            <td class="ps-3">
+              <input type="checkbox" name="invoice[items][99][selected]" value="1" class="form-check-input" />
+              <input type="hidden" name="invoice[items][99][item_type]" value="addition" />
+            </td>
+            <td>
+              <input type="text" name="invoice[items][99][name]" placeholder="Phụ phí phát sinh (ví dụ: sửa khóa, gửi xe thêm)" class="form-control form-control-sm" />
+            </td>
+            <td>
+              <input type="text" name="invoice[items][99][unit]" value="lần" class="form-control form-control-sm" style="max-width: 80px;" />
+            </td>
+            <td>
+              <input type="number" name="invoice[items][99][unit_price]" value="0" class="form-control form-control-sm font-monospace" style="max-width: 110px;" />
+            </td>
+            <td>
+              <input type="number" name="invoice[items][99][quantity]" value="1" class="form-control form-control-sm font-monospace" style="max-width: 90px;" />
+            </td>
+            <td class="text-end pe-3">
+              <input type="number" name="invoice[items][99][amount]" value="0" class="form-control form-control-sm font-monospace text-end" />
+            </td>
+          </tr>
+
+          <tr class="bg-light-subtle">
+            <td class="ps-3">
+              <input type="checkbox" name="invoice[items][100][selected]" value="1" class="form-check-input" />
+              <input type="hidden" name="invoice[items][100][item_type]" value="discount" />
+            </td>
+            <td>
+              <input type="text" name="invoice[items][100][name]" placeholder="Giảm trừ (ví dụ: khuyến mãi, hỗ trợ mùa dịch)" class="form-control form-control-sm text-danger" />
+            </td>
+            <td>
+              <input type="text" name="invoice[items][100][unit]" value="lần" class="form-control form-control-sm" style="max-width: 80px;" />
+            </td>
+            <td>
+              <input type="number" name="invoice[items][100][unit_price]" value="0" class="form-control form-control-sm font-monospace" style="max-width: 110px;" />
+            </td>
+            <td>
+              <input type="number" name="invoice[items][100][quantity]" value="1" class="form-control form-control-sm font-monospace" style="max-width: 90px;" />
+            </td>
+            <td class="text-end pe-3">
+              <input type="number" name="invoice[items][100][amount]" value="0" class="form-control form-control-sm font-monospace text-end text-danger" />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+<% end %>
+

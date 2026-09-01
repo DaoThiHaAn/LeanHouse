@@ -1,0 +1,80 @@
+<% content_for :title, "Hóa đơn của tôi - LeanHouse" %>
+
+<div class="container py-4" style="max-width: 900px;">
+  <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+    <div>
+      <h2 class="fw-bold mb-1 d-flex align-items-center gap-2">
+        <span class="material-symbols-outlined text-primary">receipt_long</span>
+        Hóa đơn & Tiền phòng
+      </h2>
+      <p class="text-muted mb-0">Xem chi tiết tiền thuê phòng, tiền dịch vụ và quét mã VietQR để thanh toán.</p>
+    </div>
+  </div>
+
+  <% if @invoices.empty? %>
+    <div class="card bg-light border-0 text-center py-5 rounded-4">
+      <span class="material-symbols-outlined text-muted fs-1 mb-2">receipt</span>
+      <p class="fs-5 fw-bold mb-1">Bạn chưa có hóa đơn nào</p>
+      <p class="text-muted small">Hóa đơn sẽ xuất hiện khi chủ nhà phát hành vào chu kỳ thanh toán.</p>
+    </div>
+  <% else %>
+    <div class="table-responsive bg-white rounded-3 shadow-sm border">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th class="ps-3">Mã Hóa đơn</th>
+            <th>Kỳ thanh toán</th>
+            <th>Hạn nộp</th>
+            <th>Tổng tiền</th>
+            <th>Trạng thái</th>
+            <th class="text-end pe-3">Thanh toán</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @invoices.each do |inv| %>
+            <tr>
+              <td class="ps-3 fw-bold font-monospace text-primary">
+                <%= link_to inv.code, tenant_invoice_path(inv), class: "text-decoration-none" %>
+              </td>
+              <td class="font-monospace">Tháng <%= inv.billing_month.strftime("%m/%Y") %></td>
+              <td>
+                <span class="<%= 'text-danger fw-bold' if inv.overdue? %>">
+                  <%= inv.due_date.strftime("%d/%m/%Y") %>
+                </span>
+              </td>
+              <td>
+                <span class="fs-6 fw-bold text-dark font-monospace">
+                  <%= number_to_currency(inv.total_amount, unit: "đ", format: "%n %u") %>
+                </span>
+              </td>
+              <td>
+                <% case inv.status %>
+                <% when "paid" %>
+                  <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 d-inline-flex align-items-center gap-1">
+                    <span class="material-symbols-outlined fs-6">check_circle</span> Đã thanh toán
+                  </span>
+                <% when "pending" %>
+                  <% if inv.overdue? %>
+                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1 d-inline-flex align-items-center gap-1">
+                      <span class="material-symbols-outlined fs-6">error</span> Quá hạn
+                    </span>
+                  <% else %>
+                    <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle px-2 py-1 d-inline-flex align-items-center gap-1">
+                      <span class="material-symbols-outlined fs-6">hourglass_top</span> Chờ thanh toán
+                    </span>
+                  <% end %>
+                <% end %>
+              </td>
+              <td class="text-end pe-3">
+                <%= link_to tenant_invoice_path(inv), class: "btn btn-sm btn-primary d-inline-flex align-items-center gap-1" do %>
+                  <span class="material-symbols-outlined fs-6">qr_code_2</span> Chi tiết & Quét QR
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+</div>
+

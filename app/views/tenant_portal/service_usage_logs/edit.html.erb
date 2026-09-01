@@ -1,0 +1,51 @@
+<% content_for :title, "Nộp Chỉ số & Ảnh công tơ" %>
+
+<div class="container py-4" style="max-width: 600px;">
+  <div class="card shadow-sm border-0 rounded-4">
+    <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+      <h5 class="card-title fw-bold mb-0 d-flex align-items-center gap-2">
+        <span class="material-symbols-outlined text-primary">photo_camera</span>
+        Nộp Chỉ số <%= @log.service_name %> (<%= @log.billing_month.strftime("%m/%Y") %>)
+      </h5>
+      <%= link_to "Quay lại", tenant_service_usage_logs_path, class: "btn btn-sm btn-outline-secondary" %>
+    </div>
+    <div class="card-body p-4">
+      <div class="alert alert-info py-2 small mb-4">
+        Chỉ số trước đó: <strong><%= @log.prev_reading %> <%= @log.unit %></strong>. Sau khi chủ trọ xác nhận, bạn sẽ không thể thay đổi thông tin này nữa.
+      </div>
+
+      <%= form_with model: [:tenant, @log], local: true do |f| %>
+        <% if @log.errors.any? %>
+          <div class="alert alert-danger">
+            <ul class="mb-0">
+              <% @log.errors.full_messages.each do |msg| %>
+                <li><%= msg %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <div class="mb-3">
+          <%= f.label :latest_reading, "Chỉ số hiện tại trên mặt đồng hồ (#{ @log.unit })", class: "form-label fw-semibold" %>
+          <%= f.number_field :latest_reading, class: "form-control form-control-lg font-monospace fw-bold", placeholder: "Ví dụ: #{@log.prev_reading + 50}", required: true, min: @log.prev_reading %>
+        </div>
+
+        <div class="mb-4">
+          <%= f.label :reading_photo, "Chụp hoặc Tải ảnh chụp mặt đồng hồ", class: "form-label fw-semibold" %>
+          <%= f.file_field :reading_photo, accept: "image/*", capture: "environment", class: "form-control shadow-sm" %>
+          <% if @log.reading_photo.attached? %>
+            <div class="mt-2">
+              <span class="text-muted small">Ảnh đã tải lên trước đó:</span><br>
+              <%= image_tag @log.reading_photo.variant(resize_to_limit: [120, 120]), class: "rounded border mt-1 shadow-sm" %>
+            </div>
+          <% end %>
+        </div>
+
+        <div class="d-grid">
+          <%= f.submit "Gửi Chỉ Số & Ảnh Minh Chứng", class: "btn btn-primary btn-lg fw-semibold" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+

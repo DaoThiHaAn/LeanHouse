@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_08_31_000000) do
+ActiveRecord::Schema[8.0].define(version: 2026_09_02_040004) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "unaccent"
@@ -69,6 +69,31 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_31_000000) do
     t.index ["room_id"], name: "index_assets_on_room_id"
   end
 
+  create_table "bank_accounts", force: :cascade do |t|
+    t.bigint "landlord_id", null: false
+    t.bigint "bank_id", null: false
+    t.string "account_number", null: false
+    t.string "account_holder", null: false
+    t.boolean "is_default", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["bank_id"], name: "index_bank_accounts_on_bank_id"
+    t.index ["landlord_id", "account_number", "bank_id"], name: "idx_unique_landlord_bank_acc", unique: true
+    t.index ["landlord_id"], name: "index_bank_accounts_on_landlord_id"
+  end
+
+  create_table "banks", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "code", null: false
+    t.string "bin", null: false
+    t.string "short_name", null: false
+    t.string "logo_url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["bin"], name: "index_banks_on_bin", unique: true
+    t.index ["code"], name: "index_banks_on_code", unique: true
+  end
+
   create_table "beds", force: :cascade do |t|
     t.bigint "room_id", null: false
     t.string "name", null: false
@@ -123,7 +148,56 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_31_000000) do
     t.datetime "updated_at", null: false
     t.boolean "is_deleted", default: false, null: false
     t.bigint "landlord_id", null: false
+    t.string "transfer_note_template"
     t.index ["landlord_id"], name: "index_houses_on_landlord_id"
+  end
+
+  create_table "invoice_items", force: :cascade do |t|
+    t.bigint "invoice_id", null: false
+    t.bigint "service_variant_id"
+    t.string "item_type", null: false
+    t.string "name", null: false
+    t.string "unit"
+    t.bigint "unit_price", default: 0, null: false
+    t.decimal "quantity", precision: 10, scale: 2, default: "1.0", null: false
+    t.bigint "amount", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["invoice_id"], name: "index_invoice_items_on_invoice_id"
+    t.index ["service_variant_id"], name: "index_invoice_items_on_service_variant_id"
+  end
+
+  create_table "invoices", force: :cascade do |t|
+    t.string "code", null: false
+    t.bigint "house_id", null: false
+    t.bigint "room_id", null: false
+    t.bigint "tenant_id"
+    t.bigint "bank_account_id"
+    t.bigint "created_by_id", null: false
+    t.string "invoice_type", default: "room", null: false
+    t.date "billing_month", null: false
+    t.date "due_date", null: false
+    t.bigint "subtotal", default: 0, null: false
+    t.bigint "total_discount", default: 0, null: false
+    t.bigint "total_addition", default: 0, null: false
+    t.bigint "total_amount", default: 0, null: false
+    t.string "status", default: "pending", null: false
+    t.datetime "paid_at"
+    t.string "payment_method"
+    t.string "transfer_note"
+    t.text "note"
+    t.datetime "discarded_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["bank_account_id"], name: "index_invoices_on_bank_account_id"
+    t.index ["code"], name: "index_invoices_on_code", unique: true
+    t.index ["created_by_id"], name: "index_invoices_on_created_by_id"
+    t.index ["house_id", "billing_month"], name: "index_invoices_on_house_id_and_billing_month"
+    t.index ["house_id"], name: "index_invoices_on_house_id"
+    t.index ["room_id", "billing_month", "invoice_type"], name: "idx_invoices_room_month_type"
+    t.index ["room_id"], name: "index_invoices_on_room_id"
+    t.index ["status"], name: "index_invoices_on_status"
+    t.index ["tenant_id"], name: "index_invoices_on_tenant_id"
   end
 
   create_table "landlords", force: :cascade do |t|
@@ -227,6 +301,36 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_31_000000) do
     t.index ["floor_id"], name: "index_rooms_on_floor_id"
   end
 
+  create_table "service_usage_logs", force: :cascade do |t|
+    t.bigint "room_id", null: false
+    t.bigint "service_id"
+    t.bigint "service_variant_id"
+    t.bigint "invoice_id"
+    t.string "service_name", null: false
+    t.string "unit", null: false
+    t.integer "unit_price", default: 0, null: false
+    t.date "billing_month", null: false
+    t.date "start_date", null: false
+    t.date "end_date", null: false
+    t.integer "prev_reading", default: 0, null: false
+    t.integer "latest_reading"
+    t.integer "usage_quantity"
+    t.boolean "is_confirmed", default: false, null: false
+    t.datetime "confirmed_at"
+    t.string "submitted_by_type"
+    t.bigint "submitted_by_id"
+    t.bigint "confirmed_by_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["confirmed_by_id"], name: "index_service_usage_logs_on_confirmed_by_id"
+    t.index ["invoice_id"], name: "index_service_usage_logs_on_invoice_id"
+    t.index ["room_id", "service_id", "billing_month"], name: "idx_usage_logs_room_service_month", unique: true
+    t.index ["room_id"], name: "index_service_usage_logs_on_room_id"
+    t.index ["service_id"], name: "index_service_usage_logs_on_service_id"
+    t.index ["service_variant_id"], name: "index_service_usage_logs_on_service_variant_id"
+    t.index ["submitted_by_type", "submitted_by_id"], name: "index_service_usage_logs_on_submitted_by"
+  end
+
   create_table "service_variants", force: :cascade do |t|
     t.integer "fee", default: 0, null: false
     t.string "unit", null: false
@@ -313,12 +417,21 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_31_000000) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "assets", "rooms", on_delete: :cascade
+  add_foreign_key "bank_accounts", "banks"
+  add_foreign_key "bank_accounts", "landlords", on_delete: :cascade
   add_foreign_key "beds", "rooms"
   add_foreign_key "contracts", "houses", on_delete: :cascade
   add_foreign_key "contracts", "landlords", on_delete: :cascade
   add_foreign_key "contracts", "tenants", on_delete: :cascade
   add_foreign_key "floors", "houses"
   add_foreign_key "houses", "landlords"
+  add_foreign_key "invoice_items", "invoices", on_delete: :cascade
+  add_foreign_key "invoice_items", "service_variants", on_delete: :nullify
+  add_foreign_key "invoices", "bank_accounts", on_delete: :nullify
+  add_foreign_key "invoices", "houses", on_delete: :cascade
+  add_foreign_key "invoices", "rooms", on_delete: :cascade
+  add_foreign_key "invoices", "tenants", on_delete: :nullify
+  add_foreign_key "invoices", "users", column: "created_by_id"
   add_foreign_key "landlords", "users", column: "id", on_delete: :cascade
   add_foreign_key "maintenance_logs", "assets", on_delete: :cascade
   add_foreign_key "requests", "houses", on_delete: :cascade
@@ -327,6 +440,11 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_31_000000) do
   add_foreign_key "room_services", "rooms", on_delete: :cascade
   add_foreign_key "room_services", "service_variants", on_delete: :cascade
   add_foreign_key "rooms", "floors"
+  add_foreign_key "service_usage_logs", "invoices", on_delete: :nullify
+  add_foreign_key "service_usage_logs", "rooms", on_delete: :cascade
+  add_foreign_key "service_usage_logs", "service_variants", on_delete: :nullify
+  add_foreign_key "service_usage_logs", "services", on_delete: :nullify
+  add_foreign_key "service_usage_logs", "users", column: "confirmed_by_id"
   add_foreign_key "service_variants", "services", on_delete: :cascade
   add_foreign_key "services", "houses", on_delete: :cascade
   add_foreign_key "tenant_stays", "rental_units"

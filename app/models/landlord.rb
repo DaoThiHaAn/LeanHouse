@@ -4,6 +4,7 @@ class Landlord < ApplicationRecord
   has_many :houses, dependent: :destroy, inverse_of: :landlord
   has_many :contracts, dependent: :destroy
   has_many :requests, through: :houses
+  has_many :bank_accounts, dependent: :destroy
 
   validates :houses_count, numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 20 }
 

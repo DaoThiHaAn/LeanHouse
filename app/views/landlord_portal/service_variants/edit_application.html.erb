@@ -11,7 +11,7 @@
               <%= t("form.service.variant.edit_application") %>
             </h1>
             <p class="text-center">
-              <%= @service.name %>: 
+              <%= @service.name %>:
               <strong class="text-primary">
                 <%= number_with_delimiter(@service_variant.fee) %>đ / <%= @service_variant.human_unit %>
               </strong>
@@ -63,8 +63,11 @@
               <div class="d-flex flex-column gap-4 max-vh-50 overflow-y-auto pt-2">
                 <% @eligible_rooms.group_by(&:floor).each do |floor, rooms| %>
                   <div class="floor-group p-3 border rounded-3 bg-light bg-opacity-50">
-                    <div class="d-flex justify-content-between align-items-center mb-2 pb-1 border-bottom">
-                      <span class="fw-bold text-dark"><%= floor&.title_name %></span>
+                    <div class="d-flex justify-content-between align-items-center mb-3 pb-1 border-bottom border-dark-subtle">
+                      <p class="fw-bold text-dark">
+                        <span class="material-symbols-outlined fs-3">stairs</span>
+                        <%= floor&.title_name %>
+                      </p>
                       <button type="button"
                               class="btn btn-link btn-sm text-decoration-none p-0 text-secondary"
                               data-action="click->room-selection#toggleFloor">
@@ -97,8 +100,9 @@
 
               <%# Optional Tenant Notification Checkbox %>
               <div class="p-2 bg-warning-subtle rounded tenant-noti mt-2">
-                <div class="form-check">
-                  <%= check_box_tag :notify_tenants, "1", false, class: "form-check-input", id: "notify_app_tenants_checkbox" %>
+                <div class="form-check d-flex align-items-center gap-1">
+                  <%= check_box_tag :notify_tenants, "1", false, class: "form-check-input m-0", id: "notify_app_tenants_checkbox" %>
+                  <span class="material-symbols-filled fs-5 text-danger-emphasis">notification_sound</span>
                   <%= label_tag :notify_app_tenants_checkbox, class: "form-check-label small fw-semibold text-danger-emphasis" do %>
                     <%= t("form.service.variant.notify_tenants") %>
                   <% end %>

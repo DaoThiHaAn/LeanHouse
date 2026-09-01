@@ -54,6 +54,12 @@ Rails.application.routes.draw do
 
     resource :dashboard, only: [ :show ]
 
+    resources :bank_accounts, only: %i[index new create destroy] do
+      member do
+        patch :set_default
+      end
+    end
+
     resources :posts
 
     resources :requests, only: %i[index show] do
@@ -148,7 +154,27 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :invoices
+      resources :service_usage_logs do
+        collection do
+          get :filtered
+          patch :confirm_all
+        end
+        member do
+          patch :confirm
+        end
+      end
+
+      resources :invoices do
+        collection do
+          get :filtered
+          get :preview
+        end
+        member do
+          patch :mark_paid
+          patch :cancel
+        end
+      end
+
       resources :vehicles, only: %i[index destroy] do
         collection do
           get :filtered
@@ -169,6 +195,7 @@ Rails.application.routes.draw do
     end
 
     resources :invoices, only: [ :show, :index ]
+    resources :service_usage_logs, only: %i[index edit update create]
     resource :contract, only: [ :show ]
     get "/old-contracts", to: "contracts#old_index"
     resource :room, only: [ :show ]

@@ -12,6 +12,8 @@ class Room < ApplicationRecord
   has_many :service_variants, through: :room_services, inverse_of: :rooms
   has_many :services, through: :service_variants, inverse_of: :rooms
   has_many :assets, dependent: :destroy
+  has_many :service_usage_logs, dependent: :destroy
+  has_many :invoices, dependent: :destroy
 
   before_validation :normalize_name
 

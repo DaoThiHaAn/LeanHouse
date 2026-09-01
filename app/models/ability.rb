@@ -55,10 +55,10 @@ class Ability
     can :manage, [ Room, Bed, ServiceVariant, RoomService ], house: { landlord_id: id }
     can :manage, Asset, room: { house: { landlord_id: id } }
     can :manage, MaintenanceLog, asset: { house: { landlord_id: id } }
-
-
-    # can :manage, Invoice, room: { house: { landlord_id: user.id } }
-    # can :manage, Vehicle, room: { house: { landlord_id: user.id } }
+    can :manage, BankAccount, landlord_id: id
+    can :manage, ServiceUsageLog, room: { floor: { house: { landlord_id: id } } }
+    can :manage, Invoice, house: { landlord_id: id }
+    can :manage, InvoiceItem, invoice: { house: { landlord_id: id } }
   end
 
   def tenant_abilities(user)
@@ -68,8 +68,8 @@ class Ability
     can :read, Bed
     can :read, RoomService
     can :read, Service
-    # can :read, Invoice
-    # can :read, Vehicle
+    can :read, Invoice, room: { rental_unit: { tenant_stays: { tenant_id: user.id, checkout_at: nil } } }
+    can [ :read, :update ], ServiceUsageLog, room: { rental_unit: { tenant_stays: { tenant_id: user.id, checkout_at: nil } } }
     can :read, Contract
   end
 

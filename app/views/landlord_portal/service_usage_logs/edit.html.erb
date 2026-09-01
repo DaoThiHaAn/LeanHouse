@@ -1,0 +1,62 @@
+<% content_for :title, "Chỉnh sửa Chỉ số - #{@house.name}" %>
+<% provide :container_width, "h-100" %>
+
+<div class="container py-3" style="max-width: 700px;">
+  <div class="card shadow-sm border-0 rounded-4">
+    <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+      <h4 class="card-title fw-bold mb-0 d-flex align-items-center gap-2">
+        <span class="material-symbols-outlined text-primary">edit</span>
+        Chỉnh sửa Chỉ số <%= @log.service_name %> - <%= @log.room.title_name %>
+      </h4>
+      <%= link_to "Quay lại", landlord_house_service_usage_logs_path(@house, month: @log.billing_month.strftime("%Y-%m")), class: "btn btn-sm btn-outline-secondary" %>
+    </div>
+    <div class="card-body p-4">
+      <%= form_with model: [:landlord, @house, @log], local: true do |f| %>
+        <% if @log.errors.any? %>
+          <div class="alert alert-danger">
+            <ul class="mb-0">
+              <% @log.errors.full_messages.each do |msg| %>
+                <li><%= msg %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <div class="row g-3">
+          <div class="col-md-6">
+            <%= f.label :prev_reading, "Chỉ số kỳ trước (#{ @log.unit })", class: "form-label fw-semibold" %>
+            <%= f.number_field :prev_reading, class: "form-control shadow-sm font-monospace", required: true %>
+          </div>
+
+          <div class="col-md-6">
+            <%= f.label :latest_reading, "Chỉ số kỳ này (#{ @log.unit })", class: "form-label fw-semibold text-primary" %>
+            <%= f.number_field :latest_reading, class: "form-control shadow-sm font-monospace fw-bold", required: true %>
+          </div>
+
+          <div class="col-md-12">
+            <%= f.label :reading_photo, "Ảnh chụp đồng hồ công tơ mới (nếu muốn thay thế)", class: "form-label fw-semibold" %>
+            <%= f.file_field :reading_photo, accept: "image/*", class: "form-control shadow-sm" %>
+            <% if @log.reading_photo.attached? %>
+              <div class="mt-2">
+                <span class="text-muted small">Ảnh hiện tại:</span><br>
+                <%= image_tag @log.reading_photo.variant(resize_to_limit: [120, 120]), class: "rounded border shadow-sm mt-1" %>
+              </div>
+            <% end %>
+          </div>
+
+          <div class="col-12 mt-3">
+            <div class="form-check">
+              <%= f.check_box :is_confirmed, class: "form-check-input", id: "is_confirmed_check" %>
+              <%= f.label :is_confirmed, "Xác nhận và chốt số liệu này", class: "form-check-label fw-semibold", for: "is_confirmed_check" %>
+            </div>
+          </div>
+
+          <div class="col-12 mt-4 text-end">
+            <%= f.submit "Cập nhật Chỉ số", class: "btn btn-primary px-4 py-2 fw-semibold" %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+

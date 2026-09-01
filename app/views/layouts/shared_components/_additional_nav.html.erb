@@ -83,7 +83,7 @@
             </div>
         <% end %>
 
-        <%= link_to landlord_house_invoices_path(house), class: class_names("card", "other-card", active: controller_name == "invoices") do %>
+        <%= link_to landlord_house_invoices_path(house), class: class_names("card", "other-card", active: ["invoices", "service_usage_logs"].include?(controller_name)) do %>
             <div class="card-body p-0 d-flex flex-column gap-1 align-items-center justify-content-center">
                 <%= image_tag "expenses.png", alt: "Invoice Icon" %>
                 <h5 class="m-0 text-center card-title d-flex align-items-center">
