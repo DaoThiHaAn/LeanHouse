@@ -1,13 +1,19 @@
 <% content_for :title, "#{t('invoice.new_invoice')} - #{@house.name}" %>
 <% provide :container_width, "h-100" %>
 
-<div class="container py-3" style="max-width: 960px;">
+<div class="container py-3 invoice-wrapper">
   <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
     <h3 class="fw-bold mb-0 d-flex align-items-center gap-2">
       <span class="material-symbols-outlined text-primary">post_add</span>
       <%= t('invoice.create_invoice_title') %>
     </h3>
-    <%= link_to t('invoice.actions.back_to_list'), landlord_house_invoices_path(@house, month: @billing_month.strftime("%Y-%m")), class: "btn btn-sm btn-outline-secondary" %>
+    <div class="d-flex align-items-center gap-2">
+      <button type="button" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1 shadow-sm px-3 py-1 fw-semibold" data-bs-toggle="modal" data-bs-target="#invoiceCreationGuideModal">
+        <span class="material-symbols-outlined fs-6">menu_book</span>
+        <%= t('invoice.guide.btn_title', default: 'Hướng dẫn lập hóa đơn') %>
+      </button>
+      <%= link_to t('invoice.actions.back_to_list'), landlord_house_invoices_path(@house, month: @billing_month.strftime("%Y-%m")), class: "btn btn-sm btn-outline-secondary shadow-sm" %>
+    </div>
   </div>
 
   <% if flash[:alert] %>
@@ -23,7 +29,7 @@
                   invoice_form_preview_url_value: preview_landlord_house_invoices_path(@house)
                 } do |f| %>
     <!-- Thông tin chung của hóa đơn -->
-    <div class="card shadow-sm border-0 rounded-3 p-4 mb-4 bg-light">
+    <div class="card invoice-card p-4 mb-4 bg-light">
       <div class="row g-3">
         <div class="col-md-6">
           <%= f.label "invoice[title]", t('invoice.reason', default: 'Tiêu đề / Lý do thu tiền'), class: "form-label fw-bold" %>
@@ -33,7 +39,7 @@
         <div class="col-md-3">
           <div class="d-flex align-items-center justify-content-between mb-1">
             <%= f.label "invoice[billing_month]", t('common.month', default: 'Tháng tính toán'), class: "form-label fw-bold mb-0" %>
-            <button type="button" class="btn btn-link p-0 text-decoration-none d-inline-flex align-items-center text-primary" data-bs-toggle="modal" data-bs-target="#billingMonthInfoModal" title="<%= t('invoice.billing_month_info_title', default: 'Tìm hiểu về Tháng tính toán') %>">
+            <button type="button" class="btn btn-link p-0 text-decoration-none d-inline-flex align-items-center text-primary" data-bs-toggle="modal" data-bs-target="#invoiceCreationGuideModal" title="<%= t('invoice.guide.btn_title', default: 'Hướng dẫn lập hóa đơn') %>">
               <span class="material-symbols-outlined fs-6">help</span>
             </button>
           </div>
@@ -135,58 +141,5 @@
   <% end %>
 </div>
 
-<!-- Modal Hướng dẫn Tháng tính toán -->
-<div class="modal fade" id="billingMonthInfoModal" tabindex="-1" aria-labelledby="billingMonthInfoModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content border-0 shadow">
-      <div class="modal-header bg-primary-subtle text-primary border-bottom py-3">
-        <h5 class="modal-title fw-bold d-flex align-items-center gap-2" id="billingMonthInfoModalLabel">
-          <span class="material-symbols-outlined">help_outline</span>
-          <%= t('invoice.billing_month_modal_title') %>
-        </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body p-4">
-        <div class="d-flex flex-column gap-3">
-          <div class="p-3 bg-light rounded-3 border-start border-4 border-primary">
-            <h6 class="fw-bold text-primary mb-1 d-flex align-items-center gap-1">
-              <span class="material-symbols-outlined fs-5">calendar_month</span>
-              <%= t('invoice.billing_cycle_title') %>
-            </h6>
-            <p class="text-muted mb-0 small"><%= t('invoice.billing_cycle_desc') %></p>
-          </div>
-
-          <div class="p-3 bg-light rounded-3 border-start border-4 border-info">
-            <h6 class="fw-bold text-info-emphasis mb-1 d-flex align-items-center gap-1">
-              <span class="material-symbols-outlined fs-5">swap_horiz</span>
-              <%= t('invoice.rent_vs_service_title') %>
-            </h6>
-            <div class="text-muted mb-0 small" style="white-space: pre-line;"><%= t('invoice.rent_vs_service_desc') %></div>
-          </div>
-
-          <div class="p-3 bg-light rounded-3 border-start border-4 border-success">
-            <h6 class="fw-bold text-success mb-1 d-flex align-items-center gap-1">
-              <span class="material-symbols-outlined fs-5">electric_meter</span>
-              <%= t('invoice.auto_meter_sync_title') %>
-            </h6>
-            <p class="text-muted mb-0 small"><%= t('invoice.auto_meter_sync_desc') %></p>
-          </div>
-
-          <div class="p-3 bg-light rounded-3 border-start border-4 border-warning">
-            <h6 class="fw-bold text-warning-emphasis mb-1 d-flex align-items-center gap-1">
-              <span class="material-symbols-outlined fs-5">qr_code_2</span>
-              <%= t('invoice.qr_code_sync_title') %>
-            </h6>
-            <p class="text-muted mb-0 small"><%= t('invoice.qr_code_sync_desc') %></p>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer bg-light border-top py-2">
-        <button type="button" class="btn btn-primary px-4 fw-semibold d-inline-flex align-items-center gap-1" data-bs-dismiss="modal">
-          <span class="material-symbols-outlined fs-6">check</span>
-          <%= t('invoice.understood') %>
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
+<!-- Modal Hướng dẫn Toàn diện (Được tách thành partial riêng) -->
+<%= render "creation_guide_modal" %>

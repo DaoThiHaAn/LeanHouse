@@ -92,6 +92,7 @@ vi:
   all: "Tất cả"
   actions: "Hành động"
   loading: "Đang tải"
+  filtering: "Đang lọc"
   save: "Lưu"
   save_changes: "Lưu thay đổi"
   cancel: "Hủy"
@@ -122,6 +123,7 @@ vi:
   add_img: "Thêm ảnh"
   not_yet: "Chưa"
   month: "Tháng"
+  month_val: "Tháng %{val}"
   year: "Năm"  
   person_unit: "Người"
 

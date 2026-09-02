@@ -11,7 +11,7 @@ class Invoice < ApplicationRecord
   has_many :invoice_items, dependent: :destroy
   has_many :service_usage_logs, dependent: :nullify
 
-  validates :code, :billing_month, :due_date, :status, :invoice_type, presence: true
+  validates :code, :billing_month, :due_date, :status, :invoice_type, :title, presence: true
   validates :code, uniqueness: true
   validates :subtotal, :total_discount, :total_addition, :total_amount, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
@@ -42,6 +42,20 @@ class Invoice < ApplicationRecord
 
   def overdue?
     pending? && due_date < Date.current
+  end
+
+  def target_users
+    if individual? && tenant.present?
+      Array(tenant.user)
+    elsif house.bed?
+      room.all_staying_bed_tenants.map { |i| i[:tenant].user }.compact.uniq
+    else
+      room.all_staying_tenants.map(&:user).compact.uniq
+    end
+  end
+
+  def formatted_total_amount
+    "#{total_amount.to_s.reverse.gsub(/(\d{3})(?=\d)/, '\\1.').reverse}đ"
   end
 
   def self.generate_code(room, month)

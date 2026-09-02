@@ -13,9 +13,16 @@
     </span>
   </div>
 
-  <div class="d-flex gap-3 align-items-center">
-    <span class="material-symbols-filled person-icon">person</span>
-    <p class="title fs-5"><%= user.fullname.upcase %></p>
+  <div class="d-flex gap-4 my-2 align-items-center">
+    <p class="title fs-5">
+      <span class="material-symbols-filled person-icon">person</span>
+      <%= user.fullname.upcase %>
+    </p>
+    -
+    <p class="title fs-6 fw-medium">
+      <span class="material-symbols-filled fs-5">call</span>
+      <%= user.tel %>
+    </p>
   </div>
 
   <div class="d-flex gap-5">

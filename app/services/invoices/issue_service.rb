@@ -115,6 +115,21 @@ module Invoices
           transfer_note: transfer_note
         )
 
+        # Deliver notification to target tenants
+        tenant_users = invoice.target_users
+        if tenant_users.present? && tenant_users.any?
+          InvoiceIssuedNotifier.with(
+            invoice: invoice,
+            code: invoice.code,
+            room_name: room.title_name,
+            month: invoice.billing_month.strftime("%m/%Y"),
+            raw_month: invoice.billing_month.strftime("%Y-%m"),
+            amount: invoice.formatted_total_amount,
+            due_date: invoice.due_date.strftime("%d/%m/%Y"),
+            house_id: room.house_id
+          ).deliver_later(tenant_users)
+        end
+
         invoice
       end
     end

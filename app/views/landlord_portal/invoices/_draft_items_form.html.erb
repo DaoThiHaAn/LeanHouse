@@ -1,7 +1,7 @@
 <%= turbo_frame_tag "draft_items_form" do %>
   <% unit_options = ServiceVariant.display_unit_options %>
 
-  <div class="card shadow-sm border-0 rounded-3 mb-4"
+  <div class="card invoice-card mb-4"
        data-controller="invoice-items"
        data-invoice-items-addition-placeholder-value="<%= t('invoice.addition_placeholder') %>"
        data-invoice-items-discount-placeholder-value="<%= t('invoice.discount_placeholder') %>"
@@ -12,20 +12,20 @@
         <span class="material-symbols-outlined text-primary">receipt_long</span>
         <span><%= t('invoice.item_or_service') %> (<%= t('common.month', default: 'Tháng') %> <%= billing_month.strftime("%m/%Y") %> - <%= room.title_name %>)</span>
       </h5>
-      <span class="badge bg-light text-muted border">Tự động tính từ phòng & chỉ số</span>
+      <span class="invoice-badge invoice-badge-room">Tự động tính từ phòng & chỉ số</span>
     </div>
     
     <div class="table-responsive">
-      <table class="table align-middle mb-0" id="invoice_items_table" data-invoice-items-target="table">
-        <thead class="table-light">
+      <table class="table invoice-table align-middle mb-0" id="invoice_items_table" data-invoice-items-target="table">
+        <thead>
           <tr>
-            <th class="ps-3 text-center" style="width: 45px;"><%= t('invoice.actions.done', default: 'Thu') %></th>
+            <th class="ps-3 text-center th-check"><%= t('invoice.actions.done', default: 'Thu') %></th>
             <th><%= t('invoice.item_or_service') %></th>
-            <th style="width: 120px;"><%= t('invoice.unit') %></th>
-            <th style="width: 130px;"><%= t('invoice.unit_price') %></th>
-            <th style="width: 175px;"><%= t('invoice.reading_or_qty') %></th>
-            <th class="text-end" style="width: 150px;"><%= t('invoice.amount') %></th>
-            <th class="text-center pe-3" style="width: 50px;"><%= t('invoice.actions.delete', default: 'Xóa') %></th>
+            <th class="th-unit"><%= t('invoice.unit') %></th>
+            <th class="th-price"><%= t('invoice.unit_price') %></th>
+            <th class="th-reading"><%= t('invoice.reading_or_qty') %></th>
+            <th class="text-end th-amount"><%= t('invoice.amount') %></th>
+            <th class="text-center pe-3 th-action"><%= t('invoice.actions.delete', default: 'Xóa') %></th>
           </tr>
         </thead>
 
@@ -213,7 +213,7 @@
         <div class="col-md-5 text-md-end">
           <div class="text-muted small mb-1"><%= t('invoice.total_need_payment', default: 'TỔNG TIỀN CẦN THANH TOÁN') %>:</div>
           <div class="d-inline-flex align-items-center gap-2">
-            <span id="summary_total" data-invoice-items-target="totalSummary" class="fs-4 fw-bolder px-3 py-1 rounded-3 font-monospace" style="background-color: #fef3c7; color: #92400e; border: 1px solid #fde68a;">
+            <span id="summary_total" data-invoice-items-target="totalSummary" class="fs-4 fw-bolder px-3 py-1 rounded-3 font-monospace invoice-badge invoice-badge-pending">
               0 đ
             </span>
           </div>

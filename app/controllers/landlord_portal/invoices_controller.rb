@@ -109,6 +109,20 @@ class LandlordPortal::InvoicesController < LandlordPortal::BaseController
         TransferNoteBuilder.build(@house.transfer_note_template, @invoice)
       )
 
+      # Deliver notification to target tenants
+      tenant_users = @invoice.target_users
+      if tenant_users.present? && tenant_users.any?
+        InvoiceUpdatedNotifier.with(
+          invoice: @invoice,
+          code: @invoice.code,
+          room_name: @invoice.room.title_name,
+          month: @invoice.billing_month.strftime("%m/%Y"),
+          raw_month: @invoice.billing_month.strftime("%Y-%m"),
+          due_date: @invoice.due_date.strftime("%d/%m/%Y"),
+          house_id: @house.id
+        ).deliver_later(tenant_users)
+      end
+
       redirect_to landlord_house_invoice_path(@house, @invoice), notice: t("invoice.update_success", default: "Đã cập nhật thông tin hóa đơn #{@invoice.code} thành công!")
     else
       flash.now[:alert] = @invoice.errors.full_messages.to_sentence

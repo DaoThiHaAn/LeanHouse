@@ -9,6 +9,9 @@
     <p class="text-muted mb-0"><%= t('invoice.management_subtitle') %></p>
   </div>
   <div class="d-flex gap-2">
+    <button type="button" class="btn btn-outline-primary d-flex align-items-center gap-1 shadow-sm" data-bs-toggle="modal" data-bs-target="#invoiceCreationGuideModal">
+      <span class="material-symbols-outlined fs-6">menu_book</span> <%= t('invoice.guide.btn_title', default: 'Hướng dẫn') %>
+    </button>
     <%= link_to landlord_house_service_usage_logs_path(@house, month: @billing_month.strftime("%Y-%m")), class: "btn btn-outline-secondary d-flex align-items-center gap-1 shadow-sm" do %>
       <span class="material-symbols-outlined fs-6">electric_meter</span> <%= t('invoice.meter_logs') %>
     <% end %>
@@ -26,12 +29,12 @@
 <% end %>
 
 <!-- Toolbar lọc tháng, phòng và trạng thái -->
-<div class="card bg-light border-0 rounded-3 p-3 mb-4">
+<div class="invoice-filter-bar mb-4 shadow-sm">
   <%= form_with url: filtered_landlord_house_invoices_path(@house),
                 method: :get,
                 class: "d-flex gap-3 align-items-center flex-wrap",
                 data: { turbo_frame: "invoices_table" } do |f| %>
-    
+
     <!-- Chọn tháng -->
     <div class="d-flex align-items-center gap-2">
       <%= f.label :month, "#{t('common.month', default: 'Tháng')}:", class: "fw-bold text-nowrap" %>
@@ -47,9 +50,12 @@
     <!-- Trạng thái -->
     <div class="d-flex align-items-center gap-2">
       <%= f.label :status, "#{t('common.status', default: 'Trạng thái')}:", class: "fw-bold text-nowrap" %>
-      <%= f.select :status, [[t('invoice.all_status'), ""], [t('invoice.status.pending'), "pending"], [t('invoice.status.paid'), "paid"], [t('invoice.status.cancelled'), "cancelled"]], { selected: params[:status] }, class: "form-select shadow-sm w-auto", onchange: "this.form.requestSubmit()" %>
+      <%= f.select :status, [[t('invoice.all_status'), ""], [t('invoice.status.pending'), "pending"], [t('invoice.status.overdue', default: 'Quá hạn'), "overdue"], [t('invoice.status.paid'), "paid"], [t('invoice.status.cancelled'), "cancelled"]], { selected: params[:status] }, class: "form-select shadow-sm w-auto", onchange: "this.form.requestSubmit()" %>
     </div>
   <% end %>
 </div>
 
 <%= render "invoices_table", house: @house, invoices: @invoices, billing_month: @billing_month %>
+
+<!-- Modal Hướng dẫn Toàn diện -->
+<%= render "creation_guide_modal" %>

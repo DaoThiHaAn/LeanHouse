@@ -1,0 +1,238 @@
+<!-- Modal Hướng dẫn Toàn diện: Lập Hóa đơn Thu tiền -->
+<div class="modal fade" id="invoiceCreationGuideModal" tabindex="-1" aria-labelledby="invoiceCreationGuideModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
+    <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+      <!-- Header -->
+      <div class="modal-header bg-primary text-white py-3 px-4 border-0 d-flex justify-content-between align-items-center">
+        <div>
+          <h5 class="modal-title fw-bold d-flex align-items-center gap-2 mb-1" id="invoiceCreationGuideModalLabel">
+            <span class="material-symbols-outlined fs-4">menu_book</span>
+            <%= t('invoice.guide.modal_title', default: 'Cẩm nang & Quy trình Lập Hóa đơn Thu tiền') %>
+          </h5>
+          <span class="badge bg-white text-primary fw-semibold px-2 py-1 shadow-sm" style="font-size: 0.75rem;">
+            <%= t('invoice.guide.badge_subtitle', default: 'Chuẩn vận hành • Minh bạch • Tự động hóa VietQR') %>
+          </span>
+        </div>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="bg-light px-4 pt-3 border-bottom">
+        <ul class="nav nav-pills gap-2" id="invoiceGuideTabs" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active fw-semibold d-inline-flex align-items-center gap-1 py-2 px-3 rounded-pill" id="guide-steps-tab" data-bs-toggle="pill" data-bs-target="#guide-steps" type="button" role="tab" aria-controls="guide-steps" aria-selected="true">
+              <span class="material-symbols-outlined fs-6">format_list_numbered</span>
+              <%= t('invoice.guide.tab_steps', default: '📋 Quy trình 4 Bước') %>
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link fw-semibold d-inline-flex align-items-center gap-1 py-2 px-3 rounded-pill" id="guide-prepaid-tab" data-bs-toggle="pill" data-bs-target="#guide-prepaid" type="button" role="tab" aria-controls="guide-prepaid" aria-selected="false">
+              <span class="material-symbols-outlined fs-6">swap_horiz</span>
+              <%= t('invoice.guide.tab_prepaid_postpaid', default: '💡 Trả trước vs Trả sau') %>
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link fw-semibold d-inline-flex align-items-center gap-1 py-2 px-3 rounded-pill" id="guide-modes-tab" data-bs-toggle="pill" data-bs-target="#guide-modes" type="button" role="tab" aria-controls="guide-modes" aria-selected="false">
+              <span class="material-symbols-outlined fs-6">group</span>
+              <%= t('invoice.guide.tab_modes', default: '👥 Cả phòng vs Từng khách') %>
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link fw-semibold d-inline-flex align-items-center gap-1 py-2 px-3 rounded-pill" id="guide-vietqr-tab" data-bs-toggle="pill" data-bs-target="#guide-vietqr" type="button" role="tab" aria-controls="guide-vietqr" aria-selected="false">
+              <span class="material-symbols-outlined fs-6">qr_code_2</span>
+              <%= t('invoice.guide.tab_vietqr', default: '🏦 Tự động hóa VietQR') %>
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Tab Contents -->
+      <div class="modal-body p-4">
+        <div class="tab-content" id="invoiceGuideTabContent">
+          
+          <!-- TAB 1: 4-STEP PROCESS -->
+          <div class="tab-pane fade show active" id="guide-steps" role="tabpanel" aria-labelledby="guide-steps-tab">
+            <div class="row g-3">
+              <!-- Step 1 -->
+              <div class="col-md-6">
+                <div class="card h-100 border-0 shadow-sm rounded-3 p-3" style="background-color: #f0f9ff; border-left: 4px solid #0284c7 !important;">
+                  <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="badge bg-primary text-white rounded-circle p-2 d-inline-flex align-items-center justify-content-center" style="width: 28px; height: 28px;">1</span>
+                    <h6 class="fw-bold text-primary mb-0"><%= t('invoice.guide.step1_title') %></h6>
+                  </div>
+                  <div class="small text-secondary" style="white-space: pre-line; line-height: 1.6;">
+                    <%= t('invoice.guide.step1_desc') %>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Step 2 -->
+              <div class="col-md-6">
+                <div class="card h-100 border-0 shadow-sm rounded-3 p-3" style="background-color: #f5f3ff; border-left: 4px solid #7c3aed !important;">
+                  <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="badge bg-purple text-white rounded-circle p-2 d-inline-flex align-items-center justify-content-center" style="background-color: #7c3aed; width: 28px; height: 28px;">2</span>
+                    <h6 class="fw-bold text-purple mb-0" style="color: #7c3aed;"><%= t('invoice.guide.step2_title') %></h6>
+                  </div>
+                  <div class="small text-secondary" style="white-space: pre-line; line-height: 1.6;">
+                    <%= t('invoice.guide.step2_desc') %>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Step 3 -->
+              <div class="col-md-6">
+                <div class="card h-100 border-0 shadow-sm rounded-3 p-3" style="background-color: #f0fdf4; border-left: 4px solid #16a34a !important;">
+                  <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="badge bg-success text-white rounded-circle p-2 d-inline-flex align-items-center justify-content-center" style="width: 28px; height: 28px;">3</span>
+                    <h6 class="fw-bold text-success mb-0"><%= t('invoice.guide.step3_title') %></h6>
+                  </div>
+                  <div class="small text-secondary" style="white-space: pre-line; line-height: 1.6;">
+                    <%= t('invoice.guide.step3_desc') %>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Step 4 -->
+              <div class="col-md-6">
+                <div class="card h-100 border-0 shadow-sm rounded-3 p-3" style="background-color: #fffbeb; border-left: 4px solid #d97706 !important;">
+                  <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="badge bg-warning text-dark rounded-circle p-2 d-inline-flex align-items-center justify-content-center" style="width: 28px; height: 28px;">4</span>
+                    <h6 class="fw-bold text-warning-emphasis mb-0"><%= t('invoice.guide.step4_title') %></h6>
+                  </div>
+                  <div class="small text-secondary" style="white-space: pre-line; line-height: 1.6;">
+                    <%= t('invoice.guide.step4_desc') %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 2: PREPAID VS POSTPAID -->
+          <div class="tab-pane fade" id="guide-prepaid" role="tabpanel" aria-labelledby="guide-prepaid-tab">
+            <div class="card border-0 bg-light rounded-4 p-4 mb-3">
+              <h6 class="fw-bold text-dark d-flex align-items-center gap-2 mb-3">
+                <span class="material-symbols-outlined text-primary">schedule</span>
+                <%= t('invoice.guide.prepaid_postpaid_title') %>
+              </h6>
+              <p class="text-muted small mb-4"><%= t('invoice.guide.prepaid_postpaid_p1') %></p>
+
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <div class="p-3 bg-white rounded-3 shadow-sm border border-primary-subtle h-100">
+                    <div class="fw-bold text-primary d-flex align-items-center gap-1 mb-2">
+                      <span class="material-symbols-outlined fs-5">forward</span>
+                      <span>Tiền phòng (Thu trước / Prepaid)</span>
+                    </div>
+                    <p class="small text-secondary mb-0"><%= t('invoice.guide.prepaid_point') %></p>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="p-3 bg-white rounded-3 shadow-sm border border-danger-subtle h-100">
+                    <div class="fw-bold text-danger d-flex align-items-center gap-1 mb-2">
+                      <span class="material-symbols-outlined fs-5">history</span>
+                      <span>Điện, Nước & Dịch vụ đo đếm (Thu sau / Postpaid)</span>
+                    </div>
+                    <p class="small text-secondary mb-0"><%= t('invoice.guide.postpaid_point') %></p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="alert alert-info border-0 rounded-3 mt-4 mb-0 d-flex align-items-center gap-2">
+                <span class="material-symbols-outlined text-info-emphasis fs-4">sync</span>
+                <span class="small"><%= t('invoice.guide.meter_sync_point') %></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 3: BILLING MODES -->
+          <div class="tab-pane fade" id="guide-modes" role="tabpanel" aria-labelledby="guide-modes-tab">
+            <div class="card border-0 bg-light rounded-4 p-4 mb-3">
+              <h6 class="fw-bold text-dark d-flex align-items-center gap-2 mb-3">
+                <span class="material-symbols-outlined text-primary">account_tree</span>
+                <%= t('invoice.guide.modes_title') %>
+              </h6>
+
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <div class="p-3 bg-white rounded-3 shadow-sm border border-info-subtle h-100">
+                    <div class="fw-bold text-info-emphasis d-flex align-items-center gap-1 mb-2">
+                      <span class="material-symbols-outlined fs-5">meeting_room</span>
+                      <span><%= t('invoice.mode_room') %> (<%= t('invoice.mode_room_desc') %>)</span>
+                    </div>
+                    <p class="small text-secondary mb-0"><%= t('invoice.guide.mode_room_point') %></p>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="p-3 bg-white rounded-3 shadow-sm border border-success-subtle h-100">
+                    <div class="fw-bold text-success d-flex align-items-center gap-1 mb-2">
+                      <span class="material-symbols-outlined fs-5">person</span>
+                      <span><%= t('invoice.mode_individual') %> (<%= t('invoice.mode_individual_desc') %>)</span>
+                    </div>
+                    <p class="small text-secondary mb-0"><%= t('invoice.guide.mode_individual_point') %></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 4: VIETQR AUTOMATION -->
+          <div class="tab-pane fade" id="guide-vietqr" role="tabpanel" aria-labelledby="guide-vietqr-tab">
+            <div class="card border-0 bg-light rounded-4 p-4 mb-3">
+              <h6 class="fw-bold text-dark d-flex align-items-center gap-2 mb-3">
+                <span class="material-symbols-outlined text-warning-emphasis">qr_code_scanner</span>
+                <%= t('invoice.guide.vietqr_title') %>
+              </h6>
+
+              <div class="d-flex flex-column gap-3">
+                <div class="d-flex align-items-start gap-3 p-3 bg-white rounded-3 shadow-sm border">
+                  <div class="p-2 rounded-3 bg-primary-subtle text-primary mt-1">
+                    <span class="material-symbols-outlined fs-5">qr_code_2</span>
+                  </div>
+                  <div>
+                    <h6 class="fw-bold text-dark mb-1">Mã QR Động chuẩn Napas 247</h6>
+                    <p class="small text-muted mb-0"><%= t('invoice.guide.vietqr_point1') %></p>
+                  </div>
+                </div>
+
+                <div class="d-flex align-items-start gap-3 p-3 bg-white rounded-3 shadow-sm border">
+                  <div class="p-2 rounded-3 bg-success-subtle text-success mt-1">
+                    <span class="material-symbols-outlined fs-5">receipt_long</span>
+                  </div>
+                  <div>
+                    <h6 class="fw-bold text-dark mb-1">Cú pháp chuyển khoản tự động</h6>
+                    <p class="small text-muted mb-0"><%= t('invoice.guide.vietqr_point2') %></p>
+                  </div>
+                </div>
+
+                <div class="d-flex align-items-start gap-3 p-3 bg-white rounded-3 shadow-sm border">
+                  <div class="p-2 rounded-3 bg-warning-subtle text-warning-emphasis mt-1">
+                    <span class="material-symbols-outlined fs-5">check_circle</span>
+                  </div>
+                  <div>
+                    <h6 class="fw-bold text-dark mb-1">Gạch nợ & Khóa bất biến tức thì</h6>
+                    <p class="small text-muted mb-0"><%= t('invoice.guide.vietqr_point3') %></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer bg-light border-top py-2 px-4 d-flex justify-content-between align-items-center">
+        <span class="text-muted small d-inline-flex align-items-center gap-1">
+          <span class="material-symbols-outlined fs-6 text-primary">lightbulb</span>
+          Nhấn vào bất kỳ mục nào để xem hướng dẫn chi tiết
+        </span>
+        <button type="button" class="btn btn-primary px-4 fw-semibold d-inline-flex align-items-center gap-1 shadow-sm" data-bs-dismiss="modal">
+          <span class="material-symbols-outlined fs-6">check</span>
+          <%= t('invoice.guide.btn_got_it', default: 'Bắt đầu lập hóa đơn') %>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

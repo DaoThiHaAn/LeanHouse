@@ -11,7 +11,8 @@ class InvoiceCreationReminderNotifier < ApplicationNotifier
     end
 
     def url
-      landlord_house_invoices_path(params[:house_id])
+      month_str = params[:month].presence || Date.current.strftime("%Y-%m")
+      landlord_house_invoices_path(params[:house_id], month: month_str)
     end
   end
 end

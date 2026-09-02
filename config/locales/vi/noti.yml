@@ -45,9 +45,22 @@ vi:
       vehicle_removed_landlord: "Phương tiện đã được xóa khỏi nhà"
       vehicle_removed_tenant: "Phương tiện đã được xóa khỏi nhà"
       service_updated: "Thông tin dịch vụ được cập nhật"
-
+      invoice_issued: "Hóa đơn mới tháng %{month}"
+      invoice_updated: "Hóa đơn tháng %{month} đã được cập nhật"
+      invoice_cancelled: "Hóa đơn tháng %{month} đã bị hủy"
+      invoice_due_today: "Hôm nay là hạn chót thanh toán hóa đơn"
+      invoice_due_today_landlord: "Hóa đơn đến hạn thanh toán hôm nay"
+      invoice_overdue: "Hóa đơn quá hạn thanh toán"
+      invoice_overdue_landlord: "Hóa đơn đã quá hạn thanh toán"
 
     messages:
+      invoice_issued_tenant: "Hóa đơn %{code} phòng %{room_name} (Tháng %{month}) với tổng tiền %{amount} đã được phát hành. Hạn thanh toán: %{due_date}."
+      invoice_updated_tenant: "Chủ nhà đã cập nhật thông tin Hóa đơn %{code} phòng %{room_name} (Tháng %{month}). Hạn mới: %{due_date}."
+      invoice_cancelled_tenant: "Hóa đơn %{code} phòng %{room_name} (Tháng %{month}) đã được hủy bởi chủ nhà."
+      invoice_due_today_tenant: "Hôm nay là hạn chót thanh toán Hóa đơn %{code} phòng %{room_name} với số tiền %{amount}. Vui lòng thanh toán sớm."
+      invoice_due_today_landlord: "Hóa đơn %{code} phòng %{room_name} (%{amount}) đến hạn thanh toán vào hôm nay (%{due_date})."
+      invoice_overdue_tenant: "Hóa đơn %{code} phòng %{room_name} (%{amount}) đã quá hạn thanh toán từ ngày %{due_date}. Vui lòng kiểm tra và thanh toán ngay."
+      invoice_overdue_landlord: "Hóa đơn %{code} phòng %{room_name} (%{amount}) đã quá hạn thanh toán (Hạn: %{due_date})."
       service_price_changed: "Dịch vụ %{service_name} tại %{house_name} đã đổi đơn giá thành: %{new_fee}đ/%{unit}."
       service_application_changed: "Danh sách phòng áp dụng dịch vụ %{service_name} tại %{house_name} vừa được cập nhật."
       tenant_added: "Bạn đã được thêm vào %{house}, tầng %{floor}, %{rental_unit}."

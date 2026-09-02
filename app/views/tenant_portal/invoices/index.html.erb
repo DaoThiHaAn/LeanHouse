@@ -1,26 +1,39 @@
 <% content_for :title, "#{t('invoice.my_invoices')} - LeanHouse" %>
 
-<div class="container py-4" style="max-width: 900px;">
-  <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
-    <div>
-      <h2 class="fw-bold mb-1 d-flex align-items-center gap-2">
-        <span class="material-symbols-outlined text-primary">receipt_long</span>
-        <%= t('invoice.my_invoices') %>
-      </h2>
-      <p class="text-muted mb-0"><%= t('invoice.my_invoices_subtitle') %></p>
-    </div>
+<div class="main-container py-4 invoice-wrapper">
+  <div class="mb-4 pb-2 border-bottom text-center">
+    <h1 class="mb-3"><%= t('invoice.my_invoices') %></h1>
+    <p class="text-muted mb-0"><%= t('invoice.my_invoices_subtitle') %></p>
   </div>
 
+  <% if params[:status].present? || params[:month].present? %>
+    <div class="d-flex align-items-center justify-content-between invoice-filter-bar mb-3 shadow-sm">
+      <div class="small d-flex align-items-center gap-2">
+        <span class="material-symbols-outlined text-primary fs-5">filter_alt</span>
+        <span>
+          <%= t("filtering", default: "Đang lọc:") %>
+          <% if params[:status].present? %>
+            <strong><%= t("invoice.status.#{params[:status]}", default: params[:status]) %></strong>
+          <% end %>
+          <% if params[:month].present? %>
+            <strong><%= t("month_val", params[:month]) %></strong>
+          <% end %>
+        </span>
+      </div>
+      <%= link_to t("view_all"), tenant_invoices_path, class: "btn btn-sm btn-outline-secondary py-0" %>
+    </div>
+  <% end %>
+
   <% if @invoices.empty? %>
-    <div class="card bg-light border-0 text-center py-5 rounded-4">
-      <span class="material-symbols-outlined text-muted fs-1 mb-2">receipt</span>
+    <div class="invoice-empty-state mx-auto">
+      <span class="material-symbols-outlined invoice-empty-icon">receipt_long</span>
       <p class="fs-5 fw-bold mb-1"><%= t('invoice.no_invoices_tenant') %></p>
-      <p class="text-muted small"><%= t('invoice.no_invoices_tenant_hint') %></p>
+      <p class="text-muted mb-0"><%= t('invoice.no_invoices_tenant_hint') %></p>
     </div>
   <% else %>
     <div class="table-responsive bg-white rounded-3 shadow-sm border">
-      <table class="table table-hover align-middle mb-0">
-        <thead class="table-light">
+      <table class="table invoice-table table-hover align-middle mb-0">
+        <thead>
           <tr>
             <th class="ps-3"><%= t('invoice.code') %></th>
             <th><%= t('invoice.payment_term') %></th>
@@ -34,42 +47,42 @@
           <% @invoices.each do |inv| %>
             <tr>
               <td class="ps-3">
-                <div class="fw-bold font-monospace text-primary">
+                <div class="invoice-code-tag">
                   <%= link_to inv.code, tenant_invoice_path(inv), class: "text-decoration-none" %>
                 </div>
-                <div class="text-muted small font-monospace" style="font-size: 0.78rem;">ID: #<%= inv.id %></div>
+                <div class="text-muted small font-monospace">ID: #<%= inv.id %></div>
               </td>
-              <td class="font-monospace"><%= t('common.month', default: 'Tháng') %> <%= inv.billing_month.strftime("%m/%Y") %></td>
+              <td class="font-monospace fw-semibold"><%= t('common.month', default: 'Tháng') %> <%= inv.billing_month.strftime("%m/%Y") %></td>
               <td>
-                <span class="<%= 'text-danger fw-bold' if inv.overdue? %>">
+                <span class="<%= 'text-danger fw-bold' if inv.overdue? %> font-monospace">
                   <%= inv.due_date.strftime("%d/%m/%Y") %>
                 </span>
               </td>
               <td>
-                <span class="fs-6 fw-bold text-dark font-monospace">
+                <span class="fs-6 invoice-amount-pill">
                   <%= number_to_currency(inv.total_amount, unit: "đ", format: "%n %u") %>
                 </span>
               </td>
               <td>
                 <% case inv.status %>
                 <% when "paid" %>
-                  <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 d-inline-flex align-items-center gap-1">
+                  <span class="invoice-badge invoice-badge-paid">
                     <span class="material-symbols-outlined fs-6">check_circle</span> <%= t('invoice.status.paid') %>
                   </span>
                 <% when "pending" %>
                   <% if inv.overdue? %>
-                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1 d-inline-flex align-items-center gap-1">
+                    <span class="invoice-badge invoice-badge-overdue">
                       <span class="material-symbols-outlined fs-6">error</span> <%= t('invoice.status.overdue') %>
                     </span>
                   <% else %>
-                    <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle px-2 py-1 d-inline-flex align-items-center gap-1">
+                    <span class="invoice-badge invoice-badge-pending">
                       <span class="material-symbols-outlined fs-6">hourglass_top</span> <%= t('invoice.status.waiting_payment') %>
                     </span>
                   <% end %>
                 <% end %>
               </td>
               <td class="text-end pe-3">
-                <%= link_to tenant_invoice_path(inv), class: "btn btn-sm btn-primary d-inline-flex align-items-center gap-1" do %>
+                <%= link_to tenant_invoice_path(inv), class: "btn btn-sm btn-primary d-inline-flex align-items-center gap-1 shadow-sm" do %>
                   <span class="material-symbols-outlined fs-6">qr_code_2</span> <%= t('invoice.actions.detail_and_qr') %>
                 <% end %>
               </td>

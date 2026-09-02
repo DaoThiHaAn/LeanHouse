@@ -6,7 +6,17 @@ class TenantPortal::InvoicesController < TenantPortal::BaseController
                       .where("invoices.room_id = :room_id OR invoices.tenant_id = :tenant_id", room_id: @room.id, tenant_id: @tenant.id)
                       .kept
                       .includes(:room, :tenant, :bank_account)
-                      .sorted
+
+    if params[:month].present?
+      month = Date.parse("#{params[:month]}-01") rescue nil
+      @invoices = @invoices.for_month(month) if month
+    end
+
+    if params[:status].present? && Invoice.statuses.key?(params[:status])
+      @invoices = @invoices.where(status: params[:status])
+    end
+
+    @invoices = @invoices.sorted
   end
 
   def show

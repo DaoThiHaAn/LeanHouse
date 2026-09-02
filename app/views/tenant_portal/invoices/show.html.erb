@@ -24,103 +24,52 @@
            end
 %>
 
-<style media="print">
-  @page {
-    size: A4 portrait;
-    margin: 10mm 15mm;
-  }
-  body * {
-    visibility: hidden !important;
-  }
-  #invoice-printable,
-  #invoice-printable * {
-    visibility: visible !important;
-  }
-  #invoice-printable {
-    position: absolute !important;
-    left: 0 !important;
-    top: 0 !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    border: none !important;
-    box-shadow: none !important;
-    background-color: #ffffff !important;
-  }
-  #invoice-printable .collapse {
-    display: block !important;
-    visibility: visible !important;
-    height: auto !important;
-  }
-  .d-print-none,
-  #invoice-printable .d-print-none {
-    display: none !important;
-  }
-  #invoice-printable .table {
-    border-collapse: collapse !important;
-    width: 100% !important;
-  }
-  #invoice-printable .table td,
-  #invoice-printable .table th {
-    border: 1px solid #cbd5e1 !important;
-    padding: 6px 10px !important;
-    color: #0f172a !important;
-    background-color: transparent !important;
-  }
-  #invoice-printable .table thead th {
-    background-color: #f1f5f9 !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-</style>
-
-<div class="container py-4" style="max-width: 920px;">
+<div class="container py-4 invoice-detail-wrapper">
   <!-- Navigation Top Bar -->
   <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom d-print-none">
-    <%= link_to tenant_invoices_path, class: "btn btn-outline-secondary btn-sm d-flex align-items-center gap-1" do %>
+    <%= link_to tenant_invoices_path, class: "btn btn-outline-secondary btn-sm d-flex align-items-center gap-1 shadow-sm" do %>
       <span class="material-symbols-outlined fs-6">arrow_back</span> <%= t('invoice.my_invoices') %>
     <% end %>
 
     <div class="d-flex gap-2">
-      <button onclick="window.print()" class="btn btn-outline-dark btn-sm d-flex align-items-center gap-1">
+      <button onclick="window.print()" class="btn btn-outline-dark btn-sm d-flex align-items-center gap-1 shadow-sm">
         <span class="material-symbols-outlined fs-6">print</span> <%= t('invoice.actions.print') %>
       </button>
     </div>
   </div>
 
   <!-- Main Invoice Card -->
-  <div id="invoice-printable" class="card shadow-sm border rounded-4 p-4 p-md-5 bg-white mb-4">
+  <div id="invoice-printable" class="card invoice-card p-4 p-md-5 bg-white mb-4">
     <!-- Header: Title & Badges -->
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-4 pb-3 border-bottom">
       <div>
-        <h2 class="fw-bolder mb-1" style="color: #e11d48; letter-spacing: -0.5px;">
+        <h2 class="fw-bolder mb-1 text-danger">
           <%= t('invoice.month_invoice', month: @invoice.billing_month.strftime("%m")) %>
         </h2>
         <div class="text-muted small font-monospace">
-          <%= t('invoice.code') %>: <span class="fw-bold text-dark">#<%= @invoice.code %></span> (<%= t('invoice.id') %>: <%= @invoice.id %>)
+          <%= t('invoice.code') %>: <span class="fw-bold invoice-code-tag">#<%= @invoice.code %></span> (<%= t('invoice.id') %>: <%= @invoice.id %>)
         </div>
       </div>
 
       <div class="d-flex gap-2 align-items-center flex-wrap">
         <% if @invoice.overdue? %>
-          <span class="badge bg-danger px-3 py-2 fw-semibold"><%= t('invoice.status.overdue') %></span>
+          <span class="invoice-badge invoice-badge-overdue"><%= t('invoice.status.overdue') %></span>
         <% else %>
-          <span class="badge bg-success px-3 py-2 fw-semibold"><%= t('invoice.status.in_term') %></span>
+          <span class="invoice-badge invoice-badge-paid"><%= t('invoice.status.in_term') %></span>
         <% end %>
 
         <% case @invoice.status %>
         <% when "paid" %>
-          <span class="badge bg-success-subtle text-success border border-success px-3 py-2 fw-semibold d-inline-flex align-items-center gap-1">
+          <span class="invoice-badge invoice-badge-paid">
             <span class="material-symbols-outlined fs-6">check_circle</span> <%= t('invoice.status.paid') %>
           </span>
         <% when "pending" %>
-          <span class="badge px-3 py-2 fw-semibold" style="background-color: #f59e0b; color: #fff;">
-            ✕ <%= t('invoice.status.pending') %>
+          <span class="invoice-badge invoice-badge-pending">
+            <span class="material-symbols-outlined fs-6">hourglass_top</span> <%= t('invoice.status.pending') %>
           </span>
         <% when "cancelled" %>
-          <span class="badge bg-secondary px-3 py-2 fw-semibold">
-            <%= t('invoice.status.cancelled') %>
+          <span class="invoice-badge invoice-badge-cancelled">
+            <span class="material-symbols-outlined fs-6">cancel</span> <%= t('invoice.status.cancelled') %>
           </span>
         <% end %>
       </div>

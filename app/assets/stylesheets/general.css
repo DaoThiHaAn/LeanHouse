@@ -324,6 +324,7 @@ textarea {
   padding: 30px;
   width: 75%;
   min-height: 100%;
+  flex-grow: 1;
 }
 
 .house-main-container {
