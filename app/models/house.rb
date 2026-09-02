@@ -189,6 +189,10 @@ class House < ApplicationRecord
     LandlordAssetStatsService.call(house: self)
   end
 
+  def vehicle_summary_stats
+    LandlordVehicleStatsService.call(house: self)
+  end
+
   # @param tenant_id [int]
   # @return [TenantStay]: the object that show a tenant is actually living in the house
   def tenant_stay_for(tenant_id)

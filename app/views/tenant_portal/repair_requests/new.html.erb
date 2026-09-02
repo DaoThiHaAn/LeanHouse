@@ -47,7 +47,7 @@
                   <%= t("request.repair_title") %>&thinsp;
                   <span class="asterisk text-danger">*</span>
                 <% end %>
-                <span class="small text-muted" data-character-counter-target="count">0/100</span>
+                <span class="small text-secondary" data-character-counter-target="count">0/100</span>
               </div>
               <%= f.text_field :title,
                     class: "form-control #{invalid_class(@repair_request, :title)}",
@@ -67,7 +67,7 @@
                   <%= t("request.repair_content") %>&thinsp;
                   <span class="asterisk text-danger">*</span>
                 <% end %>
-                <span class="small text-muted" data-character-counter-target="count">0/500</span>
+                <span class="small text-secondary" data-character-counter-target="count">0/500</span>
               </div>
               <%= f.text_area :content,
                     rows: 4,
@@ -101,11 +101,11 @@
                     <span class="material-symbols-outlined fs-6">add_photo_alternate</span>
                     <%= t("request.repair_images") %>
                   <% end %>
-                  <small class="counter-text text-muted">
+                  <small class="counter-text text-secondary">
                     <span data-image-upload-target="fileCount">0</span>/5
                   </small>
                 </div>
-                <div class="form-text small mb-2 text-muted">
+                <div class="form-text small mb-2 text-secondary">
                   <%= t("request.repair_images_note") %>
                 </div>
 
@@ -141,7 +141,7 @@
                   <span class="material-symbols-outlined fs-6 align-middle">video_call</span>
                   <%= t("request.repair_video") %>
                 <% end %>
-                <div class="form-text small mb-2 text-muted">
+                <div class="form-text small mb-2 text-secondary">
                   <%= t("request.repair_video_note") %>
                 </div>
                 <%= f.file_field :video, accept: "video/*",

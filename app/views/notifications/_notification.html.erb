@@ -10,7 +10,7 @@
           <%= notification.title %>
         </h2>
       </div>
-      <span class="text-muted small text-nowrap fst-italic">
+      <span class="text-secondary small text-nowrap fst-italic">
         <%= time_ago_in_words(notification.created_at) + " " + t("ago").downcase %>
       </span>
     </div>
@@ -30,7 +30,7 @@
         <% unless notification.read? %>
           <%= button_to mark_as_read_notification_path(notification),
                 method: :patch,
-                class: "btn btn-sm btn-link text-muted text-decoration-none d-flex align-items-center gap-1 p-0",
+                class: "btn btn-sm btn-link text-secondary text-decoration-none d-flex align-items-center gap-1 p-0",
                 title: t("noti.mark_as_read") do %>
             <span class="material-symbols-outlined fs-6">done</span>
             <span class="small"><%= t("noti.mark_as_read") %></span>

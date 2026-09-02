@@ -19,7 +19,7 @@
           </span>
         </div>
         <% if service.note.present? %>
-          <div class="d-flex align-items-center gap-1 mt-2 text-muted small">
+          <div class="d-flex align-items-center gap-1 mt-2 text-secondary small">
             <span class="material-symbols-outlined fs-6" title="<%= t("note") %>">note</span>
             <span><%= service.note %></span>
           </div>
@@ -56,10 +56,10 @@
 
     <%# Empty State if no variants %>
     <div id="no_variants_prompt" class="text-center py-5 <%= 'd-none' if variants.any? %>">
-      <span class="empty-state-icon material-symbols-outlined text-muted mb-3">category</span>
+      <span class="empty-state-icon material-symbols-outlined text-secondary mb-3">category</span>
       
       <p class="fw-bold text-secondary mb-2 fs-5"><%= t("form.service.no_variants") %></p>
-      <p class="text-muted mx-auto mb-4">
+      <p class="text-secondary mx-auto mb-4">
         <%= t("form.service.no_variants_prompt") %>
       </p>
     </div>

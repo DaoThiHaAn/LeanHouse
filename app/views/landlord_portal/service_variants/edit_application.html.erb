@@ -38,7 +38,7 @@
                         } do |f| %>
 
             <% if @eligible_rooms.empty? %>
-              <div class="text-center py-4 text-muted">
+              <div class="text-center py-4 text-secondary">
                 <span class="material-symbols-outlined fs-2 mb-1">domain_disabled</span>
                 <p class="m-0 fw-semibold"><%= t("form.service.variant.no_eligible_rooms") %></p>
               </div>
@@ -48,7 +48,7 @@
                 <div class="fw-semibold text-secondary small">
                   <%= t("form.service.variant.selected_count", count: "").strip %>
                   <span class="badge bg-primary fs-6 px-2 py-1" data-room-selection-target="countDisplay">0</span>
-                  <span class="text-muted">/ <%= @eligible_rooms.size %> phòng khả dụng</span>
+                  <span class="text-secondary">/ <%= @eligible_rooms.size %> phòng khả dụng</span>
                 </div>
 
                 <button type="button"

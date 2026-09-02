@@ -7,7 +7,7 @@
         <span class="material-symbols-outlined text-primary">electric_meter</span>
         Chỉ số thực tế (<%= @room.title_name %>)
       </h2>
-      <p class="text-muted mb-0">Theo dõi lượng tiêu thụ điện nước và nộp ảnh chụp đồng hồ hàng tháng.</p>
+      <p class="text-secondary mb-0">Theo dõi lượng tiêu thụ điện nước và nộp ảnh chụp đồng hồ hàng tháng.</p>
     </div>
   </div>
 
@@ -27,9 +27,9 @@
 
   <% if @logs.empty? %>
     <div class="card bg-light border-0 text-center py-5 rounded-4">
-      <span class="material-symbols-outlined text-muted fs-1 mb-2">fact_check</span>
+      <span class="material-symbols-outlined text-secondary fs-1 mb-2">fact_check</span>
       <p class="fs-5 fw-bold mb-1">Chưa có bản ghi chỉ số nào cho phòng của bạn</p>
-      <p class="text-muted small">Chỉ số sẽ xuất hiện khi bắt đầu chu kỳ chốt tiền phòng hàng tháng.</p>
+      <p class="text-secondary small">Chỉ số sẽ xuất hiện khi bắt đầu chu kỳ chốt tiền phòng hàng tháng.</p>
     </div>
   <% else %>
     <div class="table-responsive bg-white rounded-3 shadow-sm border">
@@ -55,7 +55,7 @@
                   <%= log.service_name %>
                 </span>
               </td>
-              <td class="font-monospace text-muted"><%= log.prev_reading %></td>
+              <td class="font-monospace text-secondary"><%= log.prev_reading %></td>
               <td class="font-monospace fw-bold text-primary">
                 <%= log.latest_reading.presence || "Chưa nhập" %>
               </td>
@@ -63,7 +63,7 @@
                 <% if log.usage_quantity %>
                   <span class="fw-bold text-success font-monospace">+<%= log.usage_quantity %> <%= log.unit %></span>
                 <% else %>
-                  <span class="text-muted">-</span>
+                  <span class="text-secondary">-</span>
                 <% end %>
               </td>
               <td>
@@ -72,7 +72,7 @@
                     <%= image_tag log.reading_photo.variant(resize_to_limit: [50, 50]), class: "rounded border shadow-sm", alt: "Ảnh công tơ" %>
                   </a>
                 <% else %>
-                  <span class="text-muted small italic">Chưa nộp ảnh</span>
+                  <span class="text-secondary small italic">Chưa nộp ảnh</span>
                 <% end %>
               </td>
               <td>
@@ -92,7 +92,7 @@
                     <span class="material-symbols-outlined fs-6">photo_camera</span> Nộp chỉ số / Ảnh
                   <% end %>
                 <% else %>
-                  <span class="text-muted small">Đã khóa</span>
+                  <span class="text-secondary small">Đã khóa</span>
                 <% end %>
               </td>
             </tr>

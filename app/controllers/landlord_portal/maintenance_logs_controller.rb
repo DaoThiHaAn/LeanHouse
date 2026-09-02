@@ -12,8 +12,18 @@ class LandlordPortal::MaintenanceLogsController < LandlordPortal::BaseController
   end
 
   def filtered
-    @logs = filtered_logs
-    render partial: "log_table", locals: { house: @house, asset: @asset, logs: @logs }
+    result = LandlordMaintenanceLogFilter.call(asset: @asset, params: params)
+    @logs = result[:logs]
+    @total_cost = result[:total_cost]
+    @total_count = result[:total_count]
+
+    render partial: "log_table", locals: {
+      house: @house,
+      asset: @asset,
+      logs: @logs,
+      total_cost: @total_cost,
+      total_count: @total_count
+    }
   end
 
   def new
@@ -38,6 +48,9 @@ class LandlordPortal::MaintenanceLogsController < LandlordPortal::BaseController
   def update
     @log = @maintenance_log
     if @log.update(log_params)
+      result = LandlordMaintenanceLogFilter.call(asset: @asset, params: params)
+      @total_cost = result[:total_cost]
+
       flash.now[:notice] = t("success_messages.maintenance_log_updated")
       respond_to do |format|
         format.turbo_stream
@@ -51,6 +64,9 @@ class LandlordPortal::MaintenanceLogsController < LandlordPortal::BaseController
   def destroy
     @log = @maintenance_log
     @log.destroy
+    result = LandlordMaintenanceLogFilter.call(asset: @asset, params: params)
+    @total_cost = result[:total_cost]
+
     flash.now[:notice] = t("success_messages.maintenance_log_deleted")
     respond_to do |format|
       format.turbo_stream
@@ -62,31 +78,6 @@ class LandlordPortal::MaintenanceLogsController < LandlordPortal::BaseController
 
   def log_params
     params.require(:maintenance_log).permit(:performed_on, :cost, :content)
-  end
-
-  def filtered_logs
-    scope = @asset.maintenance_logs
-
-    if params[:year].present?
-      year = params[:year].to_i
-      if params[:month].present?
-        month = params[:month].to_i
-        start_date = Date.new(year, month, 1)
-        end_date = start_date.end_of_month
-        scope = scope.where(performed_on: start_date..end_date)
-      else
-        start_date = Date.new(year, 1, 1)
-        end_date = Date.new(year, 12, 31)
-        scope = scope.where(performed_on: start_date..end_date)
-      end
-    elsif params[:month].present?
-      month = params[:month].to_i
-      scope = scope.where("EXTRACT(MONTH FROM performed_on) = ?", month)
-    end
-
-    scope.order(performed_on: :desc, created_at: :desc)
-         .page(params[:page])
-         .per(LOGS_PER_PAGE)
   end
 
   def available_years

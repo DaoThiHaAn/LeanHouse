@@ -36,13 +36,13 @@
                             target: "_blank",  title: t("form.file.view"),
                             rel: "noopener", 
                             class: "btn btn-outline-primary d-inline-flex align-items-center gap-2" do %>
-                  <span class="material-symbols-outlined">description</span>
+                  <span class="material-symbols-outlined">contract</span>
                   <%= @house.regulation_file.filename.to_s %>
                   <span class="material-symbols-outlined fs-6">open_in_new</span>
                 <% end %>
               </div>
             <% else %>
-              <p class="text-muted fst-italic fs-7"><%= t("none") %></p>
+              <p class="text-secondary fst-italic fs-7"><%= t("none") %></p>
             <% end %>
           </div>
 

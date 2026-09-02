@@ -6,7 +6,7 @@
 
   <% if requests.empty? %>
     <div class="text-center py-5">
-      <p class="fs-5 fw-medium text-muted mb-2">
+      <p class="fs-5 fw-medium text-secondary mb-2">
         <%= (params[:house_id].present? || params[:month].present? || params[:year].present? || params[:status].present? || params[:request_type].present?) ? t("request.unfound") : t("request.none") %>
       </p>
       <%= image_tag 'request.png', alt: "Request icon", width: "160px", class: "d-block mx-auto mt-3 opacity-75" %>
@@ -28,7 +28,7 @@
           <% requests.each do |request| %>
             <tr>
               <!-- Request ID -->
-              <td class="px-3 fw-semibold text-muted">
+              <td class="px-3 fw-semibold text-secondary">
                 #<%= request.id %>
               </td>
 
@@ -48,12 +48,12 @@
               </td>
 
               <!-- Sent Time -->
-              <td class="px-3 text-center text-muted small">
+              <td class="px-3 text-center text-secondary small">
                 <%= request.created_at.strftime("%H:%M - %d/%m/%Y") %>
               </td>
 
               <!-- Updated Time -->
-              <td class="px-3 text-center text-muted small">
+              <td class="px-3 text-center text-secondary small">
                 <%= request.updated_at.strftime("%H:%M - %d/%m/%Y") %>
               </td>
 

@@ -35,7 +35,7 @@
           <%= f.file_field :reading_photo, accept: "image/*", capture: "environment", class: "form-control shadow-sm" %>
           <% if @log.reading_photo.attached? %>
             <div class="mt-2">
-              <span class="text-muted small">Ảnh đã tải lên trước đó:</span><br>
+              <span class="text-secondary small">Ảnh đã tải lên trước đó:</span><br>
               <%= image_tag @log.reading_photo.variant(resize_to_limit: [120, 120]), class: "rounded border mt-1 shadow-sm" %>
             </div>
           <% end %>

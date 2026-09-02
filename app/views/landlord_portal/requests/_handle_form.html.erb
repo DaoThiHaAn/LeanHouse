@@ -6,7 +6,7 @@
     <%= t("request.handle_decision") %>
   </h2>
 
-  <p class="text-muted mb-3">
+  <p class="text-secondary mb-3">
     <% if request.requestable_type == "RepairRequest" && request.handling? %>
       <%= t("request.repair_handling_action_notice", default: "Yêu cầu đang trong quá trình xử lý. Khi hoàn tất công việc sửa chữa, vui lòng bấm Xác nhận hoàn thành.") %>
     <% elsif request.requestable_type == "RepairRequest" %>

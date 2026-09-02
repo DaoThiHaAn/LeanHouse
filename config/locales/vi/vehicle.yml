@@ -27,5 +27,11 @@ vi:
     no_vehicles_tenant: "Bạn chưa có phương tiện nào được đăng ký tại nhà này."
     register_prompt: "Bạn có thể gửi yêu cầu đăng ký phương tiện mới để thêm vào danh sách quản lý của tòa nhà."
     register_btn: "Đăng ký gửi xe ngay"
-    license_plate_placeholder: "VD: 59A-12345"
+    license_plate_placeholder: "Ví dụ: 59A-12345"
+    search_placeholder: "Tìm biển số, hãng, khách..."
+    stats:
+      total_vehicles: "Tổng phương tiện"
+      unit: "xe"
+      types_breakdown: "Phân loại phương tiện"
+
 

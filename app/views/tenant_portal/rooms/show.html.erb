@@ -61,20 +61,20 @@
                         target: "_blank",  title: t("form.file.view"),
                         rel: "noopener", 
                         class: "btn btn-outline-primary d-inline-flex align-items-center gap-2" do %>
-              <span class="material-symbols-outlined">description</span>
+              <span class="material-symbols-outlined">contract</span>
               <%= @house.regulation_file.filename.to_s %>
               <span class="material-symbols-outlined fs-6">open_in_new</span>
             <% end %>
           </div>
         <% else %>
-          <p class="text-muted fst-italic fs-7"><%= t("none") %></p>
+          <p class="text-secondary fst-italic fs-7"><%= t("none") %></p>
         <% end %>
       </div>
 
       <%# Assets %>
       <h3 class="fw-bold mt-2 ms-3"><%= t("form.asset.in_room") %>:</h3>
       <% if @assets.empty? %>
-        <p class="text-muted ms-3"><%= t("none") %></p>
+        <p class="text-secondary ms-3"><%= t("none") %></p>
       <% else %>
         <div class="table-responsive border rounded mt-2">
           <table class="table table-bordered table-hover align-middle mb-0">
@@ -109,7 +109,7 @@
       <h2 class="fw-bold m-0"><%= t("form.roommates") %>:</h2>
 
       <% if @roommates.empty? %>
-        <p class="text-muted"><%= t("none") %></p>
+        <p class="text-secondary"><%= t("none") %></p>
       <% else %>
         <div class="table-responsive border rounded mt-2">
           <table class="table table-bordered table-hover align-middle mb-0">

@@ -1,0 +1,40 @@
+<%# Locals: stats, house %>
+
+<div id="vehicle_stats_card" class="mb-4">
+  <div class="card vehicle stat-card stat-card-blue shadow-sm p-3">
+    <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-4">
+      <%# Left: Total vehicles %>
+      <div class="d-flex align-items-center gap-3">
+        <div class="stat-icon-wrap rounded-circle d-flex align-items-center justify-content-center flex-shrink-0">
+          <span class="material-symbols-outlined fs-1">garage</span>
+        </div>
+        <div>
+          <span class="stat-card-title fw-bold small d-block">
+            <%= t("vehicle.stats.total_vehicles") %>
+          </span>
+          <div class="d-flex align-items-baseline gap-1">
+            <span class="fs-3 fw-bold stat-card-value"><%= stats[:total_count] %></span>
+            <span class="fw-semibold stat-card-subtext small"><%= t("vehicle.stats.unit") %></span>
+          </div>
+        </div>
+      </div>
+
+      <%# Subtle vertical divider on desktop %>
+      <div class="vr d-none d-lg-block opacity-25 my-1"></div>
+
+      <%# Right: Specific count for each type %>
+      <div class="d-flex align-items-center flex-wrap gap-2 gap-md-3">
+        <% stats[:type_counts].each do |type, count| %>
+          <% icon = Vehicle.new(vehicle_type: type).type_icon %>
+          <div class="d-flex align-items-center gap-2 px-3 py-2 rounded-3 border bg-white shadow-xs">
+            <span class="material-symbols-outlined text-primary fs-5"><%= icon %></span>
+            <span class="small fw-semibold text-dark"><%= t("enums.vehicle.vehicle_type.#{type}") %>:</span>
+            <span class="badge <%= count.to_i.positive? ? 'bg-primary text-white' : 'bg-secondary-subtle text-secondary' %> rounded-pill px-2 py-1">
+              <%= count %>
+            </span>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

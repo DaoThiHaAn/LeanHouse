@@ -8,7 +8,7 @@
   <td><%= asset&.brand %></td>
   <td><%= asset&.model %></td>
   <td><%= asset.purchased_at&.strftime('%d/%m/%Y') %></td>
-  <td class="text-muted fst-italic" <%= asset.note.to_s.length > 70 ? tooltip('top', asset.note, html: true) : '' %>>
+  <td class="text-secondary fst-italic" <%= asset.note.to_s.length > 70 ? tooltip('top', asset.note, html: true) : '' %>>
     <%= truncate(asset.note, length: 70) %>
   </td>
   <td>

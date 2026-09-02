@@ -35,7 +35,7 @@ module FormHelper
   def field_hint(message = nil, classes: "", &block)
     content = block_given? ? capture(&block) : message
 
-    content_tag :small, class: "text-muted w-100 d-flex align-items-center mt-2 ms-1 gap-2 #{classes}".strip do
+    content_tag :small, class: "text-secondary w-100 d-flex align-items-center mt-2 ms-1 gap-2 #{classes}".strip do
       safe_join([
         content_tag(:span, "info", class: "material-symbols-outlined fs-6 flex-shrink-0"),
         content_tag(:div, content, class: "w-100")

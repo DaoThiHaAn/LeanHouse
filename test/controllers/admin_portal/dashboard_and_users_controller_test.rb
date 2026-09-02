@@ -126,8 +126,8 @@ class AdminPortal::DashboardAndUsersControllerTest < ActionDispatch::Integration
     get admin_house_url(house)
     assert_response :success
     assert_includes response.body, "Dorm House"
-    assert_includes response.body, "1,200,000 đ"
-    assert_includes response.body, "Giá thuê"
+    assert_includes response.body, "1,200,000đ"
+    assert_includes response.body, "Giường"
   end
 
   test "should show house sidebar with links and default structure" do
@@ -156,7 +156,7 @@ class AdminPortal::DashboardAndUsersControllerTest < ActionDispatch::Integration
     assert_response :success
     assert_includes response.body, "Service House"
     assert_includes response.body, "301"
-    assert_includes response.body, "Dịch vụ & Tiện ích"
+    assert_includes CGI.unescape_html(response.body), I18n.t("admin.houses.services_and_amenities")
     assert_includes response.body, admin_house_services_path(house)
     assert_includes response.body, admin_house_assets_path(house)
   end
@@ -178,6 +178,7 @@ class AdminPortal::DashboardAndUsersControllerTest < ActionDispatch::Integration
     floor = house.floors.create!(name: "Tầng 1", position: 1)
     room = floor.rooms.create!(name: "101", area: 20, max_slots: 2, tenants_count: 1)
     room.create_rental_unit!(rent: 3_000_000, deposit: 3_000_000)
+    floor.rooms.create!(name: "102", area: 20, max_slots: 2, tenants_count: 0)
 
     service = house.services.create!(name: "Internet Cáp Quang", note: "Tốc độ 1Gbps")
     variant = service.service_variants.create!(fee: 100_000, unit: "per_room", is_real_time: false)
@@ -201,6 +202,8 @@ class AdminPortal::DashboardAndUsersControllerTest < ActionDispatch::Integration
       password: "Password123!",
       password_confirmation: "Password123!",
       sex: "male",
+      bday: 20.years.ago.to_date,
+      address: "123 Le Loi, Q1",
       role: "tenant",
       is_active: true
     )
@@ -285,7 +288,7 @@ class AdminPortal::DashboardAndUsersControllerTest < ActionDispatch::Integration
     # 1. House detail show view
     get admin_house_url(house)
     assert_response :success
-    assert_includes response.body, "Tài sản & Bảo trì"
+    assert_includes CGI.unescape_html(response.body), I18n.t("admin.houses.assets_and_maintenance")
     assert_includes response.body, admin_house_assets_path(house)
 
     # 2. Dedicated assets page

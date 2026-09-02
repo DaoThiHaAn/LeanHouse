@@ -5,6 +5,7 @@ class LandlordPortal::VehiclesController < LandlordPortal::BaseController
 
   def index
     @vehicles = @house.vehicles.includes(tenant: :user).sorted
+    @stats = @house.vehicle_summary_stats
     @available_types = available_types_options
   end
 
@@ -23,6 +24,7 @@ class LandlordPortal::VehiclesController < LandlordPortal::BaseController
       actor_user: current_user,
       reason: params[:reason]
     )
+    @stats = @house.vehicle_summary_stats
 
     respond_to do |format|
       format.turbo_stream do

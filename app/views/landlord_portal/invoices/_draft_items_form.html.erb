@@ -63,7 +63,7 @@
                 <% if item[:item_type] == :metered_service %>
                   <div class="d-flex flex-column gap-1">
                     <div class="input-group input-group-sm">
-                      <span class="input-group-text py-0 text-muted" style="font-size: 0.75rem;"><%= t('invoice.prev_reading') %></span>
+                      <span class="input-group-text py-0 text-secondary" style="font-size: 0.75rem;"><%= t('invoice.prev_reading') %></span>
                       <input type="number" min="0" name="invoice[items][<%= idx %>][prev_reading]" value="<%= item[:prev_reading] %>" class="form-control font-monospace item-prev-reading" data-action="input->invoice-items#calculateRow" placeholder="<%= t('invoice.prev_reading') %>" />
                     </div>
                     <div class="input-group input-group-sm">
@@ -79,7 +79,7 @@
               <td class="text-end">
                 <input type="number" readonly="readonly" name="invoice[items][<%= idx %>][amount]" value="<%= item[:amount] %>" class="form-control form-control-sm font-monospace text-end item-amount fw-bold text-dark bg-light-subtle" style="max-width: 130px; display: inline-block;" />
               </td>
-              <td class="text-center pe-3 text-muted">
+              <td class="text-center pe-3 text-secondary">
                 -
               </td>
             </tr>
@@ -195,7 +195,7 @@
       <div class="row g-3 align-items-center justify-content-between">
         <div class="col-md-7">
           <div class="d-flex flex-column gap-1 small">
-            <div class="d-flex justify-content-between text-muted" style="max-width: 380px;">
+            <div class="d-flex justify-content-between text-secondary" style="max-width: 380px;">
               <span><%= t('invoice.subtotal', default: 'Tiền phòng & Dịch vụ') %>:</span>
               <span id="summary_subtotal" data-invoice-items-target="subtotalSummary" class="font-monospace fw-semibold text-dark">0 đ</span>
             </div>
@@ -211,7 +211,7 @@
         </div>
 
         <div class="col-md-5 text-md-end">
-          <div class="text-muted small mb-1"><%= t('invoice.total_need_payment', default: 'TỔNG TIỀN CẦN THANH TOÁN') %>:</div>
+          <div class="text-secondary small mb-1"><%= t('invoice.total_need_payment', default: 'TỔNG TIỀN CẦN THANH TOÁN') %>:</div>
           <div class="d-inline-flex align-items-center gap-2">
             <span id="summary_total" data-invoice-items-target="totalSummary" class="fs-4 fw-bolder px-3 py-1 rounded-3 font-monospace invoice-badge invoice-badge-pending">
               0 đ

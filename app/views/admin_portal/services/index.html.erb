@@ -1,4 +1,4 @@
-<% content_for :title, t("page_titles.admin_house_services", house_name: @house.name, default: "Dịch vụ: #{@house.name}") %>
+<% content_for :title, t("page_titles.admin_house_services", house_name: @house.name) %>
 
 <div class="d-flex align-items-center gap-3 mb-4">
   <%= back_link_to admin_houses_path, t("admin.houses.back_to_list") %>
@@ -20,10 +20,10 @@
           <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
             <h2 class="fs-5 fw-bold mb-0 d-flex align-items-center gap-2">
               <span class="material-symbols-filled fs-4 text-primary">bolt</span>
-              <%= t("admin.services.title", default: "Chi tiết Dịch vụ & Bảng giá") %>
+              <%= t("admin.services.title") %>
             </h2>
             <span class="badge bg-light text-secondary border">
-              <%= @services.size %> <%= t("form.service.self", default: "dịch vụ") %>
+              <%= @services.size %> <%= t("form.service.self") %>
             </span>
           </div>
         </div>
@@ -38,12 +38,12 @@
                   <div>
                     <h3 class="fs-6 fw-bold mb-0 text-dark"><%= service.name %></h3>
                     <% if service.note.present? %>
-                      <small class="text-muted"><%= service.note %></small>
+                      <small class="text-secondary"><%= service.note %></small>
                     <% end %>
                   </div>
                 </div>
                 <span class="badge bg-light text-secondary border small">
-                  <%= service.service_variants.size %> <%= t("form.service.variant.self", default: "gói giá") %>
+                  <%= service.service_variants.size %> <%= t("form.service.variant.self") %>
                 </span>
               </div>
 
@@ -54,9 +54,9 @@
                       <thead class="table-light">
                         <tr>
                           <th class="ps-3" style="width: 25%;"><%= t("form.service.price") %> &amp; <%= t("form.service.unit") %></th>
-                          <th style="width: 15%;"><%= t("form.service.variant.type", default: "Cách tính") %></th>
-                          <th style="width: 20%;"><%= t("admin.services.applied_scope", default: "Phạm vi áp dụng") %></th>
-                          <th class="pe-3" style="width: 40%;"><%= t("admin.services.applied_rooms_list", default: "Danh sách phòng áp dụng") %></th>
+                          <th style="width: 15%;"><%= t("form.service.variant.type") %></th>
+                          <th style="width: 20%;"><%= t("admin.services.applied_scope") %></th>
+                          <th class="pe-3" style="width: 40%;"><%= t("admin.services.applied_rooms_list") %></th>
                         </tr>
                       </thead>
                       <tbody>
@@ -64,31 +64,31 @@
                           <tr>
                             <td class="ps-3">
                               <strong class="fs-5 text-primary"><%= number_with_delimiter(variant.fee, delimiter: ",") %>đ</strong>
-                              <span class="text-muted fw-semibold"> / <%= variant.human_unit %></span>
+                              <span class="text-secondary fw-semibold"> / <%= variant.human_unit %></span>
                             </td>
                             <td>
                               <% if variant.is_real_time? %>
                                 <span class="badge bg-info-subtle text-info border border-info-subtle d-inline-flex align-items-center gap-1">
                                   <span class="material-symbols-outlined fs-6">speed</span>
-                                  <span><%= t("admin.services.metered", default: "Theo chỉ số") %></span>
+                                  <span><%= t("admin.services.metered") %></span>
                                 </span>
                               <% else %>
                                 <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle d-inline-flex align-items-center gap-1">
                                   <span class="material-symbols-outlined fs-6">lock</span>
-                                  <span><%= t("admin.services.fixed", default: "Cố định") %></span>
+                                  <span><%= t("admin.services.fixed") %></span>
                                 </span>
                               <% end %>
                             </td>
                             <td>
                               <span class="fw-semibold">
-                                <%= t("admin.services.applied_ratio", applied: variant.rooms.size, total: @total_house_rooms, default: "#{variant.rooms.size}/#{@total_house_rooms} phòng") %>
+                                <%= t("admin.services.applied_ratio", applied: variant.rooms.size, total: @total_house_rooms) %>
                               </span>
                             </td>
                             <td class="pe-3">
                               <% if @total_house_rooms > 0 && variant.rooms.size == @total_house_rooms %>
                                 <span class="badge bg-success-subtle text-success border border-success-subtle">
                                   <span class="material-symbols-outlined fs-6 align-middle">check_circle</span>
-                                  <%= t("admin.services.applied_all", default: "Tất cả các phòng trong nhà") %>
+                                  <%= t("admin.services.applied_all") %>
                                 </span>
                               <% elsif variant.rooms.any? %>
                                 <div class="d-flex flex-wrap gap-1">
@@ -99,7 +99,7 @@
                                   <% end %>
                                 </div>
                               <% else %>
-                                <span class="text-muted small fst-italic"><%= t("admin.services.not_applied", default: "Chưa gán cho phòng nào") %></span>
+                                <span class="text-secondary small fst-italic"><%= t("admin.services.not_applied") %></span>
                               <% end %>
                             </td>
                           </tr>
@@ -108,7 +108,7 @@
                     </table>
                   </div>
                 <% else %>
-                  <div class="p-4 text-center text-muted small">
+                  <div class="p-4 text-center text-secondary small">
                     <%= t("admin.houses.no_variants") %>
                   </div>
                 <% end %>
@@ -117,9 +117,9 @@
           <% end %>
         <% else %>
           <div class="card admin-card p-5 text-center shadow-sm">
-            <span class="material-symbols-outlined fs-1 text-muted mb-2">home_repair_service</span>
-            <h3 class="fs-5 fw-bold text-muted mb-1"><%= t("admin.houses.no_services") %></h3>
-            <p class="text-muted small mb-0"><%= t("admin.services.no_services_hint", default: "Chủ nhà chưa tạo dịch vụ hoặc tiện ích nào cho nhà này.") %></p>
+            <span class="material-symbols-outlined fs-1 text-secondary mb-2">home_repair_service</span>
+            <h3 class="fs-5 fw-bold text-secondary mb-1"><%= t("admin.houses.no_services") %></h3>
+            <p class="text-secondary small mb-0"><%= t("admin.services.no_services_hint") %></p>
           </div>
         <% end %>
       </div>

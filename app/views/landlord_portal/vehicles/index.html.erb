@@ -4,16 +4,18 @@
 <h1 class="text-center mb-3">
   <%= t("page_titles.vehicle_mng") %>
 </h1>
-<p class="text-muted text-center border-bottom pb-2 mb-5"><%= t("vehicle.mng_note") %></p>
+<p class="text-secondary text-center border-bottom pb-2 mb-4"><%= t("vehicle.mng_note") %></p>
 
+<%# Vehicle Summary KPI Card %>
+<%= render "stats_card", stats: @stats, house: @house if @stats && @house.vehicles.exists? %>
 
 <% if @vehicles.empty? %>
   <div class="card border-0 bg-light rounded-4 text-center py-5 px-3 mx-auto w-75">
     <div class="mb-3">
-      <span class="material-symbols-outlined text-muted vehicle-icon">two_wheeler</span>
+      <span class="material-symbols-outlined text-secondary vehicle-icon">two_wheeler</span>
     </div>
     <p class="fs-5 fw-bold mb-2"><%= t("vehicle.no_vehicles") %></p>
-    <p class="text-muted"><%= t("vehicle.no_vehicles_hint") %></p>
+    <p class="text-secondary"><%= t("vehicle.no_vehicles_hint") %></p>
   </div>
 <% else %>
 
@@ -37,11 +39,11 @@
       <div class="d-flex align-items-center gap-2">
         <div class="input-group shadow-sm" style="max-width: 300px;">
           <span class="input-group-text bg-white border-end-0">
-            <span class="material-symbols-outlined text-muted fs-6">search</span>
+            <span class="material-symbols-outlined text-secondary fs-6">search</span>
           </span>
           <%= f.text_field :query,
                 value: params[:query],
-                placeholder: t("vehicle.license_plate_placeholder", default: "Tìm biển số, hãng, khách..."),
+                placeholder: t("vehicle.search_placeholder"),
                 class: "form-control border-start-0 ps-0",
                 oninput: "this.form.requestSubmit()" %>
         </div>

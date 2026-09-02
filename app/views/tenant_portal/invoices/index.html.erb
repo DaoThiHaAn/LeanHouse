@@ -3,7 +3,7 @@
 <div class="main-container py-4 invoice-wrapper">
   <div class="mb-4 pb-2 border-bottom text-center">
     <h1 class="mb-3"><%= t('invoice.my_invoices') %></h1>
-    <p class="text-muted mb-0"><%= t('invoice.my_invoices_subtitle') %></p>
+    <p class="text-secondary mb-0"><%= t('invoice.my_invoices_subtitle') %></p>
   </div>
 
   <% if params[:status].present? || params[:month].present? %>
@@ -28,7 +28,7 @@
     <div class="invoice-empty-state mx-auto">
       <span class="material-symbols-outlined invoice-empty-icon">receipt_long</span>
       <p class="fs-5 fw-bold mb-1"><%= t('invoice.no_invoices_tenant') %></p>
-      <p class="text-muted mb-0"><%= t('invoice.no_invoices_tenant_hint') %></p>
+      <p class="text-secondary mb-0"><%= t('invoice.no_invoices_tenant_hint') %></p>
     </div>
   <% else %>
     <div class="table-responsive bg-white rounded-3 shadow-sm border">
@@ -50,7 +50,7 @@
                 <div class="invoice-code-tag">
                   <%= link_to inv.code, tenant_invoice_path(inv), class: "text-decoration-none" %>
                 </div>
-                <div class="text-muted small font-monospace">ID: #<%= inv.id %></div>
+                <div class="text-secondary small font-monospace">ID: #<%= inv.id %></div>
               </td>
               <td class="font-monospace fw-semibold"><%= t('common.month', default: 'Tháng') %> <%= inv.billing_month.strftime("%m/%Y") %></td>
               <td>

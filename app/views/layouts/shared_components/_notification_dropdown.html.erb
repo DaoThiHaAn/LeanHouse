@@ -15,7 +15,7 @@
 
   <ul class="divided dropdown-menu dropdown-menu-end p-0">
     <% if notifications.empty? %>
-      <li class="py-3 text-center text-muted">
+      <li class="py-3 text-center text-secondary">
         <span class="material-symbols-outlined d-block mb-2">
           notifications_off
         </span>
@@ -36,7 +36,7 @@
           <p class="fw-bold title text-clamp-1"><%= notification.title %></p>
           <p class="noti-content text-clamp-2"><%= notification.message %></p>
 
-          <div class="noti-footer mt-2 d-flex justify-content-between text-muted">
+          <div class="noti-footer mt-2 d-flex justify-content-between text-secondary">
             <p>
               <%= time_ago_in_words(notification.created_at) + " " + t("ago").downcase %>
             </p>
@@ -47,7 +47,7 @@
                 <%= button_to mark_as_read_notification_path(notification),
                       method: :patch,
                       title: t("noti.mark_as_read"),
-                      class: "btn btn-link p-0 text-muted d-flex align-items-center border-0 bg-transparent" do %>
+                      class: "btn btn-link p-0 text-secondary d-flex align-items-center border-0 bg-transparent" do %>
                   <span class="material-symbols-outlined fs-6">done</span>
                 <% end %>
               <% end %>

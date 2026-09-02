@@ -3,7 +3,7 @@
 <% content_for :title, t("page_titles.service_mng") %>
 
 <h1 class="text-center mb-3"><%= t("page_titles.service_mng") %></h1>
-<p class="text-muted text-center border-bottom pb-2 mb-5"><%= t("form.service.mng_note") %></p>
+<p class="text-secondary text-center border-bottom pb-2 mb-5"><%= t("form.service.mng_note") %></p>
 
 <% if @services.empty? %>
   <div class="text-center pb-3">
@@ -53,7 +53,7 @@
 
         <!-- Search Bar -->
         <div class="input-group input-group-sm my-3 w-85 mx-auto">
-          <span class="input-group-text bg-white border-end-0 text-muted">
+          <span class="input-group-text bg-white border-end-0 text-secondary">
             <span class="material-symbols-outlined fs-6">search</span>
           </span>
           <input type="text" autocomplete="off"
@@ -63,7 +63,7 @@
                   data-action="input->service-filter#filter">
         </div>
 
-        <p id="sidebar_services_count" class="fw-semibold text-center mb-3 px-3 small text-muted">
+        <p id="sidebar_services_count" class="fw-semibold text-center mb-3 px-3 small text-secondary">
           <%= t("form.service.total", val: @services.length) %>
         </p>
 
@@ -78,7 +78,7 @@
         </div>
 
         <!-- Filter Empty Message -->
-        <div data-service-filter-target="emptyMessage" class="text-center text-muted small py-3 px-2 d-none">
+        <div data-service-filter-target="emptyMessage" class="text-center text-secondary small py-3 px-2 d-none">
           <%= t("form.service.filter_empty") %>
         </div>
       </div>
@@ -94,7 +94,7 @@
                      total_rooms: @total_house_rooms %>
         <% else %>
           <!-- Empty State Prompt -->
-          <div class="d-flex flex-column align-items-center justify-content-center h-100 text-muted p-5">
+          <div class="d-flex flex-column align-items-center justify-content-center h-100 text-secondary p-5">
             <div class="empty-state-icon mb-3 d-flex align-items-center justify-content-center rounded-circle bg-white border shadow-sm" style="width: 70px; height: 70px;">
               <span class="material-symbols-outlined fs-1 text-primary">left_click</span>
             </div>

@@ -9,10 +9,10 @@
   <%= turbo_stream.remove "no_variants_prompt" %>
   <%= turbo_stream.after "service_variants_list" do %>
     <div id="no_variants_prompt" class="text-center py-5">
-      <span class="empty-state-icon material-symbols-outlined text-muted mb-3">category</span>
+      <span class="empty-state-icon material-symbols-outlined text-secondary mb-3">category</span>
       
       <p class="fw-bold text-secondary mb-2 fs-5"><%= t("form.service.no_variants") %></p>
-      <p class="text-muted mx-auto mb-4">
+      <p class="text-secondary mx-auto mb-4">
         <%= t("form.service.no_variants_prompt") %>
       </p>
     </div>

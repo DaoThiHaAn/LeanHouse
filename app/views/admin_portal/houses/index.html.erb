@@ -2,7 +2,7 @@
 
 <div class="d-flex flex-column align-items-center gap-3 pb-3 pt-2 mb-4 border-bottom">
   <h1><%= t("admin.houses.title") %></h1>
-  <p class="text-muted">
+  <p class="text-secondary">
     <%= t("admin.houses.subtitle") %>
   </p>
 </div>
@@ -103,9 +103,9 @@
                   <td>
                     <% if house.landlord&.user %>
                       <%= link_to house.landlord.user.fullname, admin_user_path(house.landlord.user), class: "link fw-semibold", data: { turbo_frame: "_top" } %>
-                      <small class="d-block text-muted"><%= house.landlord.user.tel %></small>
+                      <small class="d-block text-secondary"><%= house.landlord.user.tel %></small>
                     <% else %>
-                      <span class="text-muted">-</span>
+                      <span class="text-secondary">-</span>
                     <% end %>
                   </td>
 
@@ -132,7 +132,7 @@
               <% end %>
             <% else %>
               <tr>
-                <td colspan="7" class="text-center text-muted py-5">
+                <td colspan="7" class="text-center text-secondary py-5">
                   <span class="material-symbols-outlined fs-1 d-block mb-2 text-secondary">home</span>
                   <%= t("admin.houses.no_houses_found") %>
                 </td>

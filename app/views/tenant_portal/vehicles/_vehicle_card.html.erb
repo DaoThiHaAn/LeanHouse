@@ -14,7 +14,7 @@
           <span class="material-symbols-outlined fs-6">zoom_in</span>
         </button>
       <% else %>
-        <div class="text-muted text-center py-4">
+        <div class="text-secondary text-center py-4">
           <span class="material-symbols-outlined" style="font-size: 3.5rem;"><%= vehicle.type_icon %></span>
         </div>
       <% end %>
@@ -33,7 +33,7 @@
           <span class="fs-5 fw-bold font-monospace text-primary bg-primary bg-opacity-10 px-2.5 py-1 rounded-2 border border-primary border-opacity-25">
             <%= vehicle.license_plate %>
           </span>
-          <span class="small text-muted">
+          <span class="small text-secondary">
             <%= vehicle.created_at.strftime("%d/%m/%Y") %>
           </span>
         </div>
@@ -42,7 +42,7 @@
           <div class="fw-semibold text-dark fs-6">
             <%= vehicle.brand.presence || "-" %> <%= vehicle.model.presence || "" %>
           </div>
-          <div class="small text-muted">
+          <div class="small text-secondary">
             <%= t("request.status") %>: <span class="badge bg-success text-white fw-normal px-2 py-0.5 rounded-pill"><%= t("enums.request.status.approved") %></span>
           </div>
         </div>
@@ -96,7 +96,7 @@
           <div class="modal-body p-3">
             <div class="alert alert-light border rounded-3 p-2 mb-3">
               <div class="fw-semibold"><%= vehicle.human_type %> - <%= vehicle.license_plate %></div>
-              <div class="small text-muted"><%= vehicle.brand %> <%= vehicle.model %></div>
+              <div class="small text-secondary"><%= vehicle.brand %> <%= vehicle.model %></div>
             </div>
 
             <div class="mb-3">
@@ -110,7 +110,7 @@
                     placeholder: t("vehicle.delete_reason_placeholder") %>
             </div>
 
-            <p class="small text-muted mb-0">
+            <p class="small text-secondary mb-0">
               <%= t("vehicle.delete_notice") %>
             </p>
           </div>

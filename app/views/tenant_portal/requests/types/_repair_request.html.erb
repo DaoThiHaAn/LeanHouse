@@ -9,12 +9,12 @@
   <!-- Title & Description Section -->
   <div class="px-3 mb-3">
     <div class="mb-3">
-      <span class="text-muted small d-block mb-1"><%= t("request.repair_title") %>:</span>
+      <span class="text-secondary small d-block mb-1"><%= t("request.repair_title") %>:</span>
       <h3 class="fs-6 fw-bold text-dark mb-0"><%= requestable.title %></h3>
     </div>
 
     <div class="mb-3">
-      <span class="text-muted small d-block mb-1"><%= t("request.repair_content") %>:</span>
+      <span class="text-secondary small d-block mb-1"><%= t("request.repair_content") %>:</span>
       <div class="p-3 bg-light rounded-3 text-dark text-break request-content"><%= requestable.content %></div>
     </div>
   </div>
@@ -30,7 +30,7 @@
       <!-- Images Grid -->
       <% if requestable.images.attached? %>
         <div class="mb-3">
-          <span class="text-muted small d-block mb-2">
+          <span class="text-secondary small d-block mb-2">
             <%= t("request.repair_images") %> (<%= requestable.images.count %>):
           </span>
           <div class="d-flex flex-wrap gap-2">
@@ -48,7 +48,7 @@
       <!-- Video Player -->
       <% if requestable.video.attached? %>
         <div class="mb-2">
-          <span class="text-muted small d-block mb-2">
+          <span class="text-secondary small d-block mb-2">
             <%= t("request.repair_video") %>:
           </span>
           <div class="rounded overflow-hidden border bg-black d-flex justify-content-center">

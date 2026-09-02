@@ -93,6 +93,8 @@ vi:
   actions: "Hành động"
   loading: "Đang tải"
   filtering: "Đang lọc"
+  filter: "Lọc"
+  clear_filter: "Xóa lọc"
   save: "Lưu"
   save_changes: "Lưu thay đổi"
   cancel: "Hủy"
@@ -238,6 +240,9 @@ vi:
     admin_users: "Quản lý Người dùng"
     admin_houses: "Quản lý Nhà"
     admin_house_detail: "Chi tiết Nhà"
+    admin_house_assets: "Tài sản: %{house_name}"
+    admin_house_services: "Dịch vụ: %{house_name}"
+
 
 
   pagination:

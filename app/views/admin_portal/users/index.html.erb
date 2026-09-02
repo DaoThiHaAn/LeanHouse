@@ -2,7 +2,7 @@
 
 <div class="d-flex flex-column align-items-center gap-3 pb-3 mb-5 border-bottom">
   <h1 class="admin-title"><%= t("admin.users.title") %></h1>
-  <p class="text-muted">
+  <p class="text-secondary">
     <%= t("admin.users.subtitle") %>
   </p>
 </div>
@@ -127,7 +127,7 @@
                   <% end %>
                   <div>
                     <div class="fw-bold"><%= link_to user.fullname, admin_user_path(user), class: "text-dark text-decoration-none hover-underline", data: { turbo_frame: "_top" } %></div>
-                    <small class="text-muted"><%= user.male? ? t("form.profile.male") : t("form.profile.female") %></small>
+                    <small class="text-secondary"><%= user.male? ? t("form.profile.male") : t("form.profile.female") %></small>
                   </div>
                 </div>
               </td>
@@ -185,7 +185,7 @@
           <% end %>
         <% else %>
           <tr>
-            <td colspan="7" class="text-center text-muted py-5">
+            <td colspan="7" class="text-center text-secondary py-5">
               <span class="material-symbols-outlined fs-1 d-block mb-2 text-secondary">person_search</span>
               <%= t("admin.users.no_users_found") %>
             </td>

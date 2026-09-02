@@ -74,7 +74,7 @@
   <%= turbo_frame_tag "house-grid", class: "d-block w-100" do %>
     <% if @houses.empty? %>
       <div class="text-center py-5">
-        <p class="fs-5 text-muted fw-semibold"><%= t("form.house.no_houses_found") %></p>
+        <p class="fs-5 text-secondary fw-semibold"><%= t("form.house.no_houses_found") %></p>
       </div>
     <% else %>
       <div class="mt-3 row row-cols-1 row-cols-md-2 g-4 justify-content-center mx-auto">

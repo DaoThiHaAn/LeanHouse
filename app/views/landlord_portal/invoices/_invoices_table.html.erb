@@ -3,7 +3,7 @@
     <div class="invoice-empty-state mx-auto">
       <span class="material-symbols-outlined invoice-empty-icon">receipt</span>
       <p class="fs-5 fw-bold mb-1"><%= t('invoice.no_invoices', month: billing_month.strftime("%m/%Y")) %></p>
-      <p class="text-muted small mb-0"><%= t('invoice.no_invoices_hint') %></p>
+      <p class="text-secondary small mb-0"><%= t('invoice.no_invoices_hint') %></p>
     </div>
   <% else %>
     <div class="table-responsive bg-white rounded-3 shadow-sm border">
@@ -26,7 +26,7 @@
                 <div class="invoice-code-tag">
                   <%= link_to inv.code, landlord_house_invoice_path(house, inv), class: "text-decoration-none" %>
                 </div>
-                <div class="text-muted small font-monospace">ID: #<%= inv.id %></div>
+                <div class="text-secondary small font-monospace">ID: #<%= inv.id %></div>
               </td>
               <td>
                 <div class="fw-semibold text-dark"><%= inv.room.title_name %></div>

@@ -53,7 +53,7 @@
           <div class="text-start border-top pt-3 d-flex flex-column gap-2">
             <!-- Status -->
             <div class="d-flex flex-row flex-md-column justify-content-between align-items-center align-items-md-start gap-1 pb-3 border-bottom">
-              <p class="text-muted small mb-0"><%= t("form.house.state") %>:</p>
+              <p class="text-secondary small mb-0"><%= t("form.house.state") %>:</p>
               <% if @user.is_active? %>
                 <span class="badge bg-success-subtle text-success border border-success-subtle"><%= t("admin.users.status_active") %></span>
               <% else %>
@@ -63,7 +63,7 @@
 
             <!-- Telephone -->
             <div class="d-flex flex-row flex-md-column justify-content-between align-items-center align-items-md-start gap-1 pb-3 border-bottom">
-              <p class="text-muted small mb-0"><%= t("form.profile.tel") %>:</p>
+              <p class="text-secondary small mb-0"><%= t("form.profile.tel") %>:</p>
               <div class="d-flex align-items-center gap-2 flex-wrap">
                 <p class="fw-semibold font-monospace mb-0"><%= @user.display_tel %></p>
                 <% if @user.tel_recycled? %>
@@ -76,7 +76,7 @@
 
             <!-- Gender & Birthday -->
             <div class="d-flex flex-row flex-md-column justify-content-between align-items-center align-items-md-start gap-1 pb-3 border-bottom">
-              <p class="text-muted small mb-0"><%= t("admin.users.sex_and_bday") %>:</p>
+              <p class="text-secondary small mb-0"><%= t("admin.users.sex_and_bday") %>:</p>
               <p class="mb-0 text-start">
                 <%= @user.human_sex %> - <%= @user.bday ? l(@user.bday, format: :default) : t("admin.users.not_updated") %>
               </p>
@@ -84,19 +84,19 @@
 
             <!-- Address -->
             <div class="d-flex flex-row flex-md-column justify-content-between align-items-center align-items-md-start gap-1 pb-3 border-bottom">
-              <p class="text-muted small mb-0 text-nowrap"><%= t("form.profile.address") %>:</p>
+              <p class="text-secondary small mb-0 text-nowrap"><%= t("form.profile.address") %>:</p>
               <p class="mb-0 text-end text-md-start text-break"><%= @user.address.presence || t("admin.users.not_updated") %></p>
             </div>
 
             <!-- Created At -->
             <div class="d-flex flex-row flex-md-column justify-content-between align-items-center align-items-md-start gap-1 pb-3 border-bottom">
-              <p class="text-muted small mb-0"><%= t("admin.users.created_at") %>:</p>
+              <p class="text-secondary small mb-0"><%= t("admin.users.created_at") %>:</p>
               <p class="mb-0"><%= l(@user.created_at, format: :default) rescue @user.created_at.strftime("%d/%m/%Y %H:%M") %></p>
             </div>
 
             <!-- Last Updated -->
             <div class="d-flex flex-row flex-md-column justify-content-between align-items-center align-items-md-start gap-1">
-              <p class="text-muted small mb-0"><%= t("last_updated") %>:</p>
+              <p class="text-secondary small mb-0"><%= t("last_updated") %>:</p>
               <p class="mb-0"><%= l(@user.updated_at, format: :default) rescue @user.updated_at.strftime("%d/%m/%Y %H:%M") %></p>
             </div>
           </div>
@@ -132,7 +132,7 @@
                     <% @houses.each do |house| %>
                       <tr>
                         <td class="ps-3 fw-bold"><%= house.name %></td>
-                        <td class="small text-muted"><%= house.full_address rescue [house.address_l1, house.address_l2].compact_blank.join(", ") %></td>
+                        <td class="small text-secondary"><%= house.full_address rescue [house.address_l1, house.address_l2].compact_blank.join(", ") %></td>
                         <td>
                           <span class="badge <%= house.room? ? 'bg-primary-subtle text-primary border border-primary-subtle' : 'bg-info-subtle text-info border border-info-subtle' %>">
                             <%= house.room? ? t("admin.houses.mode_room") : t("admin.houses.mode_bed") %>
@@ -148,7 +148,7 @@
                     <% end %>
                   <% else %>
                     <tr>
-                      <td colspan="5" class="text-center text-muted py-4"><%= t("admin.users.no_houses_landlord") %></td>
+                      <td colspan="5" class="text-center text-secondary py-4"><%= t("admin.users.no_houses_landlord") %></td>
                     </tr>
                   <% end %>
                 </tbody>
@@ -171,26 +171,26 @@
               <% rentable = @current_stay.rental_unit.rentable %>
               <div class="row g-3">
                 <div class="col-12 col-sm-6">
-                  <p class="text-muted small mb-1"><%= t("form.house.self") %>:</p>
+                  <p class="text-secondary small mb-1"><%= t("form.house.self") %>:</p>
                   <p class="fw-bold mb-0"><%= rentable.house.name rescue '-' %></p>
                 </div>
                 <div class="col-12 col-sm-6">
-                  <p class="text-muted small mb-1"><%= t("admin.users.room_or_bed") %>:</p>
+                  <p class="text-secondary small mb-1"><%= t("admin.users.room_or_bed") %>:</p>
                   <p class="fw-bold mb-0"><%= rentable.is_a?(Room) ? rentable.name : (rentable.is_a?(Bed) ? "#{rentable.room.name} - #{rentable.name}" : '-') %></p>
                 </div>
                 <div class="col-12 col-sm-6">
-                  <p class="text-muted small mb-1"><%= t("admin.users.checkin_at") %>:</p>
+                  <p class="text-secondary small mb-1"><%= t("admin.users.checkin_at") %>:</p>
                   <p class="mb-0"><%= l(@current_stay.checkin_at.to_date, format: :default) rescue @current_stay.checkin_at.strftime("%d/%m/%Y") %></p>
                 </div>
                 <div class="col-12 col-sm-6">
-                  <p class="text-muted small mb-1"><%= t("admin.users.has_contract") %>:</p>
+                  <p class="text-secondary small mb-1"><%= t("admin.users.has_contract") %>:</p>
                   <span class="badge <%= @current_stay.has_contract? ? 'bg-success' : 'bg-secondary' %>">
                     <%= @current_stay.has_contract? ? t("admin.users.contract_signed") : t("admin.users.no_contract_yet") %>
                   </span>
                 </div>
               </div>
             <% else %>
-              <p class="text-muted mb-0"><%= t("admin.users.no_stay_tenant") %></p>
+              <p class="text-secondary mb-0"><%= t("admin.users.no_stay_tenant") %></p>
             <% end %>
           </div>
         </div>
@@ -199,7 +199,7 @@
         <div class="card admin-card">
           <div class="card-header bg-white py-3 border-bottom">
             <h2 class="h5 mb-0 fw-bold d-flex align-items-center gap-2">
-              <span class="material-symbols-outlined text-primary">description</span>
+              <span class="material-symbols-outlined text-primary">contract</span>
               <%= t("admin.users.contract_history") %> (<%= @contracts&.count || 0 %>)
             </h2>
           </div>
@@ -234,7 +234,7 @@
                     <% end %>
                   <% else %>
                     <tr>
-                      <td colspan="4" class="text-center text-muted py-4"><%= t("admin.users.no_contracts") %></td>
+                      <td colspan="4" class="text-center text-secondary py-4"><%= t("admin.users.no_contracts") %></td>
                     </tr>
                   <% end %>
                 </tbody>

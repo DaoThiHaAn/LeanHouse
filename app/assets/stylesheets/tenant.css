@@ -123,9 +123,10 @@
  
 /* Tenant dashboard of landlord */
 .stat-card {
-  border-radius: 12px;
+  border-radius: 16px;
   border-width: 1px;
   border-style: solid;
+  border-left-width: 4px;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -137,6 +138,7 @@
 .stat-card-teal {
   background-color: #e9e6f7;
   border-color: #c2c3eb;
+  border-left-color: #23165d;
 }
 .stat-card-teal .stat-card-title {
   color: #16285d;
@@ -155,6 +157,7 @@
 .stat-card-green {
   background-color: #EAF8F1;
   border-color: #C6ECD9;
+  border-left-color: #198754;
 }
 .stat-card-green .stat-card-title {
   color: #146c43;
@@ -173,6 +176,7 @@
 .stat-card-orange {
   background-color: #FFF4E6;
   border-color: #FADEC0;
+  border-left-color: #E07A1E;
 }
 .stat-card-orange .stat-card-title {
   color: #6C4422;
@@ -191,6 +195,7 @@
 .stat-card-blue {
   background-color: #EDF4FC;
   border-color: #C9E0F7;
+  border-left-color: #2670B8;
 }
 .stat-card-blue .stat-card-title {
   color: #1e5892;
@@ -209,6 +214,7 @@
 .stat-card-red {
   background-color: #ffede8;
   border-color: #f7c9c9;
+  border-left-color: #b82626;
 }
 .stat-card-red .stat-card-title {
   color: #921e1e;

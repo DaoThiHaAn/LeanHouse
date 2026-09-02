@@ -9,20 +9,20 @@
   <div class="row g-3 mb-3 px-4">
     <!-- Vehicle Type -->
     <div class="col-12 col-md-6">
-      <span class="text-muted small d-block"><%= t("request.vehicle_type") %>:</span>
+      <span class="text-secondary small d-block"><%= t("request.vehicle_type") %>:</span>
       <span class="fw-semibold"><%= t("request.vehicle_types.#{requestable.vehicle_type}", default: requestable.vehicle_type.humanize) %></span>
     </div>
 
     <!-- License Plate -->
     <div class="col-12 col-md-6">
-      <span class="text-muted small d-block"><%= t("request.plate_number") %>:</span>
+      <span class="text-secondary small d-block"><%= t("request.plate_number") %>:</span>
       <span class="fw-bold text-uppercase badge bg-light text-dark border px-2 py-1 fs-6"><%= requestable.license_plate %></span>
     </div>
 
     <!-- Brand -->
     <% if requestable.brand.present? %>
       <div class="col-12 col-md-6">
-        <span class="text-muted small d-block"><%= t("request.brand") %>:</span>
+        <span class="text-secondary small d-block"><%= t("request.brand") %>:</span>
         <span class="fw-semibold"><%= requestable.brand %></span>
       </div>
     <% end %>
@@ -30,7 +30,7 @@
     <!-- Model -->
     <% if requestable.model.present? %>
       <div class="col-12 col-md-6">
-        <span class="text-muted small d-block"><%= t("request.model") %>:</span>
+        <span class="text-secondary small d-block"><%= t("request.model") %>:</span>
         <span class="fw-semibold"><%= requestable.model %></span>
       </div>
     <% end %>
@@ -40,20 +40,20 @@
   <div class="row g-3 px-4">
     <!-- Vehicle Photo -->
     <div class="col-12 col-md-6">
-      <span class="text-muted small fw-medium d-block mb-1"><%= t("request.vehicle_img") %>:</span>
+      <span class="text-secondary small fw-medium d-block mb-1"><%= t("request.vehicle_img") %>:</span>
       <% if requestable.vehicle_photo.attached? %>
         <%= image_tag requestable.vehicle_photo, class: "img-fluid vehicle-img",
             alt: "Vehicle photo" %>
       <% else %>
-        <span class="text-muted fst-italic"><%= t("not_available") %></span>
+        <span class="text-secondary fst-italic"><%= t("not_available") %></span>
       <% end %>
     </div>
 
     <!-- Registration Card Image (Watermarked or Purged) -->
     <div class="col-12 col-md-6">
       <div class="mb-1">
-        <span class="text-muted small fw-medium"><%= t("request.vehicle_reg_proof") %>:</span>
-        <span class="material-symbols-outlined text-muted fs-6"
+        <span class="text-secondary small fw-medium"><%= t("request.vehicle_reg_proof") %>:</span>
+        <span class="material-symbols-outlined text-secondary fs-6"
               <%= tooltip("top", :"request.watermark_note_html", html: true) %>>
           info
         </span>

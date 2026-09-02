@@ -86,13 +86,13 @@
                         <%= tooltip("bottom",current_admin.fullname, html:true ) %>>
                       <%= format_name(current_admin.fullname) %>
                     </div>
-                    <div class="role text-muted small"><%= get_role %></div>
+                    <div class="role text-secondary small"><%= get_role %></div>
                   </div>
                 </button>
 
                 <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="adminDropdown">
                   <li class="px-3 py-2 border-bottom">
-                    <p class="small text-muted mb-0"><%= current_admin.email %></p>
+                    <p class="small text-secondary mb-0"><%= current_admin.email %></p>
                   </li>
                   <li>
                     <%= button_to admin_logout_path, method: :delete, class: "dropdown-item text-danger d-flex align-items-center gap-2 py-2" do %>
@@ -133,7 +133,7 @@
 
     <!-- Admin Footer -->
     <footer class="footer py-3 text-center border-top mt-auto admin-navbar">
-      <div class="container text-muted small">
+      <div class="container text-secondary small">
         <span>
           © <%= Date.current.year %> <strong>LeanHouse</strong> -
           <%= t("bar.backoffice") %>

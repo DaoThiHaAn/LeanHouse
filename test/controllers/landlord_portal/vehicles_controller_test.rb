@@ -59,7 +59,15 @@ class LandlordPortal::VehiclesControllerTest < ActionDispatch::IntegrationTest
     }
   end
 
-  test "landlord can view vehicles index" do
+  test "landlord can view vehicles index with summary stats card" do
+    car = Vehicle.create!(
+      tenant: @tenant,
+      house: @house,
+      license_plate: "51K-99999",
+      vehicle_type: :car,
+      brand: "Toyota"
+    )
+
     sign_in_as(@landlord_user)
 
     get landlord_house_vehicles_path(@house)
@@ -67,6 +75,14 @@ class LandlordPortal::VehiclesControllerTest < ActionDispatch::IntegrationTest
     assert_select "h1", text: I18n.t("page_titles.vehicle_mng")
     assert_select "turbo-frame#vehicle_table"
     assert_includes response.body, "59A-12345"
+    assert_includes response.body, "51K-99999"
+
+    # Stats card assertions
+    assert_select "div#vehicle_stats_card" do
+      assert_select "span.stat-card-value", text: "2" # total vehicles: 1 motorbike + 1 car = 2
+      assert_select "div", text: /Xe máy/
+      assert_select "div", text: /Ô tô/
+    end
   end
 
   test "landlord can filter vehicles by type" do
@@ -86,7 +102,7 @@ class LandlordPortal::VehiclesControllerTest < ActionDispatch::IntegrationTest
     assert_not_includes response.body, "59A-12345"
   end
 
-  test "landlord can delete vehicle with reason" do
+  test "landlord can delete vehicle with reason and turbo stream replaces stats card" do
     sign_in_as(@landlord_user)
 
     assert_difference -> { Vehicle.count }, -1 do
@@ -96,6 +112,9 @@ class LandlordPortal::VehiclesControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :success
+    assert_equal "text/vnd.turbo-stream.html", response.media_type
+    assert_includes response.body, "action=\"remove\" target=\"vehicle_row_#{@vehicle.id}\""
+    assert_includes response.body, "action=\"replace\" target=\"vehicle_stats_card\""
   end
 
   test "landlord cannot delete vehicle without reason" do

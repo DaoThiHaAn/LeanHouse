@@ -1,8 +1,15 @@
-<%# Local variables: house, asset, logs %>
+<%# Local variables: house, asset, logs, total_cost, total_count %>
 
 <%= turbo_frame_tag "log_table" do %>
   <!-- Dùng cho Stimulus pagination-sync cập nhật url -->
   <span hidden data-pagination-total-pages="<%= logs.total_pages %>"></span>
+
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+    <h2 class="fs-5 mb-0"><%= t("form.maintenance_log.list") %></h2>
+    <span id="maintenance_total_cost_badge" class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 fs-6 shadow-xs">
+      <%= t("admin.assets.total_maintenance_cost") %>: <strong class="fs-6"><%= format_money(total_cost || @total_cost || 0) %></strong>
+    </span>
+  </div>
 
   <div class="log table-responsive border rounded mt-2">
     <table class="table table-bordered table-hover align-middle mb-0">
@@ -18,7 +25,7 @@
       <tbody>
         <% if logs.empty? %>
           <tr>
-            <td colspan="4" class="text-center py-4 text-muted">
+            <td colspan="4" class="text-center py-4 text-secondary">
               <%= t("form.maintenance_log.unfound") %>
             </td>
           </tr>

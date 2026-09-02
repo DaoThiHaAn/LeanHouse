@@ -65,6 +65,8 @@ en:
     admin_users: "User Management"
     admin_houses: "Property Management"
     admin_house_detail: "Property Detail - %{name}"
+    admin_house_assets: "Assets: %{house_name}"
+    admin_house_services: "Services: %{house_name}"
   view_detail: "View details"
   view_all: "View all"
   actions: "Actions"
@@ -90,4 +92,17 @@ en:
         needs_repair: "appliance(s) need inspection/repair"
         total_subtext: "In the entire property"
         investment_subtext: "Total appliance purchase value"
+  vehicle:
+    stats:
+      total_vehicles: "Total Vehicles"
+      unit: "vehicle(s)"
+      types_breakdown: "Breakdown by Type"
+  enums:
+    vehicle:
+      vehicle_type:
+        motorbike: "Motorbike"
+        electric_bike: "Electric Bike"
+        bicycle: "Bicycle"
+        car: "Car"
+
 

@@ -17,7 +17,7 @@
     </div>
   </td>
 
-  <td class="text-muted fst-italic note" <%= contract.note.to_s.length > 70 ? tooltip('top', contract.note, html: true) : '' %>>
+  <td class="text-secondary fst-italic note" <%= contract.note.to_s.length > 70 ? tooltip('top', contract.note, html: true) : '' %>>
     <%= truncate(contract.note, length: 70) %>
   </td>
 

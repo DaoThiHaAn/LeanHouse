@@ -6,7 +6,7 @@
       <h1 class="mb-3">
         <%= t("page_titles.my_vehicles") %>
       </h1>
-      <p class="text-muted">
+      <p class="text-secondary">
         <%= @house.name %> • <%= @house.full_address %>
       </p>
     </div>
@@ -24,10 +24,10 @@
   <% if @vehicles.empty? %>
     <div class="card border-0 bg-light rounded-4 text-center py-5 px-3">
       <div class="mb-3">
-        <span class="material-symbols-outlined vehicle-icon text-muted">two_wheeler</span>
+        <span class="material-symbols-outlined vehicle-icon text-secondary">two_wheeler</span>
       </div>
       <p class="fs-5 fw-bold mb-3"><%= t("vehicle.no_vehicles_tenant") %></p>
-      <p class="text-muted mb-4">
+      <p class="text-secondary mb-4">
         <%= t("vehicle.register_prompt") %>
       </p>
     </div>

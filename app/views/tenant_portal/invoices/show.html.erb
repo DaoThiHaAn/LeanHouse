@@ -46,7 +46,7 @@
         <h2 class="fw-bolder mb-1 text-danger">
           <%= t('invoice.month_invoice', month: @invoice.billing_month.strftime("%m")) %>
         </h2>
-        <div class="text-muted small font-monospace">
+        <div class="text-secondary small font-monospace">
           <%= t('invoice.code') %>: <span class="fw-bold invoice-code-tag">#<%= @invoice.code %></span> (<%= t('invoice.id') %>: <%= @invoice.id %>)
         </div>
       </div>
@@ -86,17 +86,17 @@
           <span class="material-symbols-outlined text-secondary fs-5">person</span>
           <span class="fw-bold text-dark"><%= t('invoice.mode_individual') %>:</span>
           <span class="text-primary fw-semibold"><%= current_user.fullname %> (SĐT: <%= current_user.tel %>)</span>
-          <span class="text-muted small">- <%= t('invoice.room') %>: <%= @room.title_name %>, <%= @room.floor.name %> (<%= @house.name %>)</span>
+          <span class="text-secondary small">- <%= t('invoice.room') %>: <%= @room.title_name %>, <%= @room.floor.name %> (<%= @house.name %>)</span>
         <% end %>
       </div>
 
       <div class="row g-2 text-dark small">
         <div class="col-sm-6">
-          <span class="text-muted"><%= t('invoice.created_time') %>:</span>
+          <span class="text-secondary"><%= t('invoice.created_time') %>:</span>
           <span class="fw-semibold"><%= @invoice.created_at.strftime("%H:%M:%S %d/%m/%Y") %></span>
         </div>
         <div class="col-sm-6">
-          <span class="text-muted"><%= t('invoice.payment_term') %>:</span>
+          <span class="text-secondary"><%= t('invoice.payment_term') %>:</span>
           <span class="fw-semibold"><%= start_date_str %> - <%= due_date_str %></span>
         </div>
       </div>
@@ -106,7 +106,7 @@
         <span class="badge fs-5 px-3 py-2 font-monospace" style="background-color: #b45309; color: #ffffff;">
           <%= number_to_currency(@invoice.total_amount, unit: "đ", format: "%n %u") %>
         </span>
-        <button type="button" class="btn btn-link btn-sm p-0 text-muted d-print-none" data-bs-toggle="modal" data-bs-target="#tenantInvoiceInfoModal" title="<%= t('invoice.view_details') %>">
+        <button type="button" class="btn btn-link btn-sm p-0 text-secondary d-print-none" data-bs-toggle="modal" data-bs-target="#tenantInvoiceInfoModal" title="<%= t('invoice.view_details') %>">
           <span class="material-symbols-outlined fs-6 align-middle">info</span>
         </button>
       </div>
@@ -124,7 +124,7 @@
       <!-- Lý do thu tiền -->
       <div class="mb-3">
         <span class="fw-bold"><%= t('invoice.reason') %>:</span>
-        <span class="text-muted"><%= @invoice.title.presence || t('invoice.default_title') %></span>
+        <span class="text-secondary"><%= @invoice.title.presence || t('invoice.default_title') %></span>
       </div>
 
       <!-- Diễn giải -->
@@ -136,7 +136,7 @@
           <div class="mb-3 ps-2">
             <span class="text-primary fw-bold"><%= t('invoice.rent_fee') %>:</span>
             <span class="font-monospace fw-bold"><%= number_to_currency(rent_total, unit: "đ", format: "%n %u") %></span>
-            <span class="text-muted small">(<%= start_date_str %> - <%= end_date_str %>)</span>
+            <span class="text-secondary small">(<%= start_date_str %> - <%= end_date_str %>)</span>
           </div>
         <% end %>
 
@@ -144,7 +144,7 @@
         <div class="mb-4">
           <div class="d-flex justify-content-between align-items-center mb-2">
             <span class="text-primary fw-bold"><%= t('invoice.service_fee') %>:</span>
-            <button type="button" class="btn btn-link btn-sm p-0 text-decoration-none text-muted small d-inline-flex align-items-center gap-1 d-print-none" data-bs-toggle="modal" data-bs-target="#tenantServiceInstructionsModal">
+            <button type="button" class="btn btn-link btn-sm p-0 text-decoration-none text-secondary small d-inline-flex align-items-center gap-1 d-print-none" data-bs-toggle="modal" data-bs-target="#tenantServiceInstructionsModal">
               <span class="material-symbols-outlined fs-6">help</span> <%= t('invoice.service_instructions') %>
             </button>
           </div>
@@ -172,11 +172,11 @@
                   %>
                   <tr>
                     <td class="text-start ps-3 fw-semibold text-dark"><%= item.name %></td>
-                    <td class="text-muted"><%= item_start %></td>
-                    <td class="text-muted"><%= item_end %></td>
-                    <td class="text-muted"><%= item.unit %></td>
+                    <td class="text-secondary"><%= item_start %></td>
+                    <td class="text-secondary"><%= item_end %></td>
+                    <td class="text-secondary"><%= item.unit %></td>
                     <td class="text-end font-monospace"><%= number_to_currency(item.unit_price, unit: "", precision: 0) %></td>
-                    <td class="font-monospace text-muted"><%= item.prev_reading.present? ? item.prev_reading : "-" %></td>
+                    <td class="font-monospace text-secondary"><%= item.prev_reading.present? ? item.prev_reading : "-" %></td>
                     <td class="font-monospace fw-bold text-primary"><%= item.latest_reading.present? ? item.latest_reading : "-" %></td>
                     <td class="font-monospace fw-bold text-success"><%= item.quantity %></td>
                     <td class="text-end pe-3 font-monospace fw-bold text-dark">
@@ -186,7 +186,7 @@
                 <% end %>
                 <% if service_items.empty? %>
                   <tr>
-                    <td colspan="9" class="text-muted py-3"><%= t('invoice.no_services') %></td>
+                    <td colspan="9" class="text-secondary py-3"><%= t('invoice.no_services') %></td>
                   </tr>
                 <% end %>
               </tbody>
@@ -274,7 +274,7 @@
 
         <!-- 5. Ghi chú -->
         <% if @invoice.note.present? %>
-          <div class="text-muted small mt-3">
+          <div class="text-secondary small mt-3">
             <strong><%= t('invoice.note') %>:</strong> <%= @invoice.note %>
           </div>
         <% end %>
@@ -290,15 +290,15 @@
             <div class="d-inline-block bg-white p-2 border rounded-3 shadow-sm text-center position-relative" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#tenantZoomQrModal" title="Bấm để phóng to mã QR">
               <div class="small fw-bold text-danger mb-1 font-monospace d-flex justify-content-between align-items-center px-1">
                 <span>VIETQR</span>
-                <span class="material-symbols-outlined text-muted fs-6 d-print-none">zoom_in</span>
+                <span class="material-symbols-outlined text-secondary fs-6 d-print-none">zoom_in</span>
               </div>
               <img src="<%= qr_url %>" alt="Mã VietQR" style="max-width: 190px; width: 100%;" class="rounded">
-              <div class="small text-muted mt-1 font-monospace" style="font-size: 0.75rem;">
+              <div class="small text-secondary mt-1 font-monospace" style="font-size: 0.75rem;">
                 <%= @bank_account.bank.code %> - <%= @bank_account.account_number %>
               </div>
             </div>
           <% else %>
-            <div class="p-3 bg-light rounded text-muted small"><%= t('invoice.no_bank_account_tenant') %></div>
+            <div class="p-3 bg-light rounded text-secondary small"><%= t('invoice.no_bank_account_tenant') %></div>
           <% end %>
         </div>
 
@@ -312,7 +312,7 @@
               <div class="badge bg-success px-4 py-2 fs-6"><%= t('invoice.paid_completed') %></div>
             <% else %>
               <div class="p-3 bg-light rounded border">
-                <div class="small text-muted"><%= t('invoice.transfer_note_strict') %>:</div>
+                <div class="small text-secondary"><%= t('invoice.transfer_note_strict') %>:</div>
                 <div class="fs-6 font-monospace fw-bold text-primary mt-1"><%= @invoice.transfer_note %></div>
               </div>
             <% end %>
@@ -355,7 +355,7 @@
               </div>
             </div>
           </div>
-          <p class="text-muted small mb-0">Mở bất kỳ ứng dụng ngân hàng nào (Vietcombank, MB, Techcombank...) để quét mã tự động điền tiền và nội dung.</p>
+          <p class="text-secondary small mb-0">Mở bất kỳ ứng dụng ngân hàng nào (Vietcombank, MB, Techcombank...) để quét mã tự động điền tiền và nội dung.</p>
         </div>
         <div class="modal-footer border-top">
           <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Đóng</button>
@@ -378,19 +378,19 @@
       </div>
       <div class="modal-body">
         <h6 class="fw-bold text-dark"><%= t('invoice.realtime_usage_title') %></h6>
-        <p class="text-muted small mb-3">
+        <p class="text-secondary small mb-3">
           <%= t('invoice.realtime_usage_desc') %>
           <br>
           <code class="text-primary font-monospace fw-bold"><%= t('invoice.usage_quantity') %> = <%= t('invoice.latest_reading') %> - <%= t('invoice.prev_reading') %></code>
         </p>
 
         <h6 class="fw-bold text-dark"><%= t('invoice.fixed_usage_title') %></h6>
-        <p class="text-muted small mb-3">
+        <p class="text-secondary small mb-3">
           <%= simple_format(t('invoice.fixed_usage_desc')) %>
         </p>
 
         <h6 class="fw-bold text-dark"><%= t('invoice.individual_split_title') %></h6>
-        <p class="text-muted small mb-0">
+        <p class="text-secondary small mb-0">
           <%= t('invoice.individual_split_desc') %>
         </p>
       </div>

@@ -3,7 +3,7 @@
 <% content_for :title, t("page_titles.contract_mng") %>
 
 <h1 class="text-center mb-3"><%= t("page_titles.contract_mng") %></h1>
-<p class="text-muted text-center border-bottom pb-2 mb-3"><%= t("form.contract.mng_note") %></p>
+<p class="text-secondary text-center border-bottom pb-2 mb-3"><%= t("form.contract.mng_note") %></p>
 
 <div class="d-flex gap-5">
   <%# 1. Unsigned tenants collapsible sidebar ... %>
@@ -47,7 +47,7 @@
               </div>
 
               <!-- Staying info -->
-              <p class="text-muted fst-italic staying-info mb-0 mt-1"><%= tenant.current_staying_info %></p>
+              <p class="text-secondary fst-italic staying-info mb-0 mt-1"><%= tenant.current_staying_info %></p>
             </div>
           <% end %>
         </div>

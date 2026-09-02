@@ -1,7 +1,7 @@
 <%# Local variables: request %>
 <tr id="request_row_<%= request.id %>">
   <!-- Request ID -->
-  <td class="px-3 fw-semibold text-muted">
+  <td class="px-3 fw-semibold text-secondary">
     #<%= request.id %>
   </td>
 
@@ -23,7 +23,7 @@
   <!-- Sender (Tenant name + phone) -->
   <td class="px-3">
     <div class="fw-semibold text-dark"><%= vn_name(request.tenant.user.fullname) %></div>
-    <div class="text-muted small"><%= request.tenant.user.tel %></div>
+    <div class="text-secondary small"><%= request.tenant.user.tel %></div>
   </td>
 
   <!-- Status -->
@@ -35,12 +35,12 @@
   </td>
 
   <!-- Sent Time -->
-  <td class="px-3 text-center text-muted small">
+  <td class="px-3 text-center text-secondary small">
     <%= request.created_at.strftime("%H:%M - %d/%m/%Y") %>
   </td>
 
   <!-- Updated Time -->
-  <td class="px-3 text-center text-muted small">
+  <td class="px-3 text-center text-secondary small">
     <%= request.updated_at.strftime("%H:%M - %d/%m/%Y") %>
   </td>
 

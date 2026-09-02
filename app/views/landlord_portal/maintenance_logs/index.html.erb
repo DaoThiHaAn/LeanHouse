@@ -79,8 +79,6 @@
         </div>
       <% end %>
 
-      <h2 class="fs-5 mb-3"><%= t("form.maintenance_log.list") %></h2>
-
       <!-- Maintenance log table -->
       <%= turbo_frame_tag "log_table",
           src: filtered_landlord_house_asset_maintenance_logs_path(@house, @asset, params.permit(:page, :month, :year)),

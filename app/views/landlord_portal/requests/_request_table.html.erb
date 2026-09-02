@@ -27,7 +27,7 @@
       <tbody>
         <% if requests.empty? %>
           <tr>
-            <td colspan="8" class="text-center py-4 text-muted fw-semibold">
+            <td colspan="8" class="text-center py-4 text-secondary fw-semibold">
               <%= (params[:house_id].present? || params[:month].present? || params[:year].present? || params[:status].present? || params[:request_type].present?) ? t("request.filter_empty") : t("request.none") %>
             </td>
           </tr>

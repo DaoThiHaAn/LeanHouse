@@ -46,7 +46,7 @@ module RequestsHelper
       days = request.remaining_expiry_days
       content_tag(:span, class: "badge bg-light text-secondary border d-inline-flex align-items-center gap-1 px-2 py-1 mt-1 small") do
         safe_join([
-          content_tag(:span, "schedule", class: "material-symbols-outlined fs-6 text-muted"),
+          content_tag(:span, "schedule", class: "material-symbols-outlined fs-6 text-secondary"),
           content_tag(:span, I18n.t("request.stats.due_in_days", days: days, default: "Còn #{days} ngày"))
         ])
       end

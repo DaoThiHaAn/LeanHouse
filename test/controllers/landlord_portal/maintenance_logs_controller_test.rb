@@ -53,7 +53,7 @@ class LandlordPortal::MaintenanceLogsControllerTest < ActionDispatch::Integratio
     assert_select "turbo-frame#log_table"
   end
 
-  test "filtered returns log table partial with matching records" do
+  test "filtered returns log table partial with matching records and total cost badge" do
     sign_in_as(@landlord_user)
 
     get filtered_landlord_house_asset_maintenance_logs_path(@house, @asset, month: 6, year: 2025)
@@ -62,14 +62,16 @@ class LandlordPortal::MaintenanceLogsControllerTest < ActionDispatch::Integratio
     assert_includes response.body, "Bơm gas"
     assert_includes response.body, "100,000"
     assert_includes response.body, "5/6/2025"
+    assert_select "span#maintenance_total_cost_badge", text: /100,000/
   end
 
-  test "filtered returns empty message when no records match filter" do
+  test "filtered returns empty message when no records match filter and shows 0 cost" do
     sign_in_as(@landlord_user)
 
     get filtered_landlord_house_asset_maintenance_logs_path(@house, @asset, month: 1, year: 2024)
     assert_response :success
     assert_includes response.body, I18n.t("form.maintenance_log.unfound")
+    assert_select "span#maintenance_total_cost_badge", text: /0/
   end
 
   test "landlord can view new maintenance log modal" do
@@ -136,6 +138,8 @@ class LandlordPortal::MaintenanceLogsControllerTest < ActionDispatch::Integratio
     assert_response :success
     assert_equal "text/vnd.turbo-stream.html", response.media_type
     assert_includes response.body, "Bơm gas và vệ sinh"
+    assert_includes response.body, "action=\"update\" target=\"maintenance_total_cost_badge\""
+    assert_includes response.body, "150,000"
     assert_includes response.body, "close-modal"
 
     @log.reload
@@ -143,7 +147,7 @@ class LandlordPortal::MaintenanceLogsControllerTest < ActionDispatch::Integratio
     assert_equal 150_000, @log.cost
   end
 
-  test "landlord hard deletes maintenance log successfully" do
+  test "landlord hard deletes maintenance log successfully and updates total cost badge" do
     sign_in_as(@landlord_user)
 
     assert_difference -> { @asset.maintenance_logs.count }, -1 do
@@ -153,6 +157,8 @@ class LandlordPortal::MaintenanceLogsControllerTest < ActionDispatch::Integratio
     assert_response :success
     assert_equal "text/vnd.turbo-stream.html", response.media_type
     assert_includes response.body, "action=\"remove\" target=\"#{ActionView::RecordIdentifier.dom_id(@log)}\""
+    assert_includes response.body, "action=\"update\" target=\"maintenance_total_cost_badge\""
+    assert_includes response.body, "0"
     assert_not MaintenanceLog.exists?(@log.id)
   end
 

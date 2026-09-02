@@ -4,7 +4,7 @@
 
 
 <h1 class="text-center mb-3"><%= t("page_titles.tenant_mng") %></h1>
-<p class="text-muted text-center border-bottom pb-2 mb-5"><%= t("form.tenant.mng_note")%></p>
+<p class="text-secondary text-center border-bottom pb-2 mb-5"><%= t("form.tenant.mng_note")%></p>
 
 <%# 1. KPI Summary Cards %>
 <%= render "stats_cards", stats: @stats, house: @house %>
@@ -25,7 +25,7 @@
 
       <%# Search bar %>
       <div class="input-group input-group-sm search-bar">
-        <span class="input-group-text bg-white text-muted">
+        <span class="input-group-text bg-white text-secondary">
           <span class="material-symbols-outlined fs-6">search</span>
         </span>
         <%= f.search_field :query,
