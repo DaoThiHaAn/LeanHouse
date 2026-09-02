@@ -1,0 +1,71 @@
+<%# Locals: stats, house %>
+
+<div id="asset_stats_grid" class="row row-cols-1 row-cols-md-3 g-3 mb-4">
+  <%# 1. Total Assets (Teal Theme) %>
+  <div class="col">
+    <div class="card stat-card stat-card-teal shadow-sm h-100 rounded-3 p-3">
+      <div class="d-flex align-items-center justify-content-between mb-2">
+        <span class="stat-card-title fw-bold">
+          <%= t("form.asset.stats.total_assets", default: "Tổng tài sản") %>
+        </span>
+        <div class="stat-icon-wrap rounded-circle d-flex align-items-center justify-content-center">
+          <span class="material-symbols-filled fs-3">inventory_2</span>
+        </div>
+      </div>
+      <div class="d-flex align-items-baseline gap-2">
+        <span class="fs-3 fw-bold stat-card-value"><%= stats[:total_count] %></span>
+        <p class="stat-card-subtext fw-semibold mb-0"><%= t("form.asset.stats.unit", default: "thiết bị") %></p>
+      </div>
+      <small class="text-muted mt-1 fst-italic"><%= t("form.asset.stats.total_subtext", default: "Trong toàn bộ ngôi nhà") %></small>
+    </div>
+  </div>
+
+  <%# 2. Condition (Green / Orange Theme) %>
+  <div class="col">
+    <div class="card stat-card <%= stats[:damaged_count].to_i.positive? ? 'stat-card-orange' : 'stat-card-green' %> shadow-sm h-100 rounded-3 p-3">
+      <div class="d-flex align-items-center justify-content-between mb-2">
+        <span class="stat-card-title fw-bold">
+          <%= t("form.asset.stats.condition", default: "Tình trạng") %>
+        </span>
+        <div class="stat-icon-wrap rounded-circle d-flex align-items-center justify-content-center <%= 'text-danger' if stats[:damaged_count].to_i.positive? %>">
+          <span class="material-symbols-filled fs-3 <%= 'warning-pulse' if stats[:damaged_count].to_i.positive? %>">
+            <%= stats[:damaged_count].to_i.positive? ? 'build' : 'verified' %>
+          </span>
+        </div>
+      </div>
+      <div class="d-flex align-items-baseline gap-2 flex-wrap">
+        <span class="fs-3 fw-bold stat-card-value text-success"><%= stats[:normal_count] %></span>
+        <span class="text-success fw-semibold"><%= t("form.asset.stats.normal_short", default: "tốt") %></span>
+        <span class="text-muted">·</span>
+        <span class="fs-3 fw-bold stat-card-value <%= stats[:damaged_count].to_i.positive? ? 'text-danger' : 'text-muted' %>"><%= stats[:damaged_count] %></span>
+        <span class="<%= stats[:damaged_count].to_i.positive? ? 'text-danger' : 'text-muted' %> fw-semibold"><%= t("form.asset.stats.damaged_short", default: "hỏng/sửa") %></span>
+      </div>
+      <small class="<%= stats[:damaged_count].to_i.positive? ? 'text-danger fw-semibold' : 'text-muted' %> mt-1 fst-italic">
+        <% if stats[:damaged_count].to_i.positive? %>
+          <%= stats[:damaged_count] %> <%= t("form.asset.stats.needs_repair", default: "thiết bị cần kiểm tra/sửa chữa") %>
+        <% else %>
+          <%= t("form.asset.stats.all_good", default: "Tất cả thiết bị hoạt động tốt") %>
+        <% end %>
+      </small>
+    </div>
+  </div>
+
+  <%# 3. Total Investment Value (Blue Theme) %>
+  <div class="col">
+    <div class="card stat-card stat-card-blue shadow-sm h-100 rounded-3 p-3">
+      <div class="d-flex align-items-center justify-content-between mb-2">
+        <span class="stat-card-title fw-bold">
+          <%= t("form.asset.stats.total_value", default: "Tổng giá trị đầu tư") %>
+        </span>
+        <div class="stat-icon-wrap rounded-circle d-flex align-items-center justify-content-center">
+          <span class="material-symbols-filled fs-3">payments</span>
+        </div>
+      </div>
+      <div class="d-flex align-items-baseline gap-2">
+        <span class="fs-3 fw-bold stat-card-value text-primary"><%= format_money(stats[:total_price]) %></span>
+      </div>
+      <small class="text-muted mt-1 fst-italic"><%= t("form.asset.stats.investment_subtext", default: "Tổng giá trị trang thiết bị") %></small>
+    </div>
+  </div>
+</div>
+

@@ -77,3 +77,17 @@ en:
     room_updated: "Room updated successfully!"
     bed_created: "Bed created successfully!"
     bed_updated: "Bed updated successfully!"
+  form:
+    asset:
+      stats:
+        total_assets: "Total Assets"
+        condition: "Condition"
+        normal_short: "good"
+        damaged_short: "damaged/repair"
+        total_value: "Total Investment"
+        unit: "appliances"
+        all_good: "All appliances in good condition"
+        needs_repair: "appliance(s) need inspection/repair"
+        total_subtext: "In the entire property"
+        investment_subtext: "Total appliance purchase value"
+

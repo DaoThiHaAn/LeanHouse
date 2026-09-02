@@ -304,6 +304,17 @@ vi:
       delete_cf: "Bạn có chắc chắn muốn xóa tài sản này?"
       unfound: "Không tìm thấy tài sản nào!"
       status: "Tình trạng"
+      stats:
+        total_assets: "Tổng tài sản"
+        condition: "Tình trạng"
+        normal_short: "tốt"
+        damaged_short: "hỏng/sửa"
+        total_value: "Tổng giá trị đầu tư"
+        unit: "thiết bị"
+        all_good: "Tất cả thiết bị hoạt động tốt"
+        needs_repair: "thiết bị cần kiểm tra/sửa chữa"
+        total_subtext: "Trong toàn bộ ngôi nhà"
+        investment_subtext: "Tổng giá trị trang thiết bị"
 
     maintenance_log:
       self: "Lịch sử bảo hành, sửa chữa"

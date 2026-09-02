@@ -1,5 +1,9 @@
 <%= turbo_stream.remove ActionView::RecordIdentifier.dom_id(@asset) %>
 
+<%= turbo_stream.replace "asset_stats_grid" do %>
+  <%= render "landlord_portal/assets/stats_cards", stats: @stats, house: @house %>
+<% end %>
+
 <%= turbo_stream.update "flash" do %>
   <%= render "layouts/shared_components/flash_message" %>
 <% end %>

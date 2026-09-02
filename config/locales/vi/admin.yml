@@ -101,7 +101,7 @@ vi:
       total_houses: "Tổng số: %{count} nhà"
       list: "Danh sách Nhà"
       search_placeholder: "Tìm theo tên nhà, địa chỉ..."
-      back_to_list: "Quay lại danh sách"
+      back_to_list: "Quay lại Danh sách Nhà"
       house_info: "Thông tin Nhà"
       house_name: "Tên nhà"
       owner: "Chủ nhà sở hữu"

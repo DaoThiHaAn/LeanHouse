@@ -2,6 +2,10 @@
   <%= render "landlord_portal/assets/asset_row", house: @house, asset: @asset %>
 <% end %>
 
+<%= turbo_stream.replace "asset_stats_grid" do %>
+  <%= render "landlord_portal/assets/stats_cards", stats: @stats, house: @house %>
+<% end %>
+
 <%= turbo_stream.append "events" do %>
   <%= render "layouts/shared_components/event", event: "close-modal" %>
 <% end %>

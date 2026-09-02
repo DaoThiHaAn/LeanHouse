@@ -3,21 +3,16 @@ class LandlordPortal::AssetsController < LandlordPortal::BaseController
 
   load_and_authorize_resource :asset, through: :house, except: %i[new create index]
 
-  ASSETS_PER_PAGE = 15
-
   def index
     @assets = @house.assets.includes(room: :floor).sorted
-
-    @available_categories = @house.assets.distinct.order(:category).pluck(:category).compact.map do |cat|
-      [ I18n.t("enums.asset.categories.#{cat}", default: cat), cat ]
-    end
+    @stats = @house.asset_summary_stats
+    @available_categories = available_categories_options
   end
 
   def filtered
-    @assets = filtered_assets
+    @assets = LandlordAssetFilter.call(house: @house, params: params)
     render partial: "asset_table", locals: { house: @house, assets: @assets }
   end
-
 
   def new
     @asset = Asset.new
@@ -29,14 +24,7 @@ class LandlordPortal::AssetsController < LandlordPortal::BaseController
   end
 
   def create
-     # Handle "other" category option case
-     category =
-      if params[:category_select] == "other"
-                params[:custom_category]&.strip
-      else
-          params[:category_select]
-      end
-    @asset = Asset.new(asset_params.merge(category: category))
+    @asset = Asset.new(asset_params_with_category)
 
     if @asset.save
       redirect_to landlord_house_assets_path(@house), notice: t("success_messages.asset_created")
@@ -48,6 +36,7 @@ class LandlordPortal::AssetsController < LandlordPortal::BaseController
 
   def update
     if @asset.update(asset_params)
+      @stats = @house.asset_summary_stats
       flash.now[:notice] = t("success_messages.asset_updated")
       respond_to do |format|
         format.turbo_stream
@@ -61,6 +50,7 @@ class LandlordPortal::AssetsController < LandlordPortal::BaseController
 
   def destroy
     @asset.destroy
+    @stats = @house.asset_summary_stats
     flash.now[:notice] = t("success_messages.asset_deleted")
     respond_to do |format|
       format.turbo_stream
@@ -71,18 +61,15 @@ class LandlordPortal::AssetsController < LandlordPortal::BaseController
   private
 
   def prepare_form_fields
-    # Get category options
     @category_options = Asset.category_options
-
-    # Filter all active rooms group by floors
     @rooms = @house.rooms.active.includes(:floor).sorted
     @floors = @rooms.map(&:floor).uniq.sort_by(&:position)
     @room_options = @rooms.map do |room|
-        {
-          id: room.id,
-          floorId: room.floor_id,
-          name: room.name
-        }
+      {
+        id: room.id,
+        floorId: room.floor_id,
+        name: room.name
+      }
     end
   end
 
@@ -90,13 +77,14 @@ class LandlordPortal::AssetsController < LandlordPortal::BaseController
     params.require(:asset).permit(:room_id, :brand, :model, :price, :purchased_at, :note, :status)
   end
 
-  def filtered_assets
-    scope = @house.assets.includes(room: :floor)
-    scope = scope.where(category: params[:category]) if params[:category].present?
-    scope = scope.where(status: params[:status]) if params[:status].present?
+  def asset_params_with_category
+    category = params[:category_select] == "other" ? params[:custom_category]&.strip : params[:category_select]
+    asset_params.merge(category: category)
+  end
 
-    scope.sorted
-          .page(params[:page])
-          .per(ASSETS_PER_PAGE)
+  def available_categories_options
+    @house.assets.distinct.order(:category).pluck(:category).compact.map do |cat|
+      [ I18n.t("enums.asset.categories.#{cat}", default: cat), cat ]
+    end
   end
 end
