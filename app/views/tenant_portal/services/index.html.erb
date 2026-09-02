@@ -3,7 +3,7 @@
 <% content_for :title, t("page_titles.used_sv") %>
 
 <div class="tenant-contract main-container w-75">
-  <div class="d-flex justify-content-between align-items-center mb-4">
+  <div class="d-flex justify-content-between align-items-center mb-5">
     <h1 class="mb-0"><%= t("page_titles.used_sv") %></h1>
     <%= link_to tenant_service_usage_logs_path, class: "btn btn-outline-primary d-inline-flex align-items-center gap-1 shadow-sm" do %>
       <span class="material-symbols-outlined fs-6">electric_meter</span> Lịch sử & Nộp Chỉ số thực tế
@@ -12,7 +12,12 @@
 
   <%# Table of applied services %>
   <% if @room_services.empty? %>
-    <p class="mt-1"><%= t("none") %></p>
+    <div class="service-empty-state mx-auto">
+      <span class="material-symbols-outlined service-empty-icon">home_repair_service</span>
+      <p class="fs-5 fw-bold mb-1"><%= t("form.service.no_services_tenant") %></p>
+      <p class="text-muted mb-0"><%= t("form.service.no_services_tenant_hint") %></p>
+    </div>
+
   <% else %>
     <div class="floor table-responsive border rounded mt-2">
       <table class="table table-bordered table-hover align-middle mb-0">
@@ -54,4 +59,3 @@
     </div>
   <%end%>
 </div>
-

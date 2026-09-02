@@ -127,6 +127,175 @@ class AdminPortal::DashboardAndUsersControllerTest < ActionDispatch::Integration
     assert_response :success
     assert_includes response.body, "Dorm House"
     assert_includes response.body, "1,200,000 đ"
-    assert_includes response.body, "Giá giường"
+    assert_includes response.body, "Giá thuê"
+  end
+
+  test "should show house sidebar with links and default structure" do
+    post admin_handle_login_url, params: { email: @admin.email, password: "Password123!" }
+
+    landlord = Landlord.find_or_create_by!(id: @user.id)
+    house = House.create!(
+      landlord: landlord,
+      name: "Service House",
+      mode: :room,
+      address_l1: "789 Street",
+      address_l2: "Ward 3",
+      address_l3: "District 3",
+      floors_count: 1,
+      inv_creation_date: 1
+    )
+    floor = house.floors.create!(name: "Tầng 1", position: 1)
+    room = floor.rooms.create!(name: "301", area: 20, max_slots: 2, tenants_count: 1)
+    room.create_rental_unit!(rent: 3_000_000, deposit: 3_000_000)
+
+    service = house.services.create!(name: "Điện sinh hoạt", note: "Theo công tơ riêng")
+    variant = service.service_variants.create!(fee: 3500, unit: "per_kwh", is_real_time: true)
+    variant.room_services.create!(room: room)
+
+    get admin_house_url(house)
+    assert_response :success
+    assert_includes response.body, "Service House"
+    assert_includes response.body, "301"
+    assert_includes response.body, "Dịch vụ & Tiện ích"
+    assert_includes response.body, admin_house_services_path(house)
+    assert_includes response.body, admin_house_assets_path(house)
+  end
+
+  test "should access admin house services dedicated page" do
+    post admin_handle_login_url, params: { email: @admin.email, password: "Password123!" }
+
+    landlord = Landlord.find_or_create_by!(id: @user.id)
+    house = House.create!(
+      landlord: landlord,
+      name: "Full Service House",
+      mode: :room,
+      address_l1: "789 Street",
+      address_l2: "Ward 3",
+      address_l3: "District 3",
+      floors_count: 1,
+      inv_creation_date: 1
+    )
+    floor = house.floors.create!(name: "Tầng 1", position: 1)
+    room = floor.rooms.create!(name: "101", area: 20, max_slots: 2, tenants_count: 1)
+    room.create_rental_unit!(rent: 3_000_000, deposit: 3_000_000)
+
+    service = house.services.create!(name: "Internet Cáp Quang", note: "Tốc độ 1Gbps")
+    variant = service.service_variants.create!(fee: 100_000, unit: "per_room", is_real_time: false)
+    variant.room_services.create!(room: room)
+
+    get admin_house_services_url(house)
+    assert_response :success
+    assert_includes response.body, "Internet Cáp Quang"
+    assert_includes response.body, "Tốc độ 1Gbps"
+    assert_includes response.body, "100,000đ"
+    assert_includes response.body, "101"
+  end
+
+  test "should show beds and occupant in bed mode" do
+    post admin_handle_login_url, params: { email: @admin.email, password: "Password123!" }
+
+    landlord = Landlord.find_or_create_by!(id: @user.id)
+    tenant_user = User.create!(
+      fullname: "Tran Van B",
+      tel: "0987654321",
+      password: "Password123!",
+      password_confirmation: "Password123!",
+      sex: "male",
+      role: "tenant",
+      is_active: true
+    )
+    tenant = Tenant.find_or_create_by!(id: tenant_user.id)
+
+    house = House.create!(
+      landlord: landlord,
+      name: "Bed Occupant House",
+      mode: :bed,
+      address_l1: "123 Dorm Street",
+      address_l2: "Ward 4",
+      address_l3: "District 4",
+      floors_count: 1,
+      inv_creation_date: 1
+    )
+    floor = house.floors.create!(name: "Tầng 1", position: 1)
+    room = floor.rooms.create!(name: "K101", area: 28, max_slots: 2, tenants_count: 1)
+    room.create_beds(count: 2, rent: 1_500_000, deposit: 1_500_000)
+
+    bed1 = room.beds.first
+    bed1.update!(is_available: false)
+    bed1.rental_unit.tenant_stays.create!(tenant: tenant, checkin_at: Date.current, has_contract: true)
+
+    get admin_house_url(house)
+    assert_response :success
+    assert_includes response.body, "Bed Occupant House"
+    assert_includes response.body, "Tran Van B"
+    assert_includes response.body, "0987654321"
+    assert_includes response.body, "1,500,000"
+
+    # Test room name search & status filtering
+    get admin_house_url(house, q: "K101")
+    assert_response :success
+    assert_includes response.body, "K101"
+
+    get admin_house_url(house, floor_id: floor.id)
+    assert_response :success
+    assert_includes response.body, "K101"
+
+    get admin_house_url(house, status: "occupied")
+    assert_response :success
+    assert_includes response.body, "K101"
+
+    get admin_house_url(house, q: "NonExistentRoom")
+    assert_response :success
+    assert_includes response.body, "Không tìm thấy phòng nào"
+  end
+
+  test "should show assets card in house detail and access dedicated assets page with maintenance logs" do
+    post admin_handle_login_url, params: { email: @admin.email, password: "Password123!" }
+
+    landlord = Landlord.find_or_create_by!(id: @user.id)
+    house = House.create!(
+      landlord: landlord,
+      name: "Asset House",
+      mode: :room,
+      address_l1: "456 Asset Street",
+      address_l2: "Ward 5",
+      address_l3: "District 5",
+      floors_count: 1,
+      inv_creation_date: 1
+    )
+    floor = house.floors.create!(name: "Tầng 1", position: 1)
+    room = floor.rooms.create!(name: "A101", area: 25, max_slots: 2, tenants_count: 0)
+    room.create_rental_unit!(rent: 4_000_000, deposit: 4_000_000)
+
+    asset = room.assets.create!(
+      category: "air_con",
+      brand: "Daikin",
+      model: "Inverter 1.5HP",
+      price: 8_500_000,
+      status: :under_repair,
+      note: "Phòng khách"
+    )
+
+    log = asset.maintenance_logs.create!(
+      performed_on: Date.yesterday,
+      cost: 350_000,
+      content: "Nạp gas và vệ sinh lưới lọc"
+    )
+
+    # 1. House detail show view
+    get admin_house_url(house)
+    assert_response :success
+    assert_includes response.body, "Tài sản & Bảo trì"
+    assert_includes response.body, admin_house_assets_path(house)
+
+    # 2. Dedicated assets page
+    get admin_house_assets_url(house)
+    assert_response :success
+    assert_includes response.body, "Máy lạnh"
+    assert_includes response.body, "Daikin - Inverter 1.5HP"
+    assert_includes response.body, "Đang sửa chữa"
+    assert_includes response.body, "Nạp gas và vệ sinh lưới lọc"
+    assert_includes response.body, "350,000 đ"
+    assert_includes response.body, "A101"
   end
 end

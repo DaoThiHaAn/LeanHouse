@@ -1,32 +1,31 @@
 <% content_for :title, t("page_titles.admin_users") %>
 
-<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 pb-3 mb-4 border-bottom">
-  <div>
-    <h1 class="mb-3 admin-title"><%= t("admin.users.title") %></h1>
-    <p class="text-muted mb-0">
-      <%= t("admin.users.subtitle") %>
-    </p>
-  </div>
+<div class="d-flex flex-column align-items-center gap-3 pb-3 mb-5 border-bottom">
+  <h1 class="admin-title"><%= t("admin.users.title") %></h1>
+  <p class="text-muted">
+    <%= t("admin.users.subtitle") %>
+  </p>
 </div>
 
 <!-- Search and Filter Form (AJAX via Turbo Frame and Stimulus SearchController) -->
-<div class="admin-filter-container mb-4">
+<div class="mb-4">
   <%= form_with url: admin_users_path, method: :get,
-                class: "row g-3 align-items-center",
+                class: "row g-3 align-items-center justify-content-center",
                 data: {
                   controller: "search",
                   turbo_frame: "admin_users_table",
                   turbo_action: "advance"
                 } do |f| %>
-    <div class="col-12 col-sm-6 col-lg-4">
-      <div class="input-group">
-        <span class="input-group-text bg-white">
-          <span class="material-symbols-outlined fs-5 text-muted">search</span>
+
+    <div class="col-12 col-sm-6 col-lg-3">
+      <div class="input-group border rounded-3 overflow-hidden shadow-sm transition-all" style="focus-within: border-color: #3b82f6;">
+        <span class="input-group-text bg-white border-0 pe-1">
+          <span class="material-symbols-outlined fs-5 text-secondary">search</span>
         </span>
         <%= f.search_field :q,
             value: @query,
             placeholder: t("admin.users.search_placeholder"),
-            class: "form-control shadow-sm",
+            class: "form-control border-0 ps-2 bg-white shadow-none",
             data: {
               search_target: "input",
               action: "input->search#debounce search->search#debounce"
@@ -34,35 +33,48 @@
       </div>
     </div>
 
+
     <div class="col-5 col-md-3 col-lg-2">
-      <%= f.select :role,
-          options_for_select([
-            [t("admin.users.filter_all_roles"), "all"],
-            [t("admin.users.filter_landlord"), "landlord"],
-            [t("admin.users.filter_tenant"), "tenant"]
-          ], @role_filter),
-          {},
-          class: "form-select shadow-sm",
-          data: {
-            action: "change->search#changed"
-          } %>
+      <div class="form-floating shadow-sm rounded">
+        <%= f.select :role,
+            options_for_select([
+              [t("all"), "all"],
+              [t("admin.users.filter_landlord"), "landlord"],
+              [t("admin.users.filter_tenant"), "tenant"]
+            ], @role_filter),
+            {},
+            class: "form-select",
+            id: "floatingRoleSelect",
+            data: {
+              action: "change->search#changed"
+            } %>
+        <label for="floatingRoleSelect" class="text-secondary small fw-medium">
+          <%= t("role.self") %>
+        </label>
+      </div>
     </div>
 
-    <div class="col-6 col-md-4 col-lg-3">
-      <%= f.select :status,
-          options_for_select([
-            [t("admin.users.filter_all_statuses"), "all"],
-            [t("admin.users.status_active"), "active"],
-            [t("admin.users.status_inactive"), "inactive"]
-          ], @status_filter),
-          {},
-          class: "form-select shadow-sm",
-          data: {
-            action: "change->search#changed"
-          } %>
+    <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+      <div class="form-floating shadow-sm rounded">
+        <%= f.select :status,
+            options_for_select([
+              [t("all"), "all"],
+              [t("admin.users.status_active"), "active"],
+              [t("admin.users.status_inactive"), "inactive"]
+            ], @status_filter),
+            {},
+            class: "form-select",
+            id: "floatingStatusSelect",
+            data: {
+              action: "change->search#changed"
+            } %>
+        <label for="floatingStatusSelect" class="text-secondary small fw-medium">
+          <%= t("admin.users.status") %>
+        </label>
+      </div>
     </div>
 
-    <div class="col-4 col-md-2 ms-5">
+    <div class="col-4 col-md-2">
       <button type="button"
               class="btn btn-outline-secondary d-flex align-items-center gap-1 <%= 'd-none' unless @query.present? || (@role_filter.present? && @role_filter != 'all') || (@status_filter.present? && @status_filter != 'all') %>"
               data-search-target="clearButton"
@@ -76,7 +88,12 @@
 
 <!-- Users Table with Turbo Frame for AJAX updates -->
 <%= turbo_frame_tag "admin_users_table" do %>
-  <div class="d-flex justify-content-end mb-3">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>
+      <span class="material-symbols-filled fs-3">user_attributes</span>
+      <%= t("admin.users.list") %>
+    </h2>
+
     <span class="badge bg-light text-dark border p-2 fs-6">
       <%= t("admin.users.total_users", count: @users.count) %>
     </span>
@@ -160,7 +177,7 @@
                       data: { turbo_confirm: user.is_active? ? t("admin.users.confirm_lock_user", name: user.fullname) : t("admin.users.confirm_unlock_user", name: user.fullname) },
                       class: "btn btn-sm #{user.is_active? ? 'btn-outline-danger' : 'btn-outline-success'}",
                       title: user.is_active? ? t("admin.users.lock_account") : t("admin.users.unlock_account") do %>
-                    <span class="material-symbols-outlined fs-6 align-middle"><%= user.is_active? ? "lock" : "lock_open" %></span>
+                    <span class="material-symbols-filled fs-6 align-middle"><%= user.is_active? ? "lock" : "lock_open" %></span>
                   <% end %>
                 </div>
               </td>

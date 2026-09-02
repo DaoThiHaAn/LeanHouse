@@ -60,7 +60,7 @@
 
 .unsigned.alert {
   max-width: 300px;
-  min-width: 150px;
+  width: fit-content;
   max-height: 50vh;
 }
 

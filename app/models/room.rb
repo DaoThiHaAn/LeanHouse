@@ -7,6 +7,8 @@ class Room < ApplicationRecord
   has_many :beds, inverse_of: :room, dependent: :destroy
   has_many :tenant_stays, through: :rental_unit
   has_many :tenants, through: :tenant_stays
+  has_many :staying_tenant_stays, -> { staying }, through: :rental_unit, source: :tenant_stays
+  has_many :staying_tenants, through: :staying_tenant_stays, source: :tenant
   has_many :bed_rental_units, through: :beds, source: :rental_unit
   has_many :room_services, inverse_of: :room, dependent: :destroy
   has_many :service_variants, through: :room_services, inverse_of: :rooms

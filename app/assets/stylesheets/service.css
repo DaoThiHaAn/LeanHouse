@@ -223,6 +223,21 @@
   border: 1px solid #a37b69 !important
 }
 
+/* --- Empty States --- */
+.service-empty-state {
+  background: #f8fafc;
+  border: 2px dashed #cbd5e1;
+  border-radius: 1rem;
+  text-align: center;
+  padding: 3.5rem 1.5rem;
+}
+
+.service-empty-icon {
+  font-size: 4rem;
+  color: #94a3b8;
+  margin-bottom: 0.75rem;
+}
+
 .empty-state-icon {
   font-size: 4rem;
   display: block;

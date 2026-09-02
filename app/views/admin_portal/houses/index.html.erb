@@ -1,52 +1,58 @@
 <% content_for :title, t("page_titles.admin_houses") %>
 
-<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 pb-3 mb-4 border-bottom">
-  <div>
-    <h1 class="mb-3"><%= t("admin.houses.title") %></h1>
-    <p class="text-muted">
-      <%= t("admin.houses.subtitle") %>
-    </p>
-  </div>
+<div class="d-flex flex-column align-items-center gap-3 pb-3 pt-2 mb-4 border-bottom">
+  <h1><%= t("admin.houses.title") %></h1>
+  <p class="text-muted">
+    <%= t("admin.houses.subtitle") %>
+  </p>
 </div>
 
 <!-- Search & Filter Form (AJAX via Turbo Frame and Stimulus SearchController) -->
-<div class="admin-filter-container mb-4">
+<div class="mb-4">
   <%= form_with url: admin_houses_path, method: :get,
-                class: "row g-3 align-items-center",
+                class: "row g-3 align-items-center justify-content-center",
                 data: {
                   controller: "search",
                   turbo_frame: "admin_houses_table",
                   turbo_action: "advance"
                 } do |f| %>
-    <div class="col-12 col-sm-7 col-md-6">
-      <div class="input-group">
-        <span class="input-group-text bg-white">
-          <span class="material-symbols-outlined fs-5 text-muted">search</span>
+
+    <div class="col-12 col-sm-6 col-md-5 col-lg-4">
+      <div class="input-group border rounded-3 overflow-hidden shadow-sm transition-all">
+        <span class="input-group-text bg-white border-0 pe-1">
+          <span class="material-symbols-outlined fs-5 text-secondary">search</span>
         </span>
         <%= f.search_field :q,
             value: @query,
             placeholder: t("admin.houses.search_placeholder"),
-            class: "form-control shadow-sm",
+            class: "form-control border-0 ps-2 bg-white shadow-none",
             data: {
               search_target: "input",
-              action: "input->search#debounce search->search#debounce"
+              action: "input->search#debounce search#debounce"
             } %>
       </div>
     </div>
 
-    <div class="col-6 col-sm-5 col-md-3">
-      <%= f.select :mode,
-          options_for_select([
-            [t("admin.houses.filter_all_modes"), ""],
-            [t("admin.houses.filter_room"), "room"],
-            [t("admin.houses.filter_bed"), "bed"]
-          ], @mode_filter),
-          {},
-          class: "form-select shadow-sm",
-          data: {
-            action: "change->search#changed"
-          } %>
+    <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+      <div class="form-floating shadow-sm rounded-3">
+        <%= f.select :mode,
+            options_for_select([
+              [t("all"), ""],
+              [t("admin.houses.filter_room"), "room"],
+              [t("admin.houses.filter_bed"), "bed"]
+            ], @mode_filter),
+            {},
+            class: "form-select",
+            id: "floatingModeSelect",
+            data: {
+              action: "change->search#changed"
+            } %>
+        <label for="floatingModeSelect" class="text-secondary small fw-medium">
+          <%= t("admin.houses.rental_mode") %>
+        </label>
+      </div>
     </div>
+
 
     <div class="col-6 col-md-2 d-flex gap-2">
       <button type="button"
@@ -62,7 +68,12 @@
 
 <!-- Houses Table with Turbo Frame for AJAX updates -->
 <%= turbo_frame_tag "admin_houses_table" do %>
-  <div class="d-flex justify-content-end mb-3">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>
+      <span class="material-symbols-filled fs-3">house</span>
+      <%= t("admin.houses.list") %>
+    </h2>
+
     <span class="badge bg-light text-dark border p-2 fs-6">
       <%= t("admin.houses.total_houses", count: @houses.count) %>
     </span>
@@ -76,7 +87,7 @@
               <th><%= t("role.landlord") %></th>
               <th><%= t("form.house.addr") %></th>
               <th><%= t("form.house.mode") %></th>
-              <th><%= t("form.floor.rooms_count") %></th>
+              <th><%= t("admin.houses.structure") %></th>
               <th><%= t("admin.houses.created_at") %></th>
               <th class="text-center"><%= t("actions") %></th>
             </tr>

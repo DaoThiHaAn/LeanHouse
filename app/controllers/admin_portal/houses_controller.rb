@@ -12,11 +12,15 @@ module AdminPortal
     end
 
     def show
-      @house = House.active.includes(
-        landlord: :user,
-        floors: { rooms: [ :rental_unit, { beds: :rental_unit } ] },
-        services: :service_variants
-      ).find(params[:id])
+      @house = House.active.includes(landlord: :user).find(params[:id])
+      @floors = @house.floors.pos_order
+      @total_rooms_count = @house.rooms.active.count
+
+      @floor_filter = params[:floor_id].presence
+      @status_filter = params[:status].presence
+      @query = params[:q].presence
+
+      @rooms = HouseRoomsFilter.call(house: @house, params: params)
     end
   end
 end

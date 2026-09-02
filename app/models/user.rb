@@ -64,7 +64,7 @@ class User < ApplicationRecord
 
   # @param role ["landlord", "tenant"]
   def self.find_acc(tel, role)
-    registered.find_by(tel: tel, role: role)
+    registered.find_by(tel: tel&.to_s&.squish, role: role)
   end
 
   # Resize avatar

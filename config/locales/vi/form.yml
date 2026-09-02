@@ -229,6 +229,8 @@ vi:
       mng_note: "Nơi quản lý các dịch vụ trong nhà của bạn"
       none: "Chưa có dịch vụ nào trong Nhà"
       applied_sv: "Dịch vụ áp dụng"
+      no_services_tenant: "Phòng chưa có dịch vụ nào"
+      no_services_tenant_hint: "Các dịch vụ (điện, nước, internet...) sẽ xuất hiện khi chủ nhà thiết lập cho phòng."
       info_1: "Dưới đây là những dịch vụ cơ bản, tick để chọn dịch vụ bạn muốn."
       info_2: "Tất cả dịch vụ được áp dụng như nhau cho tất cả các phòng, bạn có thể tùy chỉnh sau."
       elec_money: "Điện"

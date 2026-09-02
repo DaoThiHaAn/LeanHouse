@@ -228,6 +228,9 @@ Rails.application.routes.draw do
         patch :recycle_phone
       end
     end
-    resources :houses, only: [ :index, :show ]
+    resources :houses, only: [ :index, :show ] do
+      resources :services, only: [ :index ]
+      resources :assets, only: [ :index ]
+    end
   end
 end
