@@ -3,8 +3,8 @@ vi:
     title: "Hóa đơn"
     my_invoices: "Hóa đơn của tôi"
     my_invoices_subtitle: "Xem chi tiết hóa đơn và xác nhận thanh toán."
-    management: "Quản lý Hóa đơn & Thu tiền"
-    management_subtitle: "Xuất hóa đơn, theo dõi trạng thái thanh toán và mã chuyển khoản VietQR."
+    management: "Quản lý Hóa đơn"
+    management_subtitle: "Nơi quản lý các hóa đơn của nhà, xuất hóa đơn mới, và theo dõi trạng thái thanh toán."
     new_invoice: "Xuất hóa đơn mới"
     create_invoice_title: "Lập Hóa đơn Thu tiền"
     edit_invoice: "Chỉnh sửa hóa đơn"
@@ -46,6 +46,7 @@ vi:
     auto_meter_sync_desc: "Hệ thống tự động tìm phiếu ghi chỉ số gần nhất trên hoặc trước tháng này để điền sẵn vào hóa đơn. Bạn cũng có thể sửa hoặc nhập trực tiếp chỉ số mới ngay tại bảng bên dưới mà không cần vào trang Ghi chỉ số trước."
     qr_code_sync_title: "4. Đồng bộ Mã hóa đơn & VietQR"
     qr_code_sync_desc: "Tháng tính toán sẽ được tự động tích hợp vào Mã hóa đơn (ví dụ: HD2609-...) và cú pháp chuyển khoản QR để đối soát tự động khi khách thanh toán."
+    
     guide:
       btn_title: "Hướng dẫn lập hóa đơn"
       modal_title: "Cẩm nang & Quy trình Lập Hóa đơn Thu tiền"
@@ -75,6 +76,7 @@ vi:
       vietqr_point2: "Cú pháp chuyển khoản tự động: Hệ thống tạo sẵn cú pháp chuẩn (ví dụ: HD2609-101-ABCD), khách chỉ cần quét mã bằng bất kỳ app ngân hàng nào là thông tin tự động điền đủ."
       vietqr_point3: "Gạch nợ tức thì: Giảm thiểu tối đa sai sót nhầm lẫn và thời gian đối soát chuyển khoản thủ công."
       btn_got_it: "Bắt đầu lập hóa đơn"
+    
     realtime_usage_title: "1. Dịch vụ đo theo công tơ / chỉ số thực tế (Real-time Usage)"
     realtime_usage_desc: "Bao gồm tất cả các dịch vụ có lắp đặt đồng hồ đo đạc riêng (ví dụ: Điện, Nước, Khí Gas, Trạm sạc xe, Nước nóng...). Lượng tiêu thụ được tính bằng:"
     fixed_usage_title: "2. Dịch vụ tính theo định mức cố định"
@@ -132,6 +134,7 @@ vi:
     calculate_formula_title: "Công thức tính tổng tiền"
     immutability_notice: "Hóa đơn sau khi xuất sẽ được lưu cố định và hiển thị trên cổng người thuê."
     issue_button: "Xuất Hóa Đơn"
+    
     status:
       pending: "Chưa thanh toán"
       paid: "Đã thanh toán"
@@ -139,7 +142,9 @@ vi:
       cancelled: "Đã hủy"
       in_term: "Trong thời hạn"
       waiting_payment: "Chờ thanh toán"
+    
     phone_abbr: "SĐT"
+    
     vietqr:
       title: "Mã QR Thanh Toán VietQR"
       click_to_zoom: "Bấm để phóng to mã QR"
@@ -155,7 +160,7 @@ vi:
       cancel: "Hủy hóa đơn"
       cancel_confirm: "Hủy hóa đơn này? Các chỉ số đo đạc dịch vụ sẽ được giải phóng."
       back: "Quay lại"
-      back_to_list: "Quay lại danh sách"
+      back_to_list: "Quay lại Danh sách hóa đơn"
       view: "Xem"
       done: "Thu"
       delete: "Xóa dòng"
@@ -163,6 +168,7 @@ vi:
       add_discount: "+ Thêm khoản giảm trừ"
       detail_and_qr: "Chi tiết & Quét QR"
       close: "Đóng"
+
     no_invoices: "Chưa có hóa đơn nào trong tháng %{month}"
     no_invoices_hint: "Bấm nút \"Xuất hóa đơn mới\" để tạo hóa đơn cho các phòng."
     no_invoices_tenant: "Bạn chưa có hóa đơn nào"

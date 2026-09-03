@@ -31,7 +31,7 @@ module AdminPortal
         @houses = House.where(landlord_id: @user.id, is_deleted: false).includes(:floors, :rooms)
       elsif @user.tenant?
         @current_stay = @user.tenant&.tenant_stays&.staying&.includes(rental_unit: :rentable)&.first
-        @contracts = Contract.where(tenant_id: @user.id).order(created_at: :desc)
+        @contracts = Contract.where(tenant_id: @user.id).includes(:house, :landlord).order(start_date: :desc, id: :desc)
       end
     end
 

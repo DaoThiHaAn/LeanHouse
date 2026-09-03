@@ -1,8 +1,3 @@
-/* =========================================================
-   LEANHOUSE INVOICE SYSTEM STYLESHEET (invoice.css)
-   Clean, Professional, SaaS-Grade & Color-Highlighted
-   ========================================================= */
-
 /* --- Container & Layout --- */
 .invoice-wrapper {
   max-width: 960px;
@@ -135,6 +130,13 @@
   font-weight: 700;
   color: #0284c7;
   letter-spacing: 0.03em;
+}
+
+/* Instruction */
+.manual-btn {
+  background-color: transparent;
+  border: none;
+  color: rgb(63, 51, 51);
 }
 
 /* --- VietQR Card & Frame --- */

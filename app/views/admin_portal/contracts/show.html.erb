@@ -1,0 +1,278 @@
+<%= turbo_frame_tag "contract_detail_modal" do %>
+  <div class="modal fade" id="contractDetailModal" tabindex="-1" aria-hidden="true"
+       data-controller="modal" data-modal-auto-open-value="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+      <div class="modal-content shadow border-0">
+        <!-- Modal Header -->
+        <div class="modal-header bg-light py-3 border-bottom">
+          <div class="d-flex align-items-center gap-2 flex-wrap">
+            <span class="material-symbols-filled text-primary fs-4">contract</span>
+            <h5 class="modal-title fw-bold mb-0">
+              <%= @contract.title_name %>
+            </h5>
+            <span class="badge bg-secondary-subtle text-secondary font-monospace border">#<%= @contract.id %></span>
+            <% if @contract.end_date.present? %>
+              <span class="badge bg-secondary"><%= t("admin.contracts.state_finished") %></span>
+            <% elsif @contract.due_date < Date.current %>
+              <span class="badge bg-danger"><%= t("admin.contracts.state_overdue") %></span>
+            <% elsif @contract.due_date <= Date.current + Contract::NEARLY_DUE_DAYS.days %>
+              <span class="badge bg-warning text-dark"><%= t("admin.contracts.state_nearly_due") %></span>
+            <% else %>
+              <span class="badge bg-success"><%= t("admin.contracts.state_active") %></span>
+            <% end %>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <!-- Modal Body -->
+        <div class="modal-body p-4 d-flex flex-column gap-3">
+          <!-- General Contract Details -->
+          <div class="admin-contract-section">
+            <h6 class="fw-bold text-dark d-flex align-items-center gap-2 mb-3">
+              <span class="material-symbols-outlined fs-5 text-primary">info</span>
+              <span><%= t("admin.contracts.detail_title") %></span>
+            </h6>
+            <div class="row g-3">
+              <div class="col-12 col-sm-6">
+                <div class="small text-secondary"><%= t("admin.contracts.house") %>:</div>
+                <div>
+                  <%= link_to @house.name, admin_house_path(@house), class: "link fw-bold" %>
+                </div>
+                <div class="small text-secondary"><%= @house.full_address %></div>
+              </div>
+              <div class="col-12 col-sm-6">
+                <div class="small text-secondary"><%= t("admin.contracts.rental_unit") %>:</div>
+                <div class="fw-semibold text-dark">
+                  <%= @tenant_stay&.rental_unit&.location_info || "-" %>
+                </div>
+              </div>
+              <div class="col-12 col-sm-6">
+                <div class="small text-secondary"><%= t("admin.contracts.period") %>:</div>
+                <div class="fw-semibold text-dark">
+                  <%= l(@contract.start_date, format: :default) rescue @contract.start_date.strftime("%d/%m/%Y") %> → <%= l(@contract.due_date, format: :default) rescue @contract.due_date.strftime("%d/%m/%Y") %>
+                </div>
+              </div>
+              <div class="col-12 col-sm-6">
+                <div class="small text-secondary"><%= t("admin.contracts.actual_end_date") %>:</div>
+                <div>
+                  <% if @contract.end_date.present? %>
+                    <span class="fw-semibold text-dark"><%= l(@contract.end_date, format: :default) rescue @contract.end_date.strftime("%d/%m/%Y") %></span>
+                  <% else %>
+                    <span class="badge bg-light text-secondary border"><%= t("admin.contracts.not_ended") %></span>
+                  <% end %>
+                </div>
+              </div>
+              <div class="col-12 col-sm-6">
+                <div class="small text-secondary"><%= t("admin.contracts.deposit_status") %>:</div>
+                <div>
+                  <% if @contract.deposit_paid? %>
+                    <span class="badge bg-success-subtle text-success border border-success-subtle"><%= t("admin.contracts.deposit_paid") %></span>
+                  <% else %>
+                    <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle"><%= t("admin.contracts.deposit_unpaid") %></span>
+                  <% end %>
+                </div>
+              </div>
+              <div class="col-12 col-sm-6">
+                <div class="small text-secondary"><%= t("admin.contracts.updated_at") %>:</div>
+                <div class="small text-secondary">
+                  <%= l(@contract.updated_at, format: :default) rescue @contract.updated_at.strftime("%H:%M %d/%m/%Y") %>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Parties Info: Landlord & Tenant -->
+          <div class="row g-3">
+            <!-- Party A: Landlord -->
+            <div class="col-12 col-md-6">
+              <div class="admin-contract-section h-100">
+                <h6 class="fw-bold text-dark d-flex align-items-center gap-2 mb-3">
+                  <span class="material-symbols-outlined fs-5 text-primary">person</span>
+                  <span><%= t("admin.contracts.party_a") %></span>
+                </h6>
+                <div class="d-flex flex-column gap-2">
+                  <div>
+                    <div class="small text-secondary"><%= t("form.profile.fullname") %>:</div>
+                    <div class="fw-bold text-dark">
+                      <% if @contract.landlord&.user %>
+                        <%= link_to @contract.landlord.user.fullname, admin_user_path(@contract.landlord.user), class: "link" %>
+                      <% else %>
+                        <span><%= vn_name(@contract.landlord&.user&.fullname) %></span>
+                      <% end %>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="small text-secondary"><%= t("admin.contracts.citizen_id") %>:</div>
+                    <div class="font-monospace text-dark"><%= @contract.landlord_citizen_id %></div>
+                  </div>
+                  <div>
+                    <div class="small text-secondary"><%= t("admin.contracts.phone") %>:</div>
+                    <div class="font-monospace text-dark"><%= @contract.landlord&.user&.tel || "-" %></div>
+                  </div>
+                  <div>
+                    <div class="small text-secondary"><%= t("admin.contracts.address") %>:</div>
+                    <div class="small text-dark text-break"><%= @contract.landlord&.user&.address || "-" %></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Party B: Tenant -->
+            <div class="col-12 col-md-6">
+              <div class="admin-contract-section h-100">
+                <h6 class="fw-bold text-dark d-flex align-items-center gap-2 mb-3">
+                  <span class="material-symbols-outlined fs-5 text-primary">person_outline</span>
+                  <span><%= t("admin.contracts.party_b") %></span>
+                </h6>
+                <div class="d-flex flex-column gap-2">
+                  <div>
+                    <div class="small text-secondary"><%= t("form.profile.fullname") %>:</div>
+                    <div class="fw-bold text-dark">
+                      <% if @contract.tenant&.user %>
+                        <%= link_to @contract.tenant.user.fullname, admin_user_path(@contract.tenant.user), class: "link" %>
+                      <% else %>
+                        <span><%= vn_name(@contract.tenant&.user&.fullname) %></span>
+                      <% end %>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="small text-secondary"><%= t("admin.contracts.citizen_id") %>:</div>
+                    <div class="font-monospace text-dark"><%= @contract.tenant_citizen_id %></div>
+                  </div>
+                  <div>
+                    <div class="small text-secondary"><%= t("admin.contracts.phone") %>:</div>
+                    <div class="font-monospace text-dark"><%= @contract.tenant&.user&.tel || "-" %></div>
+                  </div>
+                  <div>
+                    <div class="small text-secondary"><%= t("admin.contracts.address") %>:</div>
+                    <div class="small text-dark text-break"><%= @contract.tenant&.user&.address || "-" %></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Temporary Residence -->
+          <div class="admin-contract-section">
+            <h6 class="fw-bold text-dark d-flex align-items-center gap-2 mb-2">
+              <span class="material-symbols-outlined fs-5 text-primary">how_to_reg</span>
+              <span><%= t("admin.contracts.temp_residence") %></span>
+            </h6>
+            <div class="d-flex align-items-center gap-3 flex-wrap">
+              <% if @contract.temp_resid_registered %>
+                <span class="badge bg-success-subtle text-success border border-success-subtle">
+                  <%= t("admin.contracts.temp_residence_registered") %>
+                </span>
+                <span class="small text-secondary">
+                  <%= t("admin.contracts.temp_residence_due") %>:
+                  <strong class="text-dark"><%= l(@contract.temp_resid_due_date, format: :default) rescue @contract.temp_resid_due_date.strftime("%d/%m/%Y") %></strong>
+                </span>
+              <% else %>
+                <span class="badge bg-secondary-subtle text-secondary border">
+                  <%= t("admin.contracts.temp_residence_unregistered") %>
+                </span>
+              <% end %>
+            </div>
+          </div>
+          <!-- Notes -->
+          <div class="admin-contract-section">
+            <h6 class="fw-bold text-dark d-flex align-items-center gap-2 mb-2">
+              <span class="material-symbols-outlined fs-5 text-primary">notes</span>
+              <span><%= t("admin.contracts.note") %></span>
+            </h6>
+            <div class="small text-dark text-break">
+              <%= @contract.note.presence || t("admin.contracts.no_note") %>
+            </div>
+          </div>
+          <!-- Attached Documents / Images -->
+          <div class="admin-contract-section">
+            <h6 class="fw-bold text-dark d-flex align-items-center gap-2 mb-3">
+              <span class="material-symbols-outlined fs-5 text-primary">attach_file</span>
+              <span><%= t("admin.contracts.attached_documents") %></span>
+              <span class="badge bg-light text-secondary border ms-1">
+                <%= @contract.documents.count %>
+              </span>
+            </h6>
+            <% if @contract.documents.attached? && @contract.documents.any? %>
+              <%
+                documents_data = @contract.documents.map.with_index do |doc, idx|
+                  {
+                    index: idx,
+                    url: rails_blob_path(doc, disposition: "inline"),
+                    name: doc.filename.to_s
+                  }
+                end
+              %>
+              <div data-controller="image-viewer"
+                   data-image-viewer-images-value="<%= documents_data.to_json %>">
+                <div class="d-flex flex-wrap gap-3">
+                  <% @contract.documents.each_with_index do |doc, index| %>
+                    <div class="admin-doc-preview-item position-relative"
+                         data-action="click->image-viewer#open"
+                      data-index="<%= index %>"
+                      title="<%= doc.filename.to_s %>">
+                      <%= image_tag doc,
+                                    class: "rounded border object-fit-cover shadow-sm w-100 h-100",
+                                    alt: doc.filename.to_s %>
+                    </div>
+                  <% end %>
+                </div>
+                <!-- Lightbox Modal -->
+                <div class="image-viewer-modal d-none"
+                     data-image-viewer-target="modal"
+                     data-action="click->image-viewer#backdropClick">
+                  <div class="image-viewer-header">
+                    <span class="fs-6 text-truncate text-white" data-image-viewer-target="mainCaption"></span>
+                    <div class="d-flex align-items-center gap-3">
+                      <span class="badge bg-dark border border-secondary" data-image-viewer-target="counter"></span>
+                      <button type="button" class="btn btn-sm btn-outline-light rounded-circle d-flex align-items-center justify-content-center admin-lightbox-close-btn"
+                              data-action="click->image-viewer#close"
+                        title="<%= t('admin.contracts.close_modal') %>">
+                        <span class="material-symbols-outlined fs-5">close</span>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="image-viewer-content">
+                    <% if @contract.documents.length > 1 %>
+                      <button type="button" class="image-viewer-nav prev"
+                              data-action="click->image-viewer#prev">
+                        <span class="material-symbols-outlined fs-2">chevron_left</span>
+                      </button>
+                    <% end %>
+                    <img src="" alt="" class="image-viewer-img" data-image-viewer-target="mainImage">
+                    <% if @contract.documents.length > 1 %>
+                      <button type="button" class="image-viewer-nav next"
+                              data-action="click->image-viewer#next">
+                        <span class="material-symbols-outlined fs-2">chevron_right</span>
+                      </button>
+                    <% end %>
+                  </div>
+                  <% if @contract.documents.length > 1 %>
+                    <div class="image-viewer-thumbnails">
+                      <% @contract.documents.each_with_index do |doc, index| %>
+                        <%= image_tag doc,
+                                      class: "image-viewer-thumb",
+                                      data: {
+                                        image_viewer_target: "thumbnail",
+                                        action: "click->image-viewer#select",
+                                        index: index
+                                      },
+                                      alt: doc.filename.to_s %>
+                      <% end %>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            <% else %>
+              <div class="small text-secondary fst-italic">
+                <%= t("admin.contracts.no_documents") %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+        <!-- Modal Footer -->
+        <div class="modal-footer bg-light py-2 border-top">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
+            <%= t("admin.contracts.close_modal") %>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

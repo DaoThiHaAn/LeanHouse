@@ -1,11 +1,9 @@
 <% content_for :title, t("page_titles.user_detail") %>
-
 <div class="main-container w-100">
   <div class="d-flex align-items-center pb-4 mb-5 border-bottom">
     <%= back_link_to admin_users_path, t("admin.users.back_to_list") %>
     <h1 class="mb-0 flex-grow-1 text-center"><%= t("page_titles.user_detail") %></h1>
   </div>
-
   <div class="row g-4">
     <!-- User Info Card -->
     <div class="col-12 col-md-3 col-lg-4 col-xl-3">
@@ -13,14 +11,13 @@
         <div class="card-body text-center p-4">
           <div class="mb-3">
             <% if @user.avatar.attached? %>
-              <%= image_tag @user.avatar_thumb, class: "rounded-circle border shadow-sm", width: "5.5rem", height: "5.5rem", alt: "User avatar" %>
+              <%= image_tag @user.avatar_thumb, class: "rounded-circle border shadow-sm admin-avatar-lg", alt: "User avatar" %>
             <% else %>
               <div class="admin-avatar-lg shadow-sm <%= @user.landlord? ? 'badge-role-landlord' : 'badge-role-tenant' %>">
                 <%= @user.fullname.first.upcase rescue 'U' %>
               </div>
             <% end %>
           </div>
-
           <h2 class="h5 fw-bold mb-1"><%= @user.fullname %></h2>
           <div class="mb-3">
             <% if @user.landlord? %>
@@ -33,14 +30,12 @@
               </span>
             <% end %>
           </div>
-
           <%= button_to toggle_active_admin_user_path(@user), method: :patch,
               data: { turbo_confirm: @user.is_active? ? t("admin.users.confirm_lock") : t("admin.users.confirm_unlock") },
               class: "btn #{@user.is_active? ? 'btn-danger' : 'btn-success'} d-flex align-items-center gap-1 shadow-sm mx-auto mb-2" do %>
             <span class="material-symbols-outlined fs-5"><%= @user.is_active? ? "lock" : "lock_open" %></span>
             <span><%= @user.is_active? ? t("admin.users.lock_account") : t("admin.users.unlock_account") %></span>
           <% end %>
-
           <% unless @user.tel_recycled? %>
             <%= button_to recycle_phone_admin_user_path(@user), method: :patch,
                 data: { turbo_confirm: t("admin.users.confirm_recycle_phone") },
@@ -49,7 +44,6 @@
               <span><%= t("admin.users.recycle_phone") %></span>
             <% end %>
           <% end %>
-
           <div class="text-start border-top pt-3 d-flex flex-column gap-2">
             <!-- Status -->
             <div class="d-flex flex-row flex-md-column justify-content-between align-items-center align-items-md-start gap-1 pb-3 border-bottom">
@@ -60,7 +54,6 @@
                 <span class="badge bg-danger-subtle text-danger border border-danger-subtle"><%= t("admin.users.status_inactive") %></span>
               <% end %>
             </div>
-
             <!-- Telephone -->
             <div class="d-flex flex-row flex-md-column justify-content-between align-items-center align-items-md-start gap-1 pb-3 border-bottom">
               <p class="text-secondary small mb-0"><%= t("form.profile.tel") %>:</p>
@@ -73,7 +66,6 @@
                 <% end %>
               </div>
             </div>
-
             <!-- Gender & Birthday -->
             <div class="d-flex flex-row flex-md-column justify-content-between align-items-center align-items-md-start gap-1 pb-3 border-bottom">
               <p class="text-secondary small mb-0"><%= t("admin.users.sex_and_bday") %>:</p>
@@ -81,19 +73,16 @@
                 <%= @user.human_sex %> - <%= @user.bday ? l(@user.bday, format: :default) : t("admin.users.not_updated") %>
               </p>
             </div>
-
             <!-- Address -->
             <div class="d-flex flex-row flex-md-column justify-content-between align-items-center align-items-md-start gap-1 pb-3 border-bottom">
               <p class="text-secondary small mb-0 text-nowrap"><%= t("form.profile.address") %>:</p>
               <p class="mb-0 text-end text-md-start text-break"><%= @user.address.presence || t("admin.users.not_updated") %></p>
             </div>
-
             <!-- Created At -->
             <div class="d-flex flex-row flex-md-column justify-content-between align-items-center align-items-md-start gap-1 pb-3 border-bottom">
               <p class="text-secondary small mb-0"><%= t("admin.users.created_at") %>:</p>
               <p class="mb-0"><%= l(@user.created_at, format: :default) rescue @user.created_at.strftime("%d/%m/%Y %H:%M") %></p>
             </div>
-
             <!-- Last Updated -->
             <div class="d-flex flex-row flex-md-column justify-content-between align-items-center align-items-md-start gap-1">
               <p class="text-secondary small mb-0"><%= t("last_updated") %>:</p>
@@ -103,7 +92,6 @@
         </div>
       </div>
     </div>
-
     <!-- Related Data Card -->
     <div class="col-12 col-md-9 col-lg-8 col-xl-9">
       <% if @user.landlord? %>
@@ -114,7 +102,6 @@
               <%= t("admin.users.owned_houses") %> (<%= @houses&.count || 0 %>)
             </h2>
           </div>
-
           <div class="card-body p-0">
             <div class="table-responsive">
               <table class="table table-hover align-middle mb-0">
@@ -156,7 +143,6 @@
             </div>
           </div>
         </div>
-
       <% elsif @user.tenant? %>
         <!-- Current Stay -->
         <div class="card admin-card mb-4">
@@ -194,7 +180,6 @@
             <% end %>
           </div>
         </div>
-
         <!-- Contracts -->
         <div class="card admin-card">
           <div class="card-header bg-white py-3 border-bottom">
@@ -209,32 +194,62 @@
                 <thead class="table-light">
                   <tr>
                     <th class="ps-3"><%= t("admin.users.contract_name") %></th>
+                    <th><%= t("admin.users.contract_house") %></th>
                     <th><%= t("admin.users.contract_duration") %></th>
                     <th><%= t("admin.users.contract_deposit") %></th>
                     <th><%= t("admin.users.contract_status") %></th>
+                    <th class="text-end pe-3"><%= t("admin.contracts.actions") %></th>
                   </tr>
                 </thead>
                 <tbody>
                   <% if @contracts&.any? %>
                     <% @contracts.each do |c| %>
                       <tr>
-                        <td class="ps-3 fw-bold"><%= c.name %></td>
+                        <td class="ps-3">
+                          <%= link_to c.name, admin_contract_path(c),
+                                      class: "fw-bold link text-dark",
+                                      data: { turbo_frame: "contract_detail_modal" } %>
+                        </td>
+                        <td>
+                          <% if c.house %>
+                            <%= link_to c.house.name, admin_house_path(c.house), class: "link fw-semibold" %>
+                          <% else %>
+                            <span class="text-secondary">-</span>
+                          <% end %>
+                        </td>
                         <td><%= l(c.start_date, format: :default) rescue c.start_date.strftime("%d/%m/%Y") %> → <%= l(c.due_date, format: :default) rescue c.due_date.strftime("%d/%m/%Y") %></td>
-                        <td><%= c.deposit_paid? ? t("admin.users.deposit_paid") : t("admin.users.deposit_unpaid") %></td>
+                        <td>
+                          <% if c.deposit_paid? %>
+                            <span class="badge bg-success-subtle text-success border border-success-subtle"><%= t("admin.users.deposit_paid") %></span>
+                          <% else %>
+                            <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle"><%= t("admin.users.deposit_unpaid") %></span>
+                          <% end %>
+                        </td>
                         <td>
                           <% if c.end_date.present? %>
                             <span class="badge bg-secondary"><%= t("admin.users.contract_ended") %></span>
                           <% elsif c.due_date < Date.current %>
                             <span class="badge bg-danger"><%= t("admin.users.contract_overdue") %></span>
+                          <% elsif c.due_date <= Date.current + Contract::NEARLY_DUE_DAYS.days %>
+                            <span class="badge bg-warning text-dark"><%= t("admin.contracts.state_nearly_due") %></span>
                           <% else %>
                             <span class="badge bg-success"><%= t("admin.users.contract_active") %></span>
+                          <% end %>
+                        </td>
+                        <td class="text-end pe-3">
+                          <%= link_to admin_contract_path(c),
+                                      class: "btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1",
+                                      title: t("admin.contracts.view_detail"),
+                                      data: { turbo_frame: "contract_detail_modal" } do %>
+                            <span class="material-symbols-outlined fs-6">visibility</span>
+                            <span><%= t("admin.contracts.view_detail") %></span>
                           <% end %>
                         </td>
                       </tr>
                     <% end %>
                   <% else %>
                     <tr>
-                      <td colspan="4" class="text-center text-secondary py-4"><%= t("admin.users.no_contracts") %></td>
+                      <td colspan="6" class="text-center text-secondary py-4"><%= t("admin.users.no_contracts") %></td>
                     </tr>
                   <% end %>
                 </tbody>
@@ -246,4 +261,3 @@
     </div>
   </div>
 </div>
-

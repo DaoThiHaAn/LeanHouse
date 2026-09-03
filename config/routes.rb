@@ -236,6 +236,8 @@ Rails.application.routes.draw do
     resources :houses, only: [ :index, :show ] do
       resources :services, only: [ :index ]
       resources :assets, only: [ :index ]
+      resources :contracts, only: [ :index ]
     end
+    resources :contracts, only: [ :show ]
   end
 end

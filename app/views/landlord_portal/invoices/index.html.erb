@@ -1,29 +1,26 @@
 <% content_for :title, "#{t('invoice.management')} - #{@house.name}" %>
 
-<div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+<div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
   <div>
     <h1 class="mb-3"><%= t('invoice.management') %></h1>
-    <p class="text-secondary mb-0"><%= t('invoice.management_subtitle') %></p>
+    <p class="text-secondary"><%= t('invoice.management_subtitle') %></p>
   </div>
+
   <div class="d-flex gap-2">
-    <button type="button" class="btn btn-outline-primary d-flex align-items-center gap-1 shadow-sm" data-bs-toggle="modal" data-bs-target="#invoiceCreationGuideModal">
-      <span class="material-symbols-outlined fs-6">menu_book</span> <%= t('invoice.guide.btn_title', default: 'Hướng dẫn') %>
+    <button type="button" class="manual-btn d-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#invoiceCreationGuideModal">
+      <span class="material-symbols-outlined fs-6">menu_book</span> <%= t('invoice.guide.btn_title') %>
     </button>
+
     <%= link_to landlord_house_service_usage_logs_path(@house, month: @billing_month.strftime("%Y-%m")), class: "btn btn-outline-secondary d-flex align-items-center gap-1 shadow-sm" do %>
       <span class="material-symbols-outlined fs-6">electric_meter</span> <%= t('invoice.meter_logs') %>
     <% end %>
-    <%= link_to new_landlord_house_invoice_path(@house, month: @billing_month.strftime("%Y-%m")), class: "btn btn-primary d-flex align-items-center gap-1 shadow-sm" do %>
-      <span class="material-symbols-outlined fs-6">add</span> <%= t('invoice.new_invoice') %>
+
+    <%= link_to new_landlord_house_invoice_path(@house, month: @billing_month.strftime("%Y-%m")),
+        class: "main-btn d-flex align-items-center gap-2 shadow-sm" do %>
+      <span class="material-symbols-outlined">add_notes</span> <%= t('invoice.new_invoice') %>
     <% end %>
   </div>
 </div>
-
-<% if flash[:notice] %>
-  <div class="alert alert-success alert-dismissible fade show" role="alert">
-    <%= flash[:notice] %>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-  </div>
-<% end %>
 
 <!-- Toolbar lọc tháng, phòng và trạng thái -->
 <div class="invoice-filter-bar mb-4 shadow-sm">

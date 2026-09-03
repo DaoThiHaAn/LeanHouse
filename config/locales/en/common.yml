@@ -67,6 +67,7 @@ en:
     admin_house_detail: "Property Detail - %{name}"
     admin_house_assets: "Assets: %{house_name}"
     admin_house_services: "Services: %{house_name}"
+    admin_house_contracts: "Contracts: %{house_name}"
   view_detail: "View details"
   view_all: "View all"
   actions: "Actions"

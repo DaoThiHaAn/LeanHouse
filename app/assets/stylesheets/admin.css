@@ -68,8 +68,8 @@
 }
 
 .admin-avatar-lg {
-  width: 5.5rem;
-  height: 5.5rem;
+  width: 70px;
+  height: 70px;
   font-size: 1.75rem;
   font-weight: 700;
   color: #ffffff;
@@ -275,4 +275,28 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+/* --- Admin Contract Modal & Document Preview --- */
+.admin-doc-preview-item {
+  width: 120px;
+  height: 120px;
+  cursor: zoom-in;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.admin-doc-preview-item:hover {
+  transform: scale(1.05);
+}
+
+.admin-contract-section {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.admin-lightbox-close-btn {
+  width: 32px;
+  height: 32px;
 }

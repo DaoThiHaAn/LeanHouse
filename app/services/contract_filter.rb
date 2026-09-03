@@ -7,7 +7,7 @@ class ContractFilter
 
   def initialize(house:, params:)
     @house = house
-    @query = params[:query]&.strip
+    @query = (params[:q] || params[:query])&.strip
     @state = params[:state]
     @page = params[:page]
   end
@@ -32,12 +32,15 @@ class ContractFilter
     house.contracts
   end
 
-  # Tìm theo tên khách thuê
+  # Tìm theo tên khách thuê, số điện thoại hoặc tên hợp đồng
   def apply_search(scope)
     return scope if query.blank?
 
     q = "%#{ActiveRecord::Base.sanitize_sql_like(query)}%"
-    scope.joins(tenant: :user).where("unaccent(users.fullname) ILIKE unaccent(:q)", q: q)
+    scope.joins(tenant: :user).where(
+      "unaccent(users.fullname) ILIKE unaccent(:q) OR users.tel ILIKE :q OR unaccent(contracts.name) ILIKE unaccent(:q)",
+      q: q
+    )
   end
 
   # Lọc theo trạng thái
