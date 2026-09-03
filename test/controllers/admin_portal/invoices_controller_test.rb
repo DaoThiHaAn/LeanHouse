@@ -203,6 +203,10 @@ class AdminPortal::InvoicesControllerTest < ActionDispatch::IntegrationTest
     get admin_user_url(@tenant_user)
     assert_response :success
     assert_includes response.body, I18n.t("admin.users.invoice_history")
+    assert_select "turbo-frame#admin_user_invoices"
+
+    get invoices_admin_user_url(@tenant_user)
+    assert_response :success
     assert_includes response.body, "INV-ADMIN-002"
   end
 end

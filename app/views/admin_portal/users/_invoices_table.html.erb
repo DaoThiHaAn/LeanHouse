@@ -1,0 +1,73 @@
+<div class="table-responsive admin-table-scroll">
+  <table class="table table-hover align-middle mb-0">
+    <thead class="table-light sticky-top">
+      <tr>
+        <th class="ps-3"><%= t("admin.invoices.code") %></th>
+        <th><%= t("admin.invoices.house") %></th>
+        <th><%= t("admin.invoices.room") %></th>
+        <th><%= t("admin.invoices.term") %></th>
+        <th><%= t("admin.invoices.total_amount") %></th>
+        <th><%= t("admin.invoices.status") %></th>
+        <th class="text-end pe-3"><%= t("admin.invoices.actions") %></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if invoices.any? %>
+        <% invoices.each do |inv| %>
+          <tr>
+            <td class="ps-3">
+              <%= link_to "##{inv.code}", admin_invoice_path(inv),
+                          class: "fw-bold link font-monospace",
+                          data: { turbo_frame: "invoice_detail_modal" } %>
+            </td>
+            <td>
+              <% if inv.house %>
+                <%= link_to inv.house.name, admin_house_path(inv.house), class: "link fw-semibold" %>
+              <% else %>
+                <span class="text-secondary">-</span>
+              <% end %>
+            </td>
+            <td><%= inv.room&.title_name || "-" %></td>
+            <td><span><%= inv.billing_month.strftime("%m/%Y") %></span></td>
+            <td><span class="fw-bold font-monospace text-primary"><%= inv.formatted_total_amount %></span></td>
+            <td>
+              <% if inv.paid? %>
+                <span class="badge bg-success-subtle text-success border border-success-subtle"><%= t("admin.invoices.state_paid") %></span>
+              <% elsif inv.cancelled? %>
+                <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle"><%= t("admin.invoices.state_cancelled") %></span>
+              <% elsif inv.overdue? %>
+                <span class="badge bg-danger-subtle text-danger border border-danger-subtle"><%= t("admin.invoices.state_overdue") %></span>
+              <% else %>
+                <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle"><%= t("admin.invoices.state_pending") %></span>
+              <% end %>
+            </td>
+            <td class="text-end pe-3">
+              <%= link_to admin_invoice_path(inv),
+                          class: "table-action",
+                          title: t("admin.invoices.view_detail"),
+                          data: { turbo_frame: "invoice_detail_modal" } do %>
+                <span class="material-symbols-filled fs-5">visibility</span>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      <% else %>
+        <tr>
+          <td colspan="7" class="text-center text-secondary py-4"><%= t("admin.users.no_invoices") %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+<% if invoices.any? %>
+  <div class="d-flex justify-content-between align-items-center p-3 border-top bg-white flex-wrap gap-2">
+    <div class="small text-secondary">
+      <%= t("admin.invoices.total_invoices") rescue "Tổng hóa đơn" %>: <%= invoices.respond_to?(:total_count) ? invoices.total_count : invoices.size %>
+    </div>
+    <% if invoices.respond_to?(:total_pages) && invoices.total_pages > 1 %>
+      <div>
+        <%= paginate invoices %>
+      </div>
+    <% end %>
+  </div>
+<% end %>

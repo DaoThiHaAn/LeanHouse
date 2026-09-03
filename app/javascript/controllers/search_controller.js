@@ -21,6 +21,10 @@ export default class extends Controller {
     this.element.requestSubmit()
   }
 
+  submit() {
+    this.changed()
+  }
+
   clear(event) {
     if (event) {
       event.preventDefault()

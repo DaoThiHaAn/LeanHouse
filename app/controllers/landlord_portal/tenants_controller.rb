@@ -1,10 +1,11 @@
 class LandlordPortal::TenantsController < LandlordPortal::BaseController
   layout "house_mngment"
 
-  before_action :authorize_tenant_belongs_to_house!, only: [ :move, :destroy, :execute_move ]
+  before_action :authorize_tenant_belongs_to_house!, only: [ :show, :move, :destroy, :execute_move ]
 
   def show
-    render :show
+    @user = @tenant.user
+    @latest_contract = @house.contracts.where(tenant: @tenant).latest_started.first || @tenant.latest_contract
   end
 
   def index
@@ -81,7 +82,7 @@ class LandlordPortal::TenantsController < LandlordPortal::BaseController
 
     redirect_to landlord_house_tenants_path(@house), notice: t("success_messages.tenant_linked")
   rescue ActiveRecord::RecordNotFound, ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique
-    redirect_to landlord_house_tenant_path(@house), alert: t("errors.rental_unit_unavailable")
+    redirect_to landlord_house_tenants_path(@house), alert: t("errors.rental_unit_unavailable")
   end
 
   # Remove a tenant from a house
@@ -103,7 +104,11 @@ class LandlordPortal::TenantsController < LandlordPortal::BaseController
 
   def authorize_tenant_belongs_to_house!
     @tenant_stay = @house.tenant_stay_for(params[:id])
-    raise CanCan::AccessDenied unless @tenant_stay
-    @tenant = @tenant_stay.tenant
+    if @tenant_stay
+      @tenant = @tenant_stay.tenant
+    else
+      @tenant = Tenant.find_by(id: params[:id])
+      raise CanCan::AccessDenied unless @tenant && (@house.contracts.where(tenant: @tenant).exists? || @house.tenant_stay_for(@tenant.id).present?)
+    end
   end
 end

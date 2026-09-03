@@ -345,4 +345,149 @@ class TenantPortal::InvoicesControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to tenant_invoice_path(ind_invoice)
     assert_predicate ind_invoice.reload, :paid?
   end
+
+  test "GET index renders invoices scoped to current living house with search, filter, and payment button" do
+    sign_in_as(@tenant_user)
+
+    get tenant_invoices_path
+    assert_response :success
+    assert_includes response.body, @invoice.code
+    assert_includes response.body, @invoice.title
+    # Assert payment button is rendered for pending invoice
+    assert_select "button[data-bs-target='#tenantMarkPaidModal_#{@invoice.id}']"
+    # Assert payment modal form is present
+    assert_select "form[action='#{mark_paid_tenant_invoice_path(@invoice)}']"
+    # Assert other room's invoice is NOT included
+    assert_not_includes response.body, @other_invoice.code
+    # Assert no monospace on month/date
+    assert_select "td.font-monospace", 0
+  end
+
+  test "GET index filters by query, month, and status" do
+    sign_in_as(@tenant_user)
+
+    # 1. Search by code
+    get tenant_invoices_path(query: @invoice.code)
+    assert_response :success
+    assert_includes response.body, @invoice.code
+
+    get tenant_invoices_path(query: "NON_EXISTING_CODE")
+    assert_response :success
+    assert_not_includes response.body, @invoice.code
+
+    # 2. Filter by month
+    get tenant_invoices_path(month: @billing_month.strftime("%Y-%m"))
+    assert_response :success
+    assert_includes response.body, @invoice.code
+
+    get tenant_invoices_path(month: 1.year.ago.strftime("%Y-%m"))
+    assert_response :success
+    assert_not_includes response.body, @invoice.code
+
+    # 3. Filter by status
+    get tenant_invoices_path(status: "pending")
+    assert_response :success
+    assert_includes response.body, @invoice.code
+
+    get tenant_invoices_path(status: "paid")
+    assert_response :success
+    assert_not_includes response.body, @invoice.code
+  end
+
+  test "GET index never includes invoices from other houses" do
+    other_house = House.create!(
+      landlord: @landlord,
+      name: "Old House",
+      mode: :room,
+      address_l1: "999 Past St",
+      address_l2: "Ward 9",
+      address_l3: "District 9",
+      floors_count: 1,
+      inv_creation_date: 1
+    )
+    old_floor = other_house.floors.create!(name: "Old Floor", position: 1)
+    old_room = old_floor.rooms.create!(name: "Room 999", max_slots: 1, tenants_count: 0, area: 20.0)
+    old_invoice = other_house.invoices.create!(
+      code: "HD-OLD-HOUSE-01",
+      title: "Hóa đơn nhà cũ",
+      room: old_room,
+      tenant: @tenant,
+      created_by: @landlord_user,
+      billing_month: @billing_month,
+      due_date: Date.current + 5.days,
+      invoice_type: :individual,
+      status: :pending,
+      subtotal: 1_000_000,
+      total_amount: 1_000_000
+    )
+
+    sign_in_as(@tenant_user)
+    get tenant_invoices_path
+    assert_response :success
+    assert_includes response.body, @invoice.code
+    assert_not_includes response.body, old_invoice.code
+  end
+
+  test "submitting mark_paid from index redirects back to index with notice" do
+    sign_in_as(@tenant_user)
+
+    patch mark_paid_tenant_invoice_path(@invoice),
+          params: { payment_method: "cash" },
+          headers: { "HTTP_REFERER" => tenant_invoices_url }
+
+    assert_redirected_to tenant_invoices_url
+    assert_predicate @invoice.reload, :paid?
+  end
+
+  test "GET index renders turbo table frame with pagination-sync and dom_id rows" do
+    sign_in_as(@tenant_user)
+
+    get tenant_invoices_path
+    assert_response :success
+
+    assert_select "turbo-frame#tenant_invoices_table"
+    assert_select "form[data-turbo-frame='tenant_invoices_table'][data-turbo-action='advance']"
+    assert_select "tr##{ActionView::RecordIdentifier.dom_id(@invoice)}"
+    assert_select "[data-pagination-total-pages]"
+  end
+
+  test "tenant can mark invoice as paid via turbo_stream updating only the affected row dynamically" do
+    sign_in_as(@tenant_user)
+
+    patch mark_paid_tenant_invoice_path(@invoice),
+          params: { payment_method: "transfer", note: "Chuyển khoản thành công" },
+          as: :turbo_stream
+
+    assert_response :success
+    assert_equal "text/vnd.turbo-stream.html; charset=utf-8", response.content_type
+
+    row_dom_id = ActionView::RecordIdentifier.dom_id(@invoice)
+    assert_includes response.body, %(action="replace" target="#{row_dom_id}")
+    assert_includes response.body, I18n.t("invoice.status.paid")
+    assert_includes response.body, %(action="append" target="events")
+    assert_includes response.body, "close-modal"
+    assert_includes response.body, %(action="update" target="flash")
+    assert_includes response.body, I18n.t("invoice.payment_submitted_success")
+
+    assert_predicate @invoice.reload, :paid?
+  end
+
+  test "tenant marking already paid invoice via turbo_stream returns unprocessable entity" do
+    sign_in_as(@tenant_user)
+
+    @invoice.update!(
+      status: :paid,
+      paid_at: Time.current,
+      payment_method: "transfer",
+      paid_by: @tenant_user,
+      paid_by_role: "tenant"
+    )
+
+    patch mark_paid_tenant_invoice_path(@invoice),
+          params: { payment_method: "cash" },
+          as: :turbo_stream
+
+    assert_response :unprocessable_entity
+    assert_includes response.body, I18n.t("invoice.already_paid")
+  end
 end

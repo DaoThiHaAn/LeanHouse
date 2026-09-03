@@ -1,7 +1,9 @@
 /* --- Container & Layout --- */
 .invoice-wrapper {
-  max-width: 960px;
+  width: 97%;
   margin: 20px auto;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 .invoice-detail-wrapper {

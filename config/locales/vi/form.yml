@@ -50,7 +50,7 @@ vi:
       sec_questions_note: "Bạn có tối đa 3 lần thử"
       fname_ans: "Nhập đúng theo tài khoản đã đăng ký, không phân biệt chữ in hoa, chữ thường"
       staff_name_placeholder: "Nhập họ và tên nhân viên"
- 
+
     house:
       add: "Tạo nhà mới"
       mode: "Loại hình"
@@ -65,7 +65,7 @@ vi:
         vietnam: "Việt Nam"
         l1: "Tỉnh/Thành phố"
         l2: "Phường/Xã"
-        
+
       detailed_addr: "Địa chỉ chi tiết"
       detailed_addr_placeholder: "Tên toà nhà, số nhà, tên đường, khóm/đội"
       total_floors: "Số tầng"
@@ -111,10 +111,10 @@ vi:
       state_available: "Còn chỗ"
       state_full: "Hết chỗ"
       state_empty: "Trống hoàn toàn"
-      no_houses_found: "Không tìm thấy nhà nào phù hợp với bộ lọc."   
+      no_houses_found: "Không tìm thấy nhà nào phù hợp với bộ lọc."
 
     floor:
-      self: "Tầng" 
+      self: "Tầng"
       total_slots: "Tổng số chỗ"
       input: "Nhập tên tầng"
       create: "Tạo tầng mới"
@@ -161,6 +161,8 @@ vi:
       bed_mode_capacity_hint: "Số người ở tối đa phụ thuộc vào số giường. Thay đổi tại "
       select_floor: "Chọn tầng"
       unfound: "Không tìm thấy phòng nào!"
+      confirm_delete: "Bạn có chắc chắn muốn xóa phòng %{name} không?"
+      cannot_delete_has_tenants: "Không thể xóa phòng vì hiện đang có khách thuê đang ở."
 
 
     tenant:
@@ -224,6 +226,8 @@ vi:
       edit_info_1: "Chỉnh sửa thông tin tên giường, tiền thuê và tiền cọc của giường này."
       unfound: "Không tìm thấy giường nào!"
       mng: "Quản lý Giường"
+      confirm_delete: "Bạn có chắc chắn muốn xóa giường %{name} không?"
+      cannot_delete_has_tenants: "Không thể xóa giường vì hiện đang có khách thuê đang ở."
 
     service:
       self: "Dịch vụ"
@@ -278,7 +282,7 @@ vi:
 
 
     file:
-      view: "Xem tệp"      
+      view: "Xem tệp"
 
     asset:
       self: "Tài sản"

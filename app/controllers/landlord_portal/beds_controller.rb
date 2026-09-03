@@ -111,6 +111,33 @@ class LandlordPortal::BedsController < LandlordPortal::BaseController
   end
 
   def destroy
+    if @bed.can_delete?
+      @bed.soft_delete!
+      flash.now[:notice] = t("success_messages.bed_deleted")
+
+      respond_to do |format|
+        format.turbo_stream
+        format.html do
+          redirect_to landlord_house_rooms_path(@house),
+                      notice: t("success_messages.bed_deleted")
+        end
+      end
+    else
+      flash.now[:alert] = t("errors.cannot_delete_bed_occupied")
+
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.update(
+            "flash",
+            partial: "layouts/shared_components/flash_message"
+          ), status: :unprocessable_entity
+        end
+        format.html do
+          redirect_to landlord_house_rooms_path(@house),
+                      alert: t("errors.cannot_delete_bed_occupied")
+        end
+      end
+    end
   end
 
   def filtered

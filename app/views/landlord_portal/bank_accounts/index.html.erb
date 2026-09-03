@@ -4,12 +4,12 @@
   <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
     <div>
       <h2 class="mb-1 d-flex align-items-center gap-2">
-        <span class="material-symbols-outlined text-primary">account_balance</span>
+        <span class="material-symbols-filled fs-2">account_balance</span>
         <%= t("bank_account.title") %>
       </h2>
-      <p class="text-secondary mb-0"><%= t("bank_account.subtitle") %></p>
+      <p><%= t("bank_account.subtitle") %></p>
     </div>
-    <span class="badge bg-primary fs-6 px-3 py-2 rounded-pill">
+    <span class="badge custom-primary-btn fs-6 px-3 py-2 rounded-pill">
       <%= t("bank_account.accounts_count", count: @bank_accounts.size, max: BankAccount::MAX_ACCOUNTS) %>
     </span>
   </div>
@@ -18,7 +18,7 @@
   <div class="row g-3 mb-5">
     <% @bank_accounts.each do |acc| %>
       <div class="col-md-6">
-        <div class="card h-100 shadow-sm border <%= 'border-primary border-2' if acc.is_default? %> rounded-3">
+        <div class="bank card h-100 shadow-sm border <%= 'default' if acc.is_default? %> rounded-3">
           <div class="card-body d-flex flex-column justify-content-between">
             <div>
               <div class="d-flex justify-content-between align-items-start mb-2">

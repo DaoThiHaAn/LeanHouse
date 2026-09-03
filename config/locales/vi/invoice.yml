@@ -3,6 +3,7 @@ vi:
     title: "Hóa đơn"
     my_invoices: "Hóa đơn của tôi"
     my_invoices_subtitle: "Xem chi tiết hóa đơn và xác nhận thanh toán."
+    my_invoices_list: "Danh sách hóa đơn trong Nhà hiện tại"
     management: "Quản lý Hóa đơn"
     management_subtitle: "Nơi quản lý các hóa đơn của nhà, xuất hóa đơn mới, và theo dõi trạng thái thanh toán."
     new_invoice: "Xuất hóa đơn mới"
@@ -32,6 +33,8 @@ vi:
     type_room: "Thu theo phòng"
     type_individual: "Thu theo cá nhân"
     actions_header: "Hành động"
+    search_placeholder: "Tìm theo mã hóa đơn, tiêu đề..."
+    confirm_payment_btn: "Thanh toán"
     only_current_tenants: "Chỉ khách đang ở"
     only_current_tenants_hint: "Lọc các hóa đơn thuộc về khách đang thuê trọ hiện tại"
 

@@ -2,7 +2,7 @@
 
 <% content_for :title, t("page_titles.my_contract") %>
 
-<div class="tenant-contract main-container w-75 px-0">
+<div class="contract-detail-wrapper main-container px-0 border rounded-2">
   <h1 class="w-100 text-center mb-3"><%= t("page_titles.my_contract") %></h1>
 
   <%= render 'landlord_portal/contracts/detail', contract: @contract, house: @house, tenant_stay: @tenant_stay %>

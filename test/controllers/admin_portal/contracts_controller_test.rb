@@ -154,6 +154,10 @@ class AdminPortal::ContractsControllerTest < ActionDispatch::IntegrationTest
 
     get admin_user_url(@tenant_user)
     assert_response :success
+    assert_select "turbo-frame#admin_user_contracts"
+
+    get contracts_admin_user_url(@tenant_user)
+    assert_response :success
     assert_includes response.body, @contract.name
     assert_includes response.body, @house.name
     assert_includes response.body, admin_contract_path(@contract)

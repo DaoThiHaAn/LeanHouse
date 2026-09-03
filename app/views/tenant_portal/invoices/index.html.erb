@@ -6,75 +6,85 @@
     <p class="text-secondary mb-0"><%= t('invoice.my_invoices_subtitle') %></p>
   </div>
 
-  <% if params[:status].present? || params[:month].present? %>
-    <div class="d-flex align-items-center justify-content-between invoice-filter-bar mb-3 shadow-sm">
-      <div class="small d-flex align-items-center gap-2">
-        <span class="material-symbols-outlined text-primary fs-5">filter_alt</span>
-        <span>
-          <%= t("filtering", default: "Đang lọc:") %>
-          <% if params[:status].present? %>
-            <strong><%= t("invoice.status.#{params[:status]}", default: params[:status]) %></strong>
-          <% end %>
-          <% if params[:month].present? %>
-            <strong><%= t("month_val", params[:month]) %></strong>
-          <% end %>
-        </span>
+  <!-- Filter & Search Toolbar -->
+  <div class="invoice-filter-bar mb-5 mx-4 shadow-sm">
+    <%= form_with url: tenant_invoices_path,
+                  method: :get,
+                  class: "d-flex gap-3 align-items-center flex-wrap",
+                  data: {
+                    controller: "search",
+                    turbo_frame: "tenant_invoices_table",
+                    turbo_action: "advance"
+                  } do |f| %>
+      <!-- Search input -->
+      <div class="d-flex align-items-center gap-2 flex-grow-1" style="min-width: 220px; max-width: 360px;">
+        <div class="input-group">
+          <span class="input-group-text bg-white border-end-0">
+            <span class="material-symbols-outlined text-secondary fs-6">search</span>
+          </span>
+          <%= f.search_field :query,
+                             value: params[:query],
+                             placeholder: t('invoice.search_placeholder'),
+                             class: "form-control border-start-0 ps-0 shadow-none",
+                             data: {
+                               search_target: "input",
+                               action: "input->search#debounce"
+                             } %>
+        </div>
       </div>
-      <%= link_to t("view_all"), tenant_invoices_path, class: "btn btn-sm btn-outline-secondary py-0" %>
-    </div>
-  <% end %>
 
-  <% if @invoices.empty? %>
-    <div class="invoice-empty-state mx-auto">
-      <span class="material-symbols-outlined invoice-empty-icon">receipt_long</span>
-      <p class="fs-5 fw-bold mb-1"><%= t('invoice.no_invoices_tenant') %></p>
-      <p class="text-secondary mb-0"><%= t('invoice.no_invoices_tenant_hint') %></p>
-    </div>
-  <% else %>
-    <div class="table-responsive bg-white rounded-3 shadow-sm border">
-      <table class="table invoice-table table-hover align-middle mb-0">
-        <thead>
-          <tr>
-            <th class="ps-3"><%= t('invoice.code') %></th>
-            <th><%= t('invoice.payment_term') %></th>
-            <th><%= t('invoice.due_date') %></th>
-            <th><%= t('invoice.total') %></th>
-            <th><%= t('common.status', default: 'Trạng thái') %></th>
-            <th class="text-end pe-3"><%= t('invoice.title') %></th>
-          </tr>
-        </thead>
-        <tbody>
-          <% @invoices.each do |inv| %>
-            <tr>
-              <td class="ps-3">
-                <div class="invoice-code-tag">
-                  <%= link_to inv.code, tenant_invoice_path(inv), class: "text-decoration-none" %>
-                </div>
-                <div class="text-secondary small font-monospace">ID: #<%= inv.id %></div>
-              </td>
-              <td class="font-monospace fw-semibold"><%= t('common.month', default: 'Tháng') %> <%= inv.billing_month.strftime("%m/%Y") %></td>
-              <td>
-                <span class="<%= 'text-danger fw-bold' if inv.overdue? %> font-monospace">
-                  <%= inv.due_date.strftime("%d/%m/%Y") %>
-                </span>
-              </td>
-              <td>
-                <span class="fs-6 invoice-amount-pill">
-                  <%= number_to_currency(inv.total_amount, unit: "đ", format: "%n %u") %>
-                </span>
-              </td>
-              <td>
-                <%= invoice_status_badge(inv) %>
-              </td>
-              <td class="text-end pe-3">
-                <%= link_to tenant_invoice_path(inv), class: "btn btn-sm btn-primary d-inline-flex align-items-center gap-1 shadow-sm" do %>
-                  <span class="material-symbols-outlined fs-6">qr_code_2</span> <%= t('invoice.actions.detail_and_qr') %>
-                <% end %>
-              </td>
-            </tr>
+      <!-- Month Filter -->
+      <div class="d-flex align-items-center gap-2">
+        <%= f.label :month, "#{t('invoice.month')}:", class: "fw-bold text-nowrap" %>
+        <%= f.month_field :month,
+                          value: params[:month],
+                          placeholder: t('invoice.month_placeholder'),
+                          class: "form-control shadow-sm w-auto",
+                          onchange: "this.form.requestSubmit()" %>
+      </div>
+
+      <!-- Status Filter -->
+      <div class="d-flex align-items-center gap-2">
+        <%= f.label :status, "#{t('invoice.status_label')}:", class: "fw-bold text-nowrap" %>
+        <%= f.select :status,
+                     options_for_select([
+                       [t('invoice.all_status'), ""],
+                       [t('invoice.status.pending'), "pending"],
+                       [t('invoice.status.overdue'), "overdue"],
+                       [t('invoice.status.paid'), "paid"],
+                       [t('invoice.status.cancelled'), "cancelled"]
+                     ], params[:status]),
+                     {},
+                     class: "form-select shadow-sm w-auto",
+                     onchange: "this.form.requestSubmit()" %>
+      </div>
+
+      <!-- Clear Filter -->
+      <% has_filter = params[:query].present? || params[:month].present? || params[:status].present? || (params[:page].present? && params[:page] != "1") %>
+      <% if has_filter %>
+        <div>
+          <%= link_to tenant_invoices_path,
+                      class: "btn btn-outline-secondary btn-sm d-flex align-items-center gap-1 shadow-sm",
+                      data: { turbo_action: "advance" } do %>
+            <span class="material-symbols-outlined fs-6">filter_alt_off</span>
+            <span><%= t('clear_filter', default: 'Xóa bộ lọc') %></span>
           <% end %>
-        </tbody>
-      </table>
-    </div>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+
+  <h2 class="mb-3 ms-3"> <%= t("invoice.my_invoices_list") %> </h2>
+
+  <%= turbo_frame_tag "tenant_invoices_table",
+        data: {
+          controller: "pagination-sync",
+          pagination_sync_canonical_url_value: tenant_invoices_path,
+          pagination_sync_default_params_value: {}.to_json,
+          pagination_sync_query_params_value: ["query", "month", "status"].to_json,
+          pagination_sync_total_pages_selector_value: "[data-pagination-total-pages]",
+          action: "turbo:frame-load->pagination-sync#updateUrl"
+        } do %>
+    <%= render "tenant_portal/invoices/invoices_table", invoices: @invoices %>
   <% end %>
 </div>

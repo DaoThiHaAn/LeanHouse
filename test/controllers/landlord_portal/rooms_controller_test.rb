@@ -287,4 +287,27 @@ class LandlordPortal::RoomsControllerTest < ActionDispatch::IntegrationTest
     assert_not_includes @room_empty.service_variants, variant1
     assert_not_includes @room_empty.service_variants, variant_wifi
   end
+
+  test "destroy empty room soft-deletes room and decrements floor rooms_count" do
+    sign_in_as(@landlord_user)
+
+    assert_difference -> { @floor.reload.rooms_count }, -1 do
+      delete landlord_house_room_path(@house, @room_empty)
+    end
+
+    assert_redirected_to landlord_house_rooms_path(@house)
+    assert @room_empty.reload.deleted?
+  end
+
+  test "destroy occupied room is rejected with alert notice" do
+    sign_in_as(@landlord_user)
+
+    assert_no_difference -> { @floor.reload.rooms_count } do
+      delete landlord_house_room_path(@house, @room_occupied)
+    end
+
+    assert_redirected_to landlord_house_rooms_path(@house)
+    assert_equal I18n.t("errors.cannot_delete_room_occupied"), flash[:alert]
+    assert_not @room_occupied.reload.deleted?
+  end
 end

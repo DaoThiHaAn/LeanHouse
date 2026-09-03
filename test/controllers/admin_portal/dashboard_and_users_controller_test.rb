@@ -324,4 +324,152 @@ class AdminPortal::DashboardAndUsersControllerTest < ActionDispatch::Integration
     assert_response :success
     assert_select ".pagination"
   end
+
+  test "should show tenant user detail with current stay and turbo tabs" do
+    post admin_handle_login_url, params: { email: @admin.email, password: "Password123!" }
+
+    landlord = Landlord.find_or_create_by!(id: @user.id)
+    tenant_user = User.create!(
+      fullname: "Le Van Tenant",
+      tel: "0911223344",
+      password: "Password123!",
+      password_confirmation: "Password123!",
+      sex: "male",
+      bday: 22.years.ago.to_date,
+      address: "456 Tran Phu, Da Nang",
+      role: "tenant",
+      is_active: true
+    )
+    tenant = Tenant.find_or_create_by!(id: tenant_user.id)
+
+    house = House.create!(
+      landlord: landlord,
+      name: "Tenant View House",
+      mode: :room,
+      address_l1: "100 Nguyen Van Linh",
+      address_l2: "Ward 1",
+      address_l3: "District 1",
+      floors_count: 1,
+      inv_creation_date: 1
+    )
+    floor = house.floors.create!(name: "Tầng 1", position: 1)
+    room = floor.rooms.create!(name: "P101", area: 20, max_slots: 2, tenants_count: 1)
+    unit = room.create_rental_unit!(rent: 2_500_000, deposit: 2_500_000)
+
+    unit.tenant_stays.create!(tenant: tenant, checkin_at: Date.current, has_contract: true)
+    c = house.contracts.build(
+      landlord: landlord,
+      tenant: tenant,
+      name: "HD-P101-2026",
+      tenant_citizen_id: "012345678901",
+      landlord_citizen_id: "098765432109",
+      start_date: Date.current,
+      due_date: 6.months.from_now.to_date
+    )
+    c.save!(validate: false)
+
+    # 1. Main show view
+    get admin_user_url(tenant_user)
+    assert_response :success
+    assert_includes response.body, "Le Van Tenant"
+    assert_includes response.body, "Tenant View House"
+    assert_includes response.body, "P101"
+    assert_includes response.body, 'id="tenantDetailsTabs"'
+    assert_select "turbo-frame#admin_user_contracts"
+    assert_select "turbo-frame#admin_user_invoices"
+    assert_includes response.body, contracts_admin_user_path(tenant_user)
+    assert_includes response.body, invoices_admin_user_path(tenant_user)
+
+    # 2. Contracts turbo frame endpoint
+    get contracts_admin_user_url(tenant_user)
+    assert_response :success
+    assert_includes response.body, "HD-P101-2026"
+
+    # 3. Invoices turbo frame endpoint
+    house.invoices.create!(
+      created_by: @user,
+      tenant: tenant,
+      room: room,
+      invoice_type: :room,
+      title: "Tiền phòng P101",
+      code: "INV-9999",
+      billing_month: Date.current.beginning_of_month,
+      due_date: Date.current + 5.days,
+      subtotal: 2_500_000,
+      total_amount: 2_500_000,
+      status: :pending
+    )
+    get invoices_admin_user_url(tenant_user)
+    assert_response :success
+    assert_includes response.body, "INV-9999"
+  end
+
+  test "should paginate tenant contracts and invoices in admin user tabs" do
+    post admin_handle_login_url, params: { email: @admin.email, password: "Password123!" }
+
+    landlord = Landlord.find_or_create_by!(id: @user.id)
+    tenant_user = User.create!(
+      fullname: "Pham Thi Many",
+      tel: "0933445566",
+      password: "Password123!",
+      password_confirmation: "Password123!",
+      sex: "female",
+      bday: 25.years.ago.to_date,
+      address: "789 Hai Ba Trung",
+      role: "tenant",
+      is_active: true
+    )
+    tenant = Tenant.find_or_create_by!(id: tenant_user.id)
+
+    house = House.create!(
+      landlord: landlord,
+      name: "Paginated Test House",
+      mode: :room,
+      address_l1: "500 Dien Bien Phu",
+      address_l2: "Ward 2",
+      address_l3: "District 2",
+      floors_count: 1,
+      inv_creation_date: 1
+    )
+    floor = house.floors.create!(name: "Tầng 1", position: 1)
+    room = floor.rooms.create!(name: "P201", area: 22, max_slots: 2, tenants_count: 1)
+    room.create_rental_unit!(rent: 3_000_000, deposit: 3_000_000)
+
+    12.times do |i|
+      c = house.contracts.build(
+        landlord: landlord,
+        tenant: tenant,
+        name: "HD-MANY-#{i + 1}",
+        tenant_citizen_id: "012345678901",
+        landlord_citizen_id: "098765432109",
+        start_date: (14 - i).months.ago.to_date,
+        due_date: (13 - i).months.ago.to_date
+      )
+      c.save!(validate: false)
+    end
+
+    15.times do |i|
+      house.invoices.create!(
+        created_by: @user,
+        tenant: tenant,
+        room: room,
+        invoice_type: :room,
+        title: "Tiền phòng P201 tháng #{i + 1}",
+        code: "INV-MANY-#{i + 1}",
+        billing_month: i.months.ago.beginning_of_month.to_date,
+        due_date: i.months.ago.to_date + 5.days,
+        subtotal: 3_000_000,
+        total_amount: 3_000_000,
+        status: :pending
+      )
+    end
+
+    get contracts_admin_user_url(tenant_user, page: 2)
+    assert_response :success
+    assert_select ".pagination"
+
+    get invoices_admin_user_url(tenant_user, page: 2)
+    assert_response :success
+    assert_select ".pagination"
+  end
 end

@@ -37,7 +37,7 @@
                 <%= link_to tenant_request_path(request),
                       class: "text-decoration-none fw-semibold text-primary d-inline-flex align-items-center gap-1",
                       data: { turbo_frame: "request_detail_modal" },
-                      title: t("request.detail_title", default: "Xem chi tiết yêu cầu") do %>
+                      title: t("request.detail_title") do %>
                   <%= request.human_request_type %>
                 <% end %>
               </td>

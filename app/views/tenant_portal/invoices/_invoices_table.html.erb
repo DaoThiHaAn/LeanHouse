@@ -1,0 +1,41 @@
+<%# locals: (invoices:) %>
+<span hidden data-pagination-total-pages="<%= invoices.respond_to?(:total_pages) ? invoices.total_pages : 1 %>"></span>
+
+<% if invoices.empty? %>
+  <div class="invoice-empty-state mx-auto">
+    <span class="material-symbols-outlined invoice-empty-icon">receipt_long</span>
+    <p class="fs-5 fw-bold mb-1"><%= t('invoice.no_invoices_tenant') %></p>
+    <p class="text-secondary mb-0"><%= t('invoice.no_invoices_tenant_hint') %></p>
+  </div>
+<% else %>
+  <div class="table-responsive bg-white rounded-3 shadow-sm border">
+    <table class="table invoice-table table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th class="ps-3"><%= t('invoice.code') %></th>
+          <th><%= t('invoice.payment_term') %></th>
+          <th><%= t('invoice.due_date') %></th>
+          <th><%= t('invoice.total') %></th>
+          <th><%= t('common.status', default: 'Trạng thái') %></th>
+          <th class="text-center"><%= t('invoice.actions_header', default: t('actions')) %></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% invoices.each do |inv| %>
+          <%= render "tenant_portal/invoices/invoice_row", inv: inv %>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <% if invoices.respond_to?(:total_pages) && invoices.total_pages > 1 %>
+    <div class="mt-4 d-flex justify-content-center">
+      <%= paginate invoices,
+                   params: {
+                     query: params[:query].presence,
+                     month: params[:month].presence,
+                     status: params[:status].presence
+                   } %>
+    </div>
+  <% end %>
+<% end %>

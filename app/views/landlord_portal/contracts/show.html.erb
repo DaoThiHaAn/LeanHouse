@@ -1,45 +1,45 @@
 
 <% content_for :title, t("form.contract.info") %>
 
-<% provide :container_width, "w-75 px-0" %>
+<div class="contract-detail-wrapper shadow rounded-2 border">
+  <div class="d-flex w-100 mb-3 px-3 pt-5">
+    <%= back_link_to class: "align-self-start" %>
 
-<div class="d-flex mb-3 px-3">
-  <%= back_link_to class: "align-self-start" %>
+    <div class="flex-grow-1 mb-4 d-flex flex-column align-items-center gap-3">
+      <h1 class="text-center"><%= t("form.contract.info") %></h1>
+      <div class="d-flex gap-2">
+        <%= link_to edit_landlord_house_contract_path(@house, @contract),
+                  title: t("edit"),
+                  class: "table-action" do %>
+          <span class="material-symbols-filled fs-2">edit</span>
+        <% end %>
 
-  <div class="flex-grow-1 mb-4 d-flex flex-column align-items-center gap-3">
-    <h1 class="text-center"><%= t("form.contract.info") %></h1>
-    <div class="d-flex gap-2">
-      <%= link_to edit_landlord_house_contract_path(@house, @contract),
-                title: t("edit"),
-                class: "table-action" do %>
-        <span class="material-symbols-filled fs-2">edit</span>
-      <% end %>
+        <%= link_to extend_landlord_house_contract_path(@house, @contract),
+                  data: { turbo_frame: "extend_modal" },
+                  title: t("form.contract.extend"),
+                  class: "table-action" do %>
+          <span class="material-symbols-filled fs-2">more_time</span>
+        <% end %>
 
-      <%= link_to extend_landlord_house_contract_path(@house, @contract),
-                data: { turbo_frame: "extend_modal" },
-                title: t("form.contract.extend"),
-                class: "table-action" do %>
-        <span class="material-symbols-filled fs-2">more_time</span>
-      <% end %>
+        <%= link_to sign_new_landlord_house_contract_path(@house, @contract),
+                  title: t("form.contract.sign_new"),
+                  class: "table-action" do %>
+          <span class="material-symbols-filled fs-2">ink_pen</span>
+        <% end %>
 
-      <%= link_to sign_new_landlord_house_contract_path(@house, @contract),
-                title: t("form.contract.sign_new"),
-                class: "table-action" do %>
-        <span class="material-symbols-filled fs-2">ink_pen</span>
-      <% end %>
-
-      <%= link_to close_landlord_house_contract_path(@house, @contract),
-                title: t("form.contract.close"),
-                data: { turbo_frame: "close_cf_modal" },
-                class: "table-action" do %>
-        <span class="material-symbols-filled text-danger-emphasis fs-2">contract_delete</span>
-      <% end %>
+        <%= link_to close_landlord_house_contract_path(@house, @contract),
+                  title: t("form.contract.close"),
+                  data: { turbo_frame: "close_cf_modal" },
+                  class: "table-action" do %>
+          <span class="material-symbols-filled text-danger-emphasis fs-2">contract_delete</span>
+        <% end %>
+      </div>
     </div>
   </div>
-</div>
 
-<div id="contract_detail">
-  <%= render 'detail', contract: @contract, house: @house, tenant_stay: @tenant_stay %>
+  <div id="contract_detail">
+    <%= render 'detail', contract: @contract, house: @house, tenant_stay: @tenant_stay %>
+  </div>
 </div>
 
 <%= turbo_frame_tag "close_cf_modal" %>

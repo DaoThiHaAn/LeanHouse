@@ -134,4 +134,29 @@ class LandlordPortal::BedsControllerTest < ActionDispatch::IntegrationTest
     get edit_landlord_house_bed_path(room_house, @bed1)
     assert_redirected_to landlord_house_rooms_path(room_house)
   end
+
+  test "DELETE destroy soft-deletes vacant bed and decrements room max_slots" do
+    sign_in_as(@landlord_user)
+
+    assert_difference -> { @room.reload.max_slots }, -1 do
+      delete landlord_house_bed_path(@house, @bed1)
+    end
+
+    assert_redirected_to landlord_house_rooms_path(@house)
+    assert @bed1.reload.deleted?
+    assert_not @bed1.is_available?
+  end
+
+  test "DELETE destroy rejects occupied bed with alert notice" do
+    @bed2.update!(is_available: false)
+    sign_in_as(@landlord_user)
+
+    assert_no_difference -> { @room.reload.max_slots } do
+      delete landlord_house_bed_path(@house, @bed2)
+    end
+
+    assert_redirected_to landlord_house_rooms_path(@house)
+    assert_equal I18n.t("errors.cannot_delete_bed_occupied"), flash[:alert]
+    assert_not @bed2.reload.deleted?
+  end
 end

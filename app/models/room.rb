@@ -63,11 +63,25 @@ class Room < ApplicationRecord
 
   # Can be rented
   def available?
-    !deleteted && tenants_count < max_slots
+    !deleted && tenants_count < max_slots
   end
 
   def empty?
     tenants_count.zero?
+  end
+
+  def can_delete?
+    tenants_count.zero?
+  end
+
+  def soft_delete!
+    transaction do
+      update!(deleted: true)
+      beds.update_all(deleted: true, is_available: false) if beds.exists?
+      floor.decrement!(:rooms_count) if floor.rooms_count > 0
+      floor.touch
+      house&.touch
+    end
   end
 
   def create_beds(count:, rent: 0, deposit: 0, start_at: 0)

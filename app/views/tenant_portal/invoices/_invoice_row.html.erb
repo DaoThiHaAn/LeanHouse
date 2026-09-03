@@ -1,0 +1,49 @@
+<%# locals: (inv:) %>
+<tr id="<%= dom_id(inv) %>">
+  <td class="ps-3">
+    <div class="invoice-code-tag">
+      <%= link_to inv.code, tenant_invoice_path(inv), data: { turbo_frame: "_top" }, class: "text-decoration-none" %>
+    </div>
+    <% if inv.title.present? %>
+      <div class="fw-semibold text-dark small mt-1"><%= inv.title %></div>
+    <% end %>
+  </td>
+  <td class="fw-semibold"><%= t('common.month', default: 'Tháng') %> <%= inv.billing_month.strftime("%m/%Y") %></td>
+  <td>
+    <span class="<%= 'text-danger fw-bold' if inv.overdue? %>">
+      <%= inv.due_date.strftime("%d/%m/%Y") %>
+    </span>
+  </td>
+  <td>
+    <span class="fs-6 invoice-amount-pill">
+      <%= number_to_currency(inv.total_amount, unit: "đ", format: "%n %u") %>
+    </span>
+  </td>
+  <td>
+    <%= invoice_status_badge(inv) %>
+  </td>
+  <td class="text-center">
+    <div class="d-flex align-items-center justify-content-center gap-2">
+      <% if inv.pending? || inv.overdue? %>
+        <button type="button"
+                class="table-action text-success border-0"
+                data-bs-toggle="modal"
+                data-bs-target="#tenantMarkPaidModal_<%= inv.id %>"
+                title="<%= t('invoice.actions.done') %>">
+          <span class="material-symbols-filled">paid</span>
+        </button>
+      <% end %>
+
+      <%= link_to tenant_invoice_path(inv),
+                  data: { turbo_frame: "_top" },
+                  class: "table-action px-1 py-0",
+                  title: t('invoice.actions.detail_and_qr') do %>
+        <span class="material-symbols-filled">visibility</span>
+      <% end %>
+    </div>
+
+    <% if inv.pending? || inv.overdue? %>
+      <%= render "tenant_portal/invoices/payment_modal", invoice: inv %>
+    <% end %>
+  </td>
+</tr>

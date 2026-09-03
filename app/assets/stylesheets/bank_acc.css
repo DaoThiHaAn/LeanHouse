@@ -1,0 +1,8 @@
+.badge.custom-primary-btn {
+  border-radius: 5px !important;
+  box-shadow: none
+}
+
+.badge.custom-primary-btn:hover {
+  background-color: var(--primary-bg);
+}

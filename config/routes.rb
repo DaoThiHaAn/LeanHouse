@@ -32,7 +32,7 @@ Rails.application.routes.draw do
 
 
   resources :posts, only: [ :index, :show ]
-  resources :users
+  resources :users, only: %i[create update]
 
   resources :notifications, only: [ :index ] do
     member do
@@ -106,12 +106,8 @@ Rails.application.routes.draw do
       get "/tenants/create_new", to: "tenants#create_new", as: :create_new_tenant
       get "/tenants/available", to: "tenants#available", as: :tenant_available
 
-      # resources :rental_unit, only: [] do
-      #   resources :tenants, only: [ :create ]
-      # end
       resources :tenants, only: [ :index, :show, :new, :create, :destroy ] do
         member do
-          get :link
           get :move
           post :move, to: "tenants#execute_move"
         end
@@ -231,6 +227,8 @@ Rails.application.routes.draw do
       member do
         patch :toggle_active
         patch :recycle_phone
+        get :contracts
+        get :invoices
       end
     end
     resources :admins, only: [ :index, :new, :create, :edit, :update ] do

@@ -1,25 +1,7 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: %i[ show edit update destroy ]
+  before_action :set_user, only: %i[ update ]
 
-  # GET /users or /users.json
-  def index
-    @users = User.all
-  end
-
-  # GET /users/1 or /users/1.json
-  def show
-  end
-
-  # GET /users/new
-  def new
-    @user = User.new
-  end
-
-  # GET /users/1/edit
-  def edit
-  end
-
-  # POST /users or /users.json
+  # POST /users
   def create
     phone_verification = PhoneVerification.new(user_params)
     result = phone_verification.request_signup_otp
@@ -37,7 +19,7 @@ class UsersController < ApplicationController
     end
   end
 
-  # PATCH/PUT /users/1 or /users/1.json
+  # PATCH/PUT /users/1
   def update
     respond_to do |format|
       context = session[:is_reset_pw] ? :pw_reset : nil
@@ -55,29 +37,17 @@ class UsersController < ApplicationController
           clear_session_keys(:is_reset_pw, :verified_tel, :pending_role, :pending_tel)
           format.html { redirect_to target_path, notice: t("success_messages.user_update_pw_success") }
         else
-          format.html { redirect_to @user, notice: t("success_messages.user_updated"), status: :see_other }
-          format.json { render :show, status: :ok, location: @user }
+          format.html { redirect_to root_path, notice: t("success_messages.user_updated"), status: :see_other }
         end
       else
         if session[:is_reset_pw]
           format.html { render "authentication/reset_pw", status: :unprocessable_entity }
         else
-          format.html { render :edit, status: :unprocessable_entity }
+          format.html { redirect_to root_path, status: :unprocessable_entity }
         end
 
         format.json { render json: @user.errors, status: :unprocessable_entity }
       end
-    end
-  end
-
-
-  # DELETE /users/1 or /users/1.json
-  def destroy
-    @user.destroy!
-
-    respond_to do |format|
-      format.html { redirect_to users_path, notice: "User was successfully destroyed.", status: :see_other }
-      format.json { head :no_content }
     end
   end
 

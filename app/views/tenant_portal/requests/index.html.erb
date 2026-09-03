@@ -1,8 +1,11 @@
 <%= content_for :title, t("request.mine") %>
 
 <div class="request main-container">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="mb-0"><%= t("request.mine") %></h1>
+  <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+    <div>
+      <h1 class="mb-2"><%= t("request.mine") %></h1>
+      <p class="text-secondary"><%= t("request.mine_mng") %></p>
+    </div>
 
     <!-- Create Button / Dropdown -->
     <% if @tenant_stay.present? %>
@@ -60,7 +63,7 @@
   <%= form_with url: filtered_tenant_requests_path,
       method: :get,
       class: "request-form d-flex align-items-center flex-wrap gap-3 mt-4 p-3 justify-content-around rounded-3",
-      data: { 
+      data: {
         controller: "filter-form",
         filter_form_default_house_value: @house&.id&.to_s || "",
         turbo_frame: "requests_table",
@@ -144,7 +147,7 @@
     </div>
   <% end %>
 
-  <h2 class="mt-5"><%= t("request.list") %></h2>
+  <h2 class="mt-5 ms-3"><%= t("request.list") %></h2>
 
   <!-- Requests Table Section (Turbo Frame) -->
   <%= turbo_frame_tag "requests_table",

@@ -1,21 +1,125 @@
-
 <%= turbo_frame_tag "tenant_detail_modal" do %>
   <div class="modal fade" id="tenantDetailModal" tabindex="-1" aria-hidden="true"
         data-controller="modal" data-modal-auto-open-value="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content px-2">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="tenantDetailModalLabel">
-            <%= t("form.tenant.info") %>
-          </h1>
-
+        <div class="modal-header py-2 border-bottom">
+          <div class="d-flex align-items-center justify-content-start gap-2 mx-auto">
+            <span class="material-symbols-filled text-primary fs-4">person</span>
+            <h1 class="modal-title fs-5 fw-bold" id="tenantDetailModalLabel">
+              <%= t("form.tenant.info") %> - <%= vn_name(@user.fullname) %>
+            </h1>
+          </div>
           <button type="button" class="m-0 btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
 
+        <div class="modal-body py-3 px-4">
+          <%# Personal Info Section %>
+          <div class="mb-3 pb-3 border-bottom">
+            <h6 class="fw-bold text-secondary text-uppercase small mb-3"><%= t("form.profile.info", default: "Thông tin cá nhân") %></h6>
+            <div class="row g-2">
+              <div class="col-6">
+                <p class="small text-secondary mb-1"><%= t("form.profile.fullname") %></p>
+                <p class="fw-semibold mb-0"><%= vn_name(@user.fullname) %></p>
+              </div>
+              <div class="col-6">
+                <p class="small text-secondary mb-1"><%= t("form.profile.tel") %></p>
+                <p class="fw-semibold mb-0">
+                  <a href="tel:<%= @user.tel %>" class="text-decoration-none text-dark d-inline-flex align-items-center gap-1">
+                    <span class="material-symbols-outlined fs-6 text-primary">call</span>
+                    <%= @user.tel %>
+                  </a>
+                </p>
+              </div>
+              <div class="col-6">
+                <p class="small text-secondary mb-1"><%= t("form.profile.sex") %></p>
+                <p class="fw-semibold mb-0"><%= t("form.profile.#{@user.sex}", default: @user.sex.to_s.capitalize) %></p>
+              </div>
+              <div class="col-6">
+                <p class="small text-secondary mb-1"><%= t("form.profile.bday") %></p>
+                <p class="fw-semibold mb-0"><%= @user.bday&.strftime("%d/%m/%Y") || "-" %></p>
+              </div>
+              <div class="col-12">
+                <p class="small text-secondary mb-1"><%= t("form.profile.address") %></p>
+                <p class="fw-semibold mb-0"><%= @user.address.presence || "-" %></p>
+              </div>
+            </div>
+          </div>
+
+          <%# Tenancy & Residence Section %>
+          <div class="mb-3 pb-3 border-bottom">
+            <h6 class="fw-bold text-secondary text-uppercase small mb-3"><%= t("form.tenant.rental_unit", default: "Chỗ ở & Cư trú") %></h6>
+            <div class="row g-2">
+              <div class="col-6">
+                <p class="small text-secondary mb-1"><%= t("form.tenant.rental_unit") %></p>
+                <p class="fw-semibold mb-0 text-primary d-inline-flex align-items-center gap-1">
+                  <span class="material-symbols-outlined fs-6">location_home</span>
+                  <%= @tenant.current_staying_info.presence || "-" %>
+                </p>
+              </div>
+              <div class="col-6">
+                <p class="small text-secondary mb-1"><%= t("form.contract.citizen_id", default: "CCCD / CMND") %></p>
+                <p class="fw-semibold font-monospace mb-0"><%= @latest_contract&.tenant_citizen_id.presence || "-" %></p>
+              </div>
+              <div class="col-12">
+                <p class="small text-secondary mb-1"><%= t("form.contract.resid_register_due") %></p>
+                <div class="d-flex align-items-center gap-2">
+                  <% if @latest_contract&.temp_resid_registered? %>
+                    <span class="fw-semibold"><%= @latest_contract.temp_resid_due_date.strftime("%d/%m/%Y") %></span>
+                    <%= due_status_icon_label(@latest_contract.temp_resid_due_status) %>
+                  <% else %>
+                    <span class="badge bg-secondary-subtle text-secondary border"><%= t("not_yet", default: "Chưa đăng ký") %></span>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <%# Contract Status Section %>
+          <div class="mb-3">
+            <h6 class="fw-bold text-secondary text-uppercase small mb-3"><%= t("form.contract.self", default: "Hợp đồng") %></h6>
+            <% if @latest_contract.present? %>
+              <div class="d-flex align-items-center justify-content-between p-2 rounded bg-light border">
+                <div class="d-flex align-items-center gap-2">
+                  <span class="material-symbols-outlined text-primary fs-5">description</span>
+                  <div>
+                    <p class="fw-semibold mb-0 small"><%= @latest_contract.name %></p>
+                    <small class="text-secondary"><%= @latest_contract.formatted_period %></small>
+                  </div>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                  <%= contract_state_tag(@latest_contract.due_status) %>
+                  <%= link_to landlord_house_contract_path(@house, @latest_contract),
+                              class: "btn btn-sm btn-outline-primary py-0 px-2 d-inline-flex align-items-center gap-1",
+                              title: t("view_detail"),
+                              data: { turbo_frame: "_top" } do %>
+                    <span class="material-symbols-filled fs-6">visibility</span>
+                    <span class="small"><%= t("view_detail") %></span>
+                  <% end %>
+                </div>
+              </div>
+            <% else %>
+              <div class="d-flex align-items-center justify-content-between p-2 rounded bg-light border">
+                <span class="badge bg-warning-subtle text-warning-emphasis border"><%= t("form.tenant.unsigned", default: "Chưa ký hợp đồng") %></span>
+                <%= link_to new_landlord_house_tenant_contract_path(@house, @tenant),
+                            data: {turbo_frame: "_top"},
+                            class: "btn btn-sm btn-primary py-0 px-2 d-inline-flex align-items-center gap-1" do %>
+                  <span class="material-symbols-filled fs-6">ink_pen</span>
+                  <span class="small"><%= t("form.contract.sign") %></span>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+
+          <%# Footer timestamps %>
+          <div class="text-end pt-2">
+            <small class="text-secondary fst-italic">
+              <%= t("last_updated", default: "Cập nhật lần cuối") %>: <%= l(@user.updated_at, format: :default) rescue @user.updated_at.strftime("%d/%m/%Y %H:%M") %>
+            </small>
+          </div>
+        </div>
+
       </div>
-
     </div>
-
   </div>
-
 <% end %>

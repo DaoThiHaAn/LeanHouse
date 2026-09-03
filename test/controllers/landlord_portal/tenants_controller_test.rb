@@ -128,4 +128,14 @@ class LandlordPortal::TenantsControllerTest < ActionDispatch::IntegrationTest
     delete landlord_house_tenant_path(@house, @tenant2)
     assert_redirected_to landlord_house_tenants_path(@house)
   end
+
+  test "show renders tenant detail modal with citizen_id, staying info, and contract info" do
+    sign_in_as(@landlord_user)
+    get landlord_house_tenant_path(@house, @tenant1)
+    assert_response :success
+    assert_select "turbo-frame#tenant_detail_modal"
+    assert_includes response.body, "Nguyen Van A"
+    assert_includes response.body, "123456789012"
+    assert_includes response.body, "HD-01"
+  end
 end

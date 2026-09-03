@@ -33,6 +33,8 @@ en:
     type_individual: "By Individual"
     clear_filter: "Clear Filter"
     actions_header: "Actions"
+    search_placeholder: "Search by invoice code, title..."
+    confirm_payment_btn: "Pay"
     only_current_tenants: "Current tenants only"
     only_current_tenants_hint: "Filter invoices for tenants currently staying in the property"
     stats:

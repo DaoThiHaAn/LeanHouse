@@ -1,0 +1,77 @@
+<div class="table-responsive admin-table-scroll">
+  <table class="table table-hover align-middle mb-0">
+    <thead class="table-light sticky-top">
+      <tr>
+        <th class="ps-3"><%= t("admin.users.contract_name") %></th>
+        <th><%= t("admin.users.contract_house") %></th>
+        <th><%= t("admin.users.contract_duration") %></th>
+        <th><%= t("admin.users.contract_deposit") %></th>
+        <th><%= t("admin.users.contract_status") %></th>
+        <th class="text-end pe-3"><%= t("admin.contracts.actions") %></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if contracts.any? %>
+        <% contracts.each do |c| %>
+          <tr>
+            <td class="ps-3">
+              <%= link_to c.name, admin_contract_path(c),
+                          class: "fw-bold link text-dark",
+                          data: { turbo_frame: "contract_detail_modal" } %>
+            </td>
+            <td>
+              <% if c.house %>
+                <%= link_to c.house.name, admin_house_path(c.house), class: "link fw-semibold" %>
+              <% else %>
+                <span class="text-secondary">-</span>
+              <% end %>
+            </td>
+            <td><%= l(c.start_date, format: :default) rescue c.start_date.strftime("%d/%m/%Y") %> → <%= l(c.due_date, format: :default) rescue c.due_date.strftime("%d/%m/%Y") %></td>
+            <td>
+              <% if c.deposit_paid? %>
+                <span class="badge bg-success-subtle text-success border border-success-subtle"><%= t("admin.users.deposit_paid") %></span>
+              <% else %>
+                <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle"><%= t("admin.users.deposit_unpaid") %></span>
+              <% end %>
+            </td>
+            <td>
+              <% if c.end_date.present? %>
+                <span class="badge bg-secondary"><%= t("admin.users.contract_ended") %></span>
+              <% elsif c.due_date < Date.current %>
+                <span class="badge bg-danger"><%= t("admin.users.contract_overdue") %></span>
+              <% elsif c.due_date <= Date.current + Contract::NEARLY_DUE_DAYS.days %>
+                <span class="badge bg-warning text-dark"><%= t("admin.contracts.state_nearly_due") %></span>
+              <% else %>
+                <span class="badge bg-success"><%= t("admin.users.contract_active") %></span>
+              <% end %>
+            </td>
+            <td class="text-end pe-3">
+              <%= link_to admin_contract_path(c),
+                          class: "table-action",
+                          title: t("admin.contracts.view_detail"),
+                          data: { turbo_frame: "contract_detail_modal" } do %>
+                <span class="material-symbols-filled fs-5">visibility</span>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      <% else %>
+        <tr>
+          <td colspan="6" class="text-center text-secondary py-4"><%= t("admin.users.no_contracts") %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+<% if contracts.any? %>
+  <div class="d-flex justify-content-between align-items-center p-3 border-top bg-white flex-wrap gap-2">
+    <div class="small text-secondary">
+      <%= t("admin.contracts.total_contracts") rescue "Tổng hợp đồng" %>: <%= contracts.respond_to?(:total_count) ? contracts.total_count : contracts.size %>
+    </div>
+    <% if contracts.respond_to?(:total_pages) && contracts.total_pages > 1 %>
+      <div>
+        <%= paginate contracts %>
+      </div>
+    <% end %>
+  </div>
+<% end %>

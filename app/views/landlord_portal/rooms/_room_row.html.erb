@@ -25,10 +25,23 @@
         <span class="material-symbols-filled">edit</span>
       <% end %>
 
-      <%= button_to landlord_house_room_path(house, room), method: :delete,
-                title: t("delete"),
-                class: "table-action" do %>
-        <span class="material-symbols-filled">delete</span>
+      <% if room.can_delete? %>
+        <%= button_to landlord_house_room_path(house, room),
+                      method: :delete,
+                      title: t("delete"),
+                      class: "table-action",
+                      data: {
+                        turbo_confirm: t("form.room.confirm_delete", name: room.name)
+                      } do %>
+          <span class="material-symbols-filled">delete</span>
+        <% end %>
+      <% else %>
+        <button type="button"
+                class="table-action border-0 bg-transparent"
+                title="<%= t("delete") %>"
+                onclick="alert('<%= j t("form.room.cannot_delete_has_tenants") %>')">
+          <span class="material-symbols-filled text-secondary">delete</span>
+        </button>
       <% end %>
     </div>
   </td>

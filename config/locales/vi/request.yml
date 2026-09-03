@@ -2,6 +2,7 @@ vi:
   request:
     self: "Yêu cầu"
     mine: "Yêu cầu của tôi"
+    mine_mng: "Nơi tạo và theo dõi các yêu cầu bạn gửi đến Chủ nhà"
     id: "Mã yêu cầu"
     type: "Loại"
     create: "Tạo yêu cầu"
@@ -118,4 +119,3 @@ vi:
       resolved_subtext: "Đã giải quyết trong tháng %{month}"
       due_today: "Hết hạn hôm nay!"
       due_in_days: "Còn %{days} ngày"
-

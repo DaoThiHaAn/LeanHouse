@@ -33,6 +33,18 @@ class Bed < ApplicationRecord
     !deleted && is_available
   end
 
+  def can_delete?
+    is_available && staying_tenant.nil?
+  end
+
+  def soft_delete!
+    transaction do
+      update!(deleted: true, is_available: false)
+      room.decrement!(:max_slots) if room.max_slots > 0
+      room.touch
+    end
+  end
+
   # A tenant is unlinked to a bed
   def tenant_removed!
     transaction do

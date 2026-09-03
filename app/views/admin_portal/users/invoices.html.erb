@@ -1,0 +1,3 @@
+<%= turbo_frame_tag "admin_user_invoices" do %>
+  <%= render "admin_portal/users/invoices_table", invoices: @invoices, user: @user %>
+<% end %>
