@@ -33,7 +33,7 @@
         <span class="material-symbols-filled">visibility</span>
       <% end %>
 
-      <% if inv.pending? %>
+      <% if inv.pending? || inv.overdue? %>
         <%= link_to edit_landlord_house_invoice_path(house, inv),
                   data: { turbo_frame: "edit_invoice_modal" },
                   title: t("edit"),
@@ -41,13 +41,13 @@
           <span class="material-symbols-filled">edit</span>
         <% end %>
 
-        <%= button_to mark_paid_landlord_house_invoice_path(house, inv),
-                  method: :patch,
-                  data: { turbo_frame: "_top" },
-                  title: t("invoice.actions.done"),
-                  class: "table-action text-success" do %>
-          <span class="material-symbols-filled">check_circle</span>
-        <% end %>
+        <button type="button"
+                class="table-action text-success border-0 bg-transparent p-0"
+                data-bs-toggle="modal"
+                data-bs-target="#rowMarkPaidModal_<%= inv.id %>"
+                title="<%= t('invoice.actions.done') %>">
+          <span class="material-symbols-filled">paid</span>
+        </button>
 
         <%= button_to cancel_landlord_house_invoice_path(house, inv),
                   method: :patch,
@@ -56,7 +56,17 @@
                   class: "table-action text-danger-emphasis" do %>
           <span class="material-symbols-filled">cancel</span>
         <% end %>
+      <% elsif inv.paid? %>
+        <button type="button"
+                class="table-action text-danger border-0 bg-transparent p-0"
+                data-bs-toggle="modal"
+                data-bs-target="#rowUndoPaidModal_<%= inv.id %>"
+                title="<%= t('invoice.undo_paid_tooltip') %>">
+          <span class="material-symbols-filled">undo</span>
+        </button>
       <% end %>
     </div>
+
+    <%= render "landlord_portal/invoices/row_modals", house: house, inv: inv %>
   </td>
 </tr>

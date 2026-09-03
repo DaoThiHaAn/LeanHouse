@@ -304,16 +304,58 @@
 
         <div class="col-md-8">
           <div class="ps-md-2 invoice-warning-text">
+            <% if @invoice.undo_reason.present? && !@invoice.paid? %>
+              <div class="undo-reason-banner mb-3">
+                <div class="d-flex align-items-center gap-2 undo-reason-title mb-1">
+                  <span class="material-symbols-outlined fs-5 text-danger">warning</span>
+                  <span><%= t('invoice.previous_undo_alert') %></span>
+                  <% if @invoice.undone_at.present? %>
+                    <span class="text-secondary fw-normal small font-monospace">(<%= @invoice.undone_at.strftime("%H:%M %d/%m/%Y") %>)</span>
+                  <% end %>
+                </div>
+                <p class="undo-reason-text"><strong><%= t('invoice.undo_reason_view') %>:</strong> <%= @invoice.undo_reason %></p>
+              </div>
+            <% end %>
+
             <p class="text-danger mb-2"><%= t('invoice.warning_check') %></p>
             <p class="text-danger mb-2"><%= t('invoice.warning_report') %></p>
             <p class="text-danger mb-4"><%= t('invoice.warning_proof') %></p>
 
             <% if @invoice.paid? %>
-              <div class="badge bg-success px-4 py-2 fs-6"><%= t('invoice.paid_completed') %></div>
+              <div class="d-flex gap-2 flex-wrap align-items-center">
+                <span class="badge bg-success px-3 py-2 fs-6"><%= t('invoice.paid_completed') %></span>
+                <span class="badge bg-light text-dark border px-3 py-2 fs-6">
+                  <%= t('invoice.payment_method_label') %>: <%= @invoice.cash? ? t('invoice.payment_methods.cash') : t('invoice.payment_methods.transfer') %>
+                </span>
+                <% if @invoice.paid_at.present? %>
+                  <span class="text-secondary small font-monospace"><%= @invoice.paid_at.strftime("%H:%M %d/%m/%Y") %></span>
+                <% end %>
+              </div>
+
+              <div class="mt-3 pt-3 border-top">
+                <label class="form-label fw-bold text-dark mb-1 d-block"><%= t('invoice.payment_proof') %>:</label>
+                <% if @invoice.payment_proof.attached? %>
+                  <div class="payment-proof-thumb-wrapper" data-bs-toggle="modal" data-bs-target="#tenantViewPaymentProofModal" title="<%= t('invoice.payment_proof_zoom') %>">
+                    <%= image_tag @invoice.payment_proof, class: "payment-proof-thumb", alt: t('invoice.payment_proof') %>
+                    <div class="payment-proof-zoom-icon">
+                      <span class="material-symbols-outlined fs-6">zoom_in</span>
+                    </div>
+                  </div>
+                <% else %>
+                  <span class="text-secondary small fst-italic"><%= t('invoice.no_payment_proof') %></span>
+                <% end %>
+              </div>
             <% else %>
-              <div class="p-3 bg-light rounded border">
+              <div class="p-3 bg-light rounded border mb-3">
                 <div class="small text-secondary"><%= t('invoice.transfer_note_strict') %>:</div>
                 <div class="fs-6 font-monospace fw-bold text-primary mt-1"><%= @invoice.transfer_note %></div>
+              </div>
+
+              <div class="d-flex gap-2 flex-wrap d-print-none">
+                <button type="button" class="btn btn-primary px-4 py-2 fw-semibold d-inline-flex align-items-center gap-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#tenantMarkPaidModal">
+                  <span class="material-symbols-outlined fs-5">payments</span>
+                  <%= t('invoice.submit_tenant_payment') %>
+                </button>
               </div>
             <% end %>
           </div>
@@ -426,3 +468,97 @@
     </div>
   </div>
 </div>
+
+<!-- Modal Xác nhận đã thanh toán cho Khách thuê -->
+<div class="modal fade" id="tenantMarkPaidModal" tabindex="-1" aria-labelledby="tenantMarkPaidModalLabel" aria-hidden="true" data-controller="file-preview">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-4 shadow">
+      <%= form_with url: mark_paid_tenant_invoice_path(@invoice), method: :patch, multipart: true, local: true do |f| %>
+        <div class="modal-header border-bottom">
+          <h5 class="modal-title fw-bold" id="tenantMarkPaidModalLabel">
+            <span class="material-symbols-outlined text-primary align-middle">payments</span>
+            <%= t('invoice.confirm_paid_title', code: @invoice.code) %>
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p class="text-secondary small mb-3"><%= t('invoice.confirm_paid_tenant_desc') %></p>
+
+          <div class="bg-light p-3 rounded-3 mb-3 border">
+            <div class="d-flex justify-content-between mb-1">
+              <span class="text-secondary small"><%= t('invoice.payment_term') %>:</span>
+              <span class="fw-semibold text-dark"><%= @invoice.billing_month.strftime("%m/%Y") %></span>
+            </div>
+            <div class="d-flex justify-content-between">
+              <span class="text-secondary small"><%= t('invoice.total') %>:</span>
+              <span class="fw-bold fs-6 text-primary font-monospace"><%= @invoice.formatted_total_amount %></span>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold"><%= t('invoice.payment_method_label') %></label>
+            <div class="d-flex gap-4">
+              <div class="form-check">
+                <%= f.radio_button :payment_method, "transfer", checked: true, class: "form-check-input", id: "tenant_pm_transfer" %>
+                <%= f.label :payment_method_transfer, t('invoice.payment_methods.transfer'), for: "tenant_pm_transfer", class: "form-check-label" %>
+              </div>
+              <div class="form-check">
+                <%= f.radio_button :payment_method, "cash", class: "form-check-input", id: "tenant_pm_cash" %>
+                <%= f.label :payment_method_cash, t('invoice.payment_methods.cash'), for: "tenant_pm_cash", class: "form-check-label" %>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold"><%= t('invoice.payment_proof') %></label>
+            <span class="text-secondary small d-block mb-1"><%= t('invoice.payment_proof_hint') %></span>
+            <%= f.file_field :payment_proof, accept: "image/*", class: "form-control shadow-sm", data: { file_preview_target: "input", action: "change->file-preview#preview" } %>
+
+            <div class="payment-proof-preview-wrapper mt-2 d-none" data-file-preview-target="container">
+              <img src="" alt="Proof Preview" class="payment-proof-preview-img" data-file-preview-target="preview">
+              <button type="button" class="btn btn-danger btn-sm payment-proof-clear-btn" data-action="click->file-preview#clear" title="Xóa ảnh">
+                <span class="material-symbols-outlined fs-6">close</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="mb-0">
+            <%= f.label :note, t('invoice.payment_note'), class: "form-label fw-semibold" %>
+            <%= f.text_area :note, rows: 2, class: "form-control shadow-sm", placeholder: t('invoice.payment_note_placeholder') %>
+          </div>
+        </div>
+        <div class="modal-footer border-top">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal"><%= t('invoice.actions.close') %></button>
+          <%= f.submit t('invoice.submit_tenant_payment'), class: "btn btn-primary btn-sm fw-semibold px-3" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Phóng to ảnh minh chứng thanh toán cho Khách thuê -->
+<% if @invoice.payment_proof.attached? %>
+  <div class="modal fade" id="tenantViewPaymentProofModal" tabindex="-1" aria-labelledby="tenantViewPaymentProofModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content rounded-4 shadow">
+        <div class="modal-header border-bottom">
+          <h5 class="modal-title fw-bold" id="tenantViewPaymentProofModalLabel">
+            <span class="material-symbols-outlined text-primary align-middle">image</span>
+            <%= t('invoice.payment_proof_zoom') %> - #<%= @invoice.code %>
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-center p-3">
+          <%= image_tag @invoice.payment_proof, class: "payment-proof-modal-img shadow-sm", alt: t('invoice.payment_proof') %>
+        </div>
+        <div class="modal-footer border-top">
+          <a href="<%= url_for(@invoice.payment_proof) %>" target="_blank" class="btn btn-outline-primary btn-sm d-inline-flex align-items-center gap-1">
+            <span class="material-symbols-outlined fs-6">open_in_new</span>
+            <%= t('invoice.payment_proof_view') %>
+          </a>
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal"><%= t('invoice.actions.close') %></button>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

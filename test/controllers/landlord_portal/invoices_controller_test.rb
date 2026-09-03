@@ -384,4 +384,150 @@ class LandlordPortal::InvoicesControllerTest < ActionDispatch::IntegrationTest
     assert_equal new_due_date, @invoice1.due_date
     assert_equal "Ghi chú đã sửa", @invoice1.note
   end
+
+  test "landlord can mark invoice as paid with optional proof and payment method" do
+    sign_in_as(@landlord_user)
+
+    file = fixture_file_upload("normal.png", "image/png")
+
+    assert_emails 0 do
+      patch mark_paid_landlord_house_invoice_path(@house, @invoice1),
+            params: {
+              payment_method: "transfer",
+              payment_proof: file,
+              note: "Khách đã chuyển khoản thành công"
+            }
+    end
+
+    assert_redirected_to landlord_house_invoice_path(@house, @invoice1)
+    follow_redirect!
+    assert_includes response.body, "Đã xác nhận thanh toán hóa đơn #{@invoice1.code}!"
+
+    @invoice1.reload
+    assert_predicate @invoice1, :paid?
+    assert_equal "transfer", @invoice1.payment_method
+    assert_equal @landlord_user.id, @invoice1.paid_by_id
+    assert_equal "landlord", @invoice1.paid_by_role
+    assert_not_nil @invoice1.paid_at
+    assert_predicate @invoice1.payment_proof, :attached?
+    assert_includes @invoice1.note, "Khách đã chuyển khoản thành công"
+
+    # Verifies landlord show page shows payment proof thumbnail
+    assert_select ".payment-proof-thumb"
+    assert_select "[data-bs-target='#viewPaymentProofModal']"
+  end
+
+  test "paid invoice without attached proof shows no image fallback text" do
+    sign_in_as(@landlord_user)
+
+    # @invoice2 is paid without attached proof
+    assert_predicate @invoice2, :paid?
+    assert_not_predicate @invoice2.payment_proof, :attached?
+
+    get landlord_house_invoice_path(@house, @invoice2)
+    assert_response :success
+    assert_select ".payment-proof-thumb", 0
+    assert_includes response.body, I18n.t("invoice.no_payment_proof")
+  end
+
+  test "landlord can undo paid invoice with mandatory explanation" do
+    sign_in_as(@landlord_user)
+
+    # @invoice2 is initially paid
+    assert_predicate @invoice2, :paid?
+    assert_equal "transfer", @invoice2.payment_method
+
+    patch undo_paid_landlord_house_invoice_path(@house, @invoice2),
+          params: {
+            explanation: "Chưa nhận được tiền vào tài khoản Techcombank"
+          }
+
+    assert_redirected_to landlord_house_invoice_path(@house, @invoice2)
+    follow_redirect!
+    assert_includes response.body, "Đã hủy xác nhận thanh toán cho hóa đơn #{@invoice2.code}!"
+
+    @invoice2.reload
+    assert_not_predicate @invoice2, :paid?
+    assert_nil @invoice2.paid_at
+    assert_nil @invoice2.payment_method
+    assert_equal "Chưa nhận được tiền vào tài khoản Techcombank", @invoice2.undo_reason
+    assert_equal @landlord_user.id, @invoice2.undone_by_id
+    assert_includes @invoice2.note, "Hủy xác nhận thanh toán bởi #{@landlord_user.fullname}"
+  end
+
+  test "landlord cannot undo paid invoice without explanation" do
+    sign_in_as(@landlord_user)
+
+    assert_predicate @invoice2, :paid?
+
+    patch undo_paid_landlord_house_invoice_path(@house, @invoice2),
+          params: {
+            explanation: ""
+          }
+
+    assert_redirected_to landlord_house_invoice_path(@house, @invoice2)
+    follow_redirect!
+    assert_includes response.body, I18n.t("invoice.errors.explanation_required", default: "Vui lòng nhập lý do hủy xác nhận thanh toán.")
+
+    @invoice2.reload
+    assert_predicate @invoice2, :paid?
+    assert_not_nil @invoice2.payment_method
+  end
+
+  test "when landlord undoes payment on room invoice with multiple tenants, all tenants receive unpay notification" do
+    sign_in_as(@landlord_user)
+
+    bed_house = House.create!(
+      landlord: @landlord,
+      name: "Dorm House 2",
+      mode: :bed,
+      address_l1: "123 Main St",
+      address_l2: "Ward 1",
+      address_l3: "District 1",
+      floors_count: 1,
+      inv_creation_date: 1
+    )
+    floor = bed_house.floors.create!(name: "Floor 1", position: 1, rooms_count: 1)
+    room = floor.rooms.create!(name: "Room 301", max_slots: 2, tenants_count: 2, area: 30.0)
+    bed1 = room.beds.create!(name: "Bed A")
+    bed2 = room.beds.create!(name: "Bed B")
+    ru1 = bed1.create_rental_unit!(rent: 1_500_000, deposit: 1_500_000)
+    ru2 = bed2.create_rental_unit!(rent: 1_500_000, deposit: 1_500_000)
+
+    u1 = User.create!(fullname: "Tenant Mot", tel: "0911112233", password: "Password123", password_confirmation: "Password123", role: "tenant", sex: "male", bday: 22.years.ago.to_date, address: "St 1", tel_verified_at: Time.current)
+    u2 = User.create!(fullname: "Tenant Hai", tel: "0911112244", password: "Password123", password_confirmation: "Password123", role: "tenant", sex: "male", bday: 23.years.ago.to_date, address: "St 2", tel_verified_at: Time.current)
+    t1 = Tenant.find_or_create_by!(id: u1.id)
+    t2 = Tenant.find_or_create_by!(id: u2.id)
+
+    TenantStay.create!(rental_unit: ru1, tenant: t1, checkin_at: 1.month.ago)
+    TenantStay.create!(rental_unit: ru2, tenant: t2, checkin_at: 1.month.ago)
+
+    room_inv = bed_house.invoices.create!(
+      code: "HD#{Date.current.strftime('%y%m')}-301-ROOM",
+      title: "Tiền phòng 301",
+      room: room,
+      created_by: @landlord_user,
+      billing_month: @billing_month,
+      due_date: Date.current + 5.days,
+      invoice_type: :room,
+      status: :paid,
+      paid_at: Time.current,
+      payment_method: "transfer",
+      subtotal: 1_000_000,
+      total_amount: 1_000_000
+    )
+
+    assert_difference -> { Noticed::Notification.count }, 3 do # Landlord + Tenant 1 + Tenant 2
+      patch undo_paid_landlord_house_invoice_path(bed_house, room_inv),
+            params: { explanation: "Chưa đối soát được tài khoản" }
+    end
+
+    t1_noti = u1.notifications.last
+    assert_includes t1_noti.message, "Chưa đối soát được tài khoản"
+    assert_includes t1_noti.message, "Room 301"
+
+    t2_noti = u2.notifications.last
+    assert_includes t2_noti.message, "Chưa đối soát được tài khoản"
+    assert_includes t2_noti.message, "Room 301"
+  end
 end

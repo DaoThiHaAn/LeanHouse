@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_09_02_041001) do
+ActiveRecord::Schema[8.0].define(version: 2026_09_04_020000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "unaccent"
@@ -197,15 +197,22 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_02_041001) do
     t.date "start_date"
     t.date "end_date"
     t.string "title", default: "Thu tiền hàng tháng"
+    t.bigint "paid_by_id"
+    t.string "paid_by_role"
+    t.text "undo_reason"
+    t.datetime "undone_at"
+    t.bigint "undone_by_id"
     t.index ["bank_account_id"], name: "index_invoices_on_bank_account_id"
     t.index ["code"], name: "index_invoices_on_code", unique: true
     t.index ["created_by_id"], name: "index_invoices_on_created_by_id"
     t.index ["house_id", "billing_month"], name: "index_invoices_on_house_id_and_billing_month"
     t.index ["house_id"], name: "index_invoices_on_house_id"
+    t.index ["paid_by_id"], name: "index_invoices_on_paid_by_id"
     t.index ["room_id", "billing_month", "invoice_type"], name: "idx_invoices_room_month_type"
     t.index ["room_id"], name: "index_invoices_on_room_id"
     t.index ["status"], name: "index_invoices_on_status"
     t.index ["tenant_id"], name: "index_invoices_on_tenant_id"
+    t.index ["undone_by_id"], name: "index_invoices_on_undone_by_id"
   end
 
   create_table "landlords", force: :cascade do |t|

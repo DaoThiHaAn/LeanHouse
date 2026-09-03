@@ -2,7 +2,7 @@ class LandlordPortal::InvoicesController < LandlordPortal::BaseController
   layout "house_mngment"
 
   before_action :set_billing_month, only: %i[index filtered new preview]
-  before_action :set_invoice, only: %i[show edit update mark_paid cancel]
+  before_action :set_invoice, only: %i[show edit update mark_paid undo_paid cancel]
 
   def index
     load_invoices_and_stats
@@ -119,10 +119,47 @@ class LandlordPortal::InvoicesController < LandlordPortal::BaseController
   end
 
   def mark_paid
-    payment_method = params[:payment_method].presence || "cash"
-    @invoice.mark_as_paid!(payment_method)
+    Invoices::MarkPaidService.call(
+      invoice: @invoice,
+      paid_by: current_user,
+      params: payment_params
+    )
 
-    redirect_to landlord_house_invoice_path(@house, @invoice), notice: "Đã xác nhận thanh toán hóa đơn #{@invoice.code}!"
+    respond_to do |format|
+      format.turbo_stream do
+        @billing_month = @invoice.billing_month
+        load_invoices_and_stats
+        flash.now[:notice] = "Đã xác nhận thanh toán hóa đơn #{@invoice.code}!"
+        render :update
+      end
+      format.html { redirect_to landlord_house_invoice_path(@house, @invoice), notice: "Đã xác nhận thanh toán hóa đơn #{@invoice.code}!" }
+    end
+  end
+
+  def undo_paid
+    Invoices::UndoPaidService.call(
+      invoice: @invoice,
+      undone_by: current_user,
+      explanation: params[:explanation]
+    )
+
+    respond_to do |format|
+      format.turbo_stream do
+        @billing_month = @invoice.billing_month
+        load_invoices_and_stats
+        flash.now[:notice] = "Đã hủy xác nhận thanh toán cho hóa đơn #{@invoice.code}!"
+        render :update
+      end
+      format.html { redirect_to landlord_house_invoice_path(@house, @invoice), notice: "Đã hủy xác nhận thanh toán cho hóa đơn #{@invoice.code}!" }
+    end
+  rescue ArgumentError => e
+    respond_to do |format|
+      format.turbo_stream do
+        flash.now[:alert] = e.message
+        render :update, status: :unprocessable_entity
+      end
+      format.html { redirect_to landlord_house_invoice_path(@house, @invoice), alert: e.message }
+    end
   end
 
   def cancel
@@ -131,6 +168,10 @@ class LandlordPortal::InvoicesController < LandlordPortal::BaseController
   end
 
   private
+
+  def payment_params
+    params.fetch(:invoice, params).permit(:payment_method, :payment_proof, :note)
+  end
 
   def set_billing_month
     @billing_month = parse_month(params[:month])

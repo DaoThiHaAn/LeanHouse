@@ -171,6 +171,7 @@ Rails.application.routes.draw do
         end
         member do
           patch :mark_paid
+          patch :undo_paid
           patch :cancel
         end
       end
@@ -194,7 +195,11 @@ Rails.application.routes.draw do
       get :change_password
     end
 
-    resources :invoices, only: [ :show, :index ]
+    resources :invoices, only: [ :show, :index ] do
+      member do
+        patch :mark_paid
+      end
+    end
     resources :service_usage_logs, only: %i[index edit update create]
     resource :contract, only: [ :show ]
     get "/old-contracts", to: "contracts#old_index"
