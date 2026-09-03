@@ -606,3 +606,30 @@
   max-width: 80px;
   object-fit: contain;
 }
+
+/* --- Draft Invoice Items & Table Enhancements --- */
+.invoice-input-price {
+  max-width: 120px;
+}
+
+.invoice-input-qty {
+  max-width: 90px;
+}
+
+.invoice-input-amount {
+  max-width: 130px;
+  display: inline-block;
+}
+
+.invoice-reading-label {
+  font-size: 0.75rem;
+}
+
+.btn-remove-row {
+  width: 28px;
+  height: 28px;
+}
+
+.invoice-summary-row {
+  max-width: 380px;
+}

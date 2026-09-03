@@ -62,16 +62,16 @@ export default class extends Controller {
         </select>
       </td>
       <td>
-        <input type="number" min="0" step="1000" name="invoice[items][${uid}][unit_price]" value="0" class="form-control form-control-sm font-monospace text-end item-price" data-action="input->invoice-items#calculateRow" style="max-width: 120px;" />
+        <input type="number" min="0" step="1000" name="invoice[items][${uid}][unit_price]" value="0" class="form-control form-control-sm font-monospace text-end item-price invoice-input-price" data-action="input->invoice-items#calculateRow" />
       </td>
       <td>
-        <input type="number" min="0" step="0.1" name="invoice[items][${uid}][quantity]" value="1" class="form-control form-control-sm font-monospace text-center item-qty" data-action="input->invoice-items#calculateRow" style="max-width: 90px;" />
+        <input type="number" min="0" step="0.1" name="invoice[items][${uid}][quantity]" value="1" class="form-control form-control-sm font-monospace text-center item-qty invoice-input-qty" data-action="input->invoice-items#calculateRow" />
       </td>
       <td class="text-end">
-        <input type="number" readonly="readonly" name="invoice[items][${uid}][amount]" value="0" class="form-control form-control-sm font-monospace text-end item-amount fw-bold text-primary bg-light-subtle" style="max-width: 130px; display: inline-block;" />
+        <input type="number" readonly="readonly" name="invoice[items][${uid}][amount]" value="0" class="form-control form-control-sm font-monospace text-end item-amount fw-bold text-primary bg-light-subtle invoice-input-amount" />
       </td>
       <td class="text-center pe-3">
-        <button type="button" class="btn btn-sm btn-outline-danger btn-remove-row p-1 d-inline-flex align-items-center justify-content-center" data-action="click->invoice-items#removeRowClick" title="${this.deleteTextValue}" style="width: 28px; height: 28px;">
+        <button type="button" class="btn btn-sm btn-outline-danger btn-remove-row p-1 d-inline-flex align-items-center justify-content-center" data-action="click->invoice-items#removeRowClick" title="${this.deleteTextValue}">
           <span class="material-symbols-outlined fs-6">delete</span>
         </button>
       </td>
@@ -105,16 +105,16 @@ export default class extends Controller {
         </select>
       </td>
       <td>
-        <input type="number" min="0" step="1000" name="invoice[items][${uid}][unit_price]" value="0" class="form-control form-control-sm font-monospace text-end item-price text-danger" data-action="input->invoice-items#calculateRow" style="max-width: 120px;" />
+        <input type="number" min="0" step="1000" name="invoice[items][${uid}][unit_price]" value="0" class="form-control form-control-sm font-monospace text-end item-price text-danger invoice-input-price" data-action="input->invoice-items#calculateRow" />
       </td>
       <td>
-        <input type="number" min="0" step="0.1" name="invoice[items][${uid}][quantity]" value="1" class="form-control form-control-sm font-monospace text-center item-qty" data-action="input->invoice-items#calculateRow" style="max-width: 90px;" />
+        <input type="number" min="0" step="0.1" name="invoice[items][${uid}][quantity]" value="1" class="form-control form-control-sm font-monospace text-center item-qty invoice-input-qty" data-action="input->invoice-items#calculateRow" />
       </td>
       <td class="text-end">
-        <input type="number" readonly="readonly" name="invoice[items][${uid}][amount]" value="0" class="form-control form-control-sm font-monospace text-end item-amount fw-bold text-danger bg-light-subtle" style="max-width: 130px; display: inline-block;" />
+        <input type="number" readonly="readonly" name="invoice[items][${uid}][amount]" value="0" class="form-control form-control-sm font-monospace text-end item-amount fw-bold text-danger bg-light-subtle invoice-input-amount" />
       </td>
       <td class="text-center pe-3">
-        <button type="button" class="btn btn-sm btn-outline-danger btn-remove-row p-1 d-inline-flex align-items-center justify-content-center" data-action="click->invoice-items#removeRowClick" title="${this.deleteTextValue}" style="width: 28px; height: 28px;">
+        <button type="button" class="btn btn-sm btn-outline-danger btn-remove-row p-1 d-inline-flex align-items-center justify-content-center" data-action="click->invoice-items#removeRowClick" title="${this.deleteTextValue}">
           <span class="material-symbols-outlined fs-6">delete</span>
         </button>
       </td>

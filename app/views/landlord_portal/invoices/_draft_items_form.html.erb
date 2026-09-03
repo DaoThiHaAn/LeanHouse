@@ -7,14 +7,14 @@
        data-invoice-items-discount-placeholder-value="<%= t('invoice.discount_placeholder') %>"
        data-invoice-items-delete-text-value="<%= t('invoice.actions.delete', default: 'Xóa dòng') %>"
        data-invoice-items-unit-options-value="<%= ServiceVariant.human_units.to_json %>">
-    <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
-      <h5 class="fw-bold mb-0 text-dark d-flex align-items-center gap-2">
-        <span class="material-symbols-outlined text-primary">receipt_long</span>
+    <div class="card-header bg-body-secondary py-3 border-bottom d-flex justify-content-between align-items-center">
+      <h2 class="mb-0 d-flex align-items-center gap-2">
+        <span class="material-symbols-outlined fs-2">receipt_long</span>
         <span><%= t('invoice.item_or_service') %> (<%= t('common.month', default: 'Tháng') %> <%= billing_month.strftime("%m/%Y") %> - <%= room.title_name %>)</span>
-      </h5>
-      <span class="invoice-badge invoice-badge-room">Tự động tính từ phòng & chỉ số</span>
+      </h2>
+      <span class="invoice-badge invoice-badge-room"><%= t('invoice.auto_calculated_badge', default: 'Tự động tính từ phòng & chỉ số') %></span>
     </div>
-    
+
     <div class="table-responsive">
       <table class="table invoice-table align-middle mb-0" id="invoice_items_table" data-invoice-items-target="table">
         <thead>
@@ -57,27 +57,27 @@
                 </select>
               </td>
               <td>
-                <input type="number" min="0" step="1000" name="invoice[items][<%= idx %>][unit_price]" value="<%= item[:unit_price] %>" class="form-control form-control-sm font-monospace text-end item-price" data-action="input->invoice-items#calculateRow" style="max-width: 120px;" />
+                <input type="number" min="0" step="1000" name="invoice[items][<%= idx %>][unit_price]" value="<%= item[:unit_price] %>" class="form-control form-control-sm font-monospace text-end item-price invoice-input-price" data-action="input->invoice-items#calculateRow" />
               </td>
               <td>
                 <% if item[:item_type] == :metered_service %>
                   <div class="d-flex flex-column gap-1">
                     <div class="input-group input-group-sm">
-                      <span class="input-group-text py-0 text-secondary" style="font-size: 0.75rem;"><%= t('invoice.prev_reading') %></span>
+                      <span class="input-group-text py-0 text-secondary invoice-reading-label"><%= t('invoice.prev_reading') %></span>
                       <input type="number" min="0" name="invoice[items][<%= idx %>][prev_reading]" value="<%= item[:prev_reading] %>" class="form-control font-monospace item-prev-reading" data-action="input->invoice-items#calculateRow" placeholder="<%= t('invoice.prev_reading') %>" />
                     </div>
                     <div class="input-group input-group-sm">
-                      <span class="input-group-text py-0 text-primary fw-bold" style="font-size: 0.75rem;"><%= t('invoice.latest_reading') %></span>
+                      <span class="input-group-text py-0 text-primary fw-bold invoice-reading-label"><%= t('invoice.latest_reading') %></span>
                       <input type="number" min="0" name="invoice[items][<%= idx %>][latest_reading]" value="<%= item[:latest_reading] %>" class="form-control font-monospace fw-bold text-primary item-latest-reading" data-action="input->invoice-items#calculateRow" placeholder="<%= t('invoice.latest_reading') %>" />
                     </div>
                   </div>
                   <input type="hidden" name="invoice[items][<%= idx %>][quantity]" value="<%= item[:quantity] %>" class="item-qty" />
                 <% else %>
-                  <input type="number" min="0" step="0.1" name="invoice[items][<%= idx %>][quantity]" value="<%= item[:quantity] %>" class="form-control form-control-sm font-monospace text-center item-qty" data-action="input->invoice-items#calculateRow" style="max-width: 90px;" />
+                  <input type="number" min="0" step="0.1" name="invoice[items][<%= idx %>][quantity]" value="<%= item[:quantity] %>" class="form-control form-control-sm font-monospace text-center item-qty invoice-input-qty" data-action="input->invoice-items#calculateRow" />
                 <% end %>
               </td>
               <td class="text-end">
-                <input type="number" readonly="readonly" name="invoice[items][<%= idx %>][amount]" value="<%= item[:amount] %>" class="form-control form-control-sm font-monospace text-end item-amount fw-bold text-dark bg-light-subtle" style="max-width: 130px; display: inline-block;" />
+                <input type="number" readonly="readonly" name="invoice[items][<%= idx %>][amount]" value="<%= item[:amount] %>" class="form-control form-control-sm font-monospace text-end item-amount fw-bold text-dark bg-light-subtle invoice-input-amount" />
               </td>
               <td class="text-center pe-3 text-secondary">
                 -
@@ -93,7 +93,7 @@
               <div class="d-flex justify-content-between align-items-center">
                 <div class="fw-bold text-primary d-flex align-items-center gap-1">
                   <span class="material-symbols-outlined fs-5">add_circle</span>
-                  <span><%= t('invoice.addition_items', default: 'Phụ phí & Khoản cộng thêm (+)') %></span>
+                  <span><%= t('invoice.addition_section_title', default: 'Phụ phí & Khoản cộng thêm (+)') %></span>
                 </div>
                 <button type="button" class="btn btn-sm btn-primary d-inline-flex align-items-center gap-1 shadow-sm px-2 py-1 fw-semibold" data-action="click->invoice-items#addAddition">
                   <span class="material-symbols-outlined fs-6">add</span>
@@ -121,16 +121,16 @@
               </select>
             </td>
             <td>
-              <input type="number" min="0" step="1000" name="invoice[items][add_0][unit_price]" value="0" class="form-control form-control-sm font-monospace text-end item-price" data-action="input->invoice-items#calculateRow" style="max-width: 120px;" />
+              <input type="number" min="0" step="1000" name="invoice[items][add_0][unit_price]" value="0" class="form-control form-control-sm font-monospace text-end item-price invoice-input-price" data-action="input->invoice-items#calculateRow" />
             </td>
             <td>
-              <input type="number" min="0" step="0.1" name="invoice[items][add_0][quantity]" value="1" class="form-control form-control-sm font-monospace text-center item-qty" data-action="input->invoice-items#calculateRow" style="max-width: 90px;" />
+              <input type="number" min="0" step="0.1" name="invoice[items][add_0][quantity]" value="1" class="form-control form-control-sm font-monospace text-center item-qty invoice-input-qty" data-action="input->invoice-items#calculateRow" />
             </td>
             <td class="text-end">
-              <input type="number" readonly="readonly" name="invoice[items][add_0][amount]" value="0" class="form-control form-control-sm font-monospace text-end item-amount fw-bold text-primary bg-light-subtle" style="max-width: 130px; display: inline-block;" />
+              <input type="number" readonly="readonly" name="invoice[items][add_0][amount]" value="0" class="form-control form-control-sm font-monospace text-end item-amount fw-bold text-primary bg-light-subtle invoice-input-amount" />
             </td>
             <td class="text-center pe-3">
-              <button type="button" class="btn btn-sm btn-outline-danger btn-remove-row p-1 d-inline-flex align-items-center justify-content-center" data-action="click->invoice-items#removeRowClick" title="<%= t('invoice.actions.delete', default: 'Xóa dòng') %>" style="width: 28px; height: 28px;">
+              <button type="button" class="btn btn-sm btn-outline-danger btn-remove-row p-1 d-inline-flex align-items-center justify-content-center" data-action="click->invoice-items#removeRowClick" title="<%= t('invoice.actions.delete', default: 'Xóa dòng') %>">
                 <span class="material-symbols-outlined fs-6">delete</span>
               </button>
             </td>
@@ -144,7 +144,7 @@
               <div class="d-flex justify-content-between align-items-center">
                 <div class="fw-bold text-danger d-flex align-items-center gap-1">
                   <span class="material-symbols-outlined fs-5">remove_circle</span>
-                  <span><%= t('invoice.discount_items', default: 'Giảm trừ & Khuyến mãi (-)') %></span>
+                  <span><%= t('invoice.discount_section_title', default: 'Giảm trừ & Khuyến mãi (-)') %></span>
                 </div>
                 <button type="button" class="btn btn-sm btn-danger d-inline-flex align-items-center gap-1 shadow-sm px-2 py-1 fw-semibold" data-action="click->invoice-items#addDiscount">
                   <span class="material-symbols-outlined fs-6">add</span>
@@ -172,16 +172,16 @@
               </select>
             </td>
             <td>
-              <input type="number" min="0" step="1000" name="invoice[items][disc_0][unit_price]" value="0" class="form-control form-control-sm font-monospace text-end item-price text-danger" data-action="input->invoice-items#calculateRow" style="max-width: 120px;" />
+              <input type="number" min="0" step="1000" name="invoice[items][disc_0][unit_price]" value="0" class="form-control form-control-sm font-monospace text-end item-price text-danger invoice-input-price" data-action="input->invoice-items#calculateRow" />
             </td>
             <td>
-              <input type="number" min="0" step="0.1" name="invoice[items][disc_0][quantity]" value="1" class="form-control form-control-sm font-monospace text-center item-qty" data-action="input->invoice-items#calculateRow" style="max-width: 90px;" />
+              <input type="number" min="0" step="0.1" name="invoice[items][disc_0][quantity]" value="1" class="form-control form-control-sm font-monospace text-center item-qty invoice-input-qty" data-action="input->invoice-items#calculateRow" />
             </td>
             <td class="text-end">
-              <input type="number" readonly="readonly" name="invoice[items][disc_0][amount]" value="0" class="form-control form-control-sm font-monospace text-end item-amount fw-bold text-danger bg-light-subtle" style="max-width: 130px; display: inline-block;" />
+              <input type="number" readonly="readonly" name="invoice[items][disc_0][amount]" value="0" class="form-control form-control-sm font-monospace text-end item-amount fw-bold text-danger bg-light-subtle invoice-input-amount" />
             </td>
             <td class="text-center pe-3">
-              <button type="button" class="btn btn-sm btn-outline-danger btn-remove-row p-1 d-inline-flex align-items-center justify-content-center" data-action="click->invoice-items#removeRowClick" title="<%= t('invoice.actions.delete', default: 'Xóa dòng') %>" style="width: 28px; height: 28px;">
+              <button type="button" class="btn btn-sm btn-outline-danger btn-remove-row p-1 d-inline-flex align-items-center justify-content-center" data-action="click->invoice-items#removeRowClick" title="<%= t('invoice.actions.delete', default: 'Xóa dòng') %>">
                 <span class="material-symbols-outlined fs-6">delete</span>
               </button>
             </td>
@@ -195,16 +195,16 @@
       <div class="row g-3 align-items-center justify-content-between">
         <div class="col-md-7">
           <div class="d-flex flex-column gap-1 small">
-            <div class="d-flex justify-content-between text-secondary" style="max-width: 380px;">
-              <span><%= t('invoice.subtotal', default: 'Tiền phòng & Dịch vụ') %>:</span>
+            <div class="d-flex justify-content-between text-secondary invoice-summary-row">
+              <span><%= t('invoice.subtotal_room_services', default: 'Tiền phòng & Dịch vụ') %>:</span>
               <span id="summary_subtotal" data-invoice-items-target="subtotalSummary" class="font-monospace fw-semibold text-dark">0 đ</span>
             </div>
-            <div class="d-flex justify-content-between text-primary" style="max-width: 380px;">
-              <span><%= t('invoice.addition_items', default: 'Tổng phụ phí (+)') %>:</span>
+            <div class="d-flex justify-content-between text-primary invoice-summary-row">
+              <span><%= t('invoice.total_addition_summary', default: 'Tổng phụ phí (+)') %>:</span>
               <span id="summary_addition" data-invoice-items-target="additionSummary" class="font-monospace fw-semibold">+ 0 đ</span>
             </div>
-            <div class="d-flex justify-content-between text-danger" style="max-width: 380px;">
-              <span><%= t('invoice.discount_items', default: 'Tổng giảm trừ (-)') %>:</span>
+            <div class="d-flex justify-content-between text-danger invoice-summary-row">
+              <span><%= t('invoice.total_discount_summary', default: 'Tổng giảm trừ (-)') %>:</span>
               <span id="summary_discount" data-invoice-items-target="discountSummary" class="font-monospace fw-semibold">- 0 đ</span>
             </div>
           </div>

@@ -131,10 +131,10 @@
       <div class="d-flex g-2 pt-1 flex-grow-1 align-items-center">
         <%# Cột Đã thu %>
         <div class="col-6 border-end pe-3">
-          <div class="text-secondary small fw-semibold mb-1 d-flex align-items-center gap-1">
-            <span class="material-symbols-outlined fs-6 text-success">check_circle</span>
+          <p class="text-success-emphasis small fw-semibold mb-1 d-flex align-items-center gap-1">
+            <span class="material-symbols-filled fs-5">money</span>
             <%= t("invoice.stats.paid_amount") %>
-          </div>
+          </p>
           <div class="fs-5 fw-bold text-success mb-1">
             <%= format_money(stats[:paid_amount]) %>
           </div>
@@ -145,10 +145,10 @@
 
         <%# Cột Còn nợ %>
         <div class="col-6 ps-3">
-          <div class="text-secondary small fw-semibold mb-1 d-flex align-items-center gap-1">
-            <span class="material-symbols-outlined fs-6 text-warning">hourglass_top</span>
+          <p class="text-danger-emphasis small fw-semibold mb-1 d-flex align-items-center gap-1">
+            <span class="material-symbols-outlined fs-5">money_off</span>
             <%= t("invoice.stats.pending_amount") %>
-          </div>
+          </p>
           <div class="fs-5 fw-bold text-danger mb-1">
             <%= format_money(stats[:pending_amount]) %>
           </div>

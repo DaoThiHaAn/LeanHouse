@@ -3,21 +3,19 @@
         data-controller="modal" data-modal-auto-open-value="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content px-2">
-        <div class="modal-header py-2 border-bottom">
-          <div class="d-flex align-items-center justify-content-start gap-2 mx-auto">
-            <span class="material-symbols-filled text-primary fs-4">person</span>
-            <h1 class="modal-title fs-5 fw-bold" id="tenantDetailModalLabel">
-              <%= t("form.tenant.info") %> - <%= vn_name(@user.fullname) %>
+        <div class="modal-header pb-1 pt-3 border-bottom">
+            <h1 class="modal-title flex-grow-1 mb-0 text-center fs-4" id="tenantDetailModalLabel">
+              <span class="material-symbols-filled fs-2">person</span>
+              <%= t("form.tenant.info") %>
             </h1>
-          </div>
           <button type="button" class="m-0 btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
 
         <div class="modal-body py-3 px-4">
           <%# Personal Info Section %>
           <div class="mb-3 pb-3 border-bottom">
-            <h6 class="fw-bold text-secondary text-uppercase small mb-3"><%= t("form.profile.info", default: "Thông tin cá nhân") %></h6>
-            <div class="row g-2">
+            <h2 class="text-uppercase fs-6 mb-3"><%= t("form.profile.personal_info") %></h2>
+            <div class="row g-2 px-3">
               <div class="col-6">
                 <p class="small text-secondary mb-1"><%= t("form.profile.fullname") %></p>
                 <p class="fw-semibold mb-0"><%= vn_name(@user.fullname) %></p>
@@ -26,7 +24,7 @@
                 <p class="small text-secondary mb-1"><%= t("form.profile.tel") %></p>
                 <p class="fw-semibold mb-0">
                   <a href="tel:<%= @user.tel %>" class="text-decoration-none text-dark d-inline-flex align-items-center gap-1">
-                    <span class="material-symbols-outlined fs-6 text-primary">call</span>
+                    <span class="material-symbols-filled fs-5">call</span>
                     <%= @user.tel %>
                   </a>
                 </p>
@@ -48,12 +46,11 @@
 
           <%# Tenancy & Residence Section %>
           <div class="mb-3 pb-3 border-bottom">
-            <h6 class="fw-bold text-secondary text-uppercase small mb-3"><%= t("form.tenant.rental_unit", default: "Chỗ ở & Cư trú") %></h6>
-            <div class="row g-2">
+            <h2 class="text-uppercase fs-6 mb-3"><%= t("form.tenant.rental_unit", default: "Chỗ ở & Cư trú") %></h2>
+            <div class="row g-2 px-3">
               <div class="col-6">
                 <p class="small text-secondary mb-1"><%= t("form.tenant.rental_unit") %></p>
                 <p class="fw-semibold mb-0 text-primary d-inline-flex align-items-center gap-1">
-                  <span class="material-symbols-outlined fs-6">location_home</span>
                   <%= @tenant.current_staying_info.presence || "-" %>
                 </p>
               </div>
@@ -77,11 +74,11 @@
 
           <%# Contract Status Section %>
           <div class="mb-3">
-            <h6 class="fw-bold text-secondary text-uppercase small mb-3"><%= t("form.contract.self", default: "Hợp đồng") %></h6>
+            <h2 class="text-uppercase fs-6 mb-3"><%= t("form.contract.self", default: "Hợp đồng") %></h2>
             <% if @latest_contract.present? %>
               <div class="d-flex align-items-center justify-content-between p-2 rounded bg-light border">
                 <div class="d-flex align-items-center gap-2">
-                  <span class="material-symbols-outlined text-primary fs-5">description</span>
+                  <span class="material-symbols-filled text-primary fs-5">description</span>
                   <div>
                     <p class="fw-semibold mb-0 small"><%= @latest_contract.name %></p>
                     <small class="text-secondary"><%= @latest_contract.formatted_period %></small>

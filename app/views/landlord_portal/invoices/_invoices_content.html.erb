@@ -7,16 +7,17 @@
         pagination_sync_total_pages_selector_value: "[data-pagination-total-pages]",
         action: "turbo:frame-load->pagination-sync#updateUrl"
       } do %>
+
   <% is_current_only = local_assigns.key?(:current_tenants_only) ? local_assigns[:current_tenants_only] : @current_tenants_only %>
   <% is_current_only = true if is_current_only.nil? %>
   <!-- Statistic Cards (Dynamically updated) -->
   <%= render "landlord_portal/invoices/stats_cards", stats: stats, billing_month: billing_month %>
 
   <!-- Toolbar lọc tháng, tầng, phòng, hình thức thu, khách hiện tại và trạng thái -->
-  <div class="invoice-filter-bar mb-4 shadow-sm">
+  <div class="invoice-filter-bar mb-5 mx-3 shadow-sm">
     <%= form_with url: filtered_landlord_house_invoices_path(house),
                   method: :get,
-                  class: "d-flex gap-3 align-items-center flex-wrap",
+                  class: "d-flex gap-4 align-items-center flex-wrap",
                   data: { turbo_frame: "invoices_content", turbo_action: "advance" } do |f| %>
       <!-- Chọn tháng -->
       <div class="d-flex align-items-center gap-2">
@@ -27,6 +28,7 @@
                           class: "form-control shadow-sm w-auto",
                           onchange: "this.form.requestSubmit()" %>
       </div>
+
       <!-- Chọn tầng -->
       <div class="d-flex align-items-center gap-2">
         <%= f.label :floor_id, "#{t('invoice.floor')}:", class: "fw-bold text-nowrap" %>
@@ -36,6 +38,7 @@
                      class: "form-select shadow-sm w-auto",
                      onchange: "this.form.requestSubmit()" %>
       </div>
+
       <!-- Chọn phòng (Nhóm theo tầng) -->
       <div class="d-flex align-items-center gap-2">
         <%= f.label :room_id, "#{t('invoice.room')}:", class: "fw-bold text-nowrap" %>
@@ -56,6 +59,7 @@
             <% end %>
           </select>
         </div>
+
         <!-- Hình thức thu (Invoice Type) -->
         <div class="d-flex align-items-center gap-2">
           <%= f.label :invoice_type, "#{t('invoice.invoice_type')}:", class: "fw-bold text-nowrap" %>
@@ -69,6 +73,7 @@
                      class: "form-select shadow-sm w-auto",
                      onchange: "this.form.requestSubmit()" %>
         </div>
+
         <!-- Trạng thái -->
         <div class="d-flex align-items-center gap-2">
           <%= f.label :status, "#{t('invoice.status_label')}:", class: "fw-bold text-nowrap" %>
@@ -84,21 +89,23 @@
                      class: "form-select shadow-sm w-auto",
                      onchange: "this.form.requestSubmit()" %>
         </div>
+
         <!-- Checkbox: Chỉ khách đang ở (mặc định bật) -->
         <div class="form-check d-flex align-items-center gap-2 mb-0 py-1 px-2 rounded bg-white border shadow-sm">
           <%= f.check_box :current_tenants_only,
                         {
                           checked: is_current_only,
-                          class: "form-check-input mt-0 cursor-pointer",
+                          class: "form-check-input m-0 cursor-pointer",
                           onchange: "this.form.requestSubmit()"
                         },
                         "1",
                         "0" %>
           <%= f.label :current_tenants_only,
                     t("invoice.only_current_tenants"),
-                    class: "form-check-label fw-bold small text-nowrap cursor-pointer",
+                    class: "form-check-label fw-semibold text-nowrap cursor-pointer",
                     data: { **tooltip("top", :"invoice.only_current_tenants_hint") } %>
         </div>
+
         <% has_filter = params[:floor_id].present? || params[:room_id].present? || params[:invoice_type].present? || params[:status].present? || params[:current_tenants_only] == "0" || (params[:page].present? && params[:page] != "1") %>
         <% if has_filter %>
           <div>
@@ -112,5 +119,8 @@
         <% end %>
       <% end %>
     </div>
+
+    <!-- Invoices Table -->
+    <h2 class="mb-3 ms-3"><%= t("invoice.list") %></h2>
     <%= render "landlord_portal/invoices/invoices_table", house: house, invoices: invoices, billing_month: billing_month, current_tenants_only: is_current_only %>
   <% end %>

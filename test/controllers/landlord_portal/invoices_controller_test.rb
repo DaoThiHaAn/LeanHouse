@@ -141,6 +141,28 @@ class LandlordPortal::InvoicesControllerTest < ActionDispatch::IntegrationTest
     }
   end
 
+  test "landlord can view new invoice page with character counters for title and note and required indicators" do
+    sign_in_as(@landlord_user)
+
+    get new_landlord_house_invoice_path(@house)
+    assert_response :success
+
+    # Card header with required fields indicator
+    assert_select ".invoice-card .card-header", text: /#{I18n.t('general_info')}/
+    assert_select "label .text-danger", text: "*", count: 6
+
+    assert_select "div[data-controller='character-counter'][data-character-counter-max-value='100']" do
+      assert_select "span[data-character-counter-target='count']"
+      assert_select "input[name='invoice[title]'][data-character-counter-target='input'][maxlength='100']"
+    end
+
+    assert_select "form[data-controller~='loading'][data-action~='submit->loading#submit']"
+    assert_select "button[type='submit'][data-loading-target='button']" do
+      assert_select "span[data-loading-target='text']", text: I18n.t("invoice.issue_button")
+      assert_select "span[data-loading-target='spinner']", text: "progress_activity"
+    end
+  end
+
   test "landlord can view invoice index with 3 grouped stat cards and tooltip" do
     sign_in_as(@landlord_user)
 

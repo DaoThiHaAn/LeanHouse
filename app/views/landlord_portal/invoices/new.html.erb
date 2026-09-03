@@ -1,122 +1,182 @@
 <% content_for :title, "#{t('invoice.new_invoice')} - #{@house.name}" %>
 <% provide :container_width, "h-100" %>
 
-<div class="container py-3 invoice-wrapper">
-  <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
-    <h3 class="fw-bold mb-0 d-flex align-items-center gap-2">
-      <span class="material-symbols-outlined text-primary">post_add</span>
+<div class="container pb-4 invoice-wrapper">
+  <div class="d-flex justify-content-between align-items-center mb-5 pb-3 border-bottom">
+    <%= back_link_to landlord_house_invoices_path(@house, month: @billing_month.strftime("%Y-%m")), t('invoice.actions.back_to_list') %>
+
+    <h1 class="fw-bold mb-0 d-flex align-items-center gap-2">
       <%= t('invoice.create_invoice_title') %>
-    </h3>
-    <div class="d-flex align-items-center gap-2">
-      <button type="button" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1 shadow-sm px-3 py-1 fw-semibold" data-bs-toggle="modal" data-bs-target="#invoiceCreationGuideModal">
-        <span class="material-symbols-outlined fs-6">menu_book</span>
-        <%= t('invoice.guide.btn_title', default: 'Hướng dẫn lập hóa đơn') %>
-      </button>
-      <%= link_to t('invoice.actions.back_to_list'), landlord_house_invoices_path(@house, month: @billing_month.strftime("%Y-%m")), class: "btn btn-sm btn-outline-secondary shadow-sm" %>
-    </div>
+    </h1>
+
+    <button type="button" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1 shadow-sm px-3 py-1 fw-semibold" data-bs-toggle="modal" data-bs-target="#invoiceCreationGuideModal">
+      <span class="material-symbols-outlined fs-6">menu_book</span>
+      <%= t('invoice.guide.btn_title', default: 'Hướng dẫn lập hóa đơn') %>
+    </button>
   </div>
 
   <%= form_with url: landlord_house_invoices_path(@house), method: :post, local: true,
                 data: {
-                  controller: "invoice-form",
-                  invoice_form_preview_url_value: preview_landlord_house_invoices_path(@house)
+                  controller: "invoice-form loading",
+                  invoice_form_preview_url_value: preview_landlord_house_invoices_path(@house),
+                  loading_text_value: t('invoice.issuing', default: 'Đang xuất hóa đơn...'),
+                  action: "submit->loading#submit"
                 } do |f| %>
     <!-- Thông tin chung của hóa đơn -->
-    <div class="card invoice-card p-4 mb-4 bg-light">
-      <div class="row g-3">
-        <div class="col-md-6">
-          <%= f.label "invoice[title]", t('invoice.reason', default: 'Tiêu đề / Lý do thu tiền'), class: "form-label fw-bold" %>
-          <%= f.text_field "invoice[title]", value: t('invoice.default_title', default: 'Thu tiền hàng tháng'), class: "form-control shadow-sm", placeholder: t('invoice.default_title', default: 'Thu tiền hàng tháng') %>
-        </div>
+    <div class="card invoice-card mb-4 shadow-sm bg-white">
+      <div class="card-header bg-body-secondary py-3 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <h2 class="mb-0 d-flex align-items-center gap-2">
+          <span class="material-symbols-outlined">page_info</span>
+          <span><%= t('general_info', default: 'Thông tin chung') %></span>
+        </h2>
+        <span class="text-secondary small">
+          <span class="text-danger">*</span> <%= t('common.required_fields', default: 'Thông tin bắt buộc') %>
+        </span>
+      </div>
 
-        <div class="col-md-3">
-          <div class="d-flex align-items-center justify-content-between mb-1">
-            <%= f.label "invoice[billing_month]", t('common.month', default: 'Tháng tính toán'), class: "form-label fw-bold mb-0" %>
-            <button type="button" class="btn btn-link p-0 text-decoration-none d-inline-flex align-items-center text-primary" data-bs-toggle="modal" data-bs-target="#invoiceCreationGuideModal" title="<%= t('invoice.guide.btn_title', default: 'Hướng dẫn lập hóa đơn') %>">
-              <span class="material-symbols-outlined fs-6">help</span>
-            </button>
-          </div>
-          <%= f.month_field "invoice[billing_month]", value: @billing_month.strftime("%Y-%m"), class: "form-control shadow-sm", required: true,
-                            data: {
-                              invoice_form_target: "monthInput",
-                              action: "change->invoice-form#updatePreview"
-                            } %>
-        </div>
-
-        <div class="col-md-3">
-          <%= f.label "invoice[due_date]", t('invoice.due_date'), class: "form-label fw-bold" %>
-          <%= f.date_field "invoice[due_date]", value: Date.current + 5.days, class: "form-control shadow-sm", required: true %>
-        </div>
-
-        <div class="col-md-4">
-          <%= f.label "invoice[room_id]", t('invoice.room'), class: "form-label fw-bold" %>
-          <select name="invoice[room_id]" id="room_select" class="form-select shadow-sm" required
-                  data-invoice-form-target="roomSelect"
-                  data-action="change->invoice-form#updatePreview">
-            <% @house.rooms.active.sorted.each do |r| %>
-              <option value="<%= r.id %>" <%= 'selected' if @room&.id == r.id %> data-tenants-count="<%= r.tenants_count %>">
-                <%= r.title_name %> (<%= r.tenants_count %> <%= t('invoice.quantity').downcase %>)
-              </option>
-            <% end %>
-          </select>
-        </div>
-
-        <div class="col-md-4">
-          <%= f.label "invoice[invoice_type]", t('invoice.target_mode'), class: "form-label fw-bold" %>
-          <select name="invoice[invoice_type]" id="invoice_type_select" class="form-select shadow-sm"
-                  data-invoice-form-target="invoiceTypeSelect"
-                  data-action="change->invoice-form#updatePreview">
-            <option value="room" <%= 'selected' if @invoice_type == 'room' %>><%= t('invoice.mode_room_desc') %></option>
-            <option value="individual" <%= 'selected' if @invoice_type == 'individual' %>><%= t('invoice.mode_individual_desc') %></option>
-          </select>
-        </div>
-
-        <div class="col-md-4" id="tenant_select_wrapper"
-             data-invoice-form-target="tenantWrapper"
-             style="<%= 'display: none;' unless @invoice_type == 'individual' %>">
-          <%= f.label "invoice[tenant_id]", t('invoice.tenant', default: 'Người thuê / Giường'), class: "form-label fw-bold" %>
-          <select name="invoice[tenant_id]" id="tenant_select" class="form-select shadow-sm"
-                  data-invoice-form-target="tenantSelect"
-                  data-action="change->invoice-form#updatePreview">
-            <% if @room %>
-              <% if @house.bed? %>
-                <% @room.all_staying_bed_tenants.each do |item| %>
-                  <option value="<%= item[:tenant].id %>" <%= 'selected' if @tenant&.id == item[:tenant].id %>>
-                    <%= item[:tenant].user.fullname %> (Giường <%= item[:bed].name %>)
-                  </option>
-                <% end %>
-              <% else %>
-                <% @room.all_staying_tenants.each do |t| %>
-                  <option value="<%= t.id %>" <%= 'selected' if @tenant&.id == t.id %>>
-                    <%= t.user.fullname %>
-                  </option>
-                <% end %>
+      <div class="card-body p-4">
+        <!-- Nhóm 1: Tiêu đề & Kỳ thanh toán -->
+        <div class="row g-3 mb-4">
+          <div class="col-12 col-lg-6" data-controller="character-counter" data-character-counter-max-value="100">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <%= f.label "invoice[title]", class: "form-label fw-semibold mb-0" do %>
+                <%= t('invoice.reason', default: 'Tiêu đề / Lý do thu tiền') %> <span class="text-danger">*</span>
               <% end %>
-            <% end %>
-          </select>
+              <span class="small text-secondary" data-character-counter-target="count">0/100</span>
+            </div>
+            <%= f.text_field "invoice[title]",
+                  value: t('invoice.default_title'),
+                  class: "form-control shadow-sm",
+                  placeholder: t('invoice.title_placeholder'),
+                  required: true,
+                  maxlength: 100,
+                  data: {
+                    character_counter_target: "input",
+                    action: "input->character-counter#update"
+                  } %>
+          </div>
+
+          <div class="col-6 col-lg-3">
+            <div class="d-flex align-items-center justify-content-between mb-1">
+              <%= f.label "invoice[billing_month]", class: "form-label fw-semibold mb-0" do %>
+                <%= t('invoice.billing_month') %> <span class="text-danger">*</span>
+              <% end %>
+              <button type="button" class="btn btn-link p-0 text-decoration-none d-inline-flex align-items-center text-primary" data-bs-toggle="modal" data-bs-target="#invoiceCreationGuideModal" title="<%= t('invoice.guide.btn_title', default: 'Hướng dẫn lập hóa đơn') %>">
+                <span class="material-symbols-outlined fs-6">help</span>
+              </button>
+            </div>
+            <%= f.month_field "invoice[billing_month]", value: @billing_month.strftime("%Y-%m"), class: "form-control shadow-sm", required: true,
+                              data: {
+                                invoice_form_target: "monthInput",
+                                action: "change->invoice-form#updatePreview"
+                              } %>
+          </div>
+
+          <div class="col-6 col-lg-3">
+            <div class="d-flex align-items-center justify-content-between mb-1">
+              <%= f.label "invoice[due_date]", class: "form-label fw-semibold mb-0" do %>
+                <%= t('invoice.due_date') %> <span class="text-danger">*</span>
+              <% end %>
+            </div>
+            <%= f.date_field "invoice[due_date]", value: Date.current + 5.days, class: "form-control shadow-sm", required: true %>
+          </div>
         </div>
 
-        <div class="col-md-6">
-          <%= f.label "invoice[bank_account_id]", t('invoice.bank_account_receive'), class: "form-label fw-bold" %>
-          <% if @bank_accounts.any? %>
-            <select name="invoice[bank_account_id]" class="form-select shadow-sm">
-              <% @bank_accounts.each do |acc| %>
-                <option value="<%= acc.id %>" <%= 'selected' if acc.is_default? %>>
-                  <%= acc.display_label %> <%= '(Mặc định)' if acc.is_default? %>
+        <hr class="text-secondary opacity-25 my-4">
+
+        <!-- Nhóm 2: Đối tượng áp dụng -->
+        <div class="row g-3 mb-4">
+          <div class="col-12 col-md-4">
+            <%= f.label "invoice[room_id]", class: "form-label fw-semibold mb-1" do %>
+              <%= t('invoice.room') %> <span class="text-danger">*</span>
+            <% end %>
+            <select name="invoice[room_id]" id="room_select" class="form-select shadow-sm" required
+                    data-invoice-form-target="roomSelect"
+                    data-action="change->invoice-form#updatePreview">
+              <% @house.rooms.active.sorted.each do |r| %>
+                <option value="<%= r.id %>" <%= 'selected' if @room&.id == r.id %> data-tenants-count="<%= r.tenants_count %>">
+                  <%= r.title_name %> (<%= r.tenants_count %> <%= t('invoice.quantity').downcase %>)
                 </option>
               <% end %>
             </select>
-          <% else %>
-            <div class="d-flex align-items-center gap-2">
-              <span class="text-danger small"><%= t('invoice.no_bank_account_landlord') %></span>
-              <%= link_to t('invoice.add_bank_account'), landlord_bank_accounts_path, class: "btn btn-sm btn-outline-primary" %>
-            </div>
-          <% end %>
+          </div>
+
+          <div class="col-12 col-md-4">
+            <%= f.label "invoice[invoice_type]", class: "form-label fw-semibold mb-1" do %>
+              <%= t('invoice.target_mode') %> <span class="text-danger">*</span>
+            <% end %>
+            <select name="invoice[invoice_type]" id="invoice_type_select" class="form-select shadow-sm" required
+                    data-invoice-form-target="invoiceTypeSelect"
+                    data-action="change->invoice-form#updatePreview">
+              <option value="room" <%= 'selected' if @invoice_type == 'room' %>><%= t('invoice.mode_room_desc') %></option>
+              <option value="individual" <%= 'selected' if @invoice_type == 'individual' %>><%= t('invoice.mode_individual_desc') %></option>
+            </select>
+          </div>
+
+          <div class="col-12 col-md-4" id="tenant_select_wrapper"
+               data-invoice-form-target="tenantWrapper"
+               style="<%= 'display: none;' unless @invoice_type == 'individual' %>">
+            <%= f.label "invoice[tenant_id]", class: "form-label fw-semibold mb-1" do %>
+              <%= t('invoice.tenant', default: 'Người thuê / Giường') %> <span class="text-danger">*</span>
+            <% end %>
+            <select name="invoice[tenant_id]" id="tenant_select" class="form-select shadow-sm"
+                    data-invoice-form-target="tenantSelect"
+                    data-action="change->invoice-form#updatePreview">
+              <% if @room %>
+                <% if @house.bed? %>
+                  <% @room.all_staying_bed_tenants.each do |item| %>
+                    <option value="<%= item[:tenant].id %>" <%= 'selected' if @tenant&.id == item[:tenant].id %>>
+                      <%= item[:tenant].user.fullname %> (Giường <%= item[:bed].name %>)
+                    </option>
+                  <% end %>
+                <% else %>
+                  <% @room.all_staying_tenants.each do |t| %>
+                    <option value="<%= t.id %>" <%= 'selected' if @tenant&.id == t.id %>>
+                      <%= t.user.fullname %>
+                    </option>
+                  <% end %>
+                <% end %>
+              <% end %>
+            </select>
+          </div>
         </div>
 
-        <div class="col-md-6">
-          <%= f.label "invoice[note]", t('invoice.note'), class: "form-label fw-bold" %>
-          <%= f.text_field "invoice[note]", placeholder: t('invoice.note_placeholder'), class: "form-control shadow-sm" %>
+        <hr class="text-secondary opacity-25 my-4">
+
+        <!-- Nhóm 3: Thông tin thanh toán & Ghi chú -->
+        <div class="row g-3">
+          <div class="col-12 col-md-6">
+            <%= f.label "invoice[bank_account_id]", t('invoice.bank_account_receive'), class: "form-label fw-semibold mb-1" %>
+            <% if @bank_accounts.any? %>
+              <select name="invoice[bank_account_id]" class="form-select shadow-sm">
+                <% @bank_accounts.each do |acc| %>
+                  <option value="<%= acc.id %>" <%= 'selected' if acc.is_default? %>>
+                    <%= acc.display_label %> <%= '(Mặc định)' if acc.is_default? %>
+                  </option>
+                <% end %>
+              </select>
+            <% else %>
+              <div class="d-flex align-items-center gap-2 mt-1">
+                <span class="text-danger small"><%= t('invoice.no_bank_account_landlord') %></span>
+                <%= link_to t('invoice.add_bank_account'), landlord_bank_accounts_path, class: "btn btn-sm btn-outline-primary" %>
+              </div>
+            <% end %>
+          </div>
+
+          <div class="col-12 col-md-6" data-controller="character-counter" data-character-counter-max-value="500">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <%= f.label "invoice[note]", t('invoice.note'), class: "form-label fw-semibold mb-0" %>
+              <span class="small text-secondary" data-character-counter-target="count">0/500</span>
+            </div>
+            <%= f.text_field "invoice[note]",
+                  placeholder: t('invoice.note_placeholder'),
+                  class: "form-control shadow-sm",
+                  maxlength: 500,
+                  data: {
+                    character_counter_target: "input",
+                    action: "input->character-counter#update"
+                  } %>
+          </div>
         </div>
       </div>
     </div>
@@ -129,7 +189,12 @@
         <span class="material-symbols-outlined fs-6 align-middle">lock</span>
         <%= t('invoice.immutability_notice') %>
       </div>
-      <%= f.submit t('invoice.issue_button'), class: "btn btn-primary btn-lg px-5 fw-bold shadow-sm" %>
+      <%= f.button :submit,
+            class: "custom-primary-btn shadow-sm d-inline-flex align-items-center justify-content-center gap-2",
+            data: { loading_target: "button" } do %>
+        <span data-loading-target="text"><%= t('invoice.issue_button') %></span>
+        <span class="material-symbols-outlined spin d-none" data-loading-target="spinner">progress_activity</span>
+      <% end %>
     </div>
   <% end %>
 </div>
