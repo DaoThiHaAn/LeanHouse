@@ -160,6 +160,7 @@ vi:
       applied_all: "Tất cả các phòng trong nhà"
       not_applied: "Chưa gán cho phòng nào"
       no_services_hint: "Chủ nhà chưa tạo dịch vụ hoặc tiện ích nào cho nhà này."
+      cal_type: "Cách tính"
     
     assets:
       title: "Danh sách Tài sản & Lịch sử bảo trì"

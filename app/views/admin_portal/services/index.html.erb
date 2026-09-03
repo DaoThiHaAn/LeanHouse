@@ -16,14 +16,14 @@
     <%= turbo_frame_tag "house_tab_content", data: { turbo_action: "advance" } do %>
       <div class="d-flex flex-column gap-4">
         <!-- Header Card -->
-        <div class="card admin-card shadow-sm">
+        <div class="card admin-card shadow-none">
           <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
-            <h2 class="fs-5 fw-bold mb-0 d-flex align-items-center gap-2">
-              <span class="material-symbols-filled fs-4 text-primary">bolt</span>
+            <h2 class="mb-0 d-flex align-items-center gap-2">
+              <span class="material-symbols-filled fs-3">bolt</span>
               <%= t("admin.services.title") %>
             </h2>
             <span class="badge bg-light text-secondary border">
-              <%= @services.size %> <%= t("form.service.self") %>
+              <%= @total_services_count %> <%= t("form.service.self") %>
             </span>
           </div>
         </div>
@@ -31,12 +31,12 @@
         <!-- Services List -->
         <% if @services.any? %>
           <% @services.each do |service| %>
-            <div class="card admin-card shadow-sm">
+            <div class="card admin-card shadow-sm border">
               <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
                 <div class="d-flex align-items-center gap-2">
                   <span class="material-symbols-filled fs-4 text-primary">shoppingmode</span>
                   <div>
-                    <h3 class="fs-6 fw-bold mb-0 text-dark"><%= service.name %></h3>
+                    <h3 class="fs-5 fw-bold mb-0"><%= service.name %></h3>
                     <% if service.note.present? %>
                       <small class="text-secondary"><%= service.note %></small>
                     <% end %>
@@ -50,40 +50,32 @@
               <div class="card-body p-0">
                 <% if service.service_variants.any? %>
                   <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
+                    <table class="table table-hover align-middle">
                       <thead class="table-light">
                         <tr>
-                          <th class="ps-3" style="width: 25%;"><%= t("form.service.price") %> &amp; <%= t("form.service.unit") %></th>
-                          <th style="width: 15%;"><%= t("form.service.variant.type") %></th>
+                          <th class="ps-3" style="width: 25%;"><%= t("form.service.price") %> / <%= t("form.service.unit") %></th>
+                          <th style="width: 15%;"><%= t("admin.services.cal_type") %></th>
                           <th style="width: 20%;"><%= t("admin.services.applied_scope") %></th>
                           <th class="pe-3" style="width: 40%;"><%= t("admin.services.applied_rooms_list") %></th>
                         </tr>
                       </thead>
+
                       <tbody>
                         <% service.service_variants.each do |variant| %>
                           <tr>
                             <td class="ps-3">
-                              <strong class="fs-5 text-primary"><%= number_with_delimiter(variant.fee, delimiter: ",") %>đ</strong>
+                              <strong class="text-primary"><%= number_with_delimiter(variant.fee, delimiter: ",") %>đ</strong>
                               <span class="text-secondary fw-semibold"> / <%= variant.human_unit %></span>
                             </td>
+
                             <td>
-                              <% if variant.is_real_time? %>
-                                <span class="badge bg-info-subtle text-info border border-info-subtle d-inline-flex align-items-center gap-1">
-                                  <span class="material-symbols-outlined fs-6">speed</span>
-                                  <span><%= t("admin.services.metered") %></span>
-                                </span>
-                              <% else %>
-                                <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle d-inline-flex align-items-center gap-1">
-                                  <span class="material-symbols-outlined fs-6">lock</span>
-                                  <span><%= t("admin.services.fixed") %></span>
-                                </span>
-                              <% end %>
+                              <%= service_calculation_type_badge(variant) %>
                             </td>
+
                             <td>
-                              <span class="fw-semibold">
-                                <%= t("admin.services.applied_ratio", applied: variant.rooms.size, total: @total_house_rooms) %>
-                              </span>
+                              <%= t("admin.services.applied_ratio", applied: variant.rooms.size, total: @total_house_rooms) %>
                             </td>
+
                             <td class="pe-3">
                               <% if @total_house_rooms > 0 && variant.rooms.size == @total_house_rooms %>
                                 <span class="badge bg-success-subtle text-success border border-success-subtle">
@@ -91,7 +83,7 @@
                                   <%= t("admin.services.applied_all") %>
                                 </span>
                               <% elsif variant.rooms.any? %>
-                                <div class="d-flex flex-wrap gap-1">
+                                <div class="d-flex flex-wrap gap-1 admin-applied-rooms-scroll pe-1">
                                   <% variant.rooms.sort_by { |r| [r.floor.position, r.name] }.each do |room| %>
                                     <span class="badge bg-light text-dark border">
                                       <%= room.title_name %> (<%= room.floor.title_name %>)
@@ -107,6 +99,7 @@
                       </tbody>
                     </table>
                   </div>
+
                 <% else %>
                   <div class="p-4 text-center text-secondary small">
                     <%= t("admin.houses.no_variants") %>
@@ -115,10 +108,18 @@
               </div>
             </div>
           <% end %>
+
+          <!-- Pagination Bar -->
+          <% if @services.total_pages > 1 %>
+            <div class="d-flex justify-content-center mt-2 mb-3">
+              <%= paginate @services %>
+            </div>
+          <% end %>
+
         <% else %>
           <div class="card admin-card p-5 text-center shadow-sm">
             <span class="material-symbols-outlined fs-1 text-secondary mb-2">home_repair_service</span>
-            <h3 class="fs-5 fw-bold text-secondary mb-1"><%= t("admin.houses.no_services") %></h3>
+            <p class="fs-5 fw-bold text-secondary mb-1"><%= t("admin.houses.no_services") %></p>
             <p class="text-secondary small mb-0"><%= t("admin.services.no_services_hint") %></p>
           </div>
         <% end %>

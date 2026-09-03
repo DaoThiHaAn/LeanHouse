@@ -85,7 +85,7 @@
         <% else %>
           <span class="material-symbols-outlined text-secondary fs-5">person</span>
           <span class="fw-bold text-dark"><%= t('invoice.mode_individual') %>:</span>
-          <span class="text-primary fw-semibold"><%= current_user.fullname %> (SĐT: <%= current_user.tel %>)</span>
+          <span class="text-primary fw-semibold"><%= current_user.fullname %> (<%= t('invoice.phone_abbr') %>: <%= current_user.tel %>)</span>
           <span class="text-secondary small">- <%= t('invoice.room') %>: <%= @room.title_name %>, <%= @room.floor.name %> (<%= @house.name %>)</span>
         <% end %>
       </div>
@@ -103,7 +103,7 @@
 
       <div class="d-flex align-items-center gap-2 mt-3">
         <span class="fw-bold fs-6"><%= t('invoice.total') %>:</span>
-        <span class="badge fs-5 px-3 py-2 font-monospace" style="background-color: #b45309; color: #ffffff;">
+        <span class="badge fs-5 px-3 py-2 font-monospace invoice-total-badge">
           <%= number_to_currency(@invoice.total_amount, unit: "đ", format: "%n %u") %>
         </span>
         <button type="button" class="btn btn-link btn-sm p-0 text-secondary d-print-none" data-bs-toggle="modal" data-bs-target="#tenantInvoiceInfoModal" title="<%= t('invoice.view_details') %>">
@@ -114,7 +114,7 @@
 
     <!-- Toggle Collapse Detail -->
     <div class="mb-4">
-      <a class="text-decoration-none fw-bold d-inline-flex align-items-center gap-1 d-print-none" style="color: #e11d48;" data-bs-toggle="collapse" href="#tenantInvoiceDetailCollapse" role="button" aria-expanded="true" aria-controls="tenantInvoiceDetailCollapse">
+      <a class="text-decoration-none fw-bold d-inline-flex align-items-center gap-1 invoice-collapse-toggle d-print-none" data-bs-toggle="collapse" href="#tenantInvoiceDetailCollapse" role="button" aria-expanded="true" aria-controls="tenantInvoiceDetailCollapse">
         <span><%= t('invoice.view_details') %></span>
         <span class="material-symbols-outlined fs-6">expand_circle_up</span>
       </a>
@@ -150,7 +150,7 @@
           </div>
 
           <div class="table-responsive rounded-3 border">
-            <table class="table table-bordered align-middle mb-0 text-center" style="font-size: 0.92rem;">
+            <table class="table table-bordered align-middle mb-0 text-center invoice-items-table">
               <thead class="table-light">
                 <tr>
                   <th class="text-start ps-3"><%= t('invoice.service_name') %></th>
@@ -206,12 +206,12 @@
         <% if discount_items.any? %>
           <div class="mb-4">
             <span class="text-danger fw-bold d-block mb-2"><%= t('invoice.discount_items') %>:</span>
-            <div class="table-responsive rounded-3 border" style="max-width: 500px;">
-              <table class="table table-bordered align-middle mb-0" style="font-size: 0.92rem;">
+            <div class="table-responsive rounded-3 border invoice-subtable-wrapper">
+              <table class="table table-bordered align-middle mb-0 invoice-items-table">
                 <thead class="table-light">
                   <tr>
                     <th class="ps-3"><%= t('invoice.discount_reason') %></th>
-                    <th class="text-end pe-3" style="width: 180px;"><%= t('invoice.discount_amount') %></th>
+                    <th class="text-end pe-3 th-subtable-amount"><%= t('invoice.discount_amount') %></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -241,12 +241,12 @@
         <% if addition_items.any? %>
           <div class="mb-4">
             <span class="text-primary fw-bold d-block mb-2"><%= t('invoice.addition_items') %>:</span>
-            <div class="table-responsive rounded-3 border" style="max-width: 500px;">
-              <table class="table table-bordered align-middle mb-0" style="font-size: 0.92rem;">
+            <div class="table-responsive rounded-3 border invoice-subtable-wrapper">
+              <table class="table table-bordered align-middle mb-0 invoice-items-table">
                 <thead class="table-light">
                   <tr>
                     <th class="ps-3"><%= t('invoice.addition_reason') %></th>
-                    <th class="text-end pe-3" style="width: 180px;"><%= t('invoice.addition_amount') %></th>
+                    <th class="text-end pe-3 th-subtable-amount"><%= t('invoice.addition_amount') %></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -287,13 +287,13 @@
       <div class="row align-items-center g-4">
         <div class="col-md-4 text-center text-md-start">
           <% if @bank_account && qr_url %>
-            <div class="d-inline-block bg-white p-2 border rounded-3 shadow-sm text-center position-relative" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#tenantZoomQrModal" title="Bấm để phóng to mã QR">
+            <div class="d-inline-block bg-white p-2 border rounded-3 shadow-sm text-center position-relative cursor-pointer" data-bs-toggle="modal" data-bs-target="#tenantZoomQrModal" title="<%= t('invoice.vietqr.click_to_zoom') %>">
               <div class="small fw-bold text-danger mb-1 font-monospace d-flex justify-content-between align-items-center px-1">
                 <span>VIETQR</span>
                 <span class="material-symbols-outlined text-secondary fs-6 d-print-none">zoom_in</span>
               </div>
-              <img src="<%= qr_url %>" alt="Mã VietQR" style="max-width: 190px; width: 100%;" class="rounded">
-              <div class="small text-secondary mt-1 font-monospace" style="font-size: 0.75rem;">
+              <img src="<%= qr_url %>" alt="<%= t('invoice.vietqr.qr_alt') %>" class="rounded vietqr-thumb-img">
+              <div class="small text-secondary mt-1 font-monospace vietqr-account-subtext">
                 <%= @bank_account.bank.code %> - <%= @bank_account.account_number %>
               </div>
             </div>
@@ -303,7 +303,7 @@
         </div>
 
         <div class="col-md-8">
-          <div class="ps-md-2" style="font-size: 0.9rem;">
+          <div class="ps-md-2 invoice-warning-text">
             <p class="text-danger mb-2"><%= t('invoice.warning_check') %></p>
             <p class="text-danger mb-2"><%= t('invoice.warning_report') %></p>
             <p class="text-danger mb-4"><%= t('invoice.warning_proof') %></p>
@@ -326,39 +326,41 @@
 <!-- Modal Phóng to Mã QR VietQR cho Khách thuê -->
 <% if @bank_account && qr_url %>
   <div class="modal fade" id="tenantZoomQrModal" tabindex="-1" aria-labelledby="tenantZoomQrModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" style="max-width: 440px;">
+    <div class="modal-dialog modal-dialog-centered modal-vietqr-dialog">
       <div class="modal-content rounded-4 shadow border-0">
         <div class="modal-header border-bottom bg-light">
           <h5 class="modal-title fw-bold text-dark d-flex align-items-center gap-1" id="tenantZoomQrModalLabel">
             <span class="material-symbols-outlined text-danger">qr_code_2</span>
-            Mã QR Thanh Toán VietQR
+            <%= t('invoice.vietqr.title') %>
           </h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body text-center p-4">
           <div class="p-2 border rounded-3 bg-white shadow-sm d-inline-block mb-3">
-            <img src="<%= qr_url %>" alt="Mã VietQR Phóng To" style="max-width: 320px; width: 100%;" class="rounded">
+            <img src="<%= qr_url %>" alt="<%= t('invoice.vietqr.qr_zoomed_alt') %>" class="rounded vietqr-modal-img">
           </div>
 
           <div class="bg-light p-3 rounded-3 text-start mb-3 border font-monospace small">
-            <div class="mb-1"><strong>Ngân hàng:</strong> <%= @bank_account.bank.short_name %> (<%= @bank_account.bank.code %>)</div>
-            <div class="mb-1"><strong>Số tài khoản:</strong> <span class="text-primary fw-bold fs-6"><%= @bank_account.account_number %></span></div>
-            <div class="mb-1"><strong>Chủ tài khoản:</strong> <%= @bank_account.account_holder %></div>
-            <div class="mb-1"><strong>Số tiền:</strong> <span class="text-danger fw-bold fs-6"><%= number_to_currency(@invoice.total_amount, unit: "đ", format: "%n %u") %></span></div>
-            <div class="mb-0">
-              <strong>Nội dung CK:</strong>
+            <div class="mb-1"><strong><%= t('invoice.bank_name') %>:</strong> <%= @bank_account.bank.short_name %> (<%= @bank_account.bank.code %>)</div>
+            <div class="mb-1"><strong><%= t('invoice.account_number') %>:</strong> <span class="text-primary fw-bold fs-6"><%= @bank_account.account_number %></span></div>
+            <div class="mb-1"><strong><%= t('invoice.account_holder') %>:</strong> <%= @bank_account.account_holder %></div>
+            <div class="mb-1"><strong><%= t('invoice.vietqr.amount') %>:</strong> <span class="text-danger fw-bold fs-6"><%= number_to_currency(@invoice.total_amount, unit: "đ", format: "%n %u") %></span></div>
+            <div class="mb-0" data-controller="clipboard"
+                 data-clipboard-copied-text-value="<%= t('invoice.vietqr.copied') %>"
+                 data-clipboard-original-text-value="<%= t('invoice.vietqr.copy') %>">
+              <strong><%= t('invoice.transfer_note') %>:</strong>
               <div class="d-flex justify-content-between align-items-center bg-white p-2 rounded border mt-1">
-                <span class="fw-bold text-dark" id="copyTenantTransferNoteText"><%= @invoice.transfer_note %></span>
-                <button type="button" class="btn btn-sm btn-outline-primary d-flex align-items-center gap-1 py-1 px-2" onclick="navigator.clipboard.writeText(document.getElementById('copyTenantTransferNoteText').innerText); this.innerText = 'Đã chép!'; setTimeout(() => this.innerText = 'Sao chép', 2000)">
-                  Sao chép
+                <span class="fw-bold text-dark" data-clipboard-target="source"><%= @invoice.transfer_note %></span>
+                <button type="button" class="btn btn-sm btn-outline-primary d-flex align-items-center gap-1 py-1 px-2" data-action="click->clipboard#copy" data-clipboard-target="button">
+                  <%= t('invoice.vietqr.copy') %>
                 </button>
               </div>
             </div>
           </div>
-          <p class="text-secondary small mb-0">Mở bất kỳ ứng dụng ngân hàng nào (Vietcombank, MB, Techcombank...) để quét mã tự động điền tiền và nội dung.</p>
+          <p class="text-secondary small mb-0"><%= t('invoice.vietqr.scan_app_instruction') %></p>
         </div>
         <div class="modal-footer border-top">
-          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Đóng</button>
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal"><%= t('invoice.actions.close') %></button>
         </div>
       </div>
     </div>

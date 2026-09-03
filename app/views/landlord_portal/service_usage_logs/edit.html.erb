@@ -1,7 +1,7 @@
 <% content_for :title, "#{t('invoice.edit_meter_log')} - #{@house.name}" %>
 <% provide :container_width, "h-100" %>
 
-<div class="container py-3" style="max-width: 700px;">
+<div class="container py-3 usage-log-form-wrapper">
   <div class="card shadow-sm border-0 rounded-4">
     <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
       <h4 class="card-title fw-bold mb-0 d-flex align-items-center gap-2">
@@ -39,7 +39,8 @@
             <% if @log.reading_photo.attached? %>
               <div class="mt-2">
                 <span class="text-secondary small"><%= t("invoice.current_photo") %></span><br>
-                <%= image_tag @log.reading_photo.variant(resize_to_limit: [120, 120]), class: "rounded border shadow-sm mt-1" %>
+                <%= image_tag @log.reading_photo.variant(resize_to_limit: [120, 120]), alt: t("invoice.meter_photo"),
+                    class: "rounded border shadow-sm mt-1" %>
               </div>
             <% end %>
           </div>
@@ -59,4 +60,3 @@
     </div>
   </div>
 </div>
-

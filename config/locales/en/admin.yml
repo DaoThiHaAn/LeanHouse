@@ -149,6 +149,7 @@ en:
       applied_all: "All rooms in the property"
       not_applied: "Not assigned to any rooms"
       no_services_hint: "The landlord has not created any services or utilities for this property."
+      cal_type: "Calculation Type"
     assets:
       title: "Assets & Maintenance History"
       back_to_house: "Back to property details"

@@ -11,3 +11,13 @@
   width: fit-content;
   margin: 0 auto;
 }
+
+.vehicle-img {
+  width: 45px;
+  height: 35px;
+}
+
+.modal-vehicle-img {
+  max-height: 450px;
+  object-fit: contain;
+}

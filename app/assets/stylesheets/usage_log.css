@@ -1,0 +1,12 @@
+/* Service Usage Logs Stylesheet */
+.usage-log-wrapper {
+  max-width: 900px;
+}
+
+.usage-log-form-wrapper {
+  max-width: 700px;
+}
+
+.usage-log-tenant-form-wrapper {
+  max-width: 600px;
+}

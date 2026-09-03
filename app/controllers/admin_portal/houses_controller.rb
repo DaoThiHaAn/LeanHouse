@@ -19,6 +19,7 @@ module AdminPortal
       @floor_filter = params[:floor_id].presence
       @status_filter = params[:status].presence
       @query = params[:q].presence
+      @page = params[:page].presence
 
       @rooms = HouseRoomsFilter.call(house: @house, params: params)
     end

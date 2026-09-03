@@ -189,6 +189,12 @@ class House < ApplicationRecord
     LandlordAssetStatsService.call(house: self)
   end
 
+  def available_asset_categories
+    assets.distinct.order(:category).pluck(:category).compact.map do |cat|
+      [ I18n.t("enums.asset.categories.#{cat}", default: cat.humanize), cat ]
+    end
+  end
+
   def vehicle_summary_stats
     LandlordVehicleStatsService.call(house: self)
   end

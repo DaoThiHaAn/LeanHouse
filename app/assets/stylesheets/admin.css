@@ -155,7 +155,7 @@
 }
 
 .admin-filter-container {
-  background-color: #eaf9fc;
+  background-color: #eafcfa;
   padding: 1rem;
   border: 1px dotted #d1e0f3;
 }
@@ -211,4 +211,35 @@
   border-top: 1px solid rgb(155, 192, 178);
   border-bottom: 1px solid rgb(155, 192, 178);
 }
+
+.room-search-form-container .input-group {
+  border: 1px solid rgb(192, 198, 196);
+}
+
+.room-search-form-container .form-floating {
+  border: 1px solid rgb(192, 198, 196);
+}
+
+/* Scrollable container for rooms with many beds in Bed Mode */
+.admin-bed-list-scroll {
+  max-height: 260px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+/* Scrollable container for room mode with many staying tenants */
+.admin-tenant-list-scroll {
+  max-height: 150px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+/* Scrollable container for applied rooms in service variants table */
+.admin-applied-rooms-scroll {
+  max-height: 85px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+
 

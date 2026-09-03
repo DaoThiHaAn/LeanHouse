@@ -29,12 +29,12 @@
   <!-- 5. Photo -->
   <td class="text-center">
     <% if vehicle.vehicle_photo.attached? %>
-      <button type="button" 
+      <button type="button"
               class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1 p-1"
-              data-bs-toggle="modal" 
+              data-bs-toggle="modal"
               data-bs-target="#vehiclePhotoModal_<%= vehicle.id %>"
               title="<%= t("vehicle.view_photo") %>">
-        <%= image_tag vehicle.vehicle_photo, class: "rounded border object-fit-cover", style: "width: 45px; height: 35px;" %>
+        <%= image_tag vehicle.vehicle_photo, class: "rounded border object-fit-cover vehicle-img", alt: "Vehicle photo" %>
       </button>
 
       <!-- Photo Modal -->
@@ -48,7 +48,7 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body text-center p-3">
-              <%= image_tag vehicle.vehicle_photo, class: "img-fluid rounded-3 shadow-sm", style: "max-height: 450px; object-fit: contain;" %>
+              <%= image_tag vehicle.vehicle_photo, class: "img-fluid rounded-3 shadow-sm modal-vehicle-img", alt: "Vehicle photo" %>
             </div>
           </div>
         </div>

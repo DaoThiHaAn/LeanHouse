@@ -1,17 +1,17 @@
-<% content_for :title, "Nộp Chỉ số & Ảnh công tơ" %>
+<% content_for :title, t("invoice.submit_meter_log_title") %>
 
-<div class="container py-4" style="max-width: 600px;">
+<div class="container py-4 usage-log-tenant-form-wrapper">
   <div class="card shadow-sm border-0 rounded-4">
     <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
       <h5 class="card-title fw-bold mb-0 d-flex align-items-center gap-2">
         <span class="material-symbols-outlined text-primary">photo_camera</span>
-        Nộp Chỉ số <%= @log.service_name %> (<%= @log.billing_month.strftime("%m/%Y") %>)
+        <%= t("invoice.submit_service_log_header", service: @log.service_name, month: @log.billing_month.strftime("%m/%Y")) %>
       </h5>
-      <%= link_to "Quay lại", tenant_service_usage_logs_path, class: "btn btn-sm btn-outline-secondary" %>
+      <%= link_to t("invoice.actions.back"), tenant_service_usage_logs_path, class: "btn btn-sm btn-outline-secondary" %>
     </div>
     <div class="card-body p-4">
       <div class="alert alert-info py-2 small mb-4">
-        Chỉ số trước đó: <strong><%= @log.prev_reading %> <%= @log.unit %></strong>. Sau khi chủ trọ xác nhận, bạn sẽ không thể thay đổi thông tin này nữa.
+        <%= t("invoice.tenant_meter_warning_html", reading: @log.prev_reading, unit: @log.unit) %>
       </div>
 
       <%= form_with model: [:tenant, @log], local: true do |f| %>
@@ -26,23 +26,24 @@
         <% end %>
 
         <div class="mb-3">
-          <%= f.label :latest_reading, "Chỉ số hiện tại trên mặt đồng hồ (#{ @log.unit })", class: "form-label fw-semibold" %>
-          <%= f.number_field :latest_reading, class: "form-control form-control-lg font-monospace fw-bold", placeholder: "Ví dụ: #{@log.prev_reading + 50}", required: true, min: @log.prev_reading %>
+          <%= f.label :latest_reading, t("invoice.current_meter_reading_label", unit: @log.unit), class: "form-label fw-semibold" %>
+          <%= f.number_field :latest_reading, class: "form-control form-control-lg font-monospace fw-bold", placeholder: t("invoice.reading_example_placeholder", val: @log.prev_reading + 50), required: true, min: @log.prev_reading %>
         </div>
 
         <div class="mb-4">
-          <%= f.label :reading_photo, "Chụp hoặc Tải ảnh chụp mặt đồng hồ", class: "form-label fw-semibold" %>
+          <%= f.label :reading_photo, t("invoice.upload_meter_photo_label"), class: "form-label fw-semibold" %>
           <%= f.file_field :reading_photo, accept: "image/*", capture: "environment", class: "form-control shadow-sm" %>
           <% if @log.reading_photo.attached? %>
             <div class="mt-2">
-              <span class="text-secondary small">Ảnh đã tải lên trước đó:</span><br>
-              <%= image_tag @log.reading_photo.variant(resize_to_limit: [120, 120]), class: "rounded border mt-1 shadow-sm" %>
+              <span class="text-secondary small"><%= t("invoice.previously_uploaded_photo") %></span><br>
+              <%= image_tag @log.reading_photo.variant(resize_to_limit: [120, 120]), alt: t("invoice.meter_photo"),
+                  class: "rounded border mt-1 shadow-sm" %>
             </div>
           <% end %>
         </div>
 
         <div class="d-grid">
-          <%= f.submit "Gửi Chỉ Số & Ảnh Minh Chứng", class: "btn btn-primary btn-lg fw-semibold" %>
+          <%= f.submit t("invoice.submit_reading_btn_text"), class: "btn btn-primary btn-lg fw-semibold" %>
         </div>
       <% end %>
     </div>

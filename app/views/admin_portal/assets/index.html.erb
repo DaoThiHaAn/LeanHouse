@@ -18,13 +18,13 @@
         <!-- Header & KPIs Card -->
         <div class="card admin-card shadow-sm">
           <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
-            <h2 class="fs-5 fw-bold mb-0 d-flex align-items-center gap-2">
-              <span class="material-symbols-filled fs-4 text-primary">inventory_2</span>
+            <h2 class="mb-0 d-flex align-items-center gap-2">
+              <span class="material-symbols-filled fs-4">inventory_2</span>
               <%= t("admin.assets.title") %>
             </h2>
             <div class="d-flex align-items-center gap-2">
               <span class="badge bg-light text-secondary border">
-                <%= @total_assets_count %> <%= t("admin.assets.items_unit") %>
+                <%= @stats[:total_count] %> <%= t("admin.assets.items_unit") %>
               </span>
             </div>
           </div>
@@ -33,56 +33,67 @@
             <div class="row g-3 text-center text-sm-start">
               <div class="col-12 col-sm-4">
                 <div class="small text-secondary mb-1"><%= t("admin.assets.total_assets") %>:</div>
-                <strong class="fs-5 text-dark"><%= @total_assets_count %></strong>
+                <strong class="fs-5 text-dark"><%= @stats[:total_count] %></strong>
               </div>
               <div class="col-12 col-sm-4">
                 <div class="small text-secondary mb-1"><%= t("admin.assets.asset_condition") %>:</div>
                 <div class="fs-6">
-                  <span class="text-success fw-bold"><%= @normal_count %> <%= t("admin.assets.normal_short") %></span> ·
-                  <span class="text-danger fw-bold"><%= @damaged_count %> <%= t("admin.assets.damaged_short") %></span>
+                  <span class="text-success fw-bold"><%= @stats[:normal_count] %> <%= t("admin.assets.normal_short") %></span> ·
+                  <span class="text-danger fw-bold"><%= @stats[:damaged_count] %> <%= t("admin.assets.damaged_short") %></span>
                 </div>
               </div>
               <div class="col-12 col-sm-4 text-sm-end">
                 <div class="small text-secondary mb-1"><%= t("admin.assets.total_value") %>:</div>
-                <strong class="text-primary fs-5"><%= format_money(@total_price) %></strong>
+                <strong class="text-primary fs-5"><%= format_money(@stats[:total_price]) %></strong>
               </div>
             </div>
           </div>
         </div>
 
         <!-- Filters Bar -->
-        <div class="admin-filter-container">
-          <%= form_with url: admin_house_assets_path(@house), method: :get, local: true, class: "row g-2 align-items-end" do |f| %>
+        <div class="admin-filter-container rounded-3">
+          <%= form_with url: admin_house_assets_path(@house), method: :get, local: true, class: "row g-2 align-items-center" do |f| %>
             <div class="col-12 col-sm-6 col-md-4">
-              <%= f.label :category, t("admin.assets.filter_category"), class: "form-label small text-secondary mb-1" %>
-              <%= f.select :category,
-                           options_for_select([[t("admin.assets.all_categories"), ""]] + @available_categories, @category_filter),
-                           {},
-                           class: "form-select form-select-sm",
-                           onchange: "this.form.submit()" %>
+              <div class="form-floating">
+                <%= f.select :category,
+                             options_for_select([[t("admin.assets.all_categories"), ""]] + @available_categories, @category_filter),
+                             {},
+                             class: "form-select shadow-sm",
+                             id: "floatingCategorySelect",
+                             onchange: "this.form.submit()" %>
+                <label for="floatingCategorySelect" class="text-secondary small fw-medium">
+                  <%= t("admin.assets.filter_category") %>
+                </label>
+              </div>
             </div>
 
             <div class="col-12 col-sm-6 col-md-4">
-              <%= f.label :status, t("admin.assets.filter_status"), class: "form-label small text-secondary mb-1" %>
-              <%= f.select :status,
-                           options_for_select([
-                             [t("admin.assets.all_statuses"), ""],
-                             [t("enums.asset.status.normal"), "normal"],
-                             [t("enums.asset.status.damaged"), "damaged"],
-                             [t("enums.asset.status.under_repair"), "under_repair"]
-                           ], @status_filter),
-                           {},
-                           class: "form-select form-select-sm",
-                           onchange: "this.form.submit()" %>
+              <div class="form-floating">
+                <%= f.select :status,
+                             options_for_select([
+                               [t("admin.assets.all_statuses"), ""],
+                               [t("enums.asset.status.normal"), "normal"],
+                               [t("enums.asset.status.damaged"), "damaged"],
+                               [t("enums.asset.status.under_repair"), "under_repair"]
+                             ], @status_filter),
+                             {},
+                             class: "form-select shadow-sm",
+                             id: "floatingStatusSelect",
+                             onchange: "this.form.submit()" %>
+                <label for="floatingStatusSelect" class="text-secondary small fw-medium">
+                  <%= t("admin.assets.filter_status") %>
+                </label>
+              </div>
             </div>
 
             <div class="col-12 col-md-4 d-flex gap-2">
-              <%= f.submit t("filter"), class: "btn btn-sm btn-primary px-3" %>
               <% if @category_filter.present? || @status_filter.present? %>
-                <%= link_to t("admin.users.clear_filter"),
-                            admin_house_assets_path(@house),
-                            class: "btn btn-sm btn-outline-secondary",
-                            data: { turbo_frame: "house_tab_content", turbo_action: "advance" } %>
+                <%= link_to admin_house_assets_path(@house),
+                            class: "btn btn-outline-secondary d-inline-flex align-items-center gap-1 shadow-sm",
+                            data: { turbo_frame: "house_tab_content", turbo_action: "advance" } do %>
+                  <span class="material-symbols-outlined fs-6">filter_alt_off</span>
+                  <%= t("clear_filter") %>
+                <% end %>
               <% end %>
             </div>
           <% end %>
@@ -90,17 +101,17 @@
 
         <!-- Assets Table -->
         <% if @assets.any? %>
-          <div class="card admin-card shadow-sm">
-            <div class="card-body p-0">
+          <div class="card admin-card shadow-sm border">
+            <div class="card-body p-1">
               <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
+                <table class="table table-hover align-middle">
                   <thead class="table-light">
                     <tr>
                       <th class="ps-3" style="width: 25%;"><%= t("admin.assets.asset_info") %></th>
                       <th style="width: 20%;"><%= t("admin.assets.location") %></th>
                       <th style="width: 15%;"><%= t("admin.assets.price_and_purchased") %></th>
-                      <th style="width: 15%;"><%= t("form.house.state") %></th>
-                      <th class="pe-3 text-center text-md-start" style="width: 25%;"><%= t("admin.assets.maintenance_history") %></th>
+                      <th class="text-center" style="width: 15%;"><%= t("form.house.state") %></th>
+                      <th class="pe-3 text-center" style="width: 25%;"><%= t("admin.assets.maintenance_history") %></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -113,7 +124,7 @@
                             <div>
                               <strong class="text-dark"><%= asset.human_category %></strong>
                               <% if asset.brand.present? || asset.model.present? %>
-                                <div class="small text-secondary">
+                                <div class="small">
                                   <%= [asset.brand, asset.model].compact_blank.join(" - ") %>
                                 </div>
                               <% end %>
@@ -125,8 +136,8 @@
                         </td>
 
                         <td>
-                          <strong><%= asset.room.title_name %></strong>
-                          <div class="small text-secondary"><%= asset.room.floor.title_name %></div>
+                          <p class="fw-semibold"><%= asset.room.title_name %></p>
+                          <p class="small"><%= asset.room.floor.title_name %></p>
                         </td>
 
                         <td>
@@ -136,89 +147,24 @@
                           <% end %>
                         </td>
 
-                        <td>
-                          <% case asset.status %>
-                          <% when "normal" %>
-                            <span class="badge bg-success-subtle text-success border border-success-subtle d-inline-flex align-items-center gap-1">
-                              <span class="material-symbols-outlined fs-6">check_circle</span>
-                              <span><%= t("enums.asset.status.normal") %></span>
-                            </span>
-                          <% when "damaged" %>
-                            <span class="badge bg-danger-subtle text-danger border border-danger-subtle d-inline-flex align-items-center gap-1">
-                              <span class="material-symbols-outlined fs-6">error</span>
-                              <span><%= t("enums.asset.status.damaged") %></span>
-                            </span>
-                          <% when "under_repair" %>
-                            <span class="badge bg-warning-subtle text-warning border border-warning-subtle d-inline-flex align-items-center gap-1">
-                              <span class="material-symbols-outlined fs-6">build</span>
-                              <span><%= t("enums.asset.status.under_repair") %></span>
-                            </span>
-                          <% end %>
+                        <td class="text-center">
+                          <%= asset_status_badge(asset) %>
                         </td>
 
-                        <td class="pe-3 text-center text-md-start">
+                        <td class="pe-3 text-center">
                           <% if logs.any? %>
                             <!-- Modal Trigger Button -->
                             <button type="button"
-                                    class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1"
+                                    class="btn btn-sm btn-outline-primary d-inline-flex align-items-center justify-content-center gap-1"
                                     data-bs-toggle="modal"
                                     data-bs-target="#maintenanceModal_<%= asset.id %>"
                                     title="<%= t('admin.assets.view_maintenance_logs') %>">
-                              <span class="material-symbols-outlined fs-6">build</span>
+                              <span class="material-symbols-filled fs-6">build</span>
                               <span><%= t("admin.assets.logs_count", count: logs.size) %></span>
-                              <span class="badge bg-primary-subtle text-primary border border-primary-subtle ms-1">
-                                <%= format_money(logs.sum(&:cost)) %>
-                              </span>
+                              <%= asset_maintenance_cost_badge(logs) %>
                             </button>
 
-                            <!-- Maintenance History Modal -->
-                            <div class="modal fade" id="maintenanceModal_<%= asset.id %>" tabindex="-1" aria-labelledby="maintenanceModalLabel_<%= asset.id %>" aria-hidden="true">
-                              <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
-                                <div class="modal-content">
-                                  <div class="modal-header py-3 border-bottom">
-                                    <div class="d-flex align-items-center gap-2">
-                                      <span class="material-symbols-filled fs-3 text-primary">build</span>
-                                      <div class="text-start">
-                                        <h5 class="modal-title fw-bold mb-0" id="maintenanceModalLabel_<%= asset.id %>">
-                                          <%= t("admin.assets.maintenance_history") %> - <%= asset.human_category %> (<%= asset.room.title_name %>)
-                                        </h5>
-                                        <small class="text-secondary"><%= [asset.brand, asset.model].compact_blank.join(" - ") %></small>
-                                      </div>
-                                    </div>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                  </div>
-                                  <div class="modal-body p-0 text-start">
-                                    <div class="p-3 bg-light d-flex justify-content-between align-items-center border-bottom flex-wrap gap-2">
-                                      <span class="fw-semibold text-dark"><%= t("admin.assets.logs_count", count: logs.size) %></span>
-                                      <span><%= t("admin.assets.total_maintenance_cost") %>: <strong class="text-danger fs-6"><%= format_money(logs.sum(&:cost)) %></strong></span>
-                                    </div>
-                                    <div class="table-responsive">
-                                      <table class="table table-hover align-middle mb-0">
-                                        <thead class="table-light">
-                                          <tr>
-                                            <th class="ps-3" style="width: 22%;"><%= t("admin.assets.performed_date") %></th>
-                                            <th style="width: 22%;"><%= t("admin.assets.cost") %></th>
-                                            <th class="pe-3" style="width: 56%;"><%= t("admin.assets.content") %></th>
-                                          </tr>
-                                        </thead>
-                                        <tbody>
-                                          <% logs.each do |log| %>
-                                            <tr>
-                                              <td class="ps-3 fw-semibold"><%= l(log.performed_on, format: :default) rescue log.performed_on.strftime("%d/%m/%Y") %></td>
-                                              <td><strong class="text-danger"><%= format_money(log.cost) %></strong></td>
-                                              <td class="pe-3 text-break"><%= log.content %></td>
-                                            </tr>
-                                          <% end %>
-                                        </tbody>
-                                      </table>
-                                    </div>
-                                  </div>
-                                  <div class="modal-footer py-2">
-                                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal"><%= t("close") %></button>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
+                            <%= render "maintenance_modal", asset: asset, logs: logs %>
                           <% else %>
                             <span class="text-secondary small fst-italic"><%= t("admin.assets.no_maintenance_logs") %></span>
                           <% end %>
@@ -230,6 +176,13 @@
               </div>
             </div>
           </div>
+
+          <!-- Pagination Bar -->
+          <% if @assets.total_pages > 1 %>
+            <div class="d-flex justify-content-center mt-3 mb-2">
+              <%= paginate @assets %>
+            </div>
+          <% end %>
         <% else %>
           <div class="card admin-card p-5 text-center shadow-sm">
             <span class="material-symbols-outlined fs-1 text-secondary mb-2">inventory_2</span>

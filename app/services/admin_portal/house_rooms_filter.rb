@@ -1,6 +1,6 @@
 module AdminPortal
   class HouseRoomsFilter
-    ROOMS_PER_PAGE = 24
+    ROOMS_PER_PAGE = 15
 
     def self.call(...)
       new(...).call

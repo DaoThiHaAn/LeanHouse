@@ -190,6 +190,15 @@ class AdminPortal::DashboardAndUsersControllerTest < ActionDispatch::Integration
     assert_includes response.body, "Tốc độ 1Gbps"
     assert_includes response.body, "100,000đ"
     assert_includes response.body, "101"
+
+    # Test pagination when services exceed 10
+    10.times do |i|
+      house.services.create!(name: "Dịch vụ phụ #{i + 1}", note: "Ghi chú #{i + 1}")
+    end
+
+    get admin_house_services_url(house, page: 2)
+    assert_response :success
+    assert_select ".pagination"
   end
 
   test "should show beds and occupant in bed mode" do
@@ -300,5 +309,19 @@ class AdminPortal::DashboardAndUsersControllerTest < ActionDispatch::Integration
     assert_includes response.body, "Nạp gas và vệ sinh lưới lọc"
     assert_includes response.body, "350,000 đ"
     assert_includes response.body, "A101"
+
+    # 3. Test pagination when assets exceed 10
+    10.times do |i|
+      room.assets.create!(
+        category: "air_conditioner",
+        status: "normal",
+        brand: "Brand #{i + 1}",
+        price: 1_000_000
+      )
+    end
+
+    get admin_house_assets_url(house, page: 2)
+    assert_response :success
+    assert_select ".pagination"
   end
 end

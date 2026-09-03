@@ -333,6 +333,64 @@
   margin-bottom: 0.75rem;
 }
 
+/* --- Invoice Show Refactored Styles --- */
+.invoice-total-badge {
+  background-color: #b45309;
+  color: #ffffff;
+}
+
+.invoice-collapse-toggle {
+  color: #e11d48;
+}
+
+.invoice-collapse-toggle:hover {
+  color: #be123c;
+}
+
+.invoice-items-table {
+  font-size: 0.92rem;
+}
+
+.invoice-subtable-wrapper {
+  max-width: 500px;
+}
+
+.th-subtable-amount {
+  width: 180px;
+}
+
+.vietqr-thumb-img {
+  max-width: 190px;
+  width: 100%;
+}
+
+.vietqr-account-subtext {
+  font-size: 0.75rem;
+}
+
+.invoice-warning-text {
+  font-size: 0.9rem;
+}
+
+.modal-vietqr-dialog {
+  max-width: 440px;
+}
+
+.vietqr-modal-img {
+  max-width: 320px;
+  width: 100%;
+}
+
+.btn-mark-paid-primary {
+  background-color: #9f1239;
+  color: #ffffff;
+}
+
+.btn-mark-paid-primary:hover {
+  background-color: #881337;
+  color: #ffffff;
+}
+
 /* --- Print Styling --- */
 @media print {
   @page {
