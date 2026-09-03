@@ -32,6 +32,14 @@ module AdminPortal
       elsif @user.tenant?
         @current_stay = @user.tenant&.tenant_stays&.staying&.includes(rental_unit: :rentable)&.first
         @contracts = Contract.where(tenant_id: @user.id).includes(:house, :landlord).order(start_date: :desc, id: :desc)
+        if @user.tenant
+          room_ids = @user.tenant.tenant_stays.includes(rental_unit: :rentable).map { |ts| ts.rental_unit&.room&.id }.compact.uniq
+          invoice_scope = Invoice.where(tenant_id: @user.id)
+          invoice_scope = invoice_scope.or(Invoice.where(invoice_type: "room", room_id: room_ids)) if room_ids.any?
+          @invoices = invoice_scope.includes(:house, :room, :paid_by).order(billing_month: :desc, id: :desc)
+        else
+          @invoices = Invoice.none
+        end
       end
     end
 

@@ -310,7 +310,7 @@
                   <span class="material-symbols-outlined fs-5 text-danger">warning</span>
                   <span><%= t('invoice.previous_undo_alert') %></span>
                   <% if @invoice.undone_at.present? %>
-                    <span class="text-secondary fw-normal small font-monospace">(<%= @invoice.undone_at.strftime("%H:%M %d/%m/%Y") %>)</span>
+                    <span class="text-secondary fw-normal small">(<%= @invoice.undone_at.strftime("%H:%M %d/%m/%Y") %>)</span>
                   <% end %>
                 </div>
                 <p class="undo-reason-text"><strong><%= t('invoice.undo_reason_view') %>:</strong> <%= @invoice.undo_reason %></p>
@@ -328,7 +328,7 @@
                   <%= t('invoice.payment_method_label') %>: <%= @invoice.cash? ? t('invoice.payment_methods.cash') : t('invoice.payment_methods.transfer') %>
                 </span>
                 <% if @invoice.paid_at.present? %>
-                  <span class="text-secondary small font-monospace"><%= @invoice.paid_at.strftime("%H:%M %d/%m/%Y") %></span>
+                  <span class="text-secondary small"><%= @invoice.paid_at.strftime("%H:%M %d/%m/%Y") %></span>
                 <% end %>
               </div>
 

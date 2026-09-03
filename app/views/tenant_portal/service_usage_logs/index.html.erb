@@ -11,20 +11,6 @@
     </div>
   </div>
 
-  <% if flash[:notice] %>
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-      <%= flash[:notice] %>
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-  <% end %>
-
-  <% if flash[:alert] %>
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-      <%= flash[:alert] %>
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-  <% end %>
-
   <% if @logs.empty? %>
     <div class="card bg-light border-0 text-center py-5 rounded-4">
       <span class="material-symbols-outlined text-secondary fs-1 mb-2">fact_check</span>
@@ -102,4 +88,3 @@
     </div>
   <% end %>
 </div>
-

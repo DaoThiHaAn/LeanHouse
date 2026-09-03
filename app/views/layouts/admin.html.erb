@@ -25,6 +25,7 @@
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "admin", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "contract", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "invoice", "data-turbo-track": "reload" %>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
@@ -151,5 +152,7 @@
     </footer>
     <!-- Modal container for contract detail -->
     <%= turbo_frame_tag "contract_detail_modal" %>
+    <!-- Modal container for invoice detail -->
+    <%= turbo_frame_tag "invoice_detail_modal" %>
   </body>
 </html>

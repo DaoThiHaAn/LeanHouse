@@ -14,7 +14,7 @@ class LandlordPortal::BankAccountsController < ApplicationController
     @bank_account = @landlord.bank_accounts.build(bank_account_params)
 
     if @bank_account.save
-      redirect_to landlord_bank_accounts_path, notice: "Đã thêm tài khoản ngân hàng thành công!"
+      redirect_to landlord_bank_accounts_path, notice: t("bank_account.created_success")
     else
       @bank_accounts = @landlord.bank_accounts.includes(:bank).default_first
       @banks = Bank.sorted
@@ -24,12 +24,12 @@ class LandlordPortal::BankAccountsController < ApplicationController
 
   def set_default
     @bank_account.update!(is_default: true)
-    redirect_to landlord_bank_accounts_path, notice: "Đã đặt tài khoản mặc định thành công!"
+    redirect_to landlord_bank_accounts_path, notice: t("bank_account.set_default_success")
   end
 
   def destroy
     @bank_account.destroy
-    redirect_to landlord_bank_accounts_path, notice: "Đã xóa tài khoản ngân hàng thành công!"
+    redirect_to landlord_bank_accounts_path, notice: t("bank_account.deleted_success")
   end
 
   private

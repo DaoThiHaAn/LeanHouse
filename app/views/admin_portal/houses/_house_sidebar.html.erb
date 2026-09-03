@@ -125,6 +125,23 @@
           <%= house.contracts.count %>
         </span>
       <% end %>
+
+      <%= link_to admin_house_invoices_path(house),
+                  class: "nav-link d-flex align-items-center justify-content-between px-3 py-2 flex-shrink-0 #{'active' if active_tab == :invoices}",
+                  data: {
+                    turbo_frame: "house_tab_content",
+                    turbo_action: "advance",
+                    admin_house_nav_target: "link",
+                    action: "click->admin-house-nav#select"
+                  } do %>
+        <div class="d-flex align-items-center gap-2">
+          <span class="material-symbols-filled fs-5">receipt_long</span>
+          <span><%= t("admin.houses.invoices") %></span>
+        </div>
+        <span class="badge bg-light text-secondary border small ms-2">
+          <%= house.invoices.count %>
+        </span>
+      <% end %>
     </div>
   </div>
 </div>

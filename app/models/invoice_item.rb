@@ -19,6 +19,10 @@ class InvoiceItem < ApplicationRecord
     item_type.to_s == "discount"
   end
 
+  def service?
+    metered_service? || fixed_service?
+  end
+
   def formatted_amount
     discount? ? "-#{amount.abs}" : amount.to_s
   end

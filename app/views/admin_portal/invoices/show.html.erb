@@ -1,0 +1,255 @@
+<%= turbo_frame_tag "invoice_detail_modal" do %>
+  <div class="modal fade" id="invoiceDetailModal" tabindex="-1" aria-hidden="true"
+       data-controller="modal" data-modal-auto-open-value="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+      <div class="modal-content shadow border-0">
+        <!-- Modal Header -->
+        <div class="modal-header bg-light py-3 border-bottom">
+          <div class="d-flex align-items-center gap-2 flex-wrap">
+            <span class="material-symbols-filled text-primary fs-4">receipt_long</span>
+            <h5 class="modal-title fw-bold mb-0">
+              <%= t("admin.invoices.detail_title", month: @invoice.billing_month.strftime("%m/%Y")) %>
+            </h5>
+            <span class="badge bg-secondary-subtle text-secondary font-monospace border">#<%= @invoice.code %></span>
+            <% if @invoice.paid? %>
+              <span class="badge bg-success"><%= t("admin.invoices.state_paid") %></span>
+            <% elsif @invoice.cancelled? %>
+              <span class="badge bg-secondary"><%= t("admin.invoices.state_cancelled") %></span>
+            <% elsif @invoice.overdue? %>
+              <span class="badge bg-danger"><%= t("admin.invoices.state_overdue") %></span>
+            <% else %>
+              <span class="badge bg-warning text-dark"><%= t("admin.invoices.state_pending") %></span>
+            <% end %>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="modal-body p-4 d-flex flex-column gap-3">
+          <!-- General Invoice Details -->
+          <div class="admin-contract-section">
+            <h6 class="fw-bold text-dark d-flex align-items-center gap-2 mb-3">
+              <span class="material-symbols-outlined fs-5 text-primary">info</span>
+              <span><%= t("admin.invoices.general_info") %></span>
+            </h6>
+            <div class="row g-3">
+              <div class="col-12 col-sm-6">
+                <div class="small text-secondary"><%= t("admin.invoices.house") %>:</div>
+                <div>
+                  <%= link_to @house.name, admin_house_path(@house), class: "link fw-bold" %>
+                </div>
+                <div class="small text-secondary"><%= @house.full_address %></div>
+              </div>
+
+              <div class="col-12 col-sm-6">
+                <div class="small text-secondary"><%= t("admin.invoices.target") %>:</div>
+                <% if @invoice.individual? && @invoice.tenant %>
+                  <div class="fw-semibold text-dark">
+                    <%= @invoice.tenant.user&.fullname %> (<%= @invoice.tenant.user&.tel %>)
+                  </div>
+                  <div class="small text-secondary">
+                    <%= @invoice.room.title_name %> - <%= @invoice.room.floor.name %>
+                  </div>
+                <% else %>
+                  <div class="fw-semibold text-dark">
+                    <%= @invoice.room.title_name %> (<%= @invoice.room.floor.name %>)
+                  </div>
+                  <div class="small text-secondary">
+                    <%= t("admin.invoices.mode_room_desc") %>
+                  </div>
+                <% end %>
+              </div>
+
+              <div class="col-12 col-sm-6">
+                <div class="small text-secondary"><%= t("admin.invoices.period") %>:</div>
+                <div class="fw-semibold text-dark">
+                  <%= @invoice.start_date ? @invoice.start_date.strftime("%d/%m/%Y") : "-" %> → <%= @invoice.end_date ? @invoice.end_date.strftime("%d/%m/%Y") : "-" %>
+                </div>
+              </div>
+
+              <div class="col-12 col-sm-6">
+                <div class="small text-secondary"><%= t("admin.invoices.due_date") %>:</div>
+                <div class="fw-semibold <%= @invoice.overdue? ? 'text-danger fw-bold' : 'text-dark' %>">
+                  <%= @invoice.due_date ? @invoice.due_date.strftime("%d/%m/%Y") : "-" %>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Items Breakdown -->
+          <div class="admin-contract-section">
+            <h6 class="fw-bold text-dark d-flex align-items-center gap-2 mb-3">
+              <span class="material-symbols-outlined fs-5 text-primary">format_list_bulleted</span>
+              <span><%= t("admin.invoices.items_breakdown") %></span>
+            </h6>
+            <div class="table-responsive border rounded-3 overflow-hidden">
+              <table class="table align-middle mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th class="ps-3"><%= t("admin.invoices.item_name") %></th>
+                    <th class="text-center"><%= t("admin.invoices.item_quantity") %></th>
+                    <th class="text-end"><%= t("admin.invoices.item_unit_price") %></th>
+                    <th class="text-end pe-3"><%= t("admin.invoices.item_amount") %></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% if @rent_item.present? %>
+                    <tr>
+                      <td class="ps-3 fw-semibold text-dark">
+                        <%= @rent_item.name %>
+                      </td>
+                      <td class="text-center font-monospace"><%= @rent_item.quantity %> <%= @rent_item.unit %></td>
+                      <td class="text-end font-monospace"><%= number_to_currency(@rent_item.unit_price, unit: "₫", precision: 0) %></td>
+                      <td class="text-end pe-3 font-monospace fw-bold text-dark"><%= number_to_currency(@rent_item.amount, unit: "₫", precision: 0) %></td>
+                    </tr>
+                  <% end %>
+
+                  <% @service_items.each do |item| %>
+                    <tr>
+                      <td class="ps-3">
+                        <div class="fw-semibold text-dark"><%= item.name %></div>
+                        <% if item.prev_reading.present? && item.latest_reading.present? %>
+                          <div class="small text-secondary font-monospace">
+                            <%= t("invoice.prev_reading") %>: <%= item.prev_reading %> → <%= t("invoice.latest_reading") %>: <%= item.latest_reading %>
+                          </div>
+                        <% end %>
+                      </td>
+                      <td class="text-center font-monospace"><%= item.quantity %> <%= item.unit %></td>
+                      <td class="text-end font-monospace"><%= number_to_currency(item.unit_price, unit: "₫", precision: 0) %></td>
+                      <td class="text-end pe-3 font-monospace fw-semibold text-dark"><%= number_to_currency(item.amount, unit: "₫", precision: 0) %></td>
+                    </tr>
+                  <% end %>
+
+                  <% @addition_items.each do |item| %>
+                    <tr>
+                      <td class="ps-3 text-primary">
+                        <span class="badge bg-primary-subtle text-primary me-1">+</span> <%= item.name %>
+                      </td>
+                      <td class="text-center font-monospace"><%= item.quantity %></td>
+                      <td class="text-end font-monospace"><%= number_to_currency(item.unit_price, unit: "₫", precision: 0) %></td>
+                      <td class="text-end pe-3 font-monospace text-primary fw-semibold">+<%= number_to_currency(item.amount, unit: "₫", precision: 0) %></td>
+                    </tr>
+                  <% end %>
+
+                  <% @discount_items.each do |item| %>
+                    <tr>
+                      <td class="ps-3 text-danger">
+                        <span class="badge bg-danger-subtle text-danger me-1">-</span> <%= item.name %>
+                      </td>
+                      <td class="text-center font-monospace"><%= item.quantity %></td>
+                      <td class="text-end font-monospace"><%= number_to_currency(item.unit_price, unit: "₫", precision: 0) %></td>
+                      <td class="text-end pe-3 font-monospace text-danger fw-semibold">-<%= number_to_currency(item.amount, unit: "₫", precision: 0) %></td>
+                    </tr>
+                  <% end %>
+                </tbody>
+                <tfoot class="table-light border-top">
+                  <tr class="fw-bold">
+                    <td colspan="3" class="ps-3 fs-6"><%= t("admin.invoices.total_amount") %>:</td>
+                    <td class="text-end pe-3 fs-5 font-monospace text-primary">
+                      <%= @invoice.formatted_total_amount %>
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+
+          <!-- Payment & Audit Details -->
+          <div class="admin-contract-section">
+            <h6 class="fw-bold text-dark d-flex align-items-center gap-2 mb-3">
+              <span class="material-symbols-outlined fs-5 text-primary">payments</span>
+              <span><%= t("admin.invoices.payment_and_audit") %></span>
+            </h6>
+
+            <% if @invoice.undo_reason.present? && !@invoice.paid? %>
+              <div class="undo-reason-banner mb-3">
+                <div class="d-flex align-items-center gap-2 undo-reason-title mb-1">
+                  <span class="material-symbols-outlined fs-5 text-danger">warning</span>
+                  <span><%= t("invoice.previous_undo_alert") %></span>
+                  <% if @invoice.undone_at.present? %>
+                    <span class="text-secondary fw-normal small">(<%= @invoice.undone_at.strftime("%H:%M %d/%m/%Y") %>)</span>
+                  <% end %>
+                </div>
+                <p class="undo-reason-text"><strong><%= t("invoice.undo_reason_view") %>:</strong> <%= @invoice.undo_reason %></p>
+                <% if @invoice.undone_by.present? %>
+                  <div class="small text-secondary mt-1">
+                    <%= t("admin.invoices.undone_by") %>: <strong><%= @invoice.undone_by.fullname %></strong>
+                  </div>
+                <% end %>
+              </div>
+            <% end %>
+
+            <div class="row g-3">
+              <div class="col-12 col-sm-6">
+                <div class="small text-secondary"><%= t("admin.invoices.payment_status") %>:</div>
+                <div>
+                  <% if @invoice.paid? %>
+                    <span class="badge bg-success px-2 py-1"><%= t("admin.invoices.state_paid") %></span>
+                  <% elsif @invoice.cancelled? %>
+                    <span class="badge bg-secondary px-2 py-1"><%= t("admin.invoices.state_cancelled") %></span>
+                  <% elsif @invoice.overdue? %>
+                    <span class="badge bg-danger px-2 py-1"><%= t("admin.invoices.state_overdue") %></span>
+                  <% else %>
+                    <span class="badge bg-warning text-dark px-2 py-1"><%= t("admin.invoices.state_pending") %></span>
+                  <% end %>
+                </div>
+              </div>
+
+              <% if @invoice.paid? %>
+                <div class="col-12 col-sm-6">
+                  <div class="small text-secondary"><%= t("admin.invoices.payment_method") %>:</div>
+                  <span class="badge bg-light text-dark border px-2 py-1">
+                    <%= @invoice.cash? ? t("invoice.payment_methods.cash") : t("invoice.payment_methods.transfer") %>
+                  </span>
+                </div>
+
+                <div class="col-12 col-sm-6">
+                  <div class="small text-secondary"><%= t("admin.invoices.paid_at") %>:</div>
+                  <div class="fw-semibold text-dark">
+                    <%= @invoice.paid_at ? @invoice.paid_at.strftime("%H:%M %d/%m/%Y") : "-" %>
+                  </div>
+                </div>
+
+                <div class="col-12 col-sm-6">
+                  <div class="small text-secondary"><%= t("admin.invoices.paid_by") %>:</div>
+                  <div class="fw-semibold text-dark">
+                    <% if @invoice.paid_by.present? %>
+                      <%= @invoice.paid_by.fullname %> (<%= @invoice.paid_by_role == 'landlord' ? t("invoice.paid_by_landlord") : t("invoice.paid_by_tenant") %>)
+                    <% else %>
+                      <span class="text-secondary">-</span>
+                    <% end %>
+                  </div>
+                </div>
+
+                <div class="col-12">
+                  <div class="small text-secondary mb-1"><%= t("invoice.payment_proof") %>:</div>
+                  <% if @invoice.payment_proof.attached? %>
+                    <div class="d-inline-block p-1 border rounded-3 bg-light">
+                      <%= image_tag @invoice.payment_proof, class: "payment-proof-thumb", alt: t("invoice.payment_proof") %>
+                    </div>
+                  <% else %>
+                    <span class="text-secondary small fst-italic"><%= t("invoice.no_payment_proof") %></span>
+                  <% end %>
+                </div>
+              <% end %>
+
+              <% if @invoice.note.present? %>
+                <div class="col-12">
+                  <div class="small text-secondary"><%= t("admin.invoices.note") %>:</div>
+                  <div class="p-2 bg-light rounded text-dark small"><%= @invoice.note %></div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="modal-footer bg-light py-2 border-top d-flex justify-content-end">
+          <button type="button" class="btn btn-secondary btn-sm px-4" data-bs-dismiss="modal">
+            <%= t("admin.invoices.close_modal") %>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

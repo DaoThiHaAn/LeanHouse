@@ -593,3 +593,14 @@
   white-space: pre-line;
   line-height: 1.6;
 }
+
+/* Bank Account Management */
+.bank-account-container {
+  max-width: 900px;
+}
+
+.bank-account-card-logo {
+  height: 28px;
+  max-width: 80px;
+  object-fit: contain;
+}

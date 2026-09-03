@@ -242,7 +242,9 @@ Rails.application.routes.draw do
       resources :services, only: [ :index ]
       resources :assets, only: [ :index ]
       resources :contracts, only: [ :index ]
+      resources :invoices, only: [ :index ]
     end
     resources :contracts, only: [ :show ]
+    resources :invoices, only: [ :show ]
   end
 end

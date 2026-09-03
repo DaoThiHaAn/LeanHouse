@@ -1,32 +1,18 @@
-<% content_for :title, "Quản lý Tài khoản Ngân hàng (VietQR)" %>
+<% content_for :title, t("bank_account.page_title") %>
 
-<div class="container py-4" style="max-width: 900px;">
+<div class="container py-4 bank-account-container">
   <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
     <div>
-      <h2 class="fw-bold mb-1 d-flex align-items-center gap-2">
+      <h2 class="mb-1 d-flex align-items-center gap-2">
         <span class="material-symbols-outlined text-primary">account_balance</span>
-        Tài khoản Ngân hàng Nhận tiền
+        <%= t("bank_account.title") %>
       </h2>
-      <p class="text-secondary mb-0">Thiết lập tài khoản ngân hàng để tự động tạo mã VietQR trên hóa đơn cho khách thuê.</p>
+      <p class="text-secondary mb-0"><%= t("bank_account.subtitle") %></p>
     </div>
     <span class="badge bg-primary fs-6 px-3 py-2 rounded-pill">
-      <%= @bank_accounts.size %> / <%= BankAccount::MAX_ACCOUNTS %> tài khoản
+      <%= t("bank_account.accounts_count", count: @bank_accounts.size, max: BankAccount::MAX_ACCOUNTS) %>
     </span>
   </div>
-
-  <% if flash[:notice] %>
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-      <%= flash[:notice] %>
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-  <% end %>
-
-  <% if flash[:alert] %>
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-      <%= flash[:alert] %>
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-  <% end %>
 
   <!-- Danh sách tài khoản đã thêm -->
   <div class="row g-3 mb-5">
@@ -38,37 +24,40 @@
               <div class="d-flex justify-content-between align-items-start mb-2">
                 <div class="d-flex align-items-center gap-2">
                   <% if acc.bank.logo_url.present? %>
-                    <img src="<%= acc.bank.logo_url %>" alt="<%= acc.bank.short_name %>" style="height: 28px; max-width: 80px; object-fit: contain;">
+                    <%= image_tag acc.bank.logo_url, alt: acc.bank.short_name, class: "bank-account-card-logo" %>
                   <% else %>
                     <span class="badge bg-secondary"><%= acc.bank.code %></span>
                   <% end %>
                   <span class="fw-bold text-dark"><%= acc.bank.short_name %></span>
                 </div>
                 <% if acc.is_default? %>
-                  <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">Mặc định</span>
+                  <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">
+                    <%= t("bank_account.default_badge") %>
+                  </span>
                 <% end %>
               </div>
 
               <div class="mt-3">
-                <div class="text-secondary small">Số tài khoản:</div>
+                <div class="text-secondary small"><%= t("bank_account.account_number_label") %></div>
                 <div class="fs-5 font-monospace fw-bold text-primary"><%= acc.account_number %></div>
               </div>
 
               <div class="mt-2">
-                <div class="text-secondary small">Chủ tài khoản:</div>
+                <div class="text-secondary small"><%= t("bank_account.account_holder_label") %></div>
                 <div class="fw-semibold"><%= acc.account_holder %></div>
               </div>
             </div>
 
             <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
               <% unless acc.is_default? %>
-                <%= button_to "Đặt làm mặc định", set_default_landlord_bank_account_path(acc), method: :patch, class: "btn btn-sm btn-outline-primary" %>
+                <%= button_to t("bank_account.set_as_default"), set_default_landlord_bank_account_path(acc), method: :patch, class: "btn btn-sm btn-outline-primary" %>
               <% else %>
-                <span class="text-secondary small">Tự động chọn khi xuất HĐ</span>
+                <span class="text-secondary small"><%= t("bank_account.auto_selected_hint") %></span>
               <% end %>
 
-              <%= button_to landlord_bank_account_path(acc), method: :delete, data: { turbo_confirm: "Bạn có chắc chắn muốn xóa tài khoản này?" }, class: "btn btn-sm btn-outline-danger d-flex align-items-center gap-1" do %>
-                <span class="material-symbols-outlined fs-6">delete</span> Xóa
+              <%= button_to landlord_bank_account_path(acc), method: :delete, data: { turbo_confirm: t("bank_account.delete_confirm") }, class: "btn btn-sm btn-outline-danger d-flex align-items-center gap-1" do %>
+                <span class="material-symbols-outlined fs-6">delete</span>
+                <span><%= t("bank_account.delete") %></span>
               <% end %>
             </div>
           </div>
@@ -79,7 +68,7 @@
     <% if @bank_accounts.empty? %>
       <div class="col-12">
         <div class="card bg-light border-0 text-center py-4 rounded-3">
-          <p class="text-secondary mb-0">Bạn chưa thêm tài khoản ngân hàng nào. Vui lòng thêm tài khoản bên dưới để kích hoạt VietQR.</p>
+          <p class="text-secondary mb-0"><%= t("bank_account.no_accounts_hint") %></p>
         </div>
       </div>
     <% end %>
@@ -91,7 +80,7 @@
       <div class="card-header bg-white py-3 border-bottom">
         <h5 class="card-title fw-bold mb-0 d-flex align-items-center gap-2">
           <span class="material-symbols-outlined text-success">add_circle</span>
-          Thêm Tài khoản Ngân hàng mới
+          <%= t("bank_account.new_account_title") %>
         </h5>
       </div>
       <div class="card-body p-4">
@@ -108,29 +97,29 @@
 
           <div class="row g-3">
             <div class="col-md-6">
-              <%= f.label :bank_id, "Chọn Ngân hàng (Napas 247)", class: "form-label fw-semibold" %>
-              <%= f.collection_select :bank_id, @banks, :id, :display_name, { prompt: "-- Chọn ngân hàng --" }, class: "form-select shadow-sm", required: true %>
+              <%= f.label :bank_id, t("bank_account.select_bank"), class: "form-label fw-semibold" %>
+              <%= f.collection_select :bank_id, @banks, :id, :display_name, { prompt: t("bank_account.select_bank_prompt") }, class: "form-select shadow-sm", required: true %>
             </div>
 
             <div class="col-md-6">
-              <%= f.label :account_number, "Số Tài khoản", class: "form-label fw-semibold" %>
-              <%= f.text_field :account_number, class: "form-control shadow-sm font-monospace", placeholder: "Ví dụ: 19036528...", required: true %>
+              <%= f.label :account_number, t("bank_account.account_number"), class: "form-label fw-semibold" %>
+              <%= f.text_field :account_number, class: "form-control shadow-sm font-monospace", placeholder: t("bank_account.account_number_placeholder"), required: true %>
             </div>
 
             <div class="col-md-6">
-              <%= f.label :account_holder, "Tên Chủ tài khoản (Không dấu)", class: "form-label fw-semibold" %>
-              <%= f.text_field :account_holder, class: "form-control shadow-sm text-uppercase", placeholder: "Ví dụ: NGUYEN VAN A", required: true %>
+              <%= f.label :account_holder, t("bank_account.account_holder_help"), class: "form-label fw-semibold" %>
+              <%= f.text_field :account_holder, class: "form-control shadow-sm text-uppercase", placeholder: t("bank_account.account_holder_placeholder"), required: true %>
             </div>
 
             <div class="col-md-6 d-flex align-items-end">
               <div class="form-check mb-2">
                 <%= f.check_box :is_default, class: "form-check-input", id: "is_default_check" %>
-                <%= f.label :is_default, "Đặt làm tài khoản nhận tiền mặc định", class: "form-check-label", for: "is_default_check" %>
+                <%= f.label :is_default, t("bank_account.set_as_default_checkbox"), class: "form-check-label", for: "is_default_check" %>
               </div>
             </div>
 
             <div class="col-12 mt-4 text-end">
-              <%= f.submit "Lưu Tài khoản Ngân hàng", class: "btn btn-primary px-4 py-2 fw-semibold" %>
+              <%= f.submit t("bank_account.save_button"), class: "btn btn-primary px-4 py-2 fw-semibold" %>
             </div>
           </div>
         <% end %>
@@ -138,4 +127,3 @@
     </div>
   <% end %>
 </div>
-

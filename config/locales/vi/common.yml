@@ -244,6 +244,7 @@ vi:
     admin_house_assets: "Tài sản: %{house_name}"
     admin_house_services: "Dịch vụ: %{house_name}"
     admin_house_contracts: "Hợp đồng: %{house_name}"
+    admin_house_invoices: "Hóa đơn: %{house_name}"
 
 
 

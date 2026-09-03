@@ -16,13 +16,6 @@
     </div>
   </div>
 
-  <% if flash[:alert] %>
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-      <%= flash[:alert] %>
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-  <% end %>
-
   <%= form_with url: landlord_house_invoices_path(@house), method: :post, local: true,
                 data: {
                   controller: "invoice-form",

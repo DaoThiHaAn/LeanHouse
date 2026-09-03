@@ -177,11 +177,10 @@
                         </td>
                         <td class="text-end pe-3">
                           <%= link_to admin_contract_path(contract),
-                                      class: "btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1 shadow-sm",
+                                      class: "table-action",
                                       title: t("admin.contracts.view_detail"),
                                       data: { turbo_frame: "contract_detail_modal" } do %>
-                            <span class="material-symbols-outlined fs-6">visibility</span>
-                            <span><%= t("admin.contracts.view_detail") %></span>
+                            <span class="material-symbols-filled fs-5">visibility</span>
                           <% end %>
                         </td>
                       </tr>

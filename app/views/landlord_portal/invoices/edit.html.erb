@@ -13,13 +13,6 @@
           </div>
 
           <div class="modal-body">
-            <% if flash[:alert] %>
-              <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <%= flash[:alert] %>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-              </div>
-            <% end %>
-
             <div class="mb-3 pb-3 border-bottom">
               <div class="text-secondary small"><%= t('invoice.room') %>:</div>
               <div class="fs-6 fw-bold text-dark"><%= @invoice.room.title_name %> (<%= @invoice.room.floor.name %>, <%= @house.name %>)</div>
