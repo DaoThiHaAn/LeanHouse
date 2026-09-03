@@ -3,11 +3,7 @@
     "*.html.erb": "erb",
     "*.erb": "erb"
   },
-  "[erb]": {
-    "editor.defaultFormatter": "aliariff.vscode-erb-beautify",
-    "editor.formatOnSave": true
-  },
-  "vscode-erb-beautify.executePath": "bin/htmlbeautifier",
-  "vscode-erb-beautify.tabStops": 2,
-  "vscode-erb-beautify.keepBlankLines": 1
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true
 }

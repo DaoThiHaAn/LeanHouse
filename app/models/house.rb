@@ -168,6 +168,13 @@ class House < ApplicationRecord
       .distinct
   end
 
+  # @return [Array<Integer>] all tenant IDs currently staying in this house (checkout_at is nil)
+  def currently_linked_tenant_ids
+    rentable_records = room? ? rooms : beds
+    rental_units = RentalUnit.where(rentable: rentable_records)
+    TenantStay.staying.where(rental_unit_id: rental_units).pluck(:tenant_id).uniq
+  end
+
   def tenant_summary_stats
     signed = all_linked_tenants(signed_contract: true).size
     unsigned = all_linked_tenants(signed_contract: false).size

@@ -301,4 +301,53 @@ class LandlordDashboardStatsServiceTest < ActiveSupport::TestCase
     assert_equal 1, stats[:tenants_flow][:new_tenants]
     assert_equal 1, stats[:tenants_flow][:leaved_tenants]
   end
+
+  test "calculates correct invoice stats for all houses and specific house" do
+    @house1.invoices.create!(
+      code: "HD#{Date.current.strftime('%y%m')}-P101-0001",
+      title: "Tiền phòng",
+      room: @room1,
+      created_by: @landlord_user,
+      billing_month: Date.current.beginning_of_month,
+      due_date: Date.current + 5.days,
+      invoice_type: :room,
+      status: :paid,
+      subtotal: 3_000_000,
+      total_discount: 0,
+      total_addition: 0,
+      total_amount: 3_000_000,
+      paid_at: Time.current
+    )
+
+    @house2.invoices.create!(
+      code: "HD#{Date.current.strftime('%y%m')}-P201-0002",
+      title: "Tiền phòng",
+      room: @room3,
+      created_by: @landlord_user,
+      billing_month: Date.current.beginning_of_month,
+      due_date: Date.current + 5.days,
+      invoice_type: :room,
+      status: :pending,
+      subtotal: 2_000_000,
+      total_discount: 0,
+      total_addition: 0,
+      total_amount: 2_000_000
+    )
+
+    stats_all = LandlordDashboardStatsService.call(landlord: @landlord)
+    assert_equal 2, stats_all[:invoices][:total]
+    assert_equal 1, stats_all[:invoices][:paid]
+    assert_equal 1, stats_all[:invoices][:pending]
+    assert_equal 5_000_000, stats_all[:invoices][:total_amount]
+    assert_equal 3_000_000, stats_all[:invoices][:paid_amount]
+    assert_equal 2_000_000, stats_all[:invoices][:pending_amount]
+    assert_equal 60.0, stats_all[:invoices][:collection_rate]
+
+    stats_h1 = LandlordDashboardStatsService.call(landlord: @landlord, house_id: @house1.id)
+    assert_equal 1, stats_h1[:invoices][:total]
+    assert_equal 1, stats_h1[:invoices][:paid]
+    assert_equal 0, stats_h1[:invoices][:pending]
+    assert_equal 3_000_000, stats_h1[:invoices][:total_amount]
+    assert_equal 100.0, stats_h1[:invoices][:collection_rate]
+  end
 end

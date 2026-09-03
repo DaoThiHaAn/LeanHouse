@@ -393,6 +393,21 @@
   color: #ffffff;
 }
 
+/* Invoice statistical card */
+#invoice_stats_grid .small-card {
+  min-width: 250px;
+}
+
+@media (max-width: 768px) {
+  .responsive-stat-border {
+    border-right: 0;
+    border-bottom: 1px solid var(--bs-border-color);
+    padding-right: 0 !important;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+  }
+}
+
 /* --- Print Styling --- */
 @media print {
   @page {

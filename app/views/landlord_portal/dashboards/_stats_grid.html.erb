@@ -2,7 +2,6 @@
   stats = local_assigns[:stats] || @stats
   selected_house = local_assigns.key?(:selected_house) ? local_assigns[:selected_house] : @selected_house
 %>
-
 <%= turbo_frame_tag "dashboard_stats" do %>
   <div class="row g-4">
     <!-- Card 1: Khách mới & Trả phòng (Grouped) -->
@@ -11,7 +10,6 @@
         <div class="d-flex align-items-start justify-content-between">
           <div class="d-flex gap-4 align-items-center">
             <%= image_tag 'tenants.png', alt: "People icon", width: "45px" %>
-
             <div>
               <h2 class="stat-card-title"><%= t('dashboard.landlord.tenant_flow_title') %></h2>
               <div class="text-success-emphasis">
@@ -24,20 +22,17 @@
               </div>
             </div>
           </div>
-
           <% if selected_house %>
             <%= link_to landlord_house_tenants_path(selected_house), class: "action-arrow-btn", title: t('dashboard.landlord.view_tenants'), data: { turbo_frame: "_top" } do %>
               <span class="material-symbols-outlined">arrow_forward</span>
             <% end %>
           <% end %>
         </div>
-
         <div class="stat-subtext mt-2 pt-2 border-top border-light-subtle">
           <%= t('dashboard.landlord.tenant_flow_desc') %>
         </div>
       </div>
     </div>
-
     <!-- Card 2: Tỉ lệ lấp chỗ trống -->
     <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
       <div class="dashboard-stat-card card-green p-3 shadow-sm d-flex flex-column justify-content-between ">
@@ -67,7 +62,6 @@
         </div>
       </div>
     </div>
-
     <!-- Card 3: Yêu cầu chưa xử lý -->
     <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
       <div class="dashboard-stat-card card-orange p-3 shadow-sm d-flex flex-column justify-content-between ">
@@ -105,7 +99,6 @@
         </div>
       </div>
     </div>
-
     <!-- Card 4: Hợp đồng sắp hết hạn & Quá hạn -->
     <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
       <div class="dashboard-stat-card card-blue p-3 shadow-sm d-flex flex-column justify-content-between ">
@@ -124,6 +117,50 @@
           </div>
           <% if selected_house %>
             <%= link_to landlord_house_contracts_path(selected_house, state: 'nearly-due'), class: "action-arrow-btn", title: t('dashboard.landlord.view_contracts'), data: { turbo_frame: "_top" } do %>
+              <span class="material-symbols-outlined">arrow_forward</span>
+            <% end %>
+          <% end %>
+        </div>
+        <div class="stat-subtext mt-2 pt-2 border-top border-light-subtle">
+          <%= selected_house ? selected_house.name : t('dashboard.landlord.all_houses') %>
+        </div>
+      </div>
+    </div>
+    <!-- Card 5: Quản lý Hóa đơn & Thu tiền -->
+    <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+      <div class="dashboard-stat-card card-teal p-3 shadow-sm d-flex flex-column justify-content-between">
+        <div class="d-flex align-items-start justify-content-between">
+          <div class="d-flex gap-3 align-items-center">
+            <span class="material-symbols-filled stat-icon">receipt_long</span>
+            <div>
+              <div class="stat-card-title"><%= t('dashboard.landlord.invoices_title') %></div>
+              <div class="stat-subtext text-secondary mb-1"><%= t('dashboard.landlord.invoices_period_subtitle', month: Date.current.strftime("%m/%Y")) %></div>
+              <div class="stat-value mb-1">
+                <% if stats[:invoices][:overdue].positive? %>
+                  <span class="text-danger"><%= stats[:invoices][:overdue] %></span>
+                  <span class="fs-6 text-danger fw-normal"><%= t('dashboard.landlord.invoices_overdue_short') %></span>
+                <% else %>
+                  <span class="text-primary"><%= stats[:invoices][:pending] %></span>
+                  <span class="fs-6 text-secondary fw-normal"><%= t('dashboard.landlord.invoices_pending_short') %></span>
+                <% end %>
+              </div>
+              <div class="stat-subtext">
+                <% if stats[:invoices][:total].positive? %>
+                  <span class="text-success fw-bold"><%= stats[:invoices][:collection_rate] %>% <%= t('dashboard.landlord.invoices_collected_rate') %></span>
+                  <span> · </span>
+                  <span><%= t('dashboard.landlord.invoices_total_count', count: stats[:invoices][:total]) %></span>
+                <% else %>
+                  <span class="text-secondary"><%= t('dashboard.landlord.invoices_none_month') %></span>
+                <% end %>
+              </div>
+            </div>
+          </div>
+          <% if selected_house %>
+            <%= link_to landlord_house_invoices_path(selected_house, month: Date.current.strftime("%Y-%m")), class: "action-arrow-btn", title: t('dashboard.landlord.view_invoices'), data: { turbo_frame: "_top" } do %>
+              <span class="material-symbols-outlined">arrow_forward</span>
+            <% end %>
+          <% else %>
+            <%= link_to landlord_houses_path, class: "action-arrow-btn", title: t('dashboard.landlord.view_invoices'), data: { turbo_frame: "_top" } do %>
               <span class="material-symbols-outlined">arrow_forward</span>
             <% end %>
           <% end %>

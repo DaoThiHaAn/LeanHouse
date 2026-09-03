@@ -7,15 +7,13 @@
   pending_requests_count = local_assigns.key?(:pending_requests_count) ? local_assigns[:pending_requests_count] : stats[:pending_requests_count].to_i
   soonest_vehicle_request = local_assigns.key?(:soonest_vehicle_request) ? local_assigns[:soonest_vehicle_request] : stats[:soonest_vehicle_request]
 %>
-
 <div class="row g-4 mt-1 mb-4">
   <!-- Card 1: Thời hạn hợp đồng & Tiến độ ở -->
-  <div class="col-12 col-sm-6 col-lg-3">
+  <div class="col-12 col-md-4">
     <div class="dashboard-stat-card tenant-stat-card card-contract-due p-3 shadow-sm d-flex flex-column justify-content-between h-100">
       <div class="d-flex align-items-start justify-content-between gap-3">
         <div class="d-flex gap-3 align-items-center">
           <%= image_tag 'contract-tenant.png', alt: "Contract icon", width: "50px" %>
-
           <div>
             <h2 class="stat-card-title contract-title mb-2"><%= t("dashboard.tenant.contract_due_title") %></h2>
             <div class="stat-value contract-value mb-1">
@@ -23,7 +21,6 @@
             </div>
           </div>
         </div>
-
         <% if contract.present? %>
           <%= link_to tenant_contract_path, class: "action-arrow-btn arrow-contract", title: t("dashboard.tenant.view_contract") do %>
             <span class="material-symbols-outlined">arrow_forward</span>
@@ -34,7 +31,6 @@
           </div>
         <% end %>
       </div>
-
       <!-- Counter of days stayed + Circular chart -->
       <% if contract&.start_date.present? %>
         <div class="stat-subtext mt-3 pt-2 border-top border-light-subtle d-flex align-items-center justify-content-between flex-wrap gap-2">
@@ -49,11 +45,10 @@
                 d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                 fill="none" stroke="#2B368C" stroke-width="3.5" stroke-linecap="round" />
               <text x="18" y="20.5" class="ring-text" text-anchor="middle" font-size="8.5" font-weight="bold" fill="#2B368C"><%= stay_progress_pct %>%</text>
-            </svg>
-
-            <div class="stay-days-info">
-              <span class="fw-bold text-dark"><%= t("dashboard.tenant.days_stayed", days: days_stayed) %></span>
-              <span class="material-symbols-outlined fs-6"
+              </svg>
+              <div class="stay-days-info">
+                <span class="fw-bold text-dark"><%= t("dashboard.tenant.days_stayed", days: days_stayed) %></span>
+                <span class="material-symbols-outlined fs-6"
                   <%= tooltip("right", :"dashboard.tenant.stay_progress", html: true) %>>
                 info
               </span>
@@ -62,47 +57,93 @@
         </div>
       <% end %>
     </div>
-  </div>
-
-  <!-- Card 2: Yêu cầu chờ xử lý -->
-  <div class="col-12 col-sm-6 col-lg-3">
-    <div class="dashboard-stat-card tenant-stat-card card-pending-requests p-3 shadow-sm d-flex flex-column justify-content-between h-100">
-      <div class="d-flex align-items-start justify-content-between gap-3">
-        <div class="d-flex gap-3 align-items-center">
-          <%= image_tag 'request-tenant.png', alt: "Contract icon", width: "50px" %>
-
-          <div>
-            <h2 class="stat-card-title request-title mb-1"><%= t("dashboard.tenant.pending_requests_title") %></h2>
-            <div class="stat-value request-value mb-1">
-              <%= pending_requests_count %>
-            </div>
-          </div>
-        </div>
-
-        <%= link_to tenant_requests_path(status: "pending"), class: "action-arrow-btn arrow-requests", title: t("dashboard.tenant.view_requests") do %>
-          <span class="material-symbols-outlined">arrow_forward</span>
-        <% end %>
-      </div>
-
-      <div class="stat-subtext mt-3 pt-2 border-top border-light-subtle">
-        <% if soonest_vehicle_request %>
-          <% if soonest_vehicle_request[:remaining_days] > 0 %>
-            <span class="<%= soonest_vehicle_request[:is_urgent] ? 'text-danger fw-bold' : 'text-warning-emphasis fw-semibold' %>">
-              <%= t("dashboard.tenant.vehicle_request_due_in_days", days: soonest_vehicle_request[:remaining_days]) %>
-            </span>
-          <% elsif soonest_vehicle_request[:remaining_hours] > 0 %>
-            <span class="text-danger fw-bold">
-              <%= t("dashboard.tenant.vehicle_request_due_in_hours", hours: soonest_vehicle_request[:remaining_hours]) %>
-            </span>
-          <% else %>
-            <span class="text-danger fw-bold">
-              <%= t("dashboard.tenant.vehicle_request_due_today") %>
-            </span>
-          <% end %>
-        <% else %>
-          <span class="text-secondary"><%= t("dashboard.tenant.view_requests") %></span>
-        <% end %>
-      </div>
-    </div>
-  </div>
-</div>
+                </div>
+                <!-- Card 2: Yêu cầu chờ xử lý -->
+                <div class="col-12 col-md-4">
+                  <div class="dashboard-stat-card tenant-stat-card card-pending-requests p-3 shadow-sm d-flex flex-column justify-content-between h-100">
+                    <div class="d-flex align-items-start justify-content-between gap-3">
+                      <div class="d-flex gap-3 align-items-center">
+                        <%= image_tag 'request-tenant.png', alt: "Contract icon", width: "50px" %>
+                        <div>
+                          <h2 class="stat-card-title request-title mb-1"><%= t("dashboard.tenant.pending_requests_title") %></h2>
+                          <div class="stat-value request-value mb-1">
+                            <%= pending_requests_count %>
+                          </div>
+                        </div>
+                      </div>
+                      <%= link_to tenant_requests_path(status: "pending"), class: "action-arrow-btn arrow-requests", title: t("dashboard.tenant.view_requests") do %>
+                        <span class="material-symbols-outlined">arrow_forward</span>
+                      <% end %>
+                    </div>
+                    <div class="stat-subtext mt-3 pt-2 border-top border-light-subtle">
+                      <% if soonest_vehicle_request %>
+                        <% if soonest_vehicle_request[:remaining_days] > 0 %>
+                          <span class="<%= soonest_vehicle_request[:is_urgent] ? 'text-danger fw-bold' : 'text-warning-emphasis fw-semibold' %>">
+                            <%= t("dashboard.tenant.vehicle_request_due_in_days", days: soonest_vehicle_request[:remaining_days]) %>
+                          </span>
+                        <% elsif soonest_vehicle_request[:remaining_hours] > 0 %>
+                          <span class="text-danger fw-bold">
+                            <%= t("dashboard.tenant.vehicle_request_due_in_hours", hours: soonest_vehicle_request[:remaining_hours]) %>
+                          </span>
+                        <% else %>
+                          <span class="text-danger fw-bold">
+                            <%= t("dashboard.tenant.vehicle_request_due_today") %>
+                          </span>
+                        <% end %>
+                      <% else %>
+                        <span class="text-secondary"><%= t("dashboard.tenant.view_requests") %></span>
+                      <% end %>
+                    </div>
+                  </div>
+                </div>
+                <!-- Card 3: Hóa đơn & Thanh toán -->
+                <%
+    inv_stats = stats[:invoices] || {}
+    has_overdue = inv_stats[:overdue_count].to_i.positive?
+    has_unpaid = inv_stats[:unpaid_count].to_i.positive?
+  %>
+                <div class="col-12 col-md-4">
+                  <div class="dashboard-stat-card tenant-stat-card card-tenant-invoices <%= 'has-overdue' if has_overdue %> p-3 shadow-sm d-flex flex-column justify-content-between h-100">
+                    <div class="d-flex align-items-start justify-content-between gap-3">
+                      <div class="d-flex gap-3 align-items-center">
+                        <%= image_tag 'money-in.png', alt: "Invoice icon", width: "50px" %>
+                        <div>
+                          <h2 class="stat-card-title invoice-title mb-1"><%= t("dashboard.tenant.invoices_title") %></h2>
+                          <div class="stat-subtext text-secondary mb-1"><%= t("dashboard.tenant.cumulative_unpaid_desc") %></div>
+                          <div class="stat-value invoice-value mb-1">
+                            <% if has_unpaid %>
+                              <%= format_money(inv_stats[:unpaid_amount]) %>
+                            <% elsif inv_stats[:has_invoices] %>
+                              <span class="fs-5 text-success"><%= t("dashboard.tenant.all_invoices_paid") %></span>
+                            <% else %>
+                              <span class="fs-6 text-secondary"><%= t("dashboard.tenant.no_invoices_yet") %></span>
+                            <% end %>
+                          </div>
+                        </div>
+                      </div>
+                      <%= link_to tenant_invoices_path, class: "action-arrow-btn arrow-invoices", title: t("dashboard.tenant.view_invoices") do %>
+                        <span class="material-symbols-outlined">arrow_forward</span>
+                      <% end %>
+                    </div>
+                    <div class="stat-subtext mt-3 pt-2 border-top border-light-subtle">
+                      <% if has_overdue %>
+                        <span class="text-danger fw-bold">
+                          <%= t("dashboard.tenant.invoices_overdue_alert", count: inv_stats[:overdue_count]) %>
+                        </span>
+                      <% elsif has_unpaid %>
+                        <% if inv_stats[:nearest_due_date] %>
+                          <span class="text-warning-emphasis fw-semibold">
+                            <%= t("dashboard.tenant.invoice_due_date", date: inv_stats[:nearest_due_date].strftime("%d/%m/%Y")) %>
+                          </span>
+                        <% else %>
+                          <span><%= t("dashboard.tenant.invoices_unpaid_count", count: inv_stats[:unpaid_count]) %></span>
+                        <% end %>
+                      <% elsif inv_stats[:has_invoices] %>
+                        <span class="text-success"><%= t("dashboard.tenant.no_pending_invoices") %></span>
+                      <% else %>
+                        <span class="text-secondary"><%= t("dashboard.tenant.view_invoices") %></span>
+                      <% end %>
+                    </div>
+                  </div>
+                </div>
+              </div>

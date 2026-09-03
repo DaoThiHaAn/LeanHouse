@@ -62,6 +62,15 @@
   color: #2670B8;
 }
 
+.card-teal {
+  background-color: #E6F7F5;
+  border-color: #C0ECE6;
+  border-left-color: #0E8A7A;
+}
+.card-teal .stat-icon {
+  color: #0E8A7A;
+}
+
 /* Stat Card Inner Elements */
 .stat-card-title {
   font-size: 1rem;
@@ -162,6 +171,17 @@
   box-shadow: 0 4px 12px rgba(38, 112, 184, 0.3);
 }
 
+.card-teal .action-arrow-btn {
+  color: #0E8A7A;
+  border-color: #C0ECE6;
+}
+.card-teal .action-arrow-btn:hover {
+  background-color: #0E8A7A;
+  color: #FFFFFF;
+  border-color: #0E8A7A;
+  box-shadow: 0 4px 12px rgba(14, 138, 122, 0.3);
+}
+
 /* Tenant Dashboard Stat Cards */
 .tenant-stat-card {
   min-height: 140px;
@@ -208,6 +228,47 @@
   color: #FFFFFF;
   border-color: #6C4422;
   box-shadow: 0 4px 12px rgba(108, 68, 34, 0.3);
+}
+
+.card-tenant-invoices {
+  background-color: #EAF8F1;
+  border-color: #C6ECD9;
+}
+.card-tenant-invoices .invoice-title {
+  color: #146c43;
+}
+.card-tenant-invoices .invoice-value {
+  color: #198754;
+}
+.card-tenant-invoices.has-overdue {
+  background-color: #FFEDE8;
+  border-color: #F7C9C9;
+}
+.card-tenant-invoices.has-overdue .invoice-title {
+  color: #921E1E;
+}
+.card-tenant-invoices.has-overdue .invoice-value {
+  color: #DC3545;
+}
+.arrow-invoices {
+  color: #198754;
+  border-color: #C6ECD9;
+}
+.arrow-invoices:hover {
+  background-color: #198754;
+  color: #FFFFFF;
+  border-color: #198754;
+  box-shadow: 0 4px 12px rgba(25, 135, 84, 0.3);
+}
+.card-tenant-invoices.has-overdue .arrow-invoices {
+  color: #DC3545;
+  border-color: #F7C9C9;
+}
+.card-tenant-invoices.has-overdue .arrow-invoices:hover {
+  background-color: #DC3545;
+  color: #FFFFFF;
+  border-color: #DC3545;
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
 }
 
 /* Stay Circular Progress Ring */

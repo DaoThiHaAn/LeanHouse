@@ -135,4 +135,31 @@ class TenantDashboardStatsServiceTest < ActiveSupport::TestCase
     assert_equal 0, stats[:total_days]
     assert_equal 0, stats[:stay_progress_pct]
   end
+
+  test "calculates tenant invoice metrics correctly" do
+    @house.invoices.create!(
+      code: "HD#{Date.current.strftime('%y%m')}-P101-001",
+      title: "Tiền phòng",
+      room: @room,
+      tenant: @tenant,
+      created_by: @landlord_user,
+      billing_month: Date.current.beginning_of_month,
+      due_date: Date.current + 5.days,
+      invoice_type: :individual,
+      status: :pending,
+      subtotal: 2_500_000,
+      total_discount: 0,
+      total_addition: 0,
+      total_amount: 2_500_000
+    )
+
+    stats = TenantDashboardStatsService.call(tenant: @tenant, tenant_stay: @tenant_stay)
+
+    assert stats[:invoices][:has_invoices]
+    assert_equal 1, stats[:invoices][:total_count]
+    assert_equal 1, stats[:invoices][:unpaid_count]
+    assert_equal 0, stats[:invoices][:overdue_count]
+    assert_equal 2_500_000, stats[:invoices][:unpaid_amount]
+    assert_equal Date.current + 5.days, stats[:invoices][:nearest_due_date]
+  end
 end

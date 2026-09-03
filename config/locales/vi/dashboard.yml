@@ -33,6 +33,16 @@ vi:
       contracts_nearly_due: "%{count} sắp hết hạn"
       view_contracts: "Xem danh sách hợp đồng"
 
+      # Card 5: Invoices
+      invoices_title: "Hóa đơn thu tiền"
+      invoices_period_subtitle: "Kỳ hóa đơn tháng %{month}"
+      invoices_overdue_short: "quá hạn"
+      invoices_pending_short: "chờ thu"
+      invoices_collected_rate: "đã thu"
+      invoices_total_count: "%{count} hóa đơn"
+      invoices_none_month: "Chưa lập hóa đơn tháng này"
+      view_invoices: "Xem danh sách hóa đơn"
+
       # Fallback
       no_house_selected_tip: "Chọn một nhà để truy cập nhanh đến từng danh mục chi tiết."
 
@@ -48,3 +58,15 @@ vi:
       vehicle_request_due_in_days: "Đăng ký xe hết hạn sau %{days} ngày"
       vehicle_request_due_in_hours: "Đăng ký xe hết hạn sau %{hours} giờ"
       vehicle_request_due_today: "Đăng ký xe hết hạn hôm nay!"
+      
+      # Card 3: Invoices & Payment
+      invoices_title: "Hóa đơn & Tiền phòng"
+      cumulative_unpaid_desc: "Tổng nợ tính đến hiện tại"
+      view_invoices: "Xem danh sách hóa đơn"
+      all_invoices_paid: "Đã thanh toán đủ"
+      no_pending_invoices: "Không có hóa đơn cần đóng"
+      no_invoices_yet: "Chưa có hóa đơn nào"
+      invoices_unpaid_count: "%{count} hóa đơn chờ đóng"
+      invoices_overdue_alert: "%{count} hóa đơn quá hạn!"
+      invoice_due_date: "Hạn chót: %{date}"
+      unpaid_amount_label: "Số tiền cần đóng"

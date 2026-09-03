@@ -1,0 +1,108 @@
+<%= turbo_frame_tag "invoices_content" do %>
+  <% is_current_only = local_assigns.key?(:current_tenants_only) ? local_assigns[:current_tenants_only] : @current_tenants_only %>
+  <% is_current_only = true if is_current_only.nil? %>
+  <!-- Statistic Cards (Dynamically updated) -->
+  <%= render "landlord_portal/invoices/stats_cards", stats: stats, billing_month: billing_month %>
+
+  <!-- Toolbar lọc tháng, tầng, phòng, hình thức thu, khách hiện tại và trạng thái -->
+  <div class="invoice-filter-bar mb-4 shadow-sm">
+    <%= form_with url: filtered_landlord_house_invoices_path(house),
+                  method: :get,
+                  class: "d-flex gap-3 align-items-center flex-wrap",
+                  data: { turbo_frame: "invoices_content" } do |f| %>
+      <!-- Chọn tháng -->
+      <div class="d-flex align-items-center gap-2">
+        <%= f.label :month, "#{t('invoice.month')}:", class: "fw-bold text-nowrap" %>
+        <%= f.month_field :month,
+                          value: billing_month.strftime("%Y-%m"),
+                          placeholder: t('invoice.month_placeholder'),
+                          class: "form-control shadow-sm w-auto",
+                          onchange: "this.form.requestSubmit()" %>
+      </div>
+      <!-- Chọn tầng -->
+      <div class="d-flex align-items-center gap-2">
+        <%= f.label :floor_id, "#{t('invoice.floor')}:", class: "fw-bold text-nowrap" %>
+        <%= f.select :floor_id,
+                     options_for_select([[t('invoice.all_floors'), ""]] + house.floors.pos_order.map { |fl| [fl.title_name, fl.id] }, params[:floor_id]),
+                     {},
+                     class: "form-select shadow-sm w-auto",
+                     onchange: "this.form.requestSubmit()" %>
+      </div>
+      <!-- Chọn phòng (Nhóm theo tầng) -->
+      <div class="d-flex align-items-center gap-2">
+        <%= f.label :room_id, "#{t('invoice.room')}:", class: "fw-bold text-nowrap" %>
+        <select name="room_id" id="room_id" class="form-select shadow-sm w-auto" onchange="this.form.requestSubmit()">
+          <option value=""><%= t('invoice.all_rooms') %></option>
+          <% floors_scope = params[:floor_id].present? ? house.floors.where(id: params[:floor_id]) : house.floors.pos_order.includes(:rooms) %>
+          <% floors_scope.each do |floor| %>
+            <% active_rooms = floor.rooms.active.sorted %>
+            <% if active_rooms.any? %>
+              <optgroup label="<%= floor.title_name %>">
+                <% active_rooms.each do |room| %>
+                  <option value="<%= room.id %>" <%= 'selected' if params[:room_id].to_s == room.id.to_s %>>
+                    <%= room.title_name %> (<%= floor.title_name %>)
+                  </option>
+                  <% end %>
+                </optgroup>
+              <% end %>
+            <% end %>
+          </select>
+        </div>
+        <!-- Hình thức thu (Invoice Type) -->
+        <div class="d-flex align-items-center gap-2">
+          <%= f.label :invoice_type, "#{t('invoice.invoice_type')}:", class: "fw-bold text-nowrap" %>
+          <%= f.select :invoice_type,
+                     options_for_select([
+                       [t('invoice.all_types'), ""],
+                       [t('invoice.type_room'), "room"],
+                       [t('invoice.type_individual'), "individual"]
+                     ], params[:invoice_type]),
+                     {},
+                     class: "form-select shadow-sm w-auto",
+                     onchange: "this.form.requestSubmit()" %>
+        </div>
+        <!-- Trạng thái -->
+        <div class="d-flex align-items-center gap-2">
+          <%= f.label :status, "#{t('invoice.status_label')}:", class: "fw-bold text-nowrap" %>
+          <%= f.select :status,
+                     options_for_select([
+                       [t('invoice.all_status'), ""],
+                       [t('invoice.status.pending'), "pending"],
+                       [t('invoice.status.overdue'), "overdue"],
+                       [t('invoice.status.paid'), "paid"],
+                       [t('invoice.status.cancelled'), "cancelled"]
+                     ], params[:status]),
+                     {},
+                     class: "form-select shadow-sm w-auto",
+                     onchange: "this.form.requestSubmit()" %>
+        </div>
+        <!-- Checkbox: Chỉ khách đang ở (mặc định bật) -->
+        <div class="form-check d-flex align-items-center gap-2 mb-0 py-1 px-2 rounded bg-white border shadow-sm">
+          <%= f.check_box :current_tenants_only,
+                        {
+                          checked: is_current_only,
+                          class: "form-check-input mt-0 cursor-pointer",
+                          onchange: "this.form.requestSubmit()"
+                        },
+                        "1",
+                        "0" %>
+          <%= f.label :current_tenants_only,
+                    t("invoice.only_current_tenants"),
+                    class: "form-check-label fw-bold small text-nowrap cursor-pointer",
+                    data: { **tooltip("top", :"invoice.only_current_tenants_hint") } %>
+        </div>
+        <% has_filter = params[:floor_id].present? || params[:room_id].present? || params[:invoice_type].present? || params[:status].present? || params[:current_tenants_only] == "0" %>
+        <% if has_filter %>
+          <div>
+            <%= link_to landlord_house_invoices_path(house, month: billing_month.strftime("%Y-%m")),
+                      class: "btn btn-outline-secondary btn-sm d-flex align-items-center gap-1 shadow-sm",
+                      data: { turbo_frame: "invoices_content" } do %>
+              <span class="material-symbols-outlined fs-6">filter_alt_off</span>
+              <span><%= t('invoice.clear_filter') %></span>
+            <% end %>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+    <%= render "landlord_portal/invoices/invoices_table", house: house, invoices: invoices, billing_month: billing_month %>
+  <% end %>

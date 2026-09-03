@@ -5,12 +5,18 @@ class LandlordPortal::InvoicesController < LandlordPortal::BaseController
   before_action :set_invoice, only: %i[show edit update mark_paid cancel]
 
   def index
-    load_invoices
+    load_invoices_and_stats
   end
 
   def filtered
-    load_invoices
-    render partial: "invoices_table", locals: { house: @house, invoices: @invoices, billing_month: @billing_month }
+    load_invoices_and_stats
+    render partial: "invoices_content", locals: {
+      house: @house,
+      invoices: @invoices,
+      stats: @stats,
+      billing_month: @billing_month,
+      current_tenants_only: @current_tenants_only
+    }
   end
 
   def show
@@ -94,36 +100,8 @@ class LandlordPortal::InvoicesController < LandlordPortal::BaseController
   end
 
   def update
-    if @invoice.update(invoice_update_params)
-      # If start_date or end_date changed, update invoice items dates as well
-      if invoice_update_params[:start_date].present? || invoice_update_params[:end_date].present?
-        @invoice.invoice_items.update_all(
-          start_date: @invoice.start_date,
-          end_date: @invoice.end_date
-        )
-      end
-
-      # Always regenerate transfer note with updated note / dates / template
-      @invoice.update_column(
-        :transfer_note,
-        TransferNoteBuilder.build(@house.transfer_note_template, @invoice)
-      )
-
-      # Deliver notification to target tenants
-      tenant_users = @invoice.target_users
-      if tenant_users.present? && tenant_users.any?
-        InvoiceUpdatedNotifier.with(
-          invoice: @invoice,
-          code: @invoice.code,
-          room_name: @invoice.room.title_name,
-          month: @invoice.billing_month.strftime("%m/%Y"),
-          raw_month: @invoice.billing_month.strftime("%Y-%m"),
-          due_date: @invoice.due_date.strftime("%d/%m/%Y"),
-          house_id: @house.id
-        ).deliver_later(tenant_users)
-      end
-
-      redirect_to landlord_house_invoice_path(@house, @invoice), notice: t("invoice.update_success", default: "Đã cập nhật thông tin hóa đơn #{@invoice.code} thành công!")
+    if Invoices::UpdateService.call(invoice: @invoice, house: @house, params: invoice_update_params)
+      redirect_to landlord_house_invoice_path(@house, @invoice), notice: t("invoice.update_success")
     else
       flash.now[:alert] = @invoice.errors.full_messages.to_sentence
       @bank_accounts = @landlord.bank_accounts.includes(:bank).default_first
@@ -162,19 +140,15 @@ class LandlordPortal::InvoicesController < LandlordPortal::BaseController
     Date.current.beginning_of_month
   end
 
-  def load_invoices
-    @invoices = @house.invoices
-                      .for_month(@billing_month)
-                      .includes(:room, :tenant, :bank_account, :created_by)
-                      .sorted
-
-    if params[:status].present? && Invoice.statuses.key?(params[:status])
-      @invoices = @invoices.where(status: params[:status])
-    end
-
-    if params[:room_id].present?
-      @invoices = @invoices.where(room_id: params[:room_id])
-    end
+  def load_invoices_and_stats
+    @current_tenants_only = params[:current_tenants_only].nil? || params[:current_tenants_only] == "1"
+    @invoices = Invoices::FilterService.call(
+      house: @house,
+      params: params,
+      billing_month: @billing_month,
+      current_tenants_only: @current_tenants_only
+    )
+    @stats = Invoices::StatsService.call(invoices: @invoices)
   end
 
   def set_invoice

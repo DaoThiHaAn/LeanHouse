@@ -33,6 +33,16 @@ en:
       contracts_nearly_due: "%{count} nearly due"
       view_contracts: "View contracts list"
 
+      # Card 5: Invoices
+      invoices_title: "Rent Invoices"
+      invoices_period_subtitle: "Billing cycle %{month}"
+      invoices_overdue_short: "overdue"
+      invoices_pending_short: "pending"
+      invoices_collected_rate: "collected"
+      invoices_total_count: "%{count} invoice(s)"
+      invoices_none_month: "No invoices this month"
+      view_invoices: "View invoices list"
+
       # Fallback
       no_house_selected_tip: "Select a specific house to access detailed management pages."
 
@@ -48,3 +58,15 @@ en:
       vehicle_request_due_in_days: "Vehicle req expires in %{days}d"
       vehicle_request_due_in_hours: "Vehicle req expires in %{hours}h"
       vehicle_request_due_today: "Vehicle req expires today!"
+
+      # Card 3: Invoices & Payment
+      invoices_title: "Rent & Invoices"
+      cumulative_unpaid_desc: "Total unpaid balance to date"
+      view_invoices: "View invoices"
+      all_invoices_paid: "All invoices paid"
+      no_pending_invoices: "No pending invoices"
+      no_invoices_yet: "No invoices yet"
+      invoices_unpaid_count: "%{count} invoice(s) unpaid"
+      invoices_overdue_alert: "%{count} invoice(s) overdue!"
+      invoice_due_date: "Due: %{date}"
+      unpaid_amount_label: "Amount to pay"

@@ -12,11 +12,11 @@
           <tr>
             <th class="ps-3"><%= t('invoice.code') %></th>
             <th><%= t('invoice.room_or_target') %></th>
-            <th><%= t('common.month', default: 'Tháng') %></th>
+            <th><%= t('invoice.month') %></th>
             <th><%= t('invoice.due_date') %></th>
             <th><%= t('invoice.total') %></th>
-            <th><%= t('common.status', default: 'Trạng thái') %></th>
-            <th class="text-end pe-3"><%= t('common.actions', default: 'Hành động') %></th>
+            <th><%= t('invoice.status_label') %></th>
+            <th class="text-end pe-3"><%= t('invoice.actions_header') %></th>
           </tr>
         </thead>
         <tbody>
@@ -29,7 +29,10 @@
                 <div class="text-secondary small font-monospace">ID: #<%= inv.id %></div>
               </td>
               <td>
-                <div class="fw-semibold text-dark"><%= inv.room.title_name %></div>
+                <div class="fw-semibold text-dark d-flex align-items-center gap-1">
+                  <span><%= inv.room.title_name %></span>
+                  <span class="badge bg-light text-secondary border small"><%= inv.room.floor.title_name %></span>
+                </div>
                 <div class="mt-1">
                   <% if inv.individual? && inv.tenant %>
                     <span class="invoice-badge invoice-badge-individual"><%= t('invoice.mode_individual') %>: <%= inv.tenant.user.fullname %></span>
@@ -79,12 +82,10 @@
                       data: {turbo_frame: "_top"} do %>
                     <span class="material-symbols-outlined fs-6">visibility</span> <%= t('invoice.actions.view') %>
                   <% end %>
-
                   <% if inv.pending? %>
                     <%= button_to mark_paid_landlord_house_invoice_path(house, inv), method: :patch, class: "btn btn-sm btn-success d-inline-flex align-items-center gap-1", title: t('invoice.actions.done') do %>
                       <span class="material-symbols-outlined fs-6">done</span> <%= t('invoice.actions.done') %>
                     <% end %>
-
                     <%= button_to cancel_landlord_house_invoice_path(house, inv), method: :patch, data: { turbo_confirm: t('invoice.actions.cancel_confirm') }, class: "btn btn-sm btn-outline-danger d-inline-flex align-items-center", title: t('invoice.actions.cancel') do %>
                       <span class="material-symbols-outlined fs-6">cancel</span>
                     <% end %>

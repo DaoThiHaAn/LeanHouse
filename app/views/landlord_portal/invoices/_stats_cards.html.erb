@@ -1,0 +1,162 @@
+<%# Locals: stats, billing_month %>
+
+<p class="d-flex align-items-center gap-2 my-3 fw-medium">
+  <span class="material-symbols-outlined fs-5">calendar_month</span>
+  <%= t("invoice.stats.period_scope_banner", month: billing_month.strftime("%m/%Y")) %>
+</p>
+
+<div id="invoice_stats_grid" class="d-flex flex-column flex-sm-row gap-3 justify-content-center mb-5">
+  <div class="d-flex flex-column flex-lg-row gap-3">
+    <%# 1. Tổng hóa đơn (không tính các hóa đơn đã hủy + có tooltip giải thích) %>
+    <div class="small-card card stat-card stat-card-teal shadow-sm h-100 p-3">
+      <div class="d-flex align-items-center justify-content-between mb-2">
+        <div class="d-flex align-items-center gap-1">
+          <p class="stat-card-title fw-bold mb-0">
+            <%= t("invoice.stats.total_invoices") %>
+          </p>
+          <span class="material-symbols-outlined fs-6 text-secondary cursor-pointer"
+                <%= tooltip("top", :"invoice.stats.cancelled_excluded_tooltip", html: true) %>>
+            info
+          </span>
+        </div>
+        <div class="stat-icon-wrap rounded-circle d-flex align-items-center justify-content-center">
+          <span class="material-symbols-filled fs-3">receipt_long</span>
+        </div>
+      </div>
+
+      <div class="d-flex align-items-baseline gap-2">
+        <span class="fs-3 fw-bold stat-card-value"><%= stats[:total_count] %></span>
+        <p class="stat-card-subtext fw-semibold mb-0"><%= t("invoice.stats.invoices_unit") %></p>
+      </div>
+      <small class="text-secondary mt-1 fst-italic">
+        <%= t("invoice.stats.for_month", month: billing_month.strftime("%m/%Y")) %>
+      </small>
+    </div>
+
+    <%# 2. Thẻ Hạn thanh toán & Quá hạn %>
+    <%
+      card2_theme = if stats[:overdue_count].to_i.positive?
+        :red
+      elsif stats[:nearly_due_count].to_i.positive?
+        :orange
+      else
+        :green
+      end
+    %>
+    <div class="small-card card stat-card stat-card-<%= card2_theme %> shadow-sm h-100 p-3">
+      <div class="d-flex align-items-center justify-content-between mb-2 gap-2">
+        <div class="d-flex align-items-center gap-1">
+          <p class="stat-card-title fw-bold mb-0">
+            <%= t("invoice.stats.overdue_and_deadline") %>
+          </p>
+          <span class="material-symbols-outlined fs-6 text-secondary cursor-pointer"
+                <%= tooltip("top", t("invoice.stats.overdue_scope_hint", month: billing_month.strftime("%m/%Y")), html: true) %>>
+            info
+          </span>
+        </div>
+        <div class="stat-icon-wrap rounded-circle d-flex align-items-center justify-content-center">
+          <% if card2_theme == :red %>
+            <span class="material-symbols-filled fs-3 text-danger warning-pulse">warning</span>
+          <% elsif card2_theme == :orange %>
+            <span class="material-symbols-filled fs-3">hourglass_top</span>
+          <% else %>
+            <span class="material-symbols-filled fs-3">check_circle</span>
+          <% end %>
+        </div>
+      </div>
+
+      <% if card2_theme == :red %>
+        <div class="d-flex align-items-baseline gap-1">
+          <span class="fs-3 fw-bold stat-card-value text-danger"><%= stats[:overdue_count] %></span>
+          <p class="stat-card-subtext fw-semibold mb-0 text-danger"><%= t("invoice.stats.overdue_count") %></p>
+        </div>
+        <div class="small text-danger fw-semibold mt-1">
+          <%= format_money(stats[:overdue_amount]) %>
+        </div>
+      <% elsif card2_theme == :orange %>
+        <div class="d-flex align-items-baseline gap-1">
+          <span class="fs-4 fw-bold stat-card-value text-warning-emphasis"><%= stats[:nearly_due_count] %></span>
+          <p class="stat-card-subtext fw-semibold mb-0"><%= t("invoice.stats.invoices_unit") %></p>
+        </div>
+        <div class="small text-warning-emphasis fw-semibold mt-1">
+          <%= t("invoice.stats.nearly_due_alert", count: stats[:nearly_due_count]) %>
+        </div>
+      <% else %>
+        <div class="d-flex align-items-center gap-1 text-success fw-bold my-1">
+          <span class="material-symbols-outlined fs-5">done_all</span>
+          <span><%= t("invoice.stats.no_overdue") %></span>
+        </div>
+      <% end %>
+
+      <small class="text-secondary mt-auto pt-1 fst-italic">
+        <% if stats[:nearest_due_date] %>
+          <%= t("invoice.stats.nearest_due_val", date: stats[:nearest_due_date].strftime("%d/%m/%Y")) %>
+        <% elsif card2_theme == :green %>
+          <%= t("invoice.stats.all_paid") %>
+        <% else %>
+          <%= t("invoice.stats.for_month", month: billing_month.strftime("%m/%Y")) %>
+        <% end %>
+      </small>
+    </div>
+  </div>
+
+  <%# 3. Thẻ tài chính lớn gộp 3 chỉ số (Tổng phải thu, Đã thu, Còn nợ & Tỷ lệ) %>
+  <div class="flex-grow-1 align-self-sm-center">
+    <div class="card stat-card stat-card-blue shadow-sm h-100 p-3">
+      <div class="d-flex align-items-center justify-content-between mb-2 pb-1 border-bottom">
+        <div class="d-flex align-items-center gap-2">
+          <div class="stat-icon-wrap rounded-circle d-flex align-items-center justify-content-center">
+            <span class="material-symbols-filled fs-4">payments</span>
+          </div>
+          <div>
+            <div class="d-flex align-items-center gap-2">
+              <p class="stat-card-title fw-bold mb-0"><%= t("invoice.stats.financial_progress") %></p>
+              <span class="material-symbols-outlined fs-6 text-secondary cursor-pointer"
+                    <%= tooltip("top", t("invoice.stats.period_scope_desc", month: billing_month.strftime("%m/%Y")), html: true) %>>
+                info
+              </span>
+              <span class="badge bg-secondary-subtle text-secondary border fw-normal"><%= t("invoice.stats.period_badge", month: billing_month.strftime("%m/%Y")) %></span>
+            </div>
+            <span class="text-secondary small">
+              <%= t("invoice.stats.total_amount") %>:
+              <strong class="text-primary"><%= format_money(stats[:total_amount]) %></strong>
+            </span>
+          </div>
+        </div>
+        <span class="badge bg-primary-subtle text-primary border border-primary-subtle fw-bold">
+          <%= t("invoice.stats.collection_rate", rate: stats[:collection_rate]) %>
+        </span>
+      </div>
+
+      <div class="d-flex g-2 pt-1 flex-grow-1 align-items-center">
+        <%# Cột Đã thu %>
+        <div class="col-6 border-end pe-3">
+          <div class="text-secondary small fw-semibold mb-1 d-flex align-items-center gap-1">
+            <span class="material-symbols-outlined fs-6 text-success">check_circle</span>
+            <%= t("invoice.stats.paid_amount") %>
+          </div>
+          <div class="fs-5 fw-bold text-success mb-1">
+            <%= format_money(stats[:paid_amount]) %>
+          </div>
+          <p class="small text-muted">
+            <%= t("invoice.stats.paid_summary", count: stats[:paid_count]) %>
+          </p>
+        </div>
+
+        <%# Cột Còn nợ %>
+        <div class="col-6 ps-3">
+          <div class="text-secondary small fw-semibold mb-1 d-flex align-items-center gap-1">
+            <span class="material-symbols-outlined fs-6 text-warning">hourglass_top</span>
+            <%= t("invoice.stats.pending_amount") %>
+          </div>
+          <div class="fs-5 fw-bold text-warning-emphasis mb-1">
+            <%= format_money(stats[:pending_amount]) %>
+          </div>
+          <p class="small text-muted">
+            <%= t("invoice.stats.pending_summary", count: stats[:pending_count]) %>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

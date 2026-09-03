@@ -68,7 +68,8 @@ class LandlordPortal::DashboardsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "h1", text: I18n.t("dashboard.landlord.title_all_houses")
     assert_select "select[name='house_id']"
-    assert_select ".dashboard-stat-card", 4
+    assert_select ".dashboard-stat-card", 5
+    assert_select ".card-teal"
   end
 
   test "renders dashboard filtered by specific house" do
@@ -77,7 +78,8 @@ class LandlordPortal::DashboardsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "h1", text: I18n.t("dashboard.landlord.title")
-    assert_select ".dashboard-stat-card", 4
+    assert_select ".dashboard-stat-card", 5
+    assert_select ".card-teal"
   end
 
   test "renders dashboard when house_id is explicitly 'all'" do
@@ -86,6 +88,7 @@ class LandlordPortal::DashboardsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "h1", text: I18n.t("dashboard.landlord.title_all_houses")
-    assert_select ".dashboard-stat-card", 4
+    assert_select ".dashboard-stat-card", 5
+    assert_select ".card-teal"
   end
 end

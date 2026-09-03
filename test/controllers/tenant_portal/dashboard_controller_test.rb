@@ -169,4 +169,31 @@ class TenantPortal::DashboardControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, I18n.t("dashboard.tenant.no_contract")
     assert_select ".stay-progress-ring", count: 0
   end
+
+  test "tenant can view invoice card on dashboard" do
+    @house.invoices.create!(
+      code: "HD#{Date.current.strftime('%y%m')}-101-9999",
+      title: "Tiền phòng tháng này",
+      room: @room,
+      tenant: @tenant,
+      created_by: @landlord_user,
+      billing_month: Date.current.beginning_of_month,
+      due_date: Date.current + 5.days,
+      invoice_type: :individual,
+      status: :pending,
+      subtotal: 3_000_000,
+      total_discount: 0,
+      total_addition: 0,
+      total_amount: 3_000_000
+    )
+
+    sign_in_as(@tenant_user)
+
+    get tenant_dashboard_path
+    assert_response :success
+
+    assert_select ".card-tenant-invoices"
+    assert_select ".invoice-title", text: I18n.t("dashboard.tenant.invoices_title")
+    assert_select ".invoice-value", text: /3,000,000/
+  end
 end

@@ -1,20 +1,16 @@
 <% content_for :title, "#{t('invoice.management')} - #{@house.name}" %>
-
-<div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
-  <div>
+<div class="d-flex flex-column flex-lg-row justify-content-center justify-content-lg-between align-items-center mb-4 pb-2 border-bottom gap-3">
+  <div class="text-center text-lg-start">
     <h1 class="mb-3"><%= t('invoice.management') %></h1>
     <p class="text-secondary"><%= t('invoice.management_subtitle') %></p>
   </div>
-
   <div class="d-flex gap-2">
     <button type="button" class="manual-btn d-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#invoiceCreationGuideModal">
       <span class="material-symbols-outlined fs-6">menu_book</span> <%= t('invoice.guide.btn_title') %>
     </button>
-
     <%= link_to landlord_house_service_usage_logs_path(@house, month: @billing_month.strftime("%Y-%m")), class: "btn btn-outline-secondary d-flex align-items-center gap-1 shadow-sm" do %>
       <span class="material-symbols-outlined fs-6">electric_meter</span> <%= t('invoice.meter_logs') %>
     <% end %>
-
     <%= link_to new_landlord_house_invoice_path(@house, month: @billing_month.strftime("%Y-%m")),
         class: "main-btn d-flex align-items-center gap-2 shadow-sm" do %>
       <span class="material-symbols-outlined">add_notes</span> <%= t('invoice.new_invoice') %>
@@ -22,34 +18,5 @@
   </div>
 </div>
 
-<!-- Toolbar lọc tháng, phòng và trạng thái -->
-<div class="invoice-filter-bar mb-4 shadow-sm">
-  <%= form_with url: filtered_landlord_house_invoices_path(@house),
-                method: :get,
-                class: "d-flex gap-3 align-items-center flex-wrap",
-                data: { turbo_frame: "invoices_table" } do |f| %>
-
-    <!-- Chọn tháng -->
-    <div class="d-flex align-items-center gap-2">
-      <%= f.label :month, "#{t('common.month', default: 'Tháng')}:", class: "fw-bold text-nowrap" %>
-      <%= f.month_field :month, value: @billing_month.strftime("%Y-%m"), class: "form-control shadow-sm w-auto", onchange: "this.form.requestSubmit()" %>
-    </div>
-
-    <!-- Chọn phòng -->
-    <div class="d-flex align-items-center gap-2">
-      <%= f.label :room_id, "#{t('invoice.room')}:", class: "fw-bold text-nowrap" %>
-      <%= f.select :room_id, [[t('invoice.all_rooms'), ""]] + @house.rooms.active.sorted.map { |r| [r.title_name, r.id] }, { selected: params[:room_id] }, class: "form-select shadow-sm w-auto", onchange: "this.form.requestSubmit()" %>
-    </div>
-
-    <!-- Trạng thái -->
-    <div class="d-flex align-items-center gap-2">
-      <%= f.label :status, "#{t('common.status', default: 'Trạng thái')}:", class: "fw-bold text-nowrap" %>
-      <%= f.select :status, [[t('invoice.all_status'), ""], [t('invoice.status.pending'), "pending"], [t('invoice.status.overdue', default: 'Quá hạn'), "overdue"], [t('invoice.status.paid'), "paid"], [t('invoice.status.cancelled'), "cancelled"]], { selected: params[:status] }, class: "form-select shadow-sm w-auto", onchange: "this.form.requestSubmit()" %>
-    </div>
-  <% end %>
-</div>
-
-<%= render "invoices_table", house: @house, invoices: @invoices, billing_month: @billing_month %>
-
-<!-- Modal Hướng dẫn Toàn diện -->
+<%= render "invoices_content", house: @house, invoices: @invoices, stats: @stats, billing_month: @billing_month, current_tenants_only: @current_tenants_only %>
 <%= render "creation_guide_modal" %>

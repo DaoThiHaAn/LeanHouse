@@ -93,29 +93,31 @@ class LandlordRequestStatsServiceTest < ActiveSupport::TestCase
   end
 
   test "calculates correct stats for various request states" do
-    # 1. Vehicle request created today (normal pending)
-    create_vehicle_request(created_at: Time.current)
+    travel_to Time.zone.parse("2026-09-03 12:00:00") do
+      # 1. Vehicle request created today (normal pending)
+      create_vehicle_request(created_at: Time.current)
 
-    # 2. Vehicle request expiring in 1 day (after today)
-    create_vehicle_request(created_at: 5.days.ago)
+      # 2. Vehicle request expiring in 1 day (after today)
+      create_vehicle_request(created_at: 5.days.ago)
 
-    # 3. Vehicle request due today (expires in 2 hours)
-    create_vehicle_request(created_at: (7.days.ago + 2.hours))
+      # 3. Vehicle request due today (expires in 2 hours)
+      create_vehicle_request(created_at: (7.days.ago + 2.hours))
 
-    # 4. Repair request in handling
-    create_repair_request(status: :handling)
+      # 4. Repair request in handling
+      create_repair_request(status: :handling)
 
-    # 5. Resolved request this month
-    create_repair_request(status: :completed, resolved_at: Time.current)
+      # 5. Resolved request this month
+      create_repair_request(status: :completed, resolved_at: Time.current)
 
-    stats = LandlordRequestStatsService.call(landlord: @landlord)
+      stats = LandlordRequestStatsService.call(landlord: @landlord)
 
-    assert_equal 3, stats[:pending_count]
-    assert_equal 1, stats[:handling_count]
-    assert_equal 1, stats[:due_today_count]
-    assert_equal 1, stats[:expiring_after_today_count]
-    assert_equal 2, stats[:expiring_total_count]
-    assert_equal 1, stats[:resolved_this_month_count]
+      assert_equal 3, stats[:pending_count]
+      assert_equal 1, stats[:handling_count]
+      assert_equal 1, stats[:due_today_count]
+      assert_equal 1, stats[:expiring_after_today_count]
+      assert_equal 2, stats[:expiring_total_count]
+      assert_equal 1, stats[:resolved_this_month_count]
+    end
   end
 
   test "returns zeros when landlord has no requests" do

@@ -19,7 +19,8 @@ class TenantDashboardStatsService
       total_days: stay_stats[:total_days],
       stay_progress_pct: stay_stats[:stay_progress_pct],
       pending_requests_count: pending_stats[:count],
-      soonest_vehicle_request: pending_stats[:soonest_vehicle_request]
+      soonest_vehicle_request: pending_stats[:soonest_vehicle_request],
+      invoices: calculate_invoice_stats
     }
   end
 
@@ -78,6 +79,61 @@ class TenantDashboardStatsService
     {
       count: total,
       soonest_vehicle_request: soonest_info
+    }
+  end
+
+  def calculate_invoice_stats
+    house = tenant_stay&.rental_unit&.house
+    room = tenant_stay&.rental_unit&.room
+    return empty_invoice_stats unless house && room
+
+    scope = house.invoices
+                 .where("invoices.room_id = :room_id OR invoices.tenant_id = :tenant_id", room_id: room.id, tenant_id: tenant.id)
+                 .kept
+                 .where.not(status: :cancelled)
+
+    today = Date.current
+
+    stats = scope.select(
+      ActiveRecord::Base.sanitize_sql_array([
+        "COUNT(*) AS total_count,
+         COUNT(*) FILTER (WHERE status = 'pending' OR status = 'overdue') AS unpaid_count,
+         COUNT(*) FILTER (WHERE status = 'overdue' OR (status = 'pending' AND due_date < :today)) AS overdue_count,
+         COALESCE(SUM(total_amount) FILTER (WHERE status = 'pending' OR status = 'overdue'), 0) AS unpaid_amount,
+         COALESCE(SUM(total_amount) FILTER (WHERE status = 'paid'), 0) AS paid_amount",
+        { today: today }
+      ])
+    ).take
+
+    unpaid_count = stats&.unpaid_count.to_i
+    overdue_count = stats&.overdue_count.to_i
+    unpaid_amount = stats&.unpaid_amount.to_i
+    paid_amount = stats&.paid_amount.to_i
+    total_count = stats&.total_count.to_i
+
+    upcoming_unpaid = scope.where(status: :pending).where("due_date >= ?", today).order(due_date: :asc)
+    nearest_due_date = upcoming_unpaid.first&.due_date
+
+    {
+      total_count: total_count,
+      unpaid_count: unpaid_count,
+      overdue_count: overdue_count,
+      unpaid_amount: unpaid_amount,
+      paid_amount: paid_amount,
+      nearest_due_date: nearest_due_date,
+      has_invoices: total_count.positive?
+    }
+  end
+
+  def empty_invoice_stats
+    {
+      total_count: 0,
+      unpaid_count: 0,
+      overdue_count: 0,
+      unpaid_amount: 0,
+      paid_amount: 0,
+      nearest_due_date: nil,
+      has_invoices: false
     }
   end
 end

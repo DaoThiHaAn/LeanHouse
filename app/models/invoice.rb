@@ -68,4 +68,12 @@ class Invoice < ApplicationRecord
       return candidate_code unless Invoice.exists?(code: candidate_code)
     end
   end
+
+  after_commit :broadcast_dashboard_update
+
+  private
+
+  def broadcast_dashboard_update
+    LandlordDashboardBroadcaster.broadcast_later(house_id)
+  end
 end
