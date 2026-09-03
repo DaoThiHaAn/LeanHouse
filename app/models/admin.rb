@@ -12,6 +12,7 @@ class Admin < ApplicationRecord
             format: { with: URI::MailTo::EMAIL_REGEXP, message: :invalid }
   validates :password, length: { in: 8..72 }, on: :create
   validates :password, length: { in: 8..72 }, allow_nil: true, on: :update
+  validate :pw_complexity, if: -> { password.present? }
   validates :role, presence: true
 
   scope :active, -> { where(is_active: true) }
@@ -30,5 +31,13 @@ class Admin < ApplicationRecord
   def normalize_inputs
     self.fullname = fullname&.squish
     self.email = email&.squish&.downcase
+  end
+
+  def pw_complexity
+    return if password.blank?
+
+    unless password.match?(/\d/) && password.match?(/[A-Za-z]/)
+      errors.add(:password, :invalid_pw)
+    end
   end
 end

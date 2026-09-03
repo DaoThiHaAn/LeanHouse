@@ -1,0 +1,13 @@
+<% content_for :title, t("admin.admins.new_title") %>
+
+<div class="container py-3">
+  <div class="d-flex align-items-center gap-3 mb-4 pb-3 border-bottom">
+    <%= back_link_to admin_admins_path, t("admin.admins.back_to_list") %>
+    <div class="flex-grow-1 text-center pe-md-5">
+      <h1 class="mb-2"><%= t("admin.admins.new_title") %></h1>
+      <p class="text-secondary"><%= t("admin.admins.new_subtitle") %></p>
+    </div>
+  </div>
+
+  <%= render "form", admin: @admin %>
+</div>

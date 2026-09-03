@@ -68,7 +68,7 @@
               action: "input->form#update"
           } %>
 
-      <span class="eye position-absolute me-2 top-50 end-0 translate-middle-y material-symbols-outlined password-toggle" 
+      <span class="eye position-absolute me-2 top-50 end-0 translate-middle-y material-symbols-outlined password-toggle"
               data-action="click->form#togglePasswordVisibility">
           visibility
       </span>
@@ -164,7 +164,7 @@
     <span class="material-symbols-filled fs-2">person_pin_circle</span>&nbsp;
     <%= t("form.tenant.select_unit") %>
   </h2>
-  
+
   <div class="w-75 mx-auto"
         data-controller="dependent-rental-unit"
         data-dependent-rental-unit-rooms-value="<%= @available_slots.room_options.to_json %>"
@@ -177,6 +177,7 @@
   <%= form.button :submit, 
       class: "mx-auto mb-3 custom-primary-btn  main-form d-flex align-items-center justify-content-center gap-2",
       data: { loading_target: "button" } do %>
+      <span class="material-symbols-outlined fs-5">save</span>
       <span data-loading-target="text"><%= t("save") %></span>
 
       <span class="material-symbols-outlined spin d-none"

@@ -51,6 +51,7 @@
               <%= f.button :submit,
                            class: "custom-primary-btn d-flex align-items-center gap-2",
                            data: { loading_target: "button" } do %>
+                <span class="material-symbols-outlined fs-5">save</span>
                 <span data-loading-target="text"><%= t("save", default: "Lưu") %></span>
                 <span class="material-symbols-outlined spin d-none" data-loading-target="spinner">progress_activity</span>
               <% end %>

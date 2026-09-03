@@ -1,0 +1,121 @@
+<% content_for :title, t("admin.admins.title") %>
+
+<div class="d-flex flex-column align-items-center gap-3 pb-3 mb-4 border-bottom">
+  <h1 class="admin-title"><%= t("admin.admins.title") %></h1>
+  <p class="text-secondary text-center mb-0">
+    <%= t("admin.admins.subtitle") %>
+  </p>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div class="d-flex align-items-center gap-4">
+    <h2 class="mb-0 d-flex align-items-center gap-2">
+      <span class="material-symbols-filled fs-3">badge</span>
+      <span><%= t("admin.admins.list") %></span>
+    </h2>
+    <span class="badge bg-light text-dark border p-2">
+      <%= t("admin.admins.total_admins", count: @admins.count) %>
+    </span>
+  </div>
+
+  <%= link_to new_admin_admin_path, class: "main-btn d-flex align-items-center gap-2 shadow-sm" do %>
+    <span class="material-symbols-outlined fs-3">person_add</span>
+    <%= t("admin.admins.add_admin") %>
+  <% end %>
+</div>
+
+<div class="table-responsive border bg-white rounded shadow-sm">
+  <table class="table table-hover align-middle mb-0">
+    <thead class="table-light">
+      <tr>
+        <th class="ps-3"><%= t("form.profile.fullname") %></th>
+        <th><%= t("form.profile.email") %></th>
+        <th><%= t("role.self") %></th>
+        <th><%= t("admin.users.status") %></th>
+        <th><%= t("admin.admins.last_logged_in") %></th>
+        <th><%= t("admin.users.joined_date") %></th>
+        <th class="text-center"><%= t("actions") %></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @admins.each do |admin| %>
+        <tr class="<%= 'table-light' unless admin.is_active? %>">
+          <td class="ps-3">
+            <div class="d-flex align-items-center gap-3">
+              <div class="admin-img rounded-circle d-flex align-items-center justify-content-center fw-bold text-white shadow-sm <%= admin.super_admin? ? 'bg-dark' : 'bg-info' %>">
+                <%= admin.fullname.first.upcase rescue 'A' %>
+              </div>
+              <div>
+                <div class="fw-bold text-dark d-flex align-items-center gap-1">
+                  <%= admin.fullname %>
+                  <% if admin == current_admin %>
+                    <span class="badge bg-secondary-subtle text-secondary border small px-2"><%= t("you") %></span>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </td>
+
+          <td>
+            <span class="font-monospace small"><%= admin.email %></span>
+          </td>
+
+          <td>
+            <% if admin.super_admin? %>
+              <span class="badge bg-dark px-2 py-1"><%= t("enums.admin.roles.super_admin") %></span>
+            <% else %>
+              <span class="badge bg-info-subtle text-info-emphasis border border-info-subtle px-2 py-1"><%= t("enums.admin.roles.support", default: "Support") %></span>
+            <% end %>
+          </td>
+
+          <td>
+            <% if admin.is_active? %>
+              <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">
+                <%= t("admin.users.active_short") %>
+              </span>
+            <% else %>
+              <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1">
+                <%= t("admin.users.inactive_short") %>
+              </span>
+            <% end %>
+          </td>
+
+          <td>
+            <% if admin.last_login_at.present? %>
+              <%= l(admin.last_login_at, format: :default) rescue admin.last_login_at.strftime("%d/%m/%Y %H:%M") %>
+            <% else %>
+              <span class="text-secondary small fst-italic"><%= t("admin.admins.never_logged_in") %></span>
+            <% end %>
+          </td>
+
+          <td>
+            <%= l(admin.created_at.to_date, format: :default) rescue admin.created_at.strftime("%d/%m/%Y") %>
+          </td>
+
+          <td class="text-center">
+            <div class="d-inline-flex gap-1 align-items-center">
+              <%= link_to edit_admin_admin_path(admin), class: "btn btn-sm btn-light border", title: t("admin.admins.edit_admin") do %>
+                <span class="material-symbols-outlined fs-6 align-middle">edit</span>
+              <% end %>
+
+              <% unless admin == current_admin %>
+                <% if admin.super_admin? && admin.is_active? && Admin.super_admin.active.count <= 1 %>
+                  <button type="button" class="btn btn-sm btn-light border text-muted" disabled title="<%= t("admin.admins.cannot_lock_last_super_admin") %>">
+                    <span class="material-symbols-filled fs-6 align-middle">lock</span>
+                  </button>
+                <% else %>
+                  <%= button_to toggle_active_admin_admin_path(admin), method: :patch,
+                      data: { turbo_confirm: admin.is_active? ? t("admin.admins.confirm_lock", name: admin.fullname) : t("admin.admins.confirm_unlock", name: admin.fullname) },
+                      class: "btn btn-sm #{admin.is_active? ? 'btn-outline-danger' : 'btn-outline-success'}",
+                      title: admin.is_active? ? t("admin.admins.lock_button") : t("admin.admins.unlock_button") do %>
+                    <span class="material-symbols-filled fs-6 align-middle"><%= admin.is_active? ? "lock" : "lock_open" %></span>
+                  <% end %>
+                <% end %>
+              <% end %>
+            </div>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

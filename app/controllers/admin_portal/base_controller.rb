@@ -16,5 +16,11 @@ module AdminPortal
 
       redirect_to admin_login_path, alert: t("admin.auth.login_required", default: "Vui lòng đăng nhập với tài khoản Quản trị viên.")
     end
+
+    def ensure_super_admin!
+      return if current_admin&.super_admin?
+
+      redirect_to admin_dashboard_path, alert: t("admin.auth.unauthorized", default: "Bạn không có quyền truy cập chức năng này.")
+    end
   end
 end

@@ -107,10 +107,11 @@
           <div class="d-flex justify-content-center mt-4">
             <button disabled
               type="button"
-              class="custom-primary-btn main-form"
+              class="custom-primary-btn main-form d-flex align-items-center justify-content-center gap-2"
               data-sortable-target="saveOrderBtn"
               data-action="click->sortable#saveOrder">
-              <%= t("save_order") %>
+              <span class="material-symbols-outlined fs-5">save</span>
+              <span><%= t("save_order") %></span>
             </button>
           </div>
         </div>

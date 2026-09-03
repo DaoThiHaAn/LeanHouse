@@ -228,6 +228,11 @@ Rails.application.routes.draw do
         patch :recycle_phone
       end
     end
+    resources :admins, only: [ :index, :new, :create, :edit, :update ] do
+      member do
+        patch :toggle_active
+      end
+    end
     resources :houses, only: [ :index, :show ] do
       resources :services, only: [ :index ]
       resources :assets, only: [ :index ]

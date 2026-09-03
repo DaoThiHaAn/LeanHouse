@@ -83,7 +83,10 @@
                 <%= field_error(@user, :password_confirmation) %>
             </div>
 
-             <%= form.submit t("save"), class: "mx-auto custom-primary-btn" %>
+            <%= form.button type: :submit, class: "mx-auto custom-primary-btn d-flex align-items-center justify-content-center gap-2" do %>
+              <span class="material-symbols-outlined fs-5">save</span>
+              <span><%= t("save") %></span>
+            <% end %>
         <%end%>
 
         <% back_path = logged_in? ? (current_user.landlord? ? landlord_profile_path : tenant_profile_path) : forgot_pw_path %>

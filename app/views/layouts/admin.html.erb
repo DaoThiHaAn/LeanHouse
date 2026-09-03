@@ -15,7 +15,7 @@
     <!-- Bootstrap 5.3 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
           rel="stylesheet"
-          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" 
+          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
           crossorigin="anonymous">
 
     <!-- Google Material Symbols -->
@@ -74,6 +74,15 @@
                 <span><%= t("admin.nav.houses") %></span>
               <% end %>
             </li>
+
+            <% if current_admin&.super_admin? %>
+              <li class="nav-item custom <%= 'active' if controller_name == 'admins' %>">
+                <%= link_to admin_admins_path, class: "nav-link d-flex align-items-center gap-1 px-3 py-2" do %>
+                  <span class="material-symbols-filled fs-5">badge</span>
+                  <span><%= t("admin.nav.admins") %></span>
+                <% end %>
+              </li>
+            <% end %>
           </ul>
 
           <div class="d-flex align-items-center gap-3">

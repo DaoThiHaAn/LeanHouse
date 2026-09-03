@@ -49,6 +49,7 @@ vi:
       sec_questions: "Câu hỏi bảo mật"
       sec_questions_note: "Bạn có tối đa 3 lần thử"
       fname_ans: "Nhập đúng theo tài khoản đã đăng ký, không phân biệt chữ in hoa, chữ thường"
+      staff_name_placeholder: "Nhập họ và tên nhân viên"
  
     house:
       add: "Tạo nhà mới"

@@ -29,6 +29,23 @@ vi:
             role:
               blank: "Chọn 1 vai trò!"
 
+        admin:
+          attributes:
+            fullname:
+              blank: "Tên không được để trống!"
+              invalid: "Họ và tên chỉ được chứa chữ cái và khoảng trắng"
+            email:
+              blank: "Email không được để trống!"
+              invalid: "Email không đúng định dạng!"
+              taken: "Email này đã được sử dụng!"
+            password:
+              invalid_pw: "Mật khẩu phải bao gồm ít nhất 1 chữ cái (a-z) và 1 chữ số (0-9)!"
+              blank: "Mật khẩu không được để trống!"
+              too_short: "Mật khẩu quá ngắn (tối thiểu 8 ký tự)"
+              too_long: "Mật khẩu quá dài (tối đa 72 ký tự)"
+            password_confirmation:
+              confirmation: "Mật khẩu xác nhận không khớp!"
+
         house:
           attributes:
             regulation_file:

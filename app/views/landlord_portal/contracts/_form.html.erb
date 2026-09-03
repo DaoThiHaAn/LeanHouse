@@ -299,6 +299,7 @@
     <%= f.button :submit, 
       class: "custom-primary-btn main-form d-flex align-items-center justify-content-center gap-2 m-0",
       data: { loading_target: "button" } do %>
+      <span class="material-symbols-outlined fs-5">save</span>
       <span data-loading-target="text"><%= local_assigns[:submit_text] || t("save") %></span>
       <span class="material-symbols-outlined spin d-none"
         data-loading-target="spinner">

@@ -1,0 +1,13 @@
+{
+  "files.associations": {
+    "*.html.erb": "erb",
+    "*.erb": "erb"
+  },
+  "[erb]": {
+    "editor.defaultFormatter": "aliariff.vscode-erb-beautify",
+    "editor.formatOnSave": true
+  },
+  "vscode-erb-beautify.executePath": "${workspaceFolder}/bin/htmlbeautifier",
+  "vscode-erb-beautify.tabStops": 2,
+  "vscode-erb-beautify.keepBlankLines": 1
+}
