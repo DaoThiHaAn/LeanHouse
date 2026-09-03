@@ -1,0 +1,62 @@
+<tr id="<%= dom_id(inv) %>" class="<%= 'opacity-50 text-decoration-line-through' if inv.cancelled? %>">
+  <td class="ps-3">
+    <p class="invoice-code-tag mb-1"><%= inv.code %></p>
+    <p class="fw-semibold"><%= inv.title %></p>
+  </td>
+  <td>
+    <p class="d-flex align-items-center gap-1">
+      <%= inv.room.title_name %>, <%= inv.room.floor.title_name %>
+    </p>
+    <div class="mt-1"><%= invoice_type_badge(inv) %></div>
+  </td>
+  <td><%= inv.billing_month.strftime("%m/%Y") %></td>
+  <td>
+    <p class="<%= 'text-danger small fw-bold' if inv.overdue? %>">
+      <%= inv.due_date.strftime("%d/%m/%Y") %>
+    </p>
+  </td>
+  <td>
+    <span class="fw-bold">
+      <%= number_to_currency(inv.total_amount, unit: "đ", format: "%n %u") %>
+    </span>
+  </td>
+  <td>
+    <%= invoice_status_badge(inv) %>
+  </td>
+  <%# Actions %>
+  <td>
+    <div class="d-flex align-items-center justify-content-center gap-2">
+      <%= link_to landlord_house_invoice_path(house, inv),
+                class: "table-action px-1 py-0",
+                data: { turbo_frame: "_top" },
+                title: t("view_detail") do %>
+        <span class="material-symbols-filled">visibility</span>
+      <% end %>
+
+      <% if inv.pending? %>
+        <%= link_to edit_landlord_house_invoice_path(house, inv),
+                  data: { turbo_frame: "edit_invoice_modal" },
+                  title: t("edit"),
+                  class: "table-action" do %>
+          <span class="material-symbols-filled">edit</span>
+        <% end %>
+
+        <%= button_to mark_paid_landlord_house_invoice_path(house, inv),
+                  method: :patch,
+                  data: { turbo_frame: "_top" },
+                  title: t("invoice.actions.done"),
+                  class: "table-action text-success" do %>
+          <span class="material-symbols-filled">check_circle</span>
+        <% end %>
+
+        <%= button_to cancel_landlord_house_invoice_path(house, inv),
+                  method: :patch,
+                  title: t("invoice.actions.cancel"),
+                  data: { turbo_confirm: t("invoice.actions.cancel_confirm"), turbo_frame: "_top" },
+                  class: "table-action text-danger-emphasis" do %>
+          <span class="material-symbols-filled">cancel</span>
+        <% end %>
+      <% end %>
+    </div>
+  </td>
+</tr>

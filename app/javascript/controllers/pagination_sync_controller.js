@@ -29,7 +29,8 @@ export default class extends Controller {
     ])
 
     parameterNames.forEach((name) => {
-      const value = frameUrl.searchParams.get(name)
+      const values = frameUrl.searchParams.getAll(name)
+      const value = values.length > 0 ? values[values.length - 1] : null
       const defaultValue = this.defaultParamsValue[name]
 
       if (value) {

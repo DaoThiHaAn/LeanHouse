@@ -1,6 +1,6 @@
 vi:
   # Used in view: l(variable, format: :default/:short)
-  date: 
+  date:
     formats:
       default: "%d/%m/%Y"
       short: "%d/%m/%y"
@@ -73,7 +73,7 @@ vi:
     landlord: "Chủ Nhà"
     tenant: "Khách Thuê"
     admin: "Quản Trị Viên"
-  
+
   welcome:
     greeting: "Chào mừng bạn đến với"
     back: "Chào mừng bạn quay trở lại"
@@ -94,7 +94,7 @@ vi:
   loading: "Đang tải"
   filtering: "Đang lọc"
   filter: "Lọc"
-  clear_filter: "Xóa lọc"
+  clear_filter: "Xóa bộ lọc"
   save: "Lưu"
   save_changes: "Lưu thay đổi"
   cancel: "Hủy"
@@ -126,7 +126,7 @@ vi:
   not_yet: "Chưa"
   month: "Tháng"
   month_val: "Tháng %{val}"
-  year: "Năm"  
+  year: "Năm"
   person_unit: "Người"
   you: "Bạn"
 
@@ -161,7 +161,7 @@ vi:
     bed_cant_deleted: "Không thể xóa giường này khi vẫn còn khách thuê!"
     vehicle_delete_reason_required: "Vui lòng nhập lý do xóa phương tiện!"
     vehicle_delete_failed: "Không thể xóa phương tiện!"
-  
+
   success_messages:
     tenant_linked: "Đã liên kết khách thuê thành công"
     send_otp: "Đã gửi OTP!"

@@ -64,22 +64,7 @@
                 </span>
               </td>
               <td>
-                <% case inv.status %>
-                <% when "paid" %>
-                  <span class="invoice-badge invoice-badge-paid">
-                    <span class="material-symbols-outlined fs-6">check_circle</span> <%= t('invoice.status.paid') %>
-                  </span>
-                <% when "pending" %>
-                  <% if inv.overdue? %>
-                    <span class="invoice-badge invoice-badge-overdue">
-                      <span class="material-symbols-outlined fs-6">error</span> <%= t('invoice.status.overdue') %>
-                    </span>
-                  <% else %>
-                    <span class="invoice-badge invoice-badge-pending">
-                      <span class="material-symbols-outlined fs-6">hourglass_top</span> <%= t('invoice.status.waiting_payment') %>
-                    </span>
-                  <% end %>
-                <% end %>
+                <%= invoice_status_badge(inv) %>
               </td>
               <td class="text-end pe-3">
                 <%= link_to tenant_invoice_path(inv), class: "btn btn-sm btn-primary d-inline-flex align-items-center gap-1 shadow-sm" do %>

@@ -1,65 +1,69 @@
-<% content_for :title, "#{t('invoice.edit_invoice')} #{@invoice.code} - #{@house.name}" %>
-<% provide :container_width, "h-100" %>
+<%= turbo_frame_tag "edit_invoice_modal" do %>
+  <div class="modal fade" id="editInvoiceModal" tabindex="-1" aria-hidden="true"
+        data-controller="modal" data-modal-auto-open-value="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content rounded-4 shadow">
+        <%= form_with model: @invoice, url: landlord_house_invoice_path(@house, @invoice), method: :patch do |f| %>
+          <div class="modal-header border-bottom">
+            <h5 class="modal-title fw-bold d-flex align-items-center gap-2">
+              <span class="material-symbols-outlined text-primary">edit_calendar</span>
+              <%= t('invoice.edit_dates_and_info') %>
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
 
-<div class="container py-4 invoice-edit-wrapper">
-  <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
-    <h3 class="fw-bold mb-0 d-flex align-items-center gap-2">
-      <span class="material-symbols-outlined text-primary">edit_calendar</span>
-      <%= t('invoice.edit_dates_and_info', default: 'Chỉnh sửa Thời gian & Ghi chú Hóa đơn') %>
-    </h3>
-    <%= link_to t('invoice.actions.back'), landlord_house_invoice_path(@house, @invoice), class: "btn btn-outline-secondary btn-sm shadow-sm" %>
-  </div>
+          <div class="modal-body">
+            <% if flash[:alert] %>
+              <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <%= flash[:alert] %>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            <% end %>
 
-  <% if flash[:alert] %>
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-      <%= flash[:alert] %>
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <div class="mb-3 pb-3 border-bottom">
+              <div class="text-secondary small"><%= t('invoice.room') %>:</div>
+              <div class="fs-6 fw-bold text-dark"><%= @invoice.room.title_name %> (<%= @invoice.room.floor.name %>, <%= @house.name %>)</div>
+              <div class="invoice-code-tag mt-1">#<%= @invoice.code %></div>
+            </div>
+
+            <div class="mb-3">
+              <%= f.label :title, t('invoice.reason'), class: "form-label fw-semibold" %>
+              <%= f.text_field :title, value: @invoice.title, class: "form-control shadow-sm", placeholder: t('invoice.default_title') %>
+            </div>
+
+            <div class="row g-2 mb-3">
+              <div class="col-6">
+                <%= f.label :start_date, t('invoice.start_date'), class: "form-label fw-semibold" %>
+                <%= f.date_field :start_date, value: (@invoice.start_date || @invoice.billing_month.beginning_of_month), class: "form-control shadow-sm" %>
+              </div>
+              <div class="col-6">
+                <%= f.label :end_date, t('invoice.end_date'), class: "form-label fw-semibold" %>
+                <%= f.date_field :end_date, value: (@invoice.end_date || @invoice.billing_month.end_of_month), class: "form-control shadow-sm" %>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <%= f.label :due_date, t('invoice.due_date'), class: "form-label fw-semibold" %>
+              <%= f.date_field :due_date, value: (@invoice.due_date || (Date.current + 5.days)), class: "form-control shadow-sm" %>
+            </div>
+
+            <div class="mb-3">
+              <%= f.label :bank_account_id, t('invoice.bank_account_receive'), class: "form-label fw-semibold" %>
+              <%= f.select :bank_account_id, @landlord.bank_accounts.includes(:bank).default_first.map { |a| [a.display_label, a.id] }, { include_blank: t('invoice.vietqr.no_vietqr') }, class: "form-select shadow-sm" %>
+            </div>
+
+            <div class="mb-0">
+              <%= f.label :note, t('invoice.note'), class: "form-label fw-semibold" %>
+              <%= f.text_area :note, rows: 2, class: "form-control shadow-sm", placeholder: t('invoice.note_placeholder') %>
+            </div>
+          </div>
+
+          <div class="modal-footer border-top">
+            <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal"><%= t('common.cancel') %></button>
+            <%= f.submit t('common.save_changes'), class: "btn btn-primary btn-sm px-3 fw-bold shadow-sm" %>
+          </div>
+        <% end %>
+      </div>
     </div>
-  <% end %>
-
-  <div class="card invoice-card p-4 bg-white">
-    <div class="mb-3 pb-3 border-bottom">
-      <div class="text-secondary small">Hóa đơn phòng:</div>
-      <div class="fs-5 fw-bold text-dark"><%= @invoice.room.title_name %> (<%= @invoice.room.floor.name %>, <%= @house.name %>)</div>
-      <div class="invoice-code-tag">#<%= @invoice.code %></div>
-    </div>
-
-    <%= form_with model: @invoice, url: landlord_house_invoice_path(@house, @invoice), method: :patch, local: true do |f| %>
-      <div class="mb-3">
-        <%= f.label :title, t('invoice.reason'), class: "form-label fw-semibold" %>
-        <%= f.text_field :title, value: (@invoice.title.presence || t('invoice.default_title')), class: "form-control shadow-sm", placeholder: t('invoice.default_title') %>
-      </div>
-
-      <div class="row g-3 mb-3">
-        <div class="col-6">
-          <%= f.label :start_date, t('invoice.start_date'), class: "form-label fw-semibold" %>
-          <%= f.date_field :start_date, value: (@invoice.start_date || @invoice.billing_month.beginning_of_month), class: "form-control shadow-sm" %>
-        </div>
-        <div class="col-6">
-          <%= f.label :end_date, t('invoice.end_date'), class: "form-label fw-semibold" %>
-          <%= f.date_field :end_date, value: (@invoice.end_date || @invoice.billing_month.end_of_month), class: "form-control shadow-sm" %>
-        </div>
-      </div>
-
-      <div class="mb-3">
-        <%= f.label :due_date, t('invoice.due_date'), class: "form-label fw-semibold" %>
-        <%= f.date_field :due_date, value: (@invoice.due_date || (Date.current + 5.days)), class: "form-control shadow-sm" %>
-      </div>
-
-      <div class="mb-3">
-        <%= f.label :bank_account_id, t('invoice.bank_account_receive'), class: "form-label fw-semibold" %>
-        <%= f.select :bank_account_id, @landlord.bank_accounts.includes(:bank).default_first.map { |a| [a.display_label, a.id] }, { include_blank: "Không dùng VietQR" }, class: "form-select shadow-sm" %>
-      </div>
-
-      <div class="mb-4">
-        <%= f.label :note, t('invoice.note'), class: "form-label fw-semibold" %>
-        <%= f.text_area :note, rows: 3, class: "form-control shadow-sm", placeholder: t('invoice.note_placeholder') %>
-      </div>
-
-      <div class="d-flex justify-content-between align-items-center">
-        <%= link_to t('common.cancel', default: 'Hủy bỏ'), landlord_house_invoice_path(@house, @invoice), class: "btn btn-outline-secondary" %>
-        <%= f.submit t('common.save', default: 'Lưu thay đổi'), class: "btn btn-primary px-4 fw-bold shadow-sm" %>
-      </div>
-    <% end %>
   </div>
-</div>
+<% end %>

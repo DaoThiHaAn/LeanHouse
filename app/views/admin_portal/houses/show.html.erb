@@ -30,10 +30,10 @@
           <!-- Room Filter & Search Form -->
           <div class="card-body p-3 room-search-form-container">
             <%= form_with url: admin_house_path(@house), method: :get, local: true, class: "row g-2 align-items-center",
-                data: { 
+                data: {
                   controller: "search",
                   turbo_frame: "admin_house_rooms",
-                  turbo_action: "advance" 
+                  turbo_action: "advance"
                 } do |f| %>
               <!-- Room Name Search Input -->
               <div class="col-12 col-sm-6 col-md-4">
@@ -97,7 +97,7 @@
                         class="btn btn-outline-secondary d-flex align-items-center gap-1 <%= 'd-none' unless @query.present? || @floor_filter.present? || @status_filter.present? %>"
                         data-search-target="clearButton"
                         data-action="click->search#clear"
-                        title="<%= t('admin.users.clear_filter') %>">
+                        title="<%= t('clear_filter') %>">
                   <span class="material-symbols-outlined fs-6">filter_alt_off</span>
                   <span class="d-none d-md-inline"><%= t("clear_filter") %></span>
                 </button>

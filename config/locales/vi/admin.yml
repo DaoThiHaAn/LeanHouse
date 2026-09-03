@@ -8,7 +8,7 @@ vi:
       users: "Người dùng"
       houses: "Nhà"
       admins: "Nhân sự"
-    
+
     auth:
       unauthorized: "Bạn không có quyền truy cập chức năng này."
       login_title: "ĐĂNG NHẬP QUẢN TRỊ VIÊN"
@@ -20,7 +20,7 @@ vi:
       logout_success: "Đã đăng xuất khỏi Hệ thống Quản trị."
       restricted_notice: "Khu vực bảo mật dành riêng cho nhân sự quản trị LeanHouse."
       login_subtitle: "Hệ thống quản trị nội bộ của LeanHouse"
-    
+
     dashboard:
       title: "Tổng quan Hệ thống"
       subtitle: "Thống kê thời gian thực toàn bộ người dùng, nhà và hoạt động trên nền tảng LeanHouse."
@@ -40,7 +40,7 @@ vi:
       view_houses: "Xem nhà"
       no_users_yet: "Chưa có người dùng nào."
       no_houses_yet: "Chưa có nhà nào."
-    
+
     users:
       title: "Quản lý Người dùng"
       subtitle: "Quản lý danh sách Chủ nhà và Khách thuê, kiểm soát trạng thái hoạt động trên toàn hệ thống."
@@ -96,8 +96,7 @@ vi:
       filter_all_roles: "Tất cả vai trò"
       filter_landlord: "Chủ nhà"
       filter_tenant: "Khách thuê"
-      clear_filter: "Xóa lọc"
-    
+
     houses:
       title: "Quản lý Nhà"
       subtitle: "Theo dõi toàn bộ bất động sản / nhà được tạo bởi các Chủ nhà trên nền tảng."
@@ -151,7 +150,6 @@ vi:
       filter_all_modes: "Tất cả mô hình"
       filter_room: "Thuê theo phòng"
       filter_bed: "Thuê theo giường"
-      clear_filter: "Xóa lọc"
       house_menu: "Danh mục quản lý"
 
     services:
@@ -167,7 +165,7 @@ vi:
       not_applied: "Chưa gán cho phòng nào"
       no_services_hint: "Chủ nhà chưa tạo dịch vụ hoặc tiện ích nào cho nhà này."
       cal_type: "Cách tính"
-    
+
     assets:
       title: "Danh sách Tài sản & Lịch sử bảo trì"
       back_to_house: "Quay lại chi tiết nhà"

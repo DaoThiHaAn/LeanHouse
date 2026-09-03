@@ -11,6 +11,8 @@ class Invoice < ApplicationRecord
   has_many :invoice_items, dependent: :destroy
   has_many :service_usage_logs, dependent: :nullify
 
+  before_validation :normalize_title
+
   validates :code, :billing_month, :due_date, :status, :invoice_type, :title, presence: true
   validates :code, uniqueness: true
   validates :subtotal, :total_discount, :total_addition, :total_amount, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
@@ -75,5 +77,10 @@ class Invoice < ApplicationRecord
 
   def broadcast_dashboard_update
     LandlordDashboardBroadcaster.broadcast_later(house_id)
+  end
+
+  def normalize_title
+    self.title = title&.squish
+    self.note = note&.squish
   end
 end

@@ -3,15 +3,15 @@
   <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
     <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
       <!-- Header -->
-      <div class="modal-header bg-primary text-white py-3 px-4 border-0 d-flex justify-content-between align-items-center">
+      <div class="modal-header bg-primary py-3 px-4 border-0 d-flex justify-content-between align-items-center">
         <div>
-          <h2 class="modal-title fw-bold d-flex align-items-center gap-2 mb-1" id="invoiceCreationGuideModalLabel">
+          <h2 class="modal-title text-white d-flex align-items-center gap-2 mb-1" id="invoiceCreationGuideModalLabel">
             <span class="material-symbols-outlined fs-3">menu_book</span>
             <%= t('invoice.guide.modal_title') %>
           </h2>
-          <span class="badge bg-white text-primary fw-semibold px-2 py-1 shadow-sm" style="font-size: 0.75rem;">
+          <p class="badge bg-white text-primary fw-semibold px-2 py-1 shadow-sm" style="font-size: 0.75rem;">
             <%= t('invoice.guide.badge_subtitle', default: 'Chuẩn vận hành • Minh bạch • Tự động hóa VietQR') %>
-          </span>
+          </p>
         </div>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
@@ -25,18 +25,21 @@
               <%= t('invoice.guide.tab_steps', default: '📋 Quy trình 4 Bước') %>
             </button>
           </li>
+
           <li class="nav-item" role="presentation">
             <button class="nav-link fw-semibold d-inline-flex align-items-center gap-1 py-2 px-3 rounded-pill" id="guide-prepaid-tab" data-bs-toggle="pill" data-bs-target="#guide-prepaid" type="button" role="tab" aria-controls="guide-prepaid" aria-selected="false">
               <span class="material-symbols-outlined fs-6">swap_horiz</span>
               <%= t('invoice.guide.tab_prepaid_postpaid', default: '💡 Trả trước vs Trả sau') %>
             </button>
           </li>
+
           <li class="nav-item" role="presentation">
             <button class="nav-link fw-semibold d-inline-flex align-items-center gap-1 py-2 px-3 rounded-pill" id="guide-modes-tab" data-bs-toggle="pill" data-bs-target="#guide-modes" type="button" role="tab" aria-controls="guide-modes" aria-selected="false">
               <span class="material-symbols-outlined fs-6">group</span>
               <%= t('invoice.guide.tab_modes', default: '👥 Cả phòng vs Từng khách') %>
             </button>
           </li>
+
           <li class="nav-item" role="presentation">
             <button class="nav-link fw-semibold d-inline-flex align-items-center gap-1 py-2 px-3 rounded-pill" id="guide-vietqr-tab" data-bs-toggle="pill" data-bs-target="#guide-vietqr" type="button" role="tab" aria-controls="guide-vietqr" aria-selected="false">
               <span class="material-symbols-outlined fs-6">qr_code_2</span>

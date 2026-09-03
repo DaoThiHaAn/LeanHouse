@@ -13,11 +13,11 @@
 
 .nav-tabs .nav-link.active {
   background: linear-gradient(
-    to bottom, 
+    to bottom,
     rgb(209, 241, 245) 0%,
     rgb(245, 251, 252) 100%
   );
-  border-color: #dee2e6 #dee2e6 rgb(245, 250, 255); 
+  border-color: #dee2e6 #dee2e6 rgb(245, 250, 255);
 }
 
 .room.tab-pane {
@@ -43,6 +43,11 @@
   transition: background-color 0.2s ease;
   border-radius: 50%;
   padding: 1px 4px;
+  border: none;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .table-action:hover {

@@ -246,4 +246,142 @@ class LandlordPortal::InvoicesControllerTest < ActionDispatch::IntegrationTest
     assert_not_includes response.body, @invoice1.code
     assert_includes response.body, @invoice2.code
   end
+
+  test "checkbox state matches current_tenants_only param" do
+    sign_in_as(@landlord_user)
+
+    # When current_tenants_only=0
+    get landlord_house_invoices_path(@house, current_tenants_only: "0")
+    assert_response :success
+    assert_select "input[type='checkbox'][name='current_tenants_only']:not([checked])"
+
+    # When current_tenants_only=1
+    get landlord_house_invoices_path(@house, current_tenants_only: "1")
+    assert_response :success
+    assert_select "input[type='checkbox'][name='current_tenants_only'][checked='checked']"
+
+    # When current_tenants_only is absent (default)
+    get landlord_house_invoices_path(@house)
+    assert_response :success
+    assert_select "input[type='checkbox'][name='current_tenants_only'][checked='checked']"
+  end
+
+  test "invoices index includes pagination-sync controller for url synchronization" do
+    sign_in_as(@landlord_user)
+
+    get landlord_house_invoices_path(@house)
+    assert_response :success
+
+    # Check turbo frame has pagination-sync controller and canonical URL
+    assert_select "turbo-frame#invoices_content[data-controller~='pagination-sync']" do
+      assert_select "[data-pagination-sync-canonical-url-value='#{landlord_house_invoices_path(@house)}']"
+      assert_select "[data-pagination-sync-total-pages-selector-value='[data-pagination-total-pages]']"
+    end
+
+    # Check form has turbo_action: advance
+    assert_select "form[data-turbo-action='advance']"
+
+    # Check total pages marker exists
+    assert_select "span[data-pagination-total-pages]"
+  end
+
+  test "invoices are paginated to 15 per page and stats calculate for all records" do
+    sign_in_as(@landlord_user)
+
+    # Create 16 more room invoices for @room1 in this month so total is 18 invoices
+    16.times do |i|
+      @house.invoices.create!(
+        room: @room1,
+        created_by: @landlord_user,
+        title: "Hóa đơn phân trang #{i + 1}",
+        invoice_type: "room",
+        billing_month: @billing_month,
+        due_date: @billing_month + 10.days,
+        start_date: @billing_month,
+        end_date: @billing_month.end_of_month,
+        status: :pending,
+        subtotal: 100_000,
+        total_discount: 0,
+        total_addition: 0,
+        total_amount: 100_000,
+        code: "INV-PAG-#{i + 1}"
+      )
+    end
+
+    # Total valid invoices for this month = 1 (@invoice1) + 1 (@invoice2) + 16 = 18 invoices
+    get landlord_house_invoices_path(@house)
+    assert_response :success
+
+    # Check stats cards calculate for all 18 invoices (not just the 15 on page 1)
+    assert_select "div.stat-card-teal" do
+      assert_select ".stat-card-value", text: "18"
+    end
+
+    # Page 1 displays 15 invoices
+    assert_select "table.invoice-table tbody tr", 15
+
+    # Pagination controls exist (2 total pages)
+    assert_select "span[data-pagination-total-pages='2']"
+    assert_select "nav.pagination"
+
+    # Page 2 displays remaining 4 invoices (18 valid + 1 cancelled = 19 total)
+    get filtered_landlord_house_invoices_path(@house, page: 2)
+    assert_response :success
+    assert_select "table.invoice-table tbody tr", 4
+
+    # On page 2, stats still calculate for all 18 invoices
+    assert_select "div.stat-card-teal" do
+      assert_select ".stat-card-value", text: "18"
+    end
+  end
+
+  test "landlord can load invoice edit modal and modify non-price fields" do
+    sign_in_as(@landlord_user)
+
+    get edit_landlord_house_invoice_path(@house, @invoice1)
+    assert_response :success
+
+    assert_select "turbo-frame#edit_invoice_modal" do
+      assert_select "div#editInvoiceModal[data-controller='modal']"
+      assert_select "input[name='invoice[title]'][value='#{@invoice1.title}']"
+      assert_select "input[name='invoice[due_date]']"
+      assert_select "input[name='invoice[start_date]']"
+      assert_select "input[name='invoice[end_date]']"
+      assert_select "select[name='invoice[bank_account_id]']"
+      assert_select "textarea[name='invoice[note]']"
+      # No price input fields
+      assert_select "input[name='invoice[subtotal]']", 0
+      assert_select "input[name='invoice[total_amount]']", 0
+    end
+  end
+
+  test "landlord can update invoice via turbo_stream updating only the affected row" do
+    sign_in_as(@landlord_user)
+
+    new_due_date = Date.current + 12.days
+    patch landlord_house_invoice_path(@house, @invoice1),
+          params: {
+            invoice: {
+              title: "Tiền phòng cập nhật mới",
+              due_date: new_due_date,
+              note: "Ghi chú đã sửa"
+            }
+          },
+          as: :turbo_stream
+
+    assert_response :success
+    assert_equal "text/vnd.turbo-stream.html; charset=utf-8", response.content_type
+    assert_includes response.body, %(action="replace" target="#{ActionView::RecordIdentifier.dom_id(@invoice1)}")
+    assert_includes response.body, new_due_date.strftime("%d/%m/%Y")
+    assert_includes response.body, "Tiền phòng cập nhật mới"
+    assert_includes response.body, %(action="append" target="events")
+    assert_includes response.body, "close-modal"
+    assert_includes response.body, %(action="update" target="flash")
+
+    # Verifies database is updated
+    @invoice1.reload
+    assert_equal "Tiền phòng cập nhật mới", @invoice1.title
+    assert_equal new_due_date, @invoice1.due_date
+    assert_equal "Ghi chú đã sửa", @invoice1.note
+  end
 end

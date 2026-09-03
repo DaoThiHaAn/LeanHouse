@@ -1,101 +1,44 @@
-<%= turbo_frame_tag "invoices_table" do %>
-  <% if invoices.empty? %>
-    <div class="invoice-empty-state mx-auto">
-      <span class="material-symbols-outlined invoice-empty-icon">receipt</span>
-      <p class="fs-5 fw-bold mb-1"><%= t('invoice.no_invoices', month: billing_month.strftime("%m/%Y")) %></p>
-      <p class="text-secondary small mb-0"><%= t('invoice.no_invoices_hint') %></p>
-    </div>
-  <% else %>
-    <div class="table-responsive bg-white rounded-3 shadow-sm border">
-      <table class="table invoice-table table-hover align-middle mb-0">
-        <thead>
-          <tr>
-            <th class="ps-3"><%= t('invoice.code') %></th>
-            <th><%= t('invoice.room_or_target') %></th>
-            <th><%= t('invoice.month') %></th>
-            <th><%= t('invoice.due_date') %></th>
-            <th><%= t('invoice.total') %></th>
-            <th><%= t('invoice.status_label') %></th>
-            <th class="text-end pe-3"><%= t('invoice.actions_header') %></th>
-          </tr>
-        </thead>
-        <tbody>
-          <% invoices.each do |inv| %>
-            <tr class="<%= 'opacity-50 text-decoration-line-through' if inv.cancelled? %>">
-              <td class="ps-3">
-                <div class="invoice-code-tag">
-                  <%= link_to inv.code, landlord_house_invoice_path(house, inv), class: "text-decoration-none" %>
-                </div>
-                <div class="text-secondary small font-monospace">ID: #<%= inv.id %></div>
-              </td>
-              <td>
-                <div class="fw-semibold text-dark d-flex align-items-center gap-1">
-                  <span><%= inv.room.title_name %></span>
-                  <span class="badge bg-light text-secondary border small"><%= inv.room.floor.title_name %></span>
-                </div>
-                <div class="mt-1">
-                  <% if inv.individual? && inv.tenant %>
-                    <span class="invoice-badge invoice-badge-individual"><%= t('invoice.mode_individual') %>: <%= inv.tenant.user.fullname %></span>
-                  <% else %>
-                    <span class="invoice-badge invoice-badge-room"><%= t('invoice.mode_room') %></span>
-                  <% end %>
-                </div>
-              </td>
-              <td class="font-monospace fw-semibold"><%= inv.billing_month.strftime("%m/%Y") %></td>
-              <td>
-                <span class="<%= 'text-danger fw-bold' if inv.overdue? %> font-monospace">
-                  <%= inv.due_date.strftime("%d/%m/%Y") %>
-                </span>
-              </td>
-              <td>
-                <span class="fs-6 invoice-amount-pill">
-                  <%= number_to_currency(inv.total_amount, unit: "đ", format: "%n %u") %>
-                </span>
-              </td>
-              <td>
-                <% case inv.status %>
-                <% when "paid" %>
-                  <span class="invoice-badge invoice-badge-paid">
-                    <span class="material-symbols-outlined fs-6">check_circle</span> <%= t('invoice.status.paid') %>
-                  </span>
-                <% when "pending" %>
-                  <% if inv.overdue? %>
-                    <span class="invoice-badge invoice-badge-overdue">
-                      <span class="material-symbols-outlined fs-6">error</span> <%= t('invoice.status.overdue') %>
-                    </span>
-                  <% else %>
-                    <span class="invoice-badge invoice-badge-pending">
-                      <span class="material-symbols-outlined fs-6">hourglass_top</span> <%= t('invoice.status.waiting_payment') %>
-                    </span>
-                  <% end %>
-                <% when "cancelled" %>
-                  <span class="invoice-badge invoice-badge-cancelled">
-                    <span class="material-symbols-outlined fs-6">cancel</span> <%= t('invoice.status.cancelled') %>
-                  </span>
-                <% end %>
-              </td>
-              <td class="text-end pe-3">
-                <div class="d-inline-flex gap-1">
-                  <%= link_to landlord_house_invoice_path(house, inv), 
-                      class: "btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1", 
-                      title: t('invoice.actions.view'),
-                      data: {turbo_frame: "_top"} do %>
-                    <span class="material-symbols-outlined fs-6">visibility</span> <%= t('invoice.actions.view') %>
-                  <% end %>
-                  <% if inv.pending? %>
-                    <%= button_to mark_paid_landlord_house_invoice_path(house, inv), method: :patch, class: "btn btn-sm btn-success d-inline-flex align-items-center gap-1", title: t('invoice.actions.done') do %>
-                      <span class="material-symbols-outlined fs-6">done</span> <%= t('invoice.actions.done') %>
-                    <% end %>
-                    <%= button_to cancel_landlord_house_invoice_path(house, inv), method: :patch, data: { turbo_confirm: t('invoice.actions.cancel_confirm') }, class: "btn btn-sm btn-outline-danger d-inline-flex align-items-center", title: t('invoice.actions.cancel') do %>
-                      <span class="material-symbols-outlined fs-6">cancel</span>
-                    <% end %>
-                  <% end %>
-                </div>
-              </td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
+<span hidden data-pagination-total-pages="<%= invoices.respond_to?(:total_pages) ? invoices.total_pages : 1 %>"></span>
+
+<% if invoices.empty? %>
+  <div class="invoice-empty-state mx-auto">
+    <span class="material-symbols-outlined invoice-empty-icon">receipt</span>
+    <p class="fs-5 fw-bold mb-1"><%= t('invoice.no_invoices', month: billing_month.strftime("%m/%Y")) %></p>
+    <p class="text-secondary small mb-0"><%= t('invoice.no_invoices_hint') %></p>
+  </div>
+<% else %>
+  <div class="table-responsive bg-white rounded-3 shadow-sm border">
+    <table class="table invoice-table table-hover align-middle">
+      <thead class="table-light">
+        <tr>
+          <th class="ps-3"><%= t('invoice.code') %></th>
+          <th><%= t('invoice.room_or_target') %></th>
+          <th><%= t('invoice.month') %></th>
+          <th><%= t('invoice.due_date') %></th>
+          <th><%= t('invoice.total') %></th>
+          <th><%= t('invoice.status_label') %></th>
+          <th class="text-center"><%= t("actions") %></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% invoices.each do |inv| %>
+          <%= render "landlord_portal/invoices/invoice_row", house: house, inv: inv %>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <% if invoices.respond_to?(:total_pages) && invoices.total_pages > 1 %>
+    <div class="mt-4 d-flex justify-content-center">
+      <%= paginate invoices,
+                   params: {
+                     month: billing_month.strftime("%Y-%m"),
+                     floor_id: params[:floor_id].presence,
+                     room_id: params[:room_id].presence,
+                     invoice_type: params[:invoice_type].presence,
+                     status: params[:status].presence,
+                     current_tenants_only: (local_assigns[:current_tenants_only] == false || params[:current_tenants_only] == "0" ? "0" : "1")
+                   } %>
     </div>
   <% end %>
 <% end %>

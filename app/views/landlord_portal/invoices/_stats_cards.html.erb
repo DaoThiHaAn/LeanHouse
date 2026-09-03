@@ -28,7 +28,7 @@
         <span class="fs-3 fw-bold stat-card-value"><%= stats[:total_count] %></span>
         <p class="stat-card-subtext fw-semibold mb-0"><%= t("invoice.stats.invoices_unit") %></p>
       </div>
-      <small class="text-secondary mt-1 fst-italic">
+      <small class="text-secondary mt-auto fst-italic">
         <%= t("invoice.stats.for_month", month: billing_month.strftime("%m/%Y")) %>
       </small>
     </div>
@@ -149,7 +149,7 @@
             <span class="material-symbols-outlined fs-6 text-warning">hourglass_top</span>
             <%= t("invoice.stats.pending_amount") %>
           </div>
-          <div class="fs-5 fw-bold text-warning-emphasis mb-1">
+          <div class="fs-5 fw-bold text-danger mb-1">
             <%= format_money(stats[:pending_amount]) %>
           </div>
           <p class="small text-muted">

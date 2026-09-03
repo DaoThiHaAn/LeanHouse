@@ -127,9 +127,13 @@
 
 .invoice-code-tag {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-weight: 700;
+  font-weight: 600;
   color: #0284c7;
   letter-spacing: 0.03em;
+}
+
+.invoice-code-tag + p:last-of-type {
+  color: #0f5071;
 }
 
 /* Instruction */
@@ -183,22 +187,6 @@
 }
 
 /* --- Table Enhancements --- */
-.invoice-table {
-  width: 100%;
-  margin-bottom: 0;
-}
-
-.invoice-table thead th {
-  background-color: #f8fafc;
-  color: #475569;
-  font-size: 0.8125rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  border-bottom: 1px solid #e2e8f0;
-  padding: 0.75rem 1rem;
-}
-
 .invoice-table tbody tr {
   transition: background-color 0.15s ease;
 }
@@ -398,16 +386,6 @@
   min-width: 250px;
 }
 
-@media (max-width: 768px) {
-  .responsive-stat-border {
-    border-right: 0;
-    border-bottom: 1px solid var(--bs-border-color);
-    padding-right: 0 !important;
-    padding-bottom: 1rem;
-    margin-bottom: 1rem;
-  }
-}
-
 /* --- Print Styling --- */
 @media print {
   @page {
@@ -465,4 +443,9 @@
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
+}
+
+/* Guide modal */
+#invoiceCreationGuideModal .nav-link.active {
+  color: white
 }

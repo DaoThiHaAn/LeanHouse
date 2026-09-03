@@ -20,3 +20,4 @@
 
 <%= render "invoices_content", house: @house, invoices: @invoices, stats: @stats, billing_month: @billing_month, current_tenants_only: @current_tenants_only %>
 <%= render "creation_guide_modal" %>
+<%= turbo_frame_tag "edit_invoice_modal" %>

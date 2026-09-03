@@ -1,4 +1,12 @@
-<%= turbo_frame_tag "invoices_content" do %>
+<%= turbo_frame_tag "invoices_content",
+      data: {
+        controller: "pagination-sync",
+        pagination_sync_canonical_url_value: landlord_house_invoices_path(house),
+        pagination_sync_default_params_value: { current_tenants_only: "1" }.to_json,
+        pagination_sync_query_params_value: ["month", "floor_id", "room_id", "invoice_type", "status", "current_tenants_only"].to_json,
+        pagination_sync_total_pages_selector_value: "[data-pagination-total-pages]",
+        action: "turbo:frame-load->pagination-sync#updateUrl"
+      } do %>
   <% is_current_only = local_assigns.key?(:current_tenants_only) ? local_assigns[:current_tenants_only] : @current_tenants_only %>
   <% is_current_only = true if is_current_only.nil? %>
   <!-- Statistic Cards (Dynamically updated) -->
@@ -9,7 +17,7 @@
     <%= form_with url: filtered_landlord_house_invoices_path(house),
                   method: :get,
                   class: "d-flex gap-3 align-items-center flex-wrap",
-                  data: { turbo_frame: "invoices_content" } do |f| %>
+                  data: { turbo_frame: "invoices_content", turbo_action: "advance" } do |f| %>
       <!-- Chọn tháng -->
       <div class="d-flex align-items-center gap-2">
         <%= f.label :month, "#{t('invoice.month')}:", class: "fw-bold text-nowrap" %>
@@ -91,12 +99,12 @@
                     class: "form-check-label fw-bold small text-nowrap cursor-pointer",
                     data: { **tooltip("top", :"invoice.only_current_tenants_hint") } %>
         </div>
-        <% has_filter = params[:floor_id].present? || params[:room_id].present? || params[:invoice_type].present? || params[:status].present? || params[:current_tenants_only] == "0" %>
+        <% has_filter = params[:floor_id].present? || params[:room_id].present? || params[:invoice_type].present? || params[:status].present? || params[:current_tenants_only] == "0" || (params[:page].present? && params[:page] != "1") %>
         <% if has_filter %>
           <div>
-            <%= link_to landlord_house_invoices_path(house, month: billing_month.strftime("%Y-%m")),
+            <%= link_to filtered_landlord_house_invoices_path(house, month: billing_month.strftime("%Y-%m")),
                       class: "btn btn-outline-secondary btn-sm d-flex align-items-center gap-1 shadow-sm",
-                      data: { turbo_frame: "invoices_content" } do %>
+                      data: { turbo_frame: "invoices_content", turbo_action: "advance" } do %>
               <span class="material-symbols-outlined fs-6">filter_alt_off</span>
               <span><%= t('invoice.clear_filter') %></span>
             <% end %>
@@ -104,5 +112,5 @@
         <% end %>
       <% end %>
     </div>
-    <%= render "landlord_portal/invoices/invoices_table", house: house, invoices: invoices, billing_month: billing_month %>
+    <%= render "landlord_portal/invoices/invoices_table", house: house, invoices: invoices, billing_month: billing_month, current_tenants_only: is_current_only %>
   <% end %>

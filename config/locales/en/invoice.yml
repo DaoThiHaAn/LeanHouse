@@ -206,6 +206,7 @@ en:
       add_addition: "+ Add Surcharge"
       add_discount: "+ Add Discount"
       detail_and_qr: "Details & QR"
+      edit: "Edit"
       close: "Close"
     no_invoices: "No invoices in %{month}"
     no_invoices_hint: "Click \"Issue New Invoice\" to generate bills for rooms."
@@ -270,5 +271,3 @@ en:
     upload_meter_photo_label: "Capture or upload meter photo"
     previously_uploaded_photo: "Previously uploaded photo:"
     submit_reading_btn_text: "Submit Reading & Proof Photo"
-
-

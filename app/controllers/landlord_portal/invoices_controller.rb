@@ -101,11 +101,20 @@ class LandlordPortal::InvoicesController < LandlordPortal::BaseController
 
   def update
     if Invoices::UpdateService.call(invoice: @invoice, house: @house, params: invoice_update_params)
-      redirect_to landlord_house_invoice_path(@house, @invoice), notice: t("invoice.update_success")
+      @billing_month = @invoice.billing_month
+      load_invoices_and_stats
+      flash.now[:notice] = t("invoice.update_success")
+      respond_to do |format|
+        format.turbo_stream
+        format.html { redirect_to landlord_house_invoice_path(@house, @invoice), notice: t("invoice.update_success") }
+      end
     else
       flash.now[:alert] = @invoice.errors.full_messages.to_sentence
       @bank_accounts = @landlord.bank_accounts.includes(:bank).default_first
-      render :edit, status: :unprocessable_entity
+      respond_to do |format|
+        format.turbo_stream { render :edit, status: :unprocessable_entity }
+        format.html { render :edit, status: :unprocessable_entity }
+      end
     end
   end
 
@@ -140,15 +149,18 @@ class LandlordPortal::InvoicesController < LandlordPortal::BaseController
     Date.current.beginning_of_month
   end
 
+  INVOICES_PER_PAGE = 15
+
   def load_invoices_and_stats
     @current_tenants_only = params[:current_tenants_only].nil? || params[:current_tenants_only] == "1"
-    @invoices = Invoices::FilterService.call(
+    filtered_scope = Invoices::FilterService.call(
       house: @house,
       params: params,
       billing_month: @billing_month,
       current_tenants_only: @current_tenants_only
     )
-    @stats = Invoices::StatsService.call(invoices: @invoices)
+    @stats = Invoices::StatsService.call(invoices: filtered_scope)
+    @invoices = filtered_scope.page(params[:page]).per(INVOICES_PER_PAGE)
   end
 
   def set_invoice
