@@ -1,152 +1,174 @@
 <%# Locals: house, room, logs %>
-<%= turbo_frame_tag "room_logs_table" do %>
+<%= turbo_frame_tag "room_logs_table",
+      data: {
+        controller: "pagination-sync",
+        pagination_sync_canonical_url_value: landlord_house_room_service_usage_logs_path(house, room),
+        pagination_sync_default_params_value: { room_id: room.id.to_s }.to_json,
+        pagination_sync_query_params_value: ["month", "service_id", "status"].to_json,
+        pagination_sync_total_pages_selector_value: "[data-pagination-total-pages]",
+        action: "turbo:frame-load->pagination-sync#updateUrl"
+      } do %>
+  <span hidden data-pagination-total-pages="<%= logs.respond_to?(:total_pages) ? logs.total_pages : 1 %>"></span>
+
   <% if logs.empty? %>
-    <div class="card bg-light border-0 text-center py-5 rounded-4 mx-auto">
-      <span class="material-symbols-outlined text-secondary fs-1 mb-2">fact_check</span>
-      <p class="fs-5 fw-bold mb-1"><%= t("service_usage_logs.no_logs_room") %></p>
-      <p class="text-secondary small"><%= t("service_usage_logs.no_logs_room_hint") %></p>
-    </div>
-  <% else %>
-    <div class="table-responsive bg-white rounded-3 shadow-sm border">
-      <table class="table table-hover align-middle mb-0">
-        <thead class="table-light">
-          <tr>
-            <th class="ps-3"><%= t("service_usage_logs.billing_month") %></th>
-            <th><%= t("form.service.self") %></th>
-            <th><%= t("invoice.prev_reading") %></th>
-            <th><%= t("invoice.latest_reading") %></th>
-            <th><%= t("invoice.consumption") %></th>
-            <th><%= t("invoice.amount") %></th>
-            <th><%= t("invoice.meter_photo") %></th>
-            <th><%= t("invoice.submitter") %></th>
-            <th><%= t("common.status") %></th>
-            <th class="text-end pe-3"><%= t("actions") %></th>
-          </tr>
-        </thead>
-        <tbody>
-          <% logs.each do |log| %>
-            <tr id="<%= dom_id(log) %>">
-              <!-- Billing Month -->
-              <td class="ps-3 fw-bold text-dark">
-                <%= log.billing_month.strftime("%m/%Y") %>
-              </td>
+  <div class="card bg-light border-0 text-center py-5 rounded-4 mx-auto">
+    <span class="material-symbols-outlined text-secondary fs-1 mb-2">fact_check</span>
+    <p class="fs-5 fw-bold mb-1"><%= t("service_usage_logs.no_logs_room") %></p>
+    <p class="text-secondary small"><%= t("service_usage_logs.no_logs_room_hint") %></p>
+  </div>
+<% else %>
+  <div class="table-responsive bg-white rounded-3 shadow-sm border">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th class="ps-3"><%= t("service_usage_logs.billing_month") %></th>
+          <th><%= t("form.service.self") %></th>
+          <th><%= t("invoice.prev_reading") %></th>
+          <th><%= t("invoice.latest_reading") %></th>
+          <th><%= t("invoice.consumption") %></th>
+          <th><%= t("invoice.amount") %></th>
+          <th><%= t("invoice.meter_photo") %></th>
+          <th><%= t("invoice.submitter") %></th>
+          <th><%= t("common.status") %></th>
+          <th class="text-center pe-3"><%= t("actions") %></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% logs.each do |log| %>
+          <tr id="<%= dom_id(log) %>">
+            <!-- Billing Month -->
+            <td class="ps-3 fw-bold text-dark">
+              <%= log.billing_month.strftime("%m/%Y") %>
+            </td>
 
-              <!-- Service -->
-              <td>
-                <span class="badge bg-secondary-subtle text-secondary border">
-                  <%= log.service_name %> (<%= log.unit %>)
+            <!-- Service -->
+            <td>
+              <span class="badge bg-secondary-subtle text-secondary border">
+                <%= log.service_name %> (<%= log.unit %>)
+              </span>
+            </td>
+
+            <!-- Previous Reading -->
+            <td class="text-secondary">
+              <%= log.real_time? ? log.prev_reading : "-" %>
+            </td>
+
+            <!-- Latest Reading -->
+            <td class="fw-bold text-primary">
+              <% if log.real_time? %>
+                <%= log.latest_reading.present? ? log.latest_reading : "-" %>
+              <% else %>
+                <span class="text-secondary">-</span>
+              <% end %>
+            </td>
+
+            <!-- Consumption -->
+            <td>
+              <% if log.usage_quantity.present? %>
+                <span class="fw-bold text-success">+<%= log.usage_quantity %> <%= log.unit %></span>
+              <% else %>
+                <span class="text-secondary">-</span>
+              <% end %>
+            </td>
+
+            <!-- Amount -->
+            <td class="fw-semibold text-dark">
+              <%= number_with_delimiter(log.total_amount) %> đ
+            </td>
+
+            <!-- Meter Photo -->
+            <td>
+              <% if log.reading_photo.attached? %>
+                <a href="<%= url_for(log.reading_photo) %>" target="_blank" rel="noopener" class="d-inline-block position-relative" title="<%= t('service_usage_logs.view_full_photo') %>">
+                  <%= image_tag log.reading_photo.variant(resize_to_limit: [50, 50]), class: "rounded border shadow-sm", alt: t("invoice.meter_photo") %>
+                </a>
+              <% else %>
+                <span class="text-secondary small fst-italic"><%= t("invoice.no_photo") %></span>
+              <% end %>
+            </td>
+
+            <!-- Submitter -->
+            <td class="small">
+              <% if log.submitted_by.is_a?(User) %>
+                <span class="fw-semibold"><%= log.submitted_by.fullname %></span>
+                <span class="text-secondary d-block small">(<%= log.submitted_by.tenant? ? t("invoice.submitted_by_tenant") : t("invoice.submitted_by_landlord") %>)</span>
+              <% else %>
+                <span class="text-secondary"><%= t("invoice.landlord_label") %></span>
+              <% end %>
+            </td>
+
+            <!-- Status -->
+            <td>
+              <% if log.is_confirmed? %>
+                <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 d-inline-flex align-items-center gap-1">
+                  <span class="material-symbols-outlined fs-6">check_circle</span>
+                  <%= t("invoice.status_confirmed") %>
                 </span>
-              </td>
+              <% else %>
+                <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle px-2 py-1 d-inline-flex align-items-center gap-1">
+                  <span class="material-symbols-outlined fs-6">schedule</span>
+                  <%= t("invoice.status_unconfirmed") %>
+                </span>
+              <% end %>
 
-              <!-- Previous Reading -->
-              <td class="font-monospace text-secondary">
-                <%= log.real_time? ? log.prev_reading : "-" %>
-              </td>
+              <% if log.billed? %>
+                <span class="badge bg-info-subtle text-info-emphasis border border-info-subtle px-2 py-1 ms-1">
+                  <%= t("invoice.status_billed") %>
+                </span>
+              <% end %>
+            </td>
 
-              <!-- Latest Reading -->
-              <td class="font-monospace fw-bold text-primary">
-                <% if log.real_time? %>
-                  <%= log.latest_reading.present? ? log.latest_reading : "-" %>
-                <% else %>
-                  <span class="text-secondary">-</span>
-                <% end %>
-              </td>
-
-              <!-- Consumption -->
-              <td>
-                <% if log.usage_quantity.present? %>
-                  <span class="fw-bold text-success font-monospace">+<%= log.usage_quantity %> <%= log.unit %></span>
-                <% else %>
-                  <span class="text-secondary">-</span>
-                <% end %>
-              </td>
-
-              <!-- Amount -->
-              <td class="font-monospace fw-semibold text-dark">
-                <%= number_with_delimiter(log.total_amount) %> đ
-              </td>
-
-              <!-- Meter Photo -->
-              <td>
-                <% if log.reading_photo.attached? %>
-                  <a href="<%= url_for(log.reading_photo) %>" target="_blank" rel="noopener" class="d-inline-block position-relative" title="<%= t('service_usage_logs.view_full_photo') %>">
-                    <%= image_tag log.reading_photo.variant(resize_to_limit: [50, 50]), class: "rounded border shadow-sm", alt: t("invoice.meter_photo") %>
-                  </a>
-                <% else %>
-                  <span class="text-secondary small fst-italic"><%= t("invoice.no_photo") %></span>
-                <% end %>
-              </td>
-
-              <!-- Submitter -->
-              <td class="small">
-                <% if log.submitted_by.is_a?(User) %>
-                  <span class="fw-semibold"><%= log.submitted_by.fullname %></span>
-                  <span class="text-secondary d-block small">(<%= log.submitted_by.tenant? ? t("invoice.submitted_by_tenant") : t("invoice.submitted_by_landlord") %>)</span>
-                <% else %>
-                  <span class="text-secondary"><%= t("invoice.landlord_label") %></span>
-                <% end %>
-              </td>
-
-              <!-- Status -->
-              <td>
-                <% if log.is_confirmed? %>
-                  <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 d-inline-flex align-items-center gap-1">
-                    <span class="material-symbols-outlined fs-6">check_circle</span>
-                    <%= t("invoice.status_confirmed") %>
-                  </span>
-                <% else %>
-                  <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle px-2 py-1 d-inline-flex align-items-center gap-1">
-                    <span class="material-symbols-outlined fs-6">schedule</span>
-                    <%= t("invoice.status_unconfirmed") %>
-                  </span>
-                <% end %>
-
-                <% if log.billed? %>
-                  <span class="badge bg-info-subtle text-info-emphasis border border-info-subtle px-2 py-1 ms-1">
-                    <%= t("invoice.status_billed") %>
-                  </span>
-                <% end %>
-              </td>
-
-              <!-- Actions -->
-              <td class="text-end pe-3">
-                <div class="d-inline-flex gap-1">
-                  <!-- Confirm action (if not confirmed yet) -->
-                  <% unless log.is_confirmed? %>
-                    <%= button_to confirm_landlord_house_service_usage_log_path(house, log, room_id: room.id),
-                                  method: :patch,
-                                  class: "btn btn-sm btn-success d-inline-flex align-items-center gap-1",
-                                  title: t("invoice.confirm_log_title") do %>
-                      <span class="material-symbols-outlined fs-6">check</span>
-                      <span><%= t("invoice.confirm_log") %></span>
-                    <% end %>
+            <!-- Actions -->
+            <td class="text-center pe-3">
+              <div class="d-flex align-items-center justify-content-center gap-2">
+                <!-- Confirm action (if not confirmed yet) -->
+                <% unless log.is_confirmed? %>
+                  <%= button_to confirm_landlord_house_service_usage_log_path(house, log, room_id: room.id),
+                                method: :patch,
+                                class: "table-action text-success border-0 bg-transparent p-0",
+                                title: t("invoice.confirm_log_title") do %>
+                    <span class="material-symbols-filled">check_circle</span>
                   <% end %>
+                <% end %>
 
-                  <!-- Edit action (allowed for landlord if not billed) -->
-                  <% unless log.billed? %>
-                    <%= link_to edit_landlord_house_service_usage_log_path(house, log, from_room: true),
-                                class: "btn btn-sm btn-outline-secondary",
-                                title: t("edit") do %>
-                      <span class="material-symbols-outlined fs-6">edit</span>
-                    <% end %>
+                <!-- Edit action (allowed for landlord if not billed) -->
+                <% unless log.billed? %>
+                  <%= link_to edit_landlord_house_service_usage_log_path(house, log, from_room: true),
+                              class: "table-action",
+                              data: { turbo_frame: "_top" },
+                              title: t("edit") do %>
+                    <span class="material-symbols-filled">edit</span>
                   <% end %>
+                <% end %>
 
-                  <!-- Delete action (allowed if not billed) -->
-                  <% unless log.billed? %>
-                    <%= button_to landlord_house_service_usage_log_path(house, log, from_room: true),
-                                  method: :delete,
-                                  data: { turbo_confirm: t("invoice.delete_log_confirm") },
-                                  class: "btn btn-sm btn-outline-danger",
-                                  title: t("delete") do %>
-                      <span class="material-symbols-outlined fs-6">delete</span>
-                    <% end %>
+                <!-- Delete action (allowed if not billed) -->
+                <% unless log.billed? %>
+                  <%= button_to landlord_house_service_usage_log_path(house, log, from_room: true),
+                                method: :delete,
+                                data: { turbo_confirm: t("invoice.delete_log_confirm") },
+                                class: "table-action text-danger-emphasis border-0 bg-transparent p-0",
+                                title: t("delete") do %>
+                    <span class="material-symbols-filled">delete</span>
                   <% end %>
-                </div>
-              </td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
+                <% end %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <% if logs.respond_to?(:total_pages) && logs.total_pages > 1 %>
+    <div class="mt-4 d-flex justify-content-center">
+      <%= paginate logs,
+                   params: {
+                     month: params[:month].presence,
+                     service_id: params[:service_id].presence,
+                     status: params[:status].presence,
+                     room_id: room.id
+                   } %>
     </div>
   <% end %>
+<% end %>
 <% end %>

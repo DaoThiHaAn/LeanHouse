@@ -146,7 +146,27 @@ class LandlordPortal::ServiceUsageLogsController < LandlordPortal::BaseControlle
     else
       redirect_path = determine_redirect_path(@log)
       @log.destroy
-      redirect_to redirect_path, notice: t("service_usage_logs.delete_success", default: "Đã xóa chỉ số thành công!")
+      respond_to do |format|
+        format.turbo_stream do
+          flash.now[:notice] = t("service_usage_logs.delete_success", default: "Đã xóa chỉ số thành công!")
+          if from_room_context?
+            @room = @log.room
+            @logs = LandlordServiceUsageLogsFilter.call(house: @house, room: @room, params: params)
+            render turbo_stream: [
+              turbo_stream.replace("room_logs_table", partial: "room_logs_table", locals: { house: @house, room: @room, logs: @logs }),
+              turbo_stream.update("flash", partial: "layouts/shared_components/flash_message")
+            ]
+          else
+            @billing_month = @log.billing_month
+            @logs = LandlordServiceUsageLogsFilter.call(house: @house, params: params.reverse_merge(month: @billing_month.strftime("%Y-%m")))
+            render turbo_stream: [
+              turbo_stream.replace("logs_table", partial: "logs_table", locals: { house: @house, logs: @logs, billing_month: @billing_month }),
+              turbo_stream.update("flash", partial: "layouts/shared_components/flash_message")
+            ]
+          end
+        end
+        format.html { redirect_to redirect_path, notice: t("service_usage_logs.delete_success", default: "Đã xóa chỉ số thành công!") }
+      end
     end
   end
 

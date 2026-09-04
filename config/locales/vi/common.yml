@@ -91,6 +91,10 @@ vi:
   total: "Tổng"
   all: "Tất cả"
   actions: "Hành động"
+  note: "Ghi chú"
+  common:
+    month: "Tháng"
+    status: "Trạng thái"
   loading: "Đang tải"
   filtering: "Đang lọc"
   filter: "Lọc"

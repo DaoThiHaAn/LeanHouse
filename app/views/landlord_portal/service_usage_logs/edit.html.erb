@@ -26,12 +26,12 @@
         <div class="row g-3">
           <div class="col-md-6">
             <%= f.label :prev_reading, t("invoice.prev_reading_label", unit: @log.unit), class: "form-label fw-semibold" %>
-            <%= f.number_field :prev_reading, class: "form-control shadow-sm font-monospace", required: true %>
+            <%= f.number_field :prev_reading, class: "form-control shadow-sm", required: true %>
           </div>
 
           <div class="col-md-6">
             <%= f.label :latest_reading, t("invoice.latest_reading_label", unit: @log.unit), class: "form-label fw-semibold text-primary" %>
-            <%= f.number_field :latest_reading, class: "form-control shadow-sm font-monospace fw-bold", required: true %>
+            <%= f.number_field :latest_reading, class: "form-control shadow-sm fw-bold", required: true %>
           </div>
 
           <div class="col-md-12">

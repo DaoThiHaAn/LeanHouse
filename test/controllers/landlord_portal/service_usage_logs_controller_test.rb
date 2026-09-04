@@ -77,7 +77,8 @@ class LandlordPortal::ServiceUsageLogsControllerTest < ActionDispatch::Integrati
   test "should get house service usage logs index scoped to service" do
     get landlord_house_service_usage_logs_path(@house, service_id: @service.id)
     assert_response :success
-    assert_select "span.badge", text: /#{@service.name}/
+    assert_select "nav[aria-label='breadcrumb']", text: /#{@service.name}/
+    assert_select "h2", text: /#{@service.name}/
   end
 
   test "should get dedicated room service usage logs index" do

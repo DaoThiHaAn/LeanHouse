@@ -24,8 +24,8 @@
                 </div>
 
                 <!-- Change house Button -->
-                <button type="button" 
-                        class="other-house-btn d-flex align-items-center rounded-circle" 
+                <button type="button"
+                        class="other-house-btn d-flex align-items-center rounded-circle"
                         title="<%= t('bar.other_houses') %>">
                     <%= link_to other_houses_landlord_house_path(house), data: {turbo_frame: "other_houses"} do %>
                         <span class="material-symbols-outlined">more_vert</span>
@@ -54,8 +54,8 @@
         <% end %>
 
         <%= link_to landlord_house_assets_path(house),
-                    class: class_names("card", 
-                                        "other-card", 
+                    class: class_names("card",
+                                        "other-card",
                                         active: ["assets", "maintenance_logs"].include?(controller_name)) do %>
             <div class="card-body p-0 d-flex flex-column gap-1 align-items-center justify-content-center">
                 <%= image_tag "property.png", alt: "Property Icon" %>
@@ -65,7 +65,7 @@
             </div>
         <% end %>
 
-        <%= link_to landlord_house_services_path(house), class: class_names("card", "other-card", active: controller_name == "services") do %>
+        <%= link_to landlord_house_services_path(house), class: class_names("card", "other-card", active: ["services", "service_usage_logs"].include?(controller_name)) do %>
             <div class="card-body p-0 d-flex flex-column gap-1 align-items-center justify-content-center">
                 <%= image_tag "home-services.png", alt: "Home services Icon" %>
                 <h5 class="m-0 text-center card-title d-flex align-items-center">
@@ -83,7 +83,7 @@
             </div>
         <% end %>
 
-        <%= link_to landlord_house_invoices_path(house), class: class_names("card", "other-card", active: ["invoices", "service_usage_logs"].include?(controller_name)) do %>
+        <%= link_to landlord_house_invoices_path(house), class: class_names("card", "other-card", active: controller_name == "invoices") do %>
             <div class="card-body p-0 d-flex flex-column gap-1 align-items-center justify-content-center">
                 <%= image_tag "expenses.png", alt: "Invoice Icon" %>
                 <h5 class="m-0 text-center card-title d-flex align-items-center">

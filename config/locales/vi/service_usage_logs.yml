@@ -3,6 +3,8 @@ vi:
     room_logs_action: "Chỉ số dịch vụ"
     view_service_logs: "Theo dõi chỉ số"
     back_to_rooms: "Quay lại danh sách phòng"
+    service_title: "Chỉ số dịch vụ: %{service}"
+    service_subtitle: "Theo dõi lịch sử sử dụng và chốt chỉ số công tơ dịch vụ %{service}."
     room_logs_title: "Chỉ số dịch vụ - Phòng %{room}"
     room_logs_subtitle: "Theo dõi tất cả lịch sử ghi nhận dịch vụ và chốt công tơ của phòng."
     confirm_all_room_prompt: "Xác nhận toàn bộ %{count} chỉ số chưa duyệt của phòng %{room}?"

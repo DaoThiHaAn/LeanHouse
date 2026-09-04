@@ -11,6 +11,8 @@ class LandlordServiceUsageLogsFilter
     @params = params
   end
 
+  DEFAULT_PER_PAGE = 15
+
   def call
     scope = base_scope
     scope = apply_room(scope)
@@ -19,9 +21,15 @@ class LandlordServiceUsageLogsFilter
     scope = apply_date_filter(scope)
     scope = apply_status(scope)
 
-    scope
+    scope = scope
       .preload(:room, :service, :service_variant, :submitted_by, reading_photo_attachment: :blob)
       .order(billing_month: :desc, created_at: :desc)
+
+    if params[:paginate] == false || params[:paginate] == "false"
+      scope
+    else
+      scope.page(params[:page]).per(params[:per_page].presence || DEFAULT_PER_PAGE)
+    end
   end
 
   private
