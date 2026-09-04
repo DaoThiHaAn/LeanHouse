@@ -633,3 +633,9 @@
 .invoice-summary-row {
   max-width: 380px;
 }
+
+@media (max-width: 992px) {
+  .invoice-card {
+    max-width: 100%;
+  }
+}

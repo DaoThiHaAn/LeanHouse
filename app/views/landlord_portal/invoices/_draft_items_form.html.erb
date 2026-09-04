@@ -1,90 +1,121 @@
 <%= turbo_frame_tag "draft_items_form" do %>
-  <% unit_options = ServiceVariant.display_unit_options %>
-
-  <div class="card invoice-card mb-4"
-       data-controller="invoice-items"
-       data-invoice-items-addition-placeholder-value="<%= t('invoice.addition_placeholder') %>"
-       data-invoice-items-discount-placeholder-value="<%= t('invoice.discount_placeholder') %>"
-       data-invoice-items-delete-text-value="<%= t('invoice.actions.delete', default: 'Xóa dòng') %>"
-       data-invoice-items-unit-options-value="<%= ServiceVariant.human_units.to_json %>">
-    <div class="card-header bg-body-secondary py-3 border-bottom d-flex justify-content-between align-items-center">
-      <h2 class="mb-0 d-flex align-items-center gap-2">
-        <span class="material-symbols-outlined fs-2">receipt_long</span>
-        <span><%= t('invoice.item_or_service') %> (<%= t('common.month', default: 'Tháng') %> <%= billing_month.strftime("%m/%Y") %> - <%= room.title_name %>)</span>
-      </h2>
-      <span class="invoice-badge invoice-badge-room"><%= t('invoice.auto_calculated_badge', default: 'Tự động tính từ phòng & chỉ số') %></span>
+  <% if local_assigns[:room].nil? %>
+    <div class="card invoice-card mb-4 shadow-sm border-0 bg-white">
+      <div class="card-body p-5 text-center">
+        <div class="d-inline-flex align-items-center justify-content-center p-3 rounded-circle bg-primary-subtle text-primary mb-3">
+          <span class="material-symbols-outlined fs-1">meeting_room</span>
+        </div>
+        <h5 class="fw-bold text-dark mb-2"><%= t('invoice.select_room_first_title') %></h5>
+        <p class="text-secondary mb-0"><%= t('invoice.select_room_first_desc') %></p>
+      </div>
     </div>
+  <% else %>
+    <% unit_options = ServiceVariant.display_unit_options %>
 
-    <div class="table-responsive">
-      <table class="table invoice-table align-middle mb-0" id="invoice_items_table" data-invoice-items-target="table">
-        <thead>
-          <tr>
-            <th class="ps-3 text-center th-check"><%= t('invoice.actions.done', default: 'Thu') %></th>
-            <th><%= t('invoice.item_or_service') %></th>
-            <th class="th-unit"><%= t('invoice.unit') %></th>
-            <th class="th-price"><%= t('invoice.unit_price') %></th>
-            <th class="th-reading"><%= t('invoice.reading_or_qty') %></th>
-            <th class="text-end th-amount"><%= t('invoice.amount') %></th>
-            <th class="text-center pe-3 th-action"><%= t('invoice.actions.delete', default: 'Xóa') %></th>
-          </tr>
-        </thead>
+    <div class="card invoice-card mb-4"
+         data-controller="invoice-items"
+         data-invoice-items-addition-placeholder-value="<%= t('invoice.addition_placeholder') %>"
+         data-invoice-items-discount-placeholder-value="<%= t('invoice.discount_placeholder') %>"
+         data-invoice-items-delete-text-value="<%= t('invoice.actions.delete', default: 'Xóa dòng') %>"
+         data-invoice-items-unit-options-value="<%= ServiceVariant.human_units.to_json %>">
+      <div class="card-header bg-body-secondary py-3 border-bottom d-flex justify-content-between align-items-center">
+        <div>
+          <h2 class="mb-2 d-flex align-items-center gap-2">
+            <span class="material-symbols-outlined fs-2">receipt_long</span>
+            <span><%= t('invoice.item_or_service') %> (<%= t('common.month', default: 'Tháng') %> <%= billing_month.strftime("%m/%Y") %> - <%= room.title_name %>)</span>
+          </h2>
+          <p class="w-75 text-info-emphasis ms-4"><%= t('invoice.service_note') %></p>
+        </div>
+        <span class="invoice-badge invoice-badge-room flex-shrink-0"><%= t('invoice.auto_calculated_badge', default: 'Tự động tính từ phòng & chỉ số') %></span>
+      </div>
 
-        <!-- 1. Tiền phòng & Dịch vụ tiêu chuẩn -->
-        <tbody id="standard_items_tbody">
-          <% draft_items.each_with_index do |item, idx| %>
-            <tr class="item-row standard-row" data-item-type="<%= item[:item_type] %>">
-              <td class="ps-3 text-center">
-                <input type="hidden" name="invoice[items][<%= idx %>][selected]" value="0" />
-                <input type="checkbox" name="invoice[items][<%= idx %>][selected]" value="1" <%= 'checked' if item[:selected] %> class="form-check-input item-select-check" data-action="change->invoice-items#recalculate" />
-                <input type="hidden" name="invoice[items][<%= idx %>][item_type]" value="<%= item[:item_type] %>" class="item-type-val" />
-                <input type="hidden" name="invoice[items][<%= idx %>][service_variant_id]" value="<%= item[:service_variant_id] %>" />
-                <input type="hidden" name="invoice[items][<%= idx %>][service_usage_log_id]" value="<%= item[:service_usage_log_id] %>" />
-                <input type="hidden" name="invoice[items][<%= idx %>][start_date]" value="<%= item[:start_date] %>" />
-                <input type="hidden" name="invoice[items][<%= idx %>][end_date]" value="<%= item[:end_date] %>" />
-              </td>
-              <td>
-                <input type="text" name="invoice[items][<%= idx %>][name]" value="<%= item[:name] %>" class="form-control form-control-sm fw-semibold item-name" />
-              </td>
-              <td>
-                <select name="invoice[items][<%= idx %>][unit]" class="form-select form-select-sm text-center item-unit">
-                  <% unit_options.each do |label, val| %>
-                    <% is_sel = (item[:unit].to_s.downcase == val.downcase || item[:unit].to_s.downcase == label.downcase) %>
-                    <option value="<%= val %>" <%= 'selected' if is_sel %>><%= label %></option>
-                  <% end %>
-                  <% if item[:unit].present? && unit_options.none? { |l, v| v.downcase == item[:unit].to_s.downcase || l.downcase == item[:unit].to_s.downcase } %>
-                    <option value="<%= item[:unit] %>" selected><%= item[:unit] %></option>
-                  <% end %>
-                </select>
-              </td>
-              <td>
-                <input type="number" min="0" step="1000" name="invoice[items][<%= idx %>][unit_price]" value="<%= item[:unit_price] %>" class="form-control form-control-sm font-monospace text-end item-price invoice-input-price" data-action="input->invoice-items#calculateRow" />
-              </td>
-              <td>
-                <% if item[:item_type] == :metered_service %>
-                  <div class="d-flex flex-column gap-1">
-                    <div class="input-group input-group-sm">
-                      <span class="input-group-text py-0 text-secondary invoice-reading-label"><%= t('invoice.prev_reading') %></span>
-                      <input type="number" min="0" name="invoice[items][<%= idx %>][prev_reading]" value="<%= item[:prev_reading] %>" class="form-control font-monospace item-prev-reading" data-action="input->invoice-items#calculateRow" placeholder="<%= t('invoice.prev_reading') %>" />
-                    </div>
-                    <div class="input-group input-group-sm">
-                      <span class="input-group-text py-0 text-primary fw-bold invoice-reading-label"><%= t('invoice.latest_reading') %></span>
-                      <input type="number" min="0" name="invoice[items][<%= idx %>][latest_reading]" value="<%= item[:latest_reading] %>" class="form-control font-monospace fw-bold text-primary item-latest-reading" data-action="input->invoice-items#calculateRow" placeholder="<%= t('invoice.latest_reading') %>" />
-                    </div>
-                  </div>
-                  <input type="hidden" name="invoice[items][<%= idx %>][quantity]" value="<%= item[:quantity] %>" class="item-qty" />
-                <% else %>
-                  <input type="number" min="0" step="0.1" name="invoice[items][<%= idx %>][quantity]" value="<%= item[:quantity] %>" class="form-control form-control-sm font-monospace text-center item-qty invoice-input-qty" data-action="input->invoice-items#calculateRow" />
-                <% end %>
-              </td>
-              <td class="text-end">
-                <input type="number" readonly="readonly" name="invoice[items][<%= idx %>][amount]" value="<%= item[:amount] %>" class="form-control form-control-sm font-monospace text-end item-amount fw-bold text-dark bg-light-subtle invoice-input-amount" />
-              </td>
-              <td class="text-center pe-3 text-secondary">
-                -
-              </td>
+      <div class="table-responsive">
+        <table class="table invoice-table align-middle mb-0" id="invoice_items_table" data-invoice-items-target="table">
+          <thead>
+            <tr>
+              <th class="ps-3 text-center th-check"><%= t('invoice.actions.done', default: 'Thu') %></th>
+              <th><%= t('invoice.item_or_service') %></th>
+              <th class="th-unit"><%= t('invoice.unit') %></th>
+              <th class="th-price"><%= t('invoice.unit_price') %></th>
+              <th class="th-reading"><%= t('invoice.reading_or_qty') %></th>
+              <th class="text-end th-amount"><%= t('invoice.amount') %></th>
+              <th class="text-center pe-3 th-action"><%= t('invoice.actions.delete', default: 'Xóa') %></th>
             </tr>
-          <% end %>
-        </tbody>
+          </thead>
+
+          <!-- 1. Tiền phòng & Dịch vụ tiêu chuẩn -->
+          <tbody id="standard_items_tbody">
+            <% draft_items.each_with_index do |item, idx| %>
+              <tr class="item-row standard-row" data-item-type="<%= item[:item_type] %>">
+                <td class="ps-3 text-center">
+                  <input type="hidden" name="invoice[items][<%= idx %>][selected]" value="0" />
+                  <input type="checkbox" name="invoice[items][<%= idx %>][selected]" value="1" <%= 'checked' if item[:selected] != false %> class="form-check-input item-select-check" data-action="change->invoice-items#recalculate" />
+                  <input type="hidden" name="invoice[items][<%= idx %>][item_type]" value="<%= item[:item_type] %>" class="item-type-val" />
+                  <input type="hidden" name="invoice[items][<%= idx %>][service_variant_id]" value="<%= item[:service_variant_id] %>" />
+                  <input type="hidden" name="invoice[items][<%= idx %>][service_usage_log_id]" value="<%= item[:service_usage_log_id] %>" />
+                  <input type="hidden" name="invoice[items][<%= idx %>][start_date]" value="<%= item[:start_date] %>" />
+                  <input type="hidden" name="invoice[items][<%= idx %>][end_date]" value="<%= item[:end_date] %>" />
+                </td>
+                <td>
+                  <% if item[:item_type].to_sym == :rent %>
+                    <input type="text" readonly="readonly" name="invoice[items][<%= idx %>][name]" value="<%= item[:name] %>" class="form-control form-control-sm fw-semibold item-name bg-light-subtle" />
+                  <% else %>
+                    <input type="text" name="invoice[items][<%= idx %>][name]" value="<%= item[:name] %>" class="form-control form-control-sm fw-semibold item-name" />
+                  <% end %>
+                </td>
+                <td>
+                  <% if item[:item_type].to_sym == :rent %>
+                    <div class="d-flex justify-content-center">
+                      <input type="hidden" name="invoice[items][<%= idx %>][unit]" value="tháng" class="item-unit" />
+                      <span class="badge bg-secondary-subtle text-secondary-emphasis border px-2 py-1"><%= t('invoice.rent_unit_month') %></span>
+                    </div>
+                  <% else %>
+                    <select name="invoice[items][<%= idx %>][unit]" class="form-select form-select-sm text-center item-unit">
+                      <% unit_options.each do |label, val| %>
+                        <% is_sel = (item[:unit].to_s.downcase == val.downcase || item[:unit].to_s.downcase == label.downcase) %>
+                        <option value="<%= val %>" <%= 'selected' if is_sel %>><%= label %></option>
+                      <% end %>
+                      <% if item[:unit].present? && unit_options.none? { |l, v| v.downcase == item[:unit].to_s.downcase || l.downcase == item[:unit].to_s.downcase } %>
+                        <option value="<%= item[:unit] %>" selected><%= item[:unit] %></option>
+                      <% end %>
+                    </select>
+                  <% end %>
+                </td>
+                <td>
+                  <% if item[:item_type].to_sym == :rent %>
+                    <input type="number" readonly="readonly" min="0" step="1000" name="invoice[items][<%= idx %>][unit_price]" value="<%= item[:unit_price] %>" class="form-control form-control-sm font-monospace text-end item-price bg-light-subtle invoice-input-price" data-action="input->invoice-items#calculateRow" />
+                  <% else %>
+                    <input type="number" min="0" step="1000" name="invoice[items][<%= idx %>][unit_price]" value="<%= item[:unit_price] %>" class="form-control form-control-sm font-monospace text-end item-price invoice-input-price" data-action="input->invoice-items#calculateRow" />
+                  <% end %>
+                </td>
+                <td>
+                  <% if item[:item_type].to_sym == :rent %>
+                    <input type="number" min="1" step="0.5" name="invoice[items][<%= idx %>][quantity]" value="<%= item[:quantity].presence || 1 %>" class="form-control form-control-sm font-monospace text-center item-qty invoice-input-qty" data-action="input->invoice-items#calculateRow" />
+                  <% elsif item[:item_type].to_sym == :metered_service %>
+                    <div class="d-flex flex-column gap-1">
+                      <div class="input-group input-group-sm">
+                        <span class="input-group-text py-0 text-secondary invoice-reading-label"><%= t('invoice.prev_reading') %></span>
+                        <input type="number" min="0" name="invoice[items][<%= idx %>][prev_reading]" value="<%= item[:prev_reading] %>" class="form-control font-monospace item-prev-reading" data-action="input->invoice-items#calculateRow" placeholder="<%= t('invoice.prev_reading') %>" />
+                      </div>
+                      <div class="input-group input-group-sm">
+                        <span class="input-group-text py-0 text-primary fw-bold invoice-reading-label"><%= t('invoice.latest_reading') %></span>
+                        <input type="number" min="0" name="invoice[items][<%= idx %>][latest_reading]" value="<%= item[:latest_reading] %>" class="form-control font-monospace fw-bold text-primary item-latest-reading" data-action="input->invoice-items#calculateRow" placeholder="<%= t('invoice.latest_reading') %>" />
+                      </div>
+                    </div>
+                    <input type="hidden" name="invoice[items][<%= idx %>][quantity]" value="<%= item[:quantity] %>" class="item-qty" />
+                  <% else %>
+                    <input type="number" min="0" step="0.1" name="invoice[items][<%= idx %>][quantity]" value="<%= item[:quantity] %>" class="form-control form-control-sm font-monospace text-center item-qty invoice-input-qty" data-action="input->invoice-items#calculateRow" />
+                  <% end %>
+                </td>
+                <td class="text-end">
+                  <input type="number" readonly="readonly" name="invoice[items][<%= idx %>][amount]" value="<%= item[:amount] %>" class="form-control form-control-sm font-monospace text-end item-amount fw-bold text-dark bg-light-subtle invoice-input-amount" />
+                </td>
+                <td class="text-center pe-3 text-secondary">
+                  -
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
 
         <!-- 2. Section: Phụ phí & Khoản cộng thêm (+) -->
         <tbody>
@@ -221,4 +252,5 @@
       </div>
     </div>
   </div>
+  <% end %>
 <% end %>

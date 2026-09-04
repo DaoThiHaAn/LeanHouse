@@ -552,4 +552,105 @@ class LandlordPortal::InvoicesControllerTest < ActionDispatch::IntegrationTest
     assert_includes t2_noti.message, "Chưa đối soát được tài khoản"
     assert_includes t2_noti.message, "Room 301"
   end
+
+  test "new invoice form renders two separate cards with floor dropdown and empty room prompt by default" do
+    sign_in_as(@landlord_user)
+
+    get new_landlord_house_invoice_path(@house)
+    assert_response :success
+
+    # Two distinct cards: General Info & Target Scope
+    assert_select "h2", text: /#{I18n.t('general_info')}/
+    assert_select "h2", text: /#{I18n.t('invoice.target_scope')}/
+
+    # Floor dropdown is present
+    assert_select "select#floor_select" do
+      assert_select "option[value='']", text: I18n.t("invoice.all_floors_option")
+      assert_select "option[value='#{@floor1.id}']", text: @floor1.title_name
+    end
+
+    # Room dropdown only lists occupied rooms (@room1), NOT vacant rooms (@room2)
+    assert_select "select#room_select" do
+      assert_select "option[value='#{@room1.id}']"
+      assert_select "option[value='#{@room2.id}']", 0
+    end
+
+    # By default without room_id, prompt asking to select room first is displayed
+    assert_select "h5", text: I18n.t("invoice.select_room_first_title")
+    assert_select "p", text: I18n.t("invoice.select_room_first_desc")
+    assert_select "table#invoice_items_table", 0
+
+    # Billing month tooltip info icon
+    assert_select "span.material-symbols-outlined[data-controller='tooltip'][data-bs-toggle='tooltip']", text: "info"
+  end
+
+  test "new invoice form with preselected occupied room renders draft items with rent row" do
+    sign_in_as(@landlord_user)
+
+    get new_landlord_house_invoice_path(@house, room_id: @room1.id)
+    assert_response :success
+
+    # Draft items table is rendered
+    assert_select "table#invoice_items_table" do
+      # Rent row
+      assert_select "tr[data-item-type='rent']" do
+        assert_select "input[type='checkbox'].item-select-check[checked]"
+        assert_select "input.item-name[readonly='readonly']"
+        assert_select "input.item-price[readonly='readonly']"
+        assert_select "span.badge", text: I18n.t("invoice.rent_unit_month")
+        assert_select "input.item-qty[min='1']"
+      end
+    end
+  end
+
+  test "preview endpoint returns empty prompt when room_id is blank, and draft items when room_id is present" do
+    sign_in_as(@landlord_user)
+
+    # Empty room_id preview
+    get preview_landlord_house_invoices_path(@house, room_id: "")
+    assert_response :success
+    assert_select "h5", text: I18n.t("invoice.select_room_first_title")
+    assert_select "table#invoice_items_table", 0
+
+    # With room_id preview
+    get preview_landlord_house_invoices_path(@house, room_id: @room1.id)
+    assert_response :success
+    assert_select "table#invoice_items_table"
+  end
+
+  test "individual invoice for room-mode room divides rent equally among staying tenants" do
+    # When 2 active occupants are in @room1
+    @room1.update!(tenants_count: 2)
+
+    calculator = Invoices::DraftCalculator.new(
+      room: @room1,
+      billing_month: @billing_month,
+      invoice_type: "individual",
+      tenant: @tenant
+    )
+    items = calculator.build_items
+    rent_item = items.find { |i| i[:item_type] == :rent }
+
+    assert_not_nil rent_item
+    # Total rent is 3,000,000, 2 active occupants -> 1,500,000
+    assert_equal 1_500_000, rent_item[:unit_price]
+    assert_equal 1_500_000, rent_item[:amount]
+    assert_equal "tháng", rent_item[:unit]
+  end
+
+  test "submitting create without room returns unprocessable entity with alert" do
+    sign_in_as(@landlord_user)
+
+    post landlord_house_invoices_path(@house),
+         params: {
+           invoice: {
+             title: "Hóa đơn test",
+             billing_month: @billing_month.strftime("%Y-%m"),
+             room_id: ""
+           }
+         }
+
+    assert_response :unprocessable_entity
+    assert_includes flash[:alert], I18n.t("invoice.select_room_prompt")
+  end
 end

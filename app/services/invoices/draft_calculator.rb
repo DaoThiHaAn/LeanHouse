@@ -34,17 +34,23 @@ module Invoices
     def build_rent_item
       if invoice_type == "individual" && tenant.present?
         stay = house.tenant_stay_for(tenant.id)
-        rent_amount = stay&.rental_unit&.rent || 0
+        total_rent = stay&.rental_unit&.rent || 0
+        rent_amount = if house.bed?
+          total_rent
+        else
+          (total_rent.to_f / active_tenants_count).round
+        end
+
         location = if house.bed?
                      stay&.rental_unit&.location_info || "#{room.title_name} (Giường)"
         else
                      stay&.rental_unit&.location_info || room.title_name
         end
-        unit_label = house.bed? ? "giường" : "tháng"
+
         {
           item_type: :rent,
           name: "Tiền thuê #{location}",
-          unit: unit_label,
+          unit: "tháng",
           unit_price: rent_amount,
           quantity: 1.0,
           amount: rent_amount,
