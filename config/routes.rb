@@ -91,6 +91,11 @@ Rails.application.routes.draw do
         collection do # act on the collection of records
           get :filtered
         end
+        resources :service_usage_logs, only: %i[index] do
+          collection do
+            patch :confirm_all
+          end
+        end
       end
 
       resources :floors, only: [ :update, :destroy, :new, :create ] do

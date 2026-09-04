@@ -21,12 +21,36 @@ class ServiceUsageLog < ApplicationRecord
   scope :for_month,   ->(month) { where(billing_month: month.to_date.beginning_of_month) }
   scope :sorted,      -> { order(billing_month: :desc, created_at: :desc) }
 
+  def billing_month=(val)
+    if val.is_a?(String) && val.match?(/\A\d{4}-\d{2}\z/)
+      super(Date.parse("#{val}-01").beginning_of_month)
+    elsif val.is_a?(String) && val.present?
+      begin
+        super(Date.parse(val).beginning_of_month)
+      rescue ArgumentError
+        super(nil)
+      end
+    else
+      super(val&.to_date&.beginning_of_month)
+    end
+  end
+
+  attr_accessor :allow_landlord_override
+
   def billed?
     invoice_id.present?
   end
 
   def can_be_edited_by_tenant?
     !is_confirmed? && !billed?
+  end
+
+  def real_time?
+    service_variant&.is_real_time? || false
+  end
+
+  def total_amount
+    (usage_quantity || 0) * (unit_price || 0)
   end
 
   def compute_usage
@@ -38,6 +62,8 @@ class ServiceUsageLog < ApplicationRecord
   private
 
   def prevent_modification_when_confirmed
+    return if allow_landlord_override
+
     # If it was confirmed and confirmed state is not being toggled, lock readings and photo from being changed
     if is_confirmed_was && !is_confirmed_changed?
       if latest_reading_changed? || prev_reading_changed? || start_date_changed? || end_date_changed?

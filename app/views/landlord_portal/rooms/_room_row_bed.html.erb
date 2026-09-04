@@ -8,6 +8,12 @@
   <%# Actions %>
   <td>
     <div class="d-flex align-items-center justify-content-center gap-2">
+      <%= link_to landlord_house_room_service_usage_logs_path(house, room),
+                  class: "table-action",
+                  title: t("service_usage_logs.room_logs_action") do %>
+        <span class="material-symbols-filled text-primary">electric_meter</span>
+      <% end %>
+
       <%= link_to landlord_house_room_path(house, room),
                 class: "table-action px-1 py-0",
                 data: { turbo_frame: "room_detail_modal" },

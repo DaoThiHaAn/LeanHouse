@@ -8,10 +8,11 @@
         <span class="material-symbols-outlined text-primary">electric_meter</span>
         <%= t("invoice.meter_logs_title") %>
       </h4>
-      <%= link_to t("invoice.actions.back"), landlord_house_service_usage_logs_path(@house, month: @billing_month.strftime("%Y-%m")), class: "btn btn-sm btn-outline-secondary" %>
+      <%= link_to t("invoice.actions.back"), (params[:from_room] == "true" && @room ? landlord_house_room_service_usage_logs_path(@house, @room) : landlord_house_service_usage_logs_path(@house, month: (@billing_month || @log&.billing_month || Date.current).strftime("%Y-%m"))), class: "btn btn-sm btn-outline-secondary" %>
     </div>
     <div class="card-body p-4">
       <%= form_with model: [:landlord, @house, @log], local: true do |f| %>
+        <%= hidden_field_tag :from_room, "true" if params[:from_room] == "true" %>
         <% if @log.errors.any? %>
           <div class="alert alert-danger">
             <ul class="mb-0">
