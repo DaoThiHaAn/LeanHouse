@@ -17,7 +17,9 @@
         <%= nav_item t("bar.dashboard"), "Dashboard", path: tenant_dashboard_path, icon: "insert_chart" %>
         <%= nav_item t("bar.my_room"), "My Room", path: tenant_room_path, icon: "location_home" %>
         <%= nav_item t("bar.my_contract"), "My Contract", path: tenant_contract_path%>
-        <%= nav_item t("bar.applied_services"), "Services", path: tenant_services_path%>
+        <%# nav_item helper checks: if word.present? ? request.path.include?(word) : current_page?(path) %>
+        <%# Using word: "service" keeps this tab active on /tenant/services, /tenant/service_usage_logs, and their sub-routes %>
+        <%= nav_item t("bar.applied_services"), "Services", word: "service", path: tenant_services_path %>
         <%= nav_item t("bar.my_invoices"), "My Invoices", path: tenant_invoices_path %>
         <%= nav_item t("bar.my_requests"), "My Requests", path: tenant_requests_path %>
         <%= nav_item t("bar.find_rooms"), "Finding Rooms", path: posts_path, icon: "search" %>

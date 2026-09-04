@@ -16,3 +16,19 @@
   object-fit: contain;
   background-color: #f8fafc;
 }
+
+/* Tenant Usage Logs Filter Toolbar & Stay Notice */
+.tenant-usage-log-filter-bar {
+  background-color: #ffffff;
+  border-radius: 0.75rem;
+  padding: 0.85rem 1.25rem;
+  border: 1px solid #e2e8f0;
+}
+
+.tenant-stay-scope-notice {
+  background-color: #f0fdf4;
+  border-left: 4px solid #16a34a;
+  color: #166534;
+  border-radius: 0.5rem;
+  padding: 0.65rem 1rem;
+}

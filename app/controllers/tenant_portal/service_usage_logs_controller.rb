@@ -1,11 +1,27 @@
 class TenantPortal::ServiceUsageLogsController < TenantPortal::BaseController
   before_action :set_room
+  before_action :set_stay_dates
   before_action :set_service_usage_log, only: %i[edit update]
 
   def index
-    @logs = @room.service_usage_logs
+    scope = tenant_visible_logs
                  .includes(:service, :service_variant, reading_photo_attachment: :blob)
                  .sorted
+
+    if params[:month].present? && params[:month].to_s.match?(/\A\d{4}-\d{2}\z/)
+      begin
+        filter_month = Date.parse("#{params[:month]}-01").beginning_of_month
+        if @stay_start_month.nil? || filter_month >= @stay_start_month
+          scope = scope.where(billing_month: filter_month)
+        else
+          scope = scope.none
+        end
+      rescue ArgumentError
+        # Ignore invalid date
+      end
+    end
+
+    @logs = scope
   end
 
   def edit
@@ -34,8 +50,23 @@ class TenantPortal::ServiceUsageLogsController < TenantPortal::BaseController
     @room = @tenant_stay.rental_unit.room
   end
 
+  def set_stay_dates
+    start_date = [ @tenant_stay&.checkin_at&.to_date, @tenant_stay&.contract&.start_date ].compact.min
+    @stay_start_month = start_date&.beginning_of_month
+    @min_billing_month = @stay_start_month&.strftime("%Y-%m")
+  end
+
+  def tenant_visible_logs
+    scope = @room.service_usage_logs
+    if @stay_start_month.present?
+      scope.where("service_usage_logs.billing_month >= ?", @stay_start_month)
+    else
+      scope
+    end
+  end
+
   def set_service_usage_log
-    @log = @room.service_usage_logs.find(params[:id])
+    @log = tenant_visible_logs.find(params[:id])
   end
 
   def tenant_log_params
