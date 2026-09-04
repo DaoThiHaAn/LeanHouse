@@ -4,11 +4,12 @@
 
 <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 pb-2 border-bottom gap-2">
   <div class="text-center text-md-start">
-    <h1 class="h3 fw-bold mb-1"><%= t("page_titles.service_mng") %></h1>
-    <p class="text-secondary mb-0"><%= t("service.mng_note") %></p>
+    <h1 class="mb-3"><%= t("page_titles.service_mng") %></h1>
+    <p class="text-secondary ms-2"><%= t("service.mng_note") %></p>
   </div>
   <div>
-    <button type="button" class="manual-btn d-flex align-items-center gap-1 border rounded-pill px-3 py-2 shadow-sm bg-white" data-bs-toggle="modal" data-bs-target="#serviceGuideModal">
+    <button type="button" class="btn btn-outline-primary d-flex align-items-center gap-1 border rounded-pill px-3 py-2"
+          data-bs-toggle="modal" data-bs-target="#serviceGuideModal">
       <span class="material-symbols-outlined fs-6 text-primary">menu_book</span>
       <span class="fw-semibold"><%= t("service.guide.btn_title") %></span>
     </button>

@@ -1,0 +1,68 @@
+<%# locals: (room_services:) %>
+<span hidden data-pagination-total-pages="<%= room_services.respond_to?(:total_pages) ? room_services.total_pages : 1 %>"></span>
+
+<% if room_services.empty? %>
+  <% if params[:query].present? %>
+    <div class="service-empty-state mx-auto">
+      <span class="material-symbols-outlined service-empty-icon">search_off</span>
+      <p class="fs-5 fw-bold mb-1"><%= t("service.no_matching_services", default: t("service.filter_empty")) %></p>
+    </div>
+  <% else %>
+    <div class="service-empty-state mx-auto">
+      <span class="material-symbols-outlined service-empty-icon">home_repair_service</span>
+      <p class="fs-5 fw-bold mb-1"><%= t("service.no_services_tenant") %></p>
+      <p class="text-secondary mb-0"><%= t("service.no_services_tenant_hint") %></p>
+    </div>
+  <% end %>
+
+<% else %>
+  <div class="table-responsive bg-white border rounded shadow-sm">
+    <table class="table table-bordered table-hover align-middle mb-0">
+      <thead class="table-light sticky-top">
+        <tr>
+          <th><%= t("service.price") %></th>
+          <th><%= t("service.unit") %></th>
+          <th class="text-center"><%= t("service.real_time_short") %></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% room_services.each do |r_service|
+          variant = r_service.service_variant
+          service = variant.service
+        %>
+          <tr class="colspan">
+            <td colspan="100">
+              <p class="fw-semibold mb-1"><%= service.name %></p>
+              <% if service.note.present? %>
+                <div class="d-flex align-items-center gap-1">
+                  <%= image_tag "note.png", alt: "Note icon", class: "note-icon" %>
+                  <span class="text-secondary fw-light"><%= service.note %></span>
+                </div>
+              <% end %>
+            </td>
+          </tr>
+
+          <tr>
+            <td><%= number_with_delimiter(variant.fee, delimiter: ",") %></td>
+            <td><%= t("enums.room_service.unit.#{variant.unit}") %></td>
+            <td class="text-center align-middle">
+              <% if variant.is_real_time %>
+                <span class="material-symbols-outlined d-inline-flex text-success">check_circle</span>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <% if room_services.respond_to?(:total_pages) && room_services.total_pages > 1 %>
+    <div class="mt-4 d-flex justify-content-center">
+      <%= paginate room_services,
+                   params: {
+                     query: params[:query].presence
+                   } %>
+    </div>
+  <% end %>
+<% end %>

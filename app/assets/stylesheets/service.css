@@ -492,3 +492,44 @@
   justify-content: center;
   flex-shrink: 0;
 }
+
+/* Tenant Portal Services Toolbar & Search */
+.tenant-service-filter-bar {
+  background-color: #ffffff;
+  border-radius: 0.75rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid #e2e8f0;
+}
+
+.tenant-service-search {
+  min-width: 240px;
+  max-width: 400px;
+}
+
+.tenant-service-search input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.search-clear-btn {
+  background: transparent;
+  border: 0;
+  padding: 0 0.5rem 0 0;
+  color: #64748b;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: none !important;
+  transition: color 0.15s ease-in-out;
+}
+
+.search-clear-btn:hover {
+  color: #0f172a;
+}
+
+.note-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}

@@ -1,66 +1,63 @@
-<%# @@room_services %>
-
 <% content_for :title, t("page_titles.used_sv") %>
 
-<div class="main-container">
-  <div class="d-flex justify-content-between align-items-center mb-5 border-bottom pb-3">
+<div class="main-container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
     <div>
-      <h1 class="mb-3"><%= t("page_titles.used_sv") %></h1>
-      <p class="text-secondary fw-medium ms-1"><%= t("service.my_note") %></p>
+      <h1 class="mb-2"><%= t("page_titles.used_sv") %></h1>
+      <p class="text-secondary fw-medium mb-0 ms-1"><%= t("service.my_note") %></p>
     </div>
     <%= link_to tenant_service_usage_logs_path, class: "btn btn-outline-primary d-inline-flex align-items-center gap-1 shadow-sm" do %>
-      <span class="material-symbols-outlined fs-6">electric_meter</span> Lịch sử & Nộp Chỉ số thực tế
+      <span class="material-symbols-outlined fs-6">electric_meter</span>
+      <span><%= t("service.meter_logs_action", default: "Lịch sử & Nộp Chỉ số thực tế") %></span>
     <% end %>
   </div>
 
-  <h2 class="mb-3 ms-3"><%= t("service.list") %></h2>
+  <!-- Filter & Search Toolbar -->
+  <div class="d-flex flex-column flex-sm-row justify-content-between gap-2 ms-1 my-3 align-items-center">
+    <h2 class="mb-0"><%= t("service.list") %></h2>
 
-  <%# Table of applied services %>
-  <% if @room_services.empty? %>
-    <div class="service-empty-state mx-auto">
-      <span class="material-symbols-outlined service-empty-icon">home_repair_service</span>
-      <p class="fs-5 fw-bold mb-1"><%= t("service.no_services_tenant") %></p>
-      <p class="text-secondary mb-0"><%= t("service.no_services_tenant_hint") %></p>
-    </div>
+    <%= form_with url: tenant_services_path,
+                  method: :get,
+                  data: {
+                    controller: "search",
+                    turbo_frame: "tenant_services_table",
+                    turbo_action: "advance"
+                  } do |f| %>
+      <!-- Search input -->
+      <div class="tenant-service-search">
+        <div class="input-group border rounded-2 shadow-sm bg-white">
+          <span class="input-group-text bg-white border-0 pe-1">
+            <span class="material-symbols-outlined text-secondary fs-6">search</span>
+          </span>
+          <%= f.search_field :query,
+                             value: params[:query],
+                             placeholder: t("service.search_placeholder"),
+                             class: "form-control border-0 ps-1 pe-1 shadow-none bg-white",
+                             data: {
+                               search_target: "input",
+                               action: "input->search#debounce"
+                             } %>
+          <button type="button"
+                  class="search-clear-btn <%= 'd-none' unless params[:query].present? || (params[:page].present? && params[:page] != '1') %>"
+                  data-search-target="clearButton"
+                  data-action="click->search#clear"
+                  title="<%= t('clear_search') %>">
+            <span class="material-symbols-filled fs-5">close_small</span>
+          </button>
+        </div>
+      </div>
+    <% end %>
+  </div>
 
-  <% else %>
-    <div class="table-responsive border rounded mt-2">
-      <table class="table table-bordered table-hover align-middle mb-0">
-        <thead class="table-light sticky-top">
-          <tr>
-            <th><%= t("service.price") %></th>
-            <th><%= t("service.unit") %></th>
-            <th class="text-center"><%= t("service.real_time_short") %></th>
-          </tr>
-        </thead>
-
-        <tbody>
-          <% @room_services.each do |r_service, index|
-            variant = r_service.service_variant
-            service = variant.service
-          %>
-            <tr class="colspan">
-              <td colspan="100">
-                  <p class="fw-semibold"><%= service.name %></p>
-                  <% if service.note.present? %>
-                    <%= image_tag "note.png", alt: "Note icon", class: "note-icon", width: "20px" %>
-                    <span class="text-secondary fw-light"><%= service.note %></span>
-                  <% end %>
-              </td>
-            </tr>
-
-            <tr>
-              <td><%= number_with_delimiter(variant.fee, delimiter: ",") %></td>
-              <td><%= t("enums.room_service.unit.#{variant.unit}") %></td>
-              <td class="text-center align-middle">
-                <% if variant.is_real_time %>
-                <span class="material-symbols-outlined d-inline-flex">check_circle</span>
-                <% end %>
-              </td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-    </div>
+  <%= turbo_frame_tag "tenant_services_table",
+        data: {
+          controller: "pagination-sync",
+          pagination_sync_canonical_url_value: tenant_services_path,
+          pagination_sync_default_params_value: {}.to_json,
+          pagination_sync_query_params_value: ["query"].to_json,
+          pagination_sync_total_pages_selector_value: "[data-pagination-total-pages]",
+          action: "turbo:frame-load->pagination-sync#updateUrl"
+        } do %>
+    <%= render "tenant_portal/services/services_table", room_services: @room_services %>
   <% end %>
 </div>

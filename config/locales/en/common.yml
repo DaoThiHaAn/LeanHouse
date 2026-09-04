@@ -95,6 +95,7 @@ en:
     status: "Status"
   filter: "Filter"
   clear_filter: "Clear filter"
+  clear_search: "Clear search"
   turn_back: "Back"
   ago: "ago"
   success_messages:

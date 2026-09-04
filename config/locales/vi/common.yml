@@ -135,6 +135,7 @@ vi:
   year: "Năm"
   person_unit: "Người"
   you: "Bạn"
+  clear_search: "Xóa từ khóa"
 
   errors:
     session_expired: |

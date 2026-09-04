@@ -1,5 +1,13 @@
 class TenantPortal::ServicesController < TenantPortal::BaseController
+  before_action :set_room
+
   def index
-    @room_services = @tenant_stay.rental_unit.room.room_services.includes(service_variant: :service)
+    @room_services = TenantServicesFilter.call(room: @room, params: params)
+  end
+
+  private
+
+  def set_room
+    @room = @tenant_stay.rental_unit.room
   end
 end
