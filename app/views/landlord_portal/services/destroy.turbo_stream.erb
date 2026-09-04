@@ -1,7 +1,7 @@
 <%= turbo_stream.remove dom_id(@service) %>
 
 <%= turbo_stream.update "sidebar_services_count" do %>
-  <%= t("form.service.total", val: @house.services.count) %>
+  <%= t("service.total", val: @house.services.count) %>
 <% end %>
 
 <%= turbo_stream.update "service_workspace" do %>
@@ -10,7 +10,7 @@
       <span class="material-symbols-outlined fs-1 text-secondary">touch_app</span>
     </div>
     <p class="fs-5 fw-bold text-secondary text-center mb-1">
-      <%= t("form.service.select_service_prompt") %>
+      <%= t("service.select_service_prompt") %>
     </p>
   </div>
 <% end %>

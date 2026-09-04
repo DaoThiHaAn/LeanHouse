@@ -9,7 +9,7 @@
 <% end %>
 
 <%= turbo_stream.update "service_variants_count" do %>
-  <%= t("form.service.total_variants", val: @service.service_variants.count) %>
+  <%= t("service.total_variants", val: @service.service_variants.count) %>
 <% end %>
 
 <%= turbo_stream.remove "no_variants_prompt" %>

@@ -1,0 +1,232 @@
+<%= turbo_frame_tag "usage_log_detail_modal" do %>
+  <div class="modal fade" id="usageLogDetailModal" tabindex="-1" aria-labelledby="usageLogDetailModalLabel" aria-hidden="true"
+        data-controller="modal" data-modal-auto-open-value="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+      <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+        <!-- Header -->
+        <div class="modal-header bg-white border-bottom py-3 px-4 d-flex justify-content-between align-items-center">
+          <div class="d-flex align-items-center gap-2">
+            <span class="material-symbols-outlined text-primary fs-4">electric_meter</span>
+            <div>
+              <h5 class="modal-title fw-bold mb-0" id="usageLogDetailModalLabel">
+                <%= t("service_usage_logs.detail_title", service: @log.service_name, room: @log.room.title_name) %>
+              </h5>
+              <div class="d-flex align-items-center gap-2 mt-1">
+                <span class="badge bg-light text-secondary border">
+                  <%= @log.room.floor.title_name %>
+                </span>
+                <span class="badge bg-light text-secondary border">
+                  <%= t("service_usage_logs.billing_month") %>: <%= @log.billing_month.strftime("%m/%Y") %>
+                </span>
+              </div>
+            </div>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <!-- Body -->
+        <div class="modal-body p-4">
+          <div class="row g-4">
+            <!-- Left Column: Photo & Upload Timestamp -->
+            <div class="col-md-6">
+              <div class="card border-0 bg-light rounded-3 p-3 h-100">
+                <h6 class="fw-bold text-dark mb-3 d-flex align-items-center gap-2">
+                  <span class="material-symbols-outlined fs-5 text-primary">photo_camera</span>
+                  <span><%= t("invoice.meter_photo") %></span>
+                </h6>
+
+                <% if @log.reading_photo.attached? %>
+                  <div class="text-center mb-3">
+                    <%= image_tag @log.reading_photo,
+                                  class: "img-fluid rounded-3 border shadow-sm w-100 usage-log-modal-photo",
+                                  alt: t("invoice.meter_photo") %>
+                  </div>
+                  <div class="bg-white p-3 rounded-3 border">
+                    <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                      <span class="text-secondary small"><%= t("service_usage_logs.photo_uploaded_at") %>:</span>
+                      <span class="fw-bold text-dark small">
+                        <%= l(@log.reading_photo.blob.created_at, format: :long) %>
+                      </span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                      <span class="text-secondary small"><%= t("service_usage_logs.file_size") %>:</span>
+                      <span class="text-dark small">
+                        <%= number_to_human_size(@log.reading_photo.blob.byte_size) %>
+                      </span>
+                    </div>
+                    <div class="text-center mt-2">
+                      <%= link_to url_for(@log.reading_photo),
+                                  target: "_blank",
+                                  rel: "noopener",
+                                  class: "btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1" do %>
+                        <span class="material-symbols-outlined fs-6">open_in_new</span>
+                        <span><%= t("service_usage_logs.view_full_photo") %></span>
+                      <% end %>
+                    </div>
+                  </div>
+                <% else %>
+                  <div class="d-flex flex-column align-items-center justify-content-center h-75 text-secondary p-4 text-center">
+                    <span class="material-symbols-outlined fs-1 text-muted mb-2">no_photography</span>
+                    <p class="mb-0 small fst-italic"><%= t("invoice.no_photo") %></p>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+
+            <!-- Right Column: Usage Breakdown & Confirmation Timestamps -->
+            <div class="col-md-6">
+              <!-- Usage Metrics Card -->
+              <div class="card border-0 bg-light rounded-3 p-3 mb-3">
+                <h6 class="fw-bold text-dark mb-3 d-flex align-items-center gap-2">
+                  <span class="material-symbols-outlined fs-5 text-primary">fact_check</span>
+                  <span><%= t("service_usage_logs.meter_details") %></span>
+                </h6>
+
+                <div class="row g-2 mb-3">
+                  <div class="col-6">
+                    <div class="bg-white p-2 rounded-2 border text-center">
+                      <span class="text-secondary small d-block"><%= t("invoice.prev_reading") %></span>
+                      <span class="fw-bold fs-6 text-dark"><%= @log.real_time? ? @log.prev_reading : "-" %> <%= @log.unit if @log.real_time? %></span>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="bg-white p-2 rounded-2 border text-center">
+                      <span class="text-secondary small d-block"><%= t("invoice.latest_reading") %></span>
+                      <span class="fw-bold fs-6 text-primary"><%= @log.real_time? ? (@log.latest_reading || "-") : "-" %> <%= @log.unit if @log.real_time? %></span>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="bg-white p-2 rounded-2 border text-center">
+                      <span class="text-secondary small d-block"><%= t("invoice.consumption") %></span>
+                      <span class="fw-bold fs-6 text-success">+<%= @log.usage_quantity || 0 %> <%= @log.unit %></span>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="bg-white p-2 rounded-2 border text-center">
+                      <span class="text-secondary small d-block"><%= t("form.service.price") %></span>
+                      <span class="fw-bold fs-6 text-dark"><%= number_with_delimiter(@log.unit_price) %> đ</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="bg-white p-3 rounded-2 border d-flex justify-content-between align-items-center">
+                  <span class="fw-semibold text-secondary"><%= t("invoice.amount") %>:</span>
+                  <span class="fs-5 fw-bold text-primary"><%= number_with_delimiter(@log.total_amount) %> đ</span>
+                </div>
+              </div>
+
+              <!-- Audit Trail & Timestamps Card -->
+              <div class="card border-0 bg-light rounded-3 p-3">
+                <h6 class="fw-bold text-dark mb-3 d-flex align-items-center gap-2">
+                  <span class="material-symbols-outlined fs-5 text-primary">history</span>
+                  <span><%= t("service_usage_logs.audit_info") %></span>
+                </h6>
+
+                <!-- Submitter & Submission Timestamp -->
+                <div class="bg-white p-2 rounded-2 border mb-2">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <span class="text-secondary small"><%= t("invoice.submitter") %>:</span>
+                    <span class="fw-semibold small text-dark">
+                      <%= @log.submitted_by.is_a?(User) ? @log.submitted_by.fullname : t("invoice.landlord_label") %>
+                      <% if @log.submitted_by.is_a?(User) %>
+                        <span class="text-secondary small">(<%= @log.submitted_by.tenant? ? t("invoice.submitted_by_tenant") : t("invoice.submitted_by_landlord") %>)</span>
+                      <% end %>
+                    </span>
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center mt-1">
+                    <span class="text-secondary small"><%= t("service_usage_logs.submitted_at_label") %>:</span>
+                    <span class="small text-dark"><%= l(@log.created_at, format: :long) %></span>
+                  </div>
+                </div>
+
+                <!-- Confirmation Status & Timestamp -->
+                <div class="bg-white p-2 rounded-2 border mb-2">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <span class="text-secondary small"><%= t("common.status") %>:</span>
+                    <% if @log.is_confirmed? %>
+                      <span class="badge bg-success-subtle text-success border border-success-subtle d-inline-flex align-items-center gap-1">
+                        <span class="material-symbols-outlined fs-6">check_circle</span>
+                        <%= t("invoice.status_confirmed") %>
+                      </span>
+                    <% else %>
+                      <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle d-inline-flex align-items-center gap-1">
+                        <span class="material-symbols-outlined fs-6">schedule</span>
+                        <%= t("invoice.status_unconfirmed") %>
+                      </span>
+                    <% end %>
+                  </div>
+
+                  <div class="d-flex justify-content-between align-items-center mt-2">
+                    <span class="text-secondary small"><%= t("service_usage_logs.confirmed_at_label") %>:</span>
+                    <% if @log.is_confirmed? && @log.confirmed_at.present? %>
+                      <span class="fw-bold text-success small">
+                        <%= l(@log.confirmed_at, format: :long) %>
+                      </span>
+                    <% else %>
+                      <span class="text-secondary small fst-italic">
+                        <%= t("service_usage_logs.not_confirmed_yet") %>
+                      </span>
+                    <% end %>
+                  </div>
+
+                  <% if @log.is_confirmed? && @log.confirmed_by.present? %>
+                    <div class="d-flex justify-content-between align-items-center mt-1">
+                      <span class="text-secondary small"><%= t("service_usage_logs.confirmed_by_label") %>:</span>
+                      <span class="small text-dark"><%= @log.confirmed_by.fullname %></span>
+                    </div>
+                  <% end %>
+                </div>
+
+                <!-- Billed State -->
+                <div class="bg-white p-2 rounded-2 border">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <span class="text-secondary small"><%= t("service_usage_logs.billing_state") %>:</span>
+                    <% if @log.billed? %>
+                      <span class="badge bg-info-subtle text-info-emphasis border border-info-subtle">
+                        <%= t("invoice.status_billed") %>
+                      </span>
+                    <% else %>
+                      <span class="text-secondary small fst-italic">
+                        <%= t("service_usage_logs.not_billed_yet") %>
+                      </span>
+                    <% end %>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="modal-footer bg-light border-0 py-2 px-4 d-flex justify-content-between align-items-center">
+          <div>
+            <% unless @log.billed? %>
+              <%= link_to edit_landlord_house_service_usage_log_path(@house, @log),
+                          class: "btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-1",
+                          data: { turbo_frame: "_top" } do %>
+                <span class="material-symbols-outlined fs-6">edit</span>
+                <span><%= t("edit") %></span>
+              <% end %>
+            <% end %>
+          </div>
+
+          <div class="d-flex align-items-center gap-2">
+            <% unless @log.is_confirmed? %>
+              <%= button_to confirm_landlord_house_service_usage_log_path(@house, @log),
+                            method: :patch,
+                            class: "btn btn-success btn-sm d-inline-flex align-items-center gap-1" do %>
+                <span class="material-symbols-outlined fs-6">check_circle</span>
+                <span><%= t("invoice.confirm_and_close") %></span>
+              <% end %>
+            <% end %>
+
+            <button type="button" class="btn btn-secondary btn-sm rounded-pill px-3" data-bs-dismiss="modal">
+              <%= t("close") %>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

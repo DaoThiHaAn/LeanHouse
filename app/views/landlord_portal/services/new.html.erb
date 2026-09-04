@@ -7,7 +7,7 @@
       <div class="modal-content px-2">
         <div class="modal-header py-3">
           <h1 class="modal-title fs-5 w-100 text-center" id="newServiceModalLabel">
-            <%= t("form.service.new") %>
+            <%= t("service.new") %>
           </h1>
           <button type="button" class="m-0 btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
@@ -26,7 +26,7 @@
             <%# Name %>
             <div class="form-group">
               <%= f.label :name, class: "form-label fw-semibold" do %>
-                <%= t("form.service.self") %> <span class="text-danger">*</span>
+                <%= t("service.self") %> <span class="text-danger">*</span>
               <% end %>
               <%= f.text_field :name, required: true,
                                placeholder: "Ví dụ: Điện, Nước, WiFi...",

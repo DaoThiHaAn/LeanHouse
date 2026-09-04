@@ -2,45 +2,50 @@
 
 <% content_for :title, t("page_titles.used_sv") %>
 
-<div class="tenant-contract main-container w-75">
-  <div class="d-flex justify-content-between align-items-center mb-5">
-    <h1 class="mb-0"><%= t("page_titles.used_sv") %></h1>
+<div class="main-container">
+  <div class="d-flex justify-content-between align-items-center mb-5 border-bottom pb-3">
+    <div>
+      <h1 class="mb-3"><%= t("page_titles.used_sv") %></h1>
+      <p class="text-secondary fw-medium ms-1"><%= t("service.my_note") %></p>
+    </div>
     <%= link_to tenant_service_usage_logs_path, class: "btn btn-outline-primary d-inline-flex align-items-center gap-1 shadow-sm" do %>
       <span class="material-symbols-outlined fs-6">electric_meter</span> Lịch sử & Nộp Chỉ số thực tế
     <% end %>
   </div>
 
+  <h2 class="mb-3 ms-3"><%= t("service.list") %></h2>
+
   <%# Table of applied services %>
   <% if @room_services.empty? %>
     <div class="service-empty-state mx-auto">
       <span class="material-symbols-outlined service-empty-icon">home_repair_service</span>
-      <p class="fs-5 fw-bold mb-1"><%= t("form.service.no_services_tenant") %></p>
-      <p class="text-secondary mb-0"><%= t("form.service.no_services_tenant_hint") %></p>
+      <p class="fs-5 fw-bold mb-1"><%= t("service.no_services_tenant") %></p>
+      <p class="text-secondary mb-0"><%= t("service.no_services_tenant_hint") %></p>
     </div>
 
   <% else %>
-    <div class="floor table-responsive border rounded mt-2">
+    <div class="table-responsive border rounded mt-2">
       <table class="table table-bordered table-hover align-middle mb-0">
         <thead class="table-light sticky-top">
           <tr>
-            <th><%= t("form.service.price") %></th>
-            <th><%= t("form.service.unit") %></th>
-            <th class="text-center"><%= t("form.service.real_time_short") %></th>
+            <th><%= t("service.price") %></th>
+            <th><%= t("service.unit") %></th>
+            <th class="text-center"><%= t("service.real_time_short") %></th>
           </tr>
         </thead>
 
         <tbody>
-          <% @room_services.each do |r_service, index| 
+          <% @room_services.each do |r_service, index|
             variant = r_service.service_variant
             service = variant.service
           %>
             <tr class="colspan">
-              <td colspan="100" >
+              <td colspan="100">
                   <p class="fw-semibold"><%= service.name %></p>
                   <% if service.note.present? %>
-                    <%= image_tag "note.png", alt: "Note icon", class: "note-icon" %>
-                    <span class="text-secondary fw-light"><%=service.note%></span>
-                  <%end%>
+                    <%= image_tag "note.png", alt: "Note icon", class: "note-icon", width: "20px" %>
+                    <span class="text-secondary fw-light"><%= service.note %></span>
+                  <% end %>
               </td>
             </tr>
 
@@ -50,12 +55,12 @@
               <td class="text-center align-middle">
                 <% if variant.is_real_time %>
                 <span class="material-symbols-outlined d-inline-flex">check_circle</span>
-                <%end%>
+                <% end %>
               </td>
             </tr>
           <% end %>
         </tbody>
       </table>
     </div>
-  <%end%>
+  <% end %>
 </div>

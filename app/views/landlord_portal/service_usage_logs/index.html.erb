@@ -8,7 +8,7 @@
       <li class="breadcrumb-item">
         <%= link_to landlord_house_services_path(@house), class: "text-decoration-none d-inline-flex align-items-center gap-1" do %>
           <span class="material-symbols-outlined fs-6">arrow_back</span>
-          <span><%= t("form.service.list") %></span>
+          <span><%= t("service.list") %></span>
         <% end %>
       </li>
       <li class="breadcrumb-item active" aria-current="page">
@@ -36,12 +36,26 @@
   </div>
 </div>
 
-  <!-- Toolbar lọc tháng, phòng, biến thể và trạng thái -->
+  <!-- Toolbar lọc tháng, tầng, phòng, biến thể và trạng thái -->
   <div class="card bg-light border-0 rounded-3 p-3 mb-4">
+    <%
+      active_rooms = @house.rooms.active.sorted
+      available_rooms = if params[:floor_id].present?
+        active_rooms.select { |r| r.floor_id.to_s == params[:floor_id].to_s }
+      else
+        active_rooms
+      end
+    %>
     <%= form_with url: filtered_landlord_house_service_usage_logs_path(@house),
                   method: :get,
                   class: "d-flex gap-3 align-items-center flex-wrap",
-                  data: { turbo_frame: "logs_table", turbo_action: "advance" } do |f| %>
+                  data: {
+                    controller: "filter-floor-room",
+                    filter_floor_room_rooms_value: active_rooms.map { |r| { id: r.id.to_s, name: r.title_name, floor_id: r.floor_id.to_s } }.to_json,
+                    filter_floor_room_all_rooms_label_value: t("invoice.all_rooms"),
+                    turbo_frame: "logs_table",
+                    turbo_action: "advance"
+                  } do |f| %>
 
       <% if @selected_service %>
         <%= f.hidden_field :service_id, value: @selected_service.id %>
@@ -53,10 +67,30 @@
         <%= f.month_field :month, value: @billing_month.strftime("%Y-%m"), class: "form-control shadow-sm w-auto", onchange: "this.form.requestSubmit()" %>
       </div>
 
+      <!-- Chọn tầng -->
+      <div class="d-flex align-items-center gap-2">
+        <%= f.label :floor_id, "#{t('service_usage_logs.floor')}:", class: "fw-bold text-nowrap" %>
+        <%= f.select :floor_id,
+                     [[t("service_usage_logs.all_floors"), ""]] + @house.floors.pos_order.map { |fl| [fl.title_name, fl.id] },
+                     { selected: params[:floor_id] },
+                     class: "form-select shadow-sm w-auto",
+                     data: {
+                       filter_floor_room_target: "floor",
+                       action: "change->filter-floor-room#floorChanged"
+                     } %>
+      </div>
+
       <!-- Chọn phòng -->
       <div class="d-flex align-items-center gap-2">
         <%= f.label :room_id, "#{t('invoice.room')}:", class: "fw-bold text-nowrap" %>
-        <%= f.select :room_id, [[t("invoice.all_rooms"), ""]] + @house.rooms.active.sorted.map { |r| [r.title_name, r.id] }, { selected: params[:room_id] }, class: "form-select shadow-sm w-auto", onchange: "this.form.requestSubmit()" %>
+        <%= f.select :room_id,
+                     [[t("invoice.all_rooms"), ""]] + available_rooms.map { |r| [r.title_name, r.id] },
+                     { selected: params[:room_id] },
+                     class: "form-select shadow-sm w-auto",
+                     data: {
+                       filter_floor_room_target: "room",
+                       action: "change->filter-floor-room#roomChanged"
+                     } %>
       </div>
 
       <!-- Nếu có chọn dịch vụ cụ thể, cho lọc theo biến thể của dịch vụ đó -->
@@ -80,7 +114,7 @@
 
       <% if @unconfirmed_count > 0 %>
         <div class="ms-auto">
-          <%= button_to confirm_all_landlord_house_service_usage_logs_path(@house, month: @billing_month.strftime("%Y-%m")), method: :patch, data: { turbo_confirm: t("invoice.confirm_all_prompt", count: @unconfirmed_count) }, class: "btn btn-success btn-sm d-flex align-items-center gap-1 shadow-sm" do %>
+          <%= button_to confirm_all_landlord_house_service_usage_logs_path(@house, month: @billing_month.strftime("%Y-%m"), service_id: @selected_service&.id), method: :patch, data: { turbo_confirm: t("invoice.confirm_all_prompt", count: @unconfirmed_count) }, class: "btn btn-success btn-sm d-flex align-items-center gap-1 shadow-sm" do %>
             <span class="material-symbols-outlined fs-6">done_all</span> <%= t("invoice.confirm_all", count: @unconfirmed_count) %>
           <% end %>
         </div>
@@ -89,3 +123,4 @@
   </div>
 
   <%= render "logs_table", house: @house, logs: @logs, billing_month: @billing_month %>
+  <%= turbo_frame_tag "usage_log_detail_modal" %>

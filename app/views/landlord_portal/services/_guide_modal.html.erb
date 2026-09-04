@@ -1,0 +1,266 @@
+<!-- Modal Hướng dẫn Quản lý Dịch vụ & Ghi nhận Chỉ số Sử dụng -->
+<div class="modal fade" id="serviceGuideModal" tabindex="-1" aria-labelledby="serviceGuideModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
+    <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+      <!-- Header -->
+      <div class="modal-header bg-primary py-3 px-4 border-0 d-flex justify-content-between align-items-center">
+        <div>
+          <h2 class="modal-title text-white d-flex align-items-center gap-2 mb-2" id="serviceGuideModalLabel">
+            <span class="material-symbols-outlined fs-3">menu_book</span>
+            <span><%= t("service.guide.modal_title") %></span>
+          </h2>
+          <p class="badge fs-6 bg-white text-primary fw-semibold p-2 shadow-sm mb-0">
+            <%= t("service.guide.badge_subtitle") %>
+          </p>
+        </div>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="bg-light px-4 py-3 border-bottom">
+        <ul class="nav nav-pills gap-2 flex-wrap" id="serviceGuideTabs" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active fw-semibold d-inline-flex align-items-center gap-1 py-2 px-3 rounded-pill" id="guide-service-create-tab" data-bs-toggle="pill" data-bs-target="#guide-service-create" type="button" role="tab" aria-controls="guide-service-create" aria-selected="true">
+              <span class="material-symbols-outlined fs-6">add_circle</span>
+              <span><%= t("service.guide.tab_create") %></span>
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link fw-semibold d-inline-flex align-items-center gap-1 py-2 px-3 rounded-pill" id="guide-service-log-tab" data-bs-toggle="pill" data-bs-target="#guide-service-log" type="button" role="tab" aria-controls="guide-service-log" aria-selected="false">
+              <span class="material-symbols-outlined fs-6">electric_meter</span>
+              <span><%= t("service.guide.tab_log") %></span>
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link fw-semibold d-inline-flex align-items-center gap-1 py-2 px-3 rounded-pill" id="guide-service-workflow-tab" data-bs-toggle="pill" data-bs-target="#guide-service-workflow" type="button" role="tab" aria-controls="guide-service-workflow" aria-selected="false">
+              <span class="material-symbols-outlined fs-6">sync_alt</span>
+              <span><%= t("service.guide.tab_workflow") %></span>
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link fw-semibold d-inline-flex align-items-center gap-1 py-2 px-3 rounded-pill" id="guide-service-tips-tab" data-bs-toggle="pill" data-bs-target="#guide-service-tips" type="button" role="tab" aria-controls="guide-service-tips" aria-selected="false">
+              <span class="material-symbols-outlined fs-6">lightbulb</span>
+              <span><%= t("service.guide.tab_tips") %></span>
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Tab Contents -->
+      <div class="modal-body p-4">
+        <div class="tab-content" id="serviceGuideTabContent">
+
+          <!-- TAB 1: TẠO & CÀI ĐẶT DỊCH VỤ -->
+          <div class="tab-pane fade show active" id="guide-service-create" role="tabpanel" aria-labelledby="guide-service-create-tab">
+            <div class="row g-3">
+              <!-- Step 1 -->
+              <div class="col-md-6">
+                <div class="card shadow-sm service-guide-card guide-step-1">
+                  <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="badge bg-primary text-white service-guide-badge">1</span>
+                    <h6 class="fw-bold text-primary mb-0"><%= t("service.guide.step1_title") %></h6>
+                  </div>
+                  <div class="small text-secondary service-guide-desc">
+                    <%= t("service.guide.step1_desc") %>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Step 2 -->
+              <div class="col-md-6">
+                <div class="card shadow-sm service-guide-card guide-step-2">
+                  <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="badge bg-purple text-white service-guide-badge">2</span>
+                    <h6 class="fw-bold text-purple mb-0"><%= t("service.guide.step2_title") %></h6>
+                  </div>
+                  <div class="small text-secondary service-guide-desc">
+                    <%= t("service.guide.step2_desc") %>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Step 3 -->
+              <div class="col-md-6">
+                <div class="card shadow-sm service-guide-card guide-step-3">
+                  <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="badge bg-success text-white service-guide-badge">3</span>
+                    <h6 class="fw-bold text-success mb-0"><%= t("service.guide.step3_title") %></h6>
+                  </div>
+                  <div class="small text-secondary service-guide-desc">
+                    <%= t("service.guide.step3_desc") %>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Step 4 -->
+              <div class="col-md-6">
+                <div class="card shadow-sm service-guide-card guide-step-4">
+                  <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="badge bg-warning text-dark service-guide-badge">4</span>
+                    <h6 class="fw-bold text-warning-emphasis mb-0"><%= t("service.guide.step4_title") %></h6>
+                  </div>
+                  <div class="small text-secondary service-guide-desc">
+                    <%= t("service.guide.step4_desc") %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 2: GHI NHẬN & DUYỆT CHỈ SỐ -->
+          <div class="tab-pane fade" id="guide-service-log" role="tabpanel" aria-labelledby="guide-service-log-tab">
+            <div class="row g-3">
+              <!-- Log Step 1 -->
+              <div class="col-md-6">
+                <div class="card shadow-sm service-guide-card guide-step-1">
+                  <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="badge bg-primary text-white service-guide-badge">1</span>
+                    <h6 class="fw-bold text-primary mb-0"><%= t("service.guide.log_step1_title") %></h6>
+                  </div>
+                  <div class="small text-secondary service-guide-desc">
+                    <%= t("service.guide.log_step1_desc") %>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Log Step 2 (Floor then Room UX) -->
+              <div class="col-md-6">
+                <div class="card shadow-sm service-guide-card guide-step-2">
+                  <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="badge bg-purple text-white service-guide-badge">2</span>
+                    <h6 class="fw-bold text-purple mb-0"><%= t("service.guide.log_step2_title") %></h6>
+                  </div>
+                  <div class="small text-secondary service-guide-desc">
+                    <%= t("service.guide.log_step2_desc") %>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Log Step 3 -->
+              <div class="col-md-6">
+                <div class="card shadow-sm service-guide-card guide-step-3">
+                  <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="badge bg-success text-white service-guide-badge">3</span>
+                    <h6 class="fw-bold text-success mb-0"><%= t("service.guide.log_step3_title") %></h6>
+                  </div>
+                  <div class="small text-secondary service-guide-desc">
+                    <%= t("service.guide.log_step3_desc") %>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Log Step 4 -->
+              <div class="col-md-6">
+                <div class="card shadow-sm service-guide-card guide-step-4">
+                  <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="badge bg-warning text-dark service-guide-badge">4</span>
+                    <h6 class="fw-bold text-warning-emphasis mb-0"><%= t("service.guide.log_step4_title") %></h6>
+                  </div>
+                  <div class="small text-secondary service-guide-desc">
+                    <%= t("service.guide.log_step4_desc") %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 3: LIÊN KẾT VỚI HÓA ĐƠN -->
+          <div class="tab-pane fade" id="guide-service-workflow" role="tabpanel" aria-labelledby="guide-service-workflow-tab">
+            <div class="card border-0 bg-light p-3 rounded-4 mb-3">
+              <h5 class="fw-bold text-dark mb-3 d-flex align-items-center gap-2">
+                <span class="material-symbols-outlined text-primary">schema</span>
+                <span><%= t("service.guide.workflow_title") %></span>
+              </h5>
+              <div class="d-flex flex-column gap-3">
+                <div class="service-workflow-step d-flex align-items-start gap-3">
+                  <div class="service-workflow-icon bg-primary text-white">
+                    <span class="material-symbols-outlined fs-5">edit_document</span>
+                  </div>
+                  <div>
+                    <h6 class="fw-bold text-dark mb-1"><%= t("service.guide.workflow_step1") %></h6>
+                  </div>
+                </div>
+
+                <div class="service-workflow-step d-flex align-items-start gap-3">
+                  <div class="service-workflow-icon bg-purple text-white">
+                    <span class="material-symbols-outlined fs-5">fact_check</span>
+                  </div>
+                  <div>
+                    <h6 class="fw-bold text-dark mb-1"><%= t("service.guide.workflow_step2") %></h6>
+                  </div>
+                </div>
+
+                <div class="service-workflow-step d-flex align-items-start gap-3">
+                  <div class="service-workflow-icon bg-success text-white">
+                    <span class="material-symbols-outlined fs-5">receipt_long</span>
+                  </div>
+                  <div>
+                    <h6 class="fw-bold text-dark mb-1"><%= t("service.guide.workflow_step3") %></h6>
+                  </div>
+                </div>
+
+                <div class="service-workflow-step d-flex align-items-start gap-3">
+                  <div class="service-workflow-icon bg-warning text-dark">
+                    <span class="material-symbols-outlined fs-5">lock</span>
+                  </div>
+                  <div>
+                    <h6 class="fw-bold text-dark mb-1"><%= t("service.guide.workflow_step4") %></h6>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 4: MẸO & LƯU Ý -->
+          <div class="tab-pane fade" id="guide-service-tips" role="tabpanel" aria-labelledby="guide-service-tips-tab">
+            <div class="row g-3">
+              <div class="col-md-4">
+                <div class="card shadow-sm service-guide-card guide-step-1">
+                  <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="material-symbols-outlined text-primary fs-4">smartphone</span>
+                    <h6 class="fw-bold text-primary mb-0"><%= t("service.guide.tip1_title") %></h6>
+                  </div>
+                  <div class="small text-secondary service-guide-desc">
+                    <%= t("service.guide.tip1_desc") %>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <div class="card shadow-sm service-guide-card guide-step-4">
+                  <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="material-symbols-outlined text-warning-emphasis fs-4">warning</span>
+                    <h6 class="fw-bold text-warning-emphasis mb-0"><%= t("service.guide.tip2_title") %></h6>
+                  </div>
+                  <div class="small text-secondary service-guide-desc">
+                    <%= t("service.guide.tip2_desc") %>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <div class="card shadow-sm service-guide-card guide-step-3">
+                  <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="material-symbols-outlined text-success fs-4">groups</span>
+                    <h6 class="fw-bold text-success mb-0"><%= t("service.guide.tip3_title") %></h6>
+                  </div>
+                  <div class="small text-secondary service-guide-desc">
+                    <%= t("service.guide.tip3_desc") %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer bg-light border-0 py-2 px-4">
+        <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">
+          <%= t("close") %>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

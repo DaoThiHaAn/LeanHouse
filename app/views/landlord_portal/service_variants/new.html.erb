@@ -8,7 +8,7 @@
         <div class="modal-header py-3">
           <div class="flex-grow-1">
             <h1 class="modal-title fs-5 w-100 text-center mb-1">
-              <%= t("form.service.variant.add") %>
+              <%= t("service.variant.add") %>
             </h1>
             <p class="text-center fw-medium fs-5"> (<%= @service.name %>)</p>
           </div>
@@ -33,7 +33,7 @@
             <div class="form-check form-switch mt-2">
               <%= f.check_box :is_real_time, class: "form-check-input", role: "switch" %>
               <%= f.label :is_real_time, class: "form-check-label fw-semibold" do %>
-                <%= t("form.service.real_time") %>
+                <%= t("service.real_time") %>
               <% end %>
             </div>
 
@@ -54,4 +54,3 @@
     </div>
   </div>
 <% end %>
-

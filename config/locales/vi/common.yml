@@ -4,11 +4,13 @@ vi:
     formats:
       default: "%d/%m/%Y"
       short: "%d/%m/%y"
+      long: "%d/%m/%Y"
 
   time:
     formats:
       default: "%d/%m/%Y %H:%M:%S"
       short: "%d/%m/%y %H:%M"
+      long: "%d/%m/%Y %H:%M"
 
   lang:
     en: "Tiếng Anh"

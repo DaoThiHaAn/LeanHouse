@@ -2,20 +2,30 @@
 
 <% content_for :title, t("page_titles.service_mng") %>
 
-<h1 class="text-center mb-3"><%= t("page_titles.service_mng") %></h1>
-<p class="text-secondary text-center border-bottom pb-2 mb-5"><%= t("form.service.mng_note") %></p>
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 pb-2 border-bottom gap-2">
+  <div class="text-center text-md-start">
+    <h1 class="h3 fw-bold mb-1"><%= t("page_titles.service_mng") %></h1>
+    <p class="text-secondary mb-0"><%= t("service.mng_note") %></p>
+  </div>
+  <div>
+    <button type="button" class="manual-btn d-flex align-items-center gap-1 border rounded-pill px-3 py-2 shadow-sm bg-white" data-bs-toggle="modal" data-bs-target="#serviceGuideModal">
+      <span class="material-symbols-outlined fs-6 text-primary">menu_book</span>
+      <span class="fw-semibold"><%= t("service.guide.btn_title") %></span>
+    </button>
+  </div>
+</div>
 
 <% if @services.empty? %>
   <div class="text-center pb-3">
     <%= image_tag 'services.png', alt: "Services icon", width: "150px" %>
-    <p class="fs-5 text-center fw-bold my-3"><%= t("form.service.none") %></p>
+    <p class="fs-5 text-center fw-bold my-3"><%= t("service.none") %></p>
 
     <!-- Add service btn -->
     <%= link_to new_landlord_house_service_path(@house),
         class: "shadow-sm main-btn d-inline-flex align-items-center gap-2 mx-auto",
         data: { turbo_frame: "new_service_modal" } do %>
       <span class="material-symbols-filled">add_circle</span>
-      <%= t('form.service.add') %>
+      <%= t('service.add') %>
     <% end %>
   </div>
 
@@ -39,12 +49,12 @@
       <div class="sidebar-content w-100 h-100 d-flex flex-column">
         <div class="d-flex gap-2 p-3 align-items-center justify-content-between border-bottom">
           <h2 class="fw-bold fs-6 m-0 text-truncate">
-            <%= t("form.service.list") %>
+            <%= t("service.list") %>
           </h2>
 
           <!-- Add service btn -->
           <%= link_to new_landlord_house_service_path(@house),
-              title: t("form.service.add"),
+              title: t("service.add"),
               class: "add-sv-btn shadow-sm d-flex align-items-center justify-content-center rounded-circle",
               data: { turbo_frame: "new_service_modal" } do %>
             <span class="material-symbols-filled">add_circle</span>
@@ -58,13 +68,13 @@
           </span>
           <input type="text" autocomplete="off"
                   class="form-control border-start-0 ps-0"
-                  placeholder="<%= t('form.service.search_placeholder') %>"
+                  placeholder="<%= t('service.search_placeholder') %>"
                   data-service-filter-target="input"
                   data-action="input->service-filter#filter">
         </div>
 
         <p id="sidebar_services_count" class="fw-semibold text-center mb-3 px-3 small text-secondary">
-          <%= t("form.service.total", val: @services.length) %>
+          <%= t("service.total", val: @services.length) %>
         </p>
 
         <!-- Service Cards List -->
@@ -79,7 +89,7 @@
 
         <!-- Filter Empty Message -->
         <div data-service-filter-target="emptyMessage" class="text-center text-secondary small py-3 px-2 d-none">
-          <%= t("form.service.filter_empty") %>
+          <%= t("service.filter_empty") %>
         </div>
       </div>
     </aside>
@@ -95,16 +105,22 @@
         <% else %>
           <!-- Empty State Prompt -->
           <div class="d-flex flex-column align-items-center justify-content-center h-100 text-secondary p-5">
-            <div class="empty-state-icon mb-3 d-flex align-items-center justify-content-center rounded-circle bg-white border shadow-sm" style="width: 70px; height: 70px;">
+            <div class="empty-state-icon mb-3 d-flex align-items-center justify-content-center rounded-circle bg-white border shadow-sm service-empty-icon">
               <span class="material-symbols-outlined fs-1 text-primary">left_click</span>
             </div>
-            <h5 class="fw-bold text-dark mb-2 text-center"><%= t("form.service.select_service_prompt") %></h5>
+            <h5 class="fw-bold text-dark mb-2 text-center"><%= t("service.select_service_prompt") %></h5>
+            <button type="button" class="btn btn-sm btn-outline-primary mt-2 d-inline-flex align-items-center gap-1 rounded-pill px-3 py-1" data-bs-toggle="modal" data-bs-target="#serviceGuideModal">
+              <span class="material-symbols-outlined fs-6">menu_book</span>
+              <span><%= t("service.guide.btn_title") %></span>
+            </button>
           </div>
         <% end %>
       <% end %>
     </div>
   </div>
 <% end %>
+
+<%= render "guide_modal" %>
 
 <%= turbo_frame_tag "new_service_modal" %>
 <%= turbo_frame_tag "edit_service_modal" %>

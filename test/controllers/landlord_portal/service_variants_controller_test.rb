@@ -91,7 +91,7 @@ class LandlordPortal::ServiceVariantsControllerTest < ActionDispatch::Integratio
          as: :turbo_stream
     assert_response :success
     assert_includes response.body, "service_variants_count"
-    assert_includes response.body, I18n.t("form.service.total_variants", val: 2)
+    assert_includes response.body, I18n.t("service.total_variants", val: 2)
   end
 
   test "destroy removes variant and responds with stream updating service_variants_count" do
@@ -101,7 +101,7 @@ class LandlordPortal::ServiceVariantsControllerTest < ActionDispatch::Integratio
     end
     assert_response :success
     assert_includes response.body, "service_variants_count"
-    assert_includes response.body, I18n.t("form.service.total_variants", val: 0)
+    assert_includes response.body, I18n.t("service.total_variants", val: 0)
     assert_includes response.body, "no_variants_prompt"
   end
 end

@@ -16,14 +16,15 @@ class LandlordServiceUsageLogsFilter
   def call
     scope = base_scope
     scope = apply_room(scope)
+    scope = apply_floor(scope)
     scope = apply_service(scope)
     scope = apply_service_variant(scope)
     scope = apply_date_filter(scope)
     scope = apply_status(scope)
 
     scope = scope
-      .preload(:room, :service, :service_variant, :submitted_by, reading_photo_attachment: :blob)
-      .order(billing_month: :desc, created_at: :desc)
+      .preload({ room: :floor }, :service, :service_variant, :submitted_by, :confirmed_by, reading_photo_attachment: :blob)
+      .order("service_usage_logs.billing_month DESC, service_usage_logs.created_at DESC")
 
     if params[:paginate] == false || params[:paginate] == "false"
       scope
@@ -45,6 +46,13 @@ class LandlordServiceUsageLogsFilter
     return scope if target_room_id.blank?
 
     scope.where(room_id: target_room_id)
+  end
+
+  def apply_floor(scope)
+    return scope if room.present? || params[:room_id].present?
+    return scope if params[:floor_id].blank?
+
+    scope.where(room_id: house.rooms.where(floor_id: params[:floor_id]).select(:id))
   end
 
   def apply_service(scope)

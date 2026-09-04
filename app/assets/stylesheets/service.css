@@ -415,3 +415,80 @@
   border-color: #e11d48;
   box-shadow: 0 0 0 0.2rem rgba(244, 63, 94, 0.15);
 }
+
+/* Service Workspace Empty State Icon */
+.service-empty-icon {
+  width: 70px;
+  height: 70px;
+}
+
+/* Service Guide Modal Styles */
+.service-guide-card {
+  height: 100%;
+  border: 0;
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+}
+
+.service-guide-card.guide-step-1 {
+  background-color: #f0f9ff;
+  border-left: 4px solid #0284c7 !important;
+}
+
+.service-guide-card.guide-step-2 {
+  background-color: #f5f3ff;
+  border-left: 4px solid #7c3aed !important;
+}
+
+.service-guide-card.guide-step-3 {
+  background-color: #f0fdf4;
+  border-left: 4px solid #16a34a !important;
+}
+
+.service-guide-card.guide-step-4 {
+  background-color: #fffbeb;
+  border-left: 4px solid #d97706 !important;
+}
+
+.service-guide-badge {
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 0;
+}
+
+.service-guide-desc {
+  white-space: pre-line;
+  line-height: 1.6;
+}
+
+.bg-purple {
+  background-color: #7c3aed !important;
+}
+
+.text-purple {
+  color: #7c3aed !important;
+}
+
+.service-workflow-step {
+  padding: 1rem 1.25rem;
+  border-radius: 0.75rem;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.service-workflow-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}

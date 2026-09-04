@@ -22,7 +22,7 @@
     <div class="service-actions d-flex flex-column align-items-center gap-1 ms-auto">
       <%= link_to edit_landlord_house_service_path(house, service),
                   data: { turbo_frame: "edit_service_modal" },
-                  title: t("form.service.edit"),
+                  title: t("service.edit"),
                   class: "service-btn p-1 rounded-circle" do %>
         <span class="material-symbols-filled">edit</span>
       <% end %>
@@ -30,11 +30,11 @@
       <%= button_to landlord_house_service_path(house, service),
                     method: :delete,
                     class: "service-btn p-1 rounded-circle",
-                    title: t("form.service.delete"),
+                    title: t("service.delete"),
                     data: {
                       turbo_confirm: [
-                        t("form.service.delete_cf", name: service.name),
-                        t("form.service.delete_warning_1")
+                        t("service.delete_cf", name: service.name),
+                        t("service.delete_warning_1")
                       ].join("\n\n")
                     } do %>
         <span class="material-symbols-filled">delete</span>
@@ -42,4 +42,3 @@
     </div>
   </div>
 </div>
-

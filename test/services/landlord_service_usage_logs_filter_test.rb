@@ -152,4 +152,41 @@ class LandlordServiceUsageLogsFilterTest < ActiveSupport::TestCase
     assert_equal 1, results.length
     assert_equal 2, results.total_pages
   end
+
+  test "filters by floor" do
+    floor2 = @house.floors.create!(name: "Tầng 2", position: 2)
+    room3 = floor2.rooms.create!(name: "201", max_slots: 2, tenants_count: 1, area: 25)
+    room3.create_rental_unit!(rent: 3_000_000, deposit: 3_000_000)
+    log3 = ServiceUsageLog.create!(
+      room: room3,
+      service: @service1,
+      service_variant: @variant1,
+      service_name: @service1.name,
+      unit: @variant1.human_unit,
+      unit_price: @variant1.fee,
+      prev_reading: 10,
+      latest_reading: 20,
+      billing_month: @billing_month,
+      start_date: @billing_month.beginning_of_month,
+      end_date: @billing_month.end_of_month,
+      is_confirmed: true,
+      submitted_by: @landlord_user
+    )
+
+    results_floor1 = LandlordServiceUsageLogsFilter.call(
+      house: @house,
+      params: { floor_id: @floor.id }
+    )
+    assert_includes results_floor1, @log1
+    assert_includes results_floor1, @log2
+    assert_not_includes results_floor1, log3
+
+    results_floor2 = LandlordServiceUsageLogsFilter.call(
+      house: @house,
+      params: { floor_id: floor2.id }
+    )
+    assert_includes results_floor2, log3
+    assert_not_includes results_floor2, @log1
+    assert_not_includes results_floor2, @log2
+  end
 end

@@ -10,3 +10,9 @@
 .usage-log-tenant-form-wrapper {
   max-width: 600px;
 }
+
+.usage-log-modal-photo {
+  max-height: 380px;
+  object-fit: contain;
+  background-color: #f8fafc;
+}

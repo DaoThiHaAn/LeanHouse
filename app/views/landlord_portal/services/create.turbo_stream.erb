@@ -3,7 +3,7 @@
 <% end %>
 
 <%= turbo_stream.update "sidebar_services_count" do %>
-  <%= t("form.service.total", val: @house.services.count) %>
+  <%= t("service.total", val: @house.services.count) %>
 <% end %>
 
 <%= turbo_stream.update "new_service_modal", "" %>

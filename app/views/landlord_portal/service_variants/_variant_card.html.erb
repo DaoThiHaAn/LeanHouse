@@ -20,12 +20,12 @@
         <% if variant.is_real_time? %>
           <span class="badge bg-info bg-opacity-10 text-info-emphasis border border-info-subtle d-inline-flex align-items-center gap-1 py-1 px-2">
             <span class="material-symbols-outlined fs-6">speed</span>
-            <small class="fw-semibold"><%= t("form.service.variant.real_time_badge") %></small>
+            <small class="fw-semibold"><%= t("service.variant.real_time_badge") %></small>
           </span>
         <% else %>
           <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary-subtle d-inline-flex align-items-center gap-1 py-1 px-2">
             <span class="material-symbols-outlined fs-6">lock</span>
-            <small class="fw-semibold"><%= t("form.service.variant.fixed") %></small>
+            <small class="fw-semibold"><%= t("service.variant.fixed") %></small>
           </span>
         <% end %>
       </div>
@@ -33,7 +33,7 @@
       <%# Applied Rooms Badge %>
       <div class="applied-rooms-container my-3 p-2 rounded">
         <small class="fw-semibold mb-1">
-          <%= t("form.service.variant.applied_rate", applied: applied_count, total: total_rooms) %>
+          <%= t("service.variant.applied_rate", applied: applied_count, total: total_rooms) %>
         </small>
       </div>
     </div>
@@ -45,7 +45,7 @@
                   class: "btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1",
                   data: { turbo_frame: "service_variant_modal" } do %>
         <span class="material-symbols-outlined fs-6">tune</span>
-        <span class="d-none d-sm-inline small"><%= t("form.service.variant.edit_meta") %></span>
+        <span class="d-none d-sm-inline small"><%= t("service.variant.edit_meta") %></span>
       <% end %>
 
       <%# Action 2: Application Edit %>
@@ -53,18 +53,18 @@
                   class: "btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1",
                   data: { turbo_frame: "service_variant_modal" } do %>
         <span class="material-symbols-outlined fs-6">checklist</span>
-        <span class="d-none d-sm-inline small"><%= t("form.service.variant.edit_application") %></span>
+        <span class="d-none d-sm-inline small"><%= t("service.variant.edit_application") %></span>
       <% end %>
 
       <%# Action 3: Delete %>
       <%= button_to landlord_house_service_service_variant_path(house, service, variant),
                     method: :delete,
                     class: "btn btn-sm btn-outline-danger d-inline-flex align-items-center p-1",
-                    title: t("form.service.variant.delete"),
+                    title: t("service.variant.delete"),
                     data: {
                       turbo_confirm: [
-                        t("form.service.variant.delete_cf", fee: number_with_delimiter(variant.fee), unit: variant.human_unit),
-                        t("form.service.variant.delete_warning")
+                        t("service.variant.delete_cf", fee: number_with_delimiter(variant.fee), unit: variant.human_unit),
+                        t("service.variant.delete_warning")
                       ].join("\n\n")
                     } do %>
         <span class="material-symbols-outlined fs-6">delete</span>

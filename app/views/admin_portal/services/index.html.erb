@@ -23,7 +23,7 @@
               <%= t("admin.services.title") %>
             </h2>
             <span class="badge bg-light text-secondary border">
-              <%= @total_services_count %> <%= t("form.service.self") %>
+              <%= @total_services_count %> <%= t("service.self") %>
             </span>
           </div>
         </div>
@@ -43,7 +43,7 @@
                   </div>
                 </div>
                 <span class="badge bg-light text-secondary border small">
-                  <%= service.service_variants.size %> <%= t("form.service.variant.self") %>
+                  <%= service.service_variants.size %> <%= t("service.variant.self") %>
                 </span>
               </div>
 
@@ -53,7 +53,7 @@
                     <table class="table table-hover align-middle">
                       <thead class="table-light">
                         <tr>
-                          <th class="ps-3" style="width: 25%;"><%= t("form.service.price") %> / <%= t("form.service.unit") %></th>
+                          <th class="ps-3" style="width: 25%;"><%= t("service.price") %> / <%= t("service.unit") %></th>
                           <th style="width: 15%;"><%= t("admin.services.cal_type") %></th>
                           <th style="width: 20%;"><%= t("admin.services.applied_scope") %></th>
                           <th class="pe-3" style="width: 40%;"><%= t("admin.services.applied_rooms_list") %></th>

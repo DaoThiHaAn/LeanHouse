@@ -25,7 +25,7 @@
 
           <%= form_with model: @room, url: landlord_house_room_path(@house, @room),
               class:"d-flex flex-column gap-4 px-3 mx-auto" ,
-              data: { 
+              data: {
                 controller: "loading",
                 loading_text_value: t("saving") + "...",
                 action: "submit->loading#submit"
@@ -39,12 +39,12 @@
                     <span class="asterisk">*</span>
               <% end %>
 
-              <%= f.text_field :name, minlength: 1, maxlength: 50, class: "mb-1 form-control w-50 #{invalid_class(@room, :name)}", 
+              <%= f.text_field :name, minlength: 1, maxlength: 50, class: "mb-1 form-control w-50 #{invalid_class(@room, :name)}",
                   placeholder: t('form.room.input'), required: true, autofocus: true,
                   data: {
                       form_target: "input",
                       action: "input->form#update"
-                  } 
+                  }
               %>
 
               <small class="counter-text">
@@ -125,7 +125,7 @@
 
           <%# Services %>
           <div>
-            <div class="form-label"><%= t('form.service.self') %>:</div>
+            <div class="form-label"><%= t('service.self') %>:</div>
 
             <% @services.each do |service| %>
               <% applied_variant = @applied_service_variants_by_service_id[service.id] %>
@@ -149,7 +149,7 @@
                     <%= label_tag(
                         "service_#{service.id}",
                         service.name,
-                        class: "form-check-label ms-2") 
+                        class: "form-check-label ms-2")
                     %>
                   </div>
 
@@ -174,11 +174,11 @@
                     >
                       <div class="d-flex align-items-center pe-none"
                           data-service-selection-target="variantLabel"
-                          data-placeholder="<%= t("form.service.select_variant") %>">
+                          data-placeholder="<%= t("service.select_variant") %>">
                         <% if applied_variant %>
                           <%= number_with_delimiter(applied_variant.fee) %> đ / <%= t("enums.room_service.unit.#{applied_variant.unit}") %>
                         <% else %>
-                          <%= t("form.service.select_variant") %>
+                          <%= t("service.select_variant") %>
                         <% end %>
                       </div>
                     </button>
@@ -194,7 +194,7 @@
                             <span class="material-symbols-filled me-2">payments</span>
                             <%= number_with_delimiter(variant.fee) %> đ / <%= t("enums.room_service.unit.#{variant.unit}") %>
                             <% if variant.is_real_time %>
-                              <div class="ms-2" title="<%= t('form.service.real_time_short') %>">
+                              <div class="ms-2" title="<%= t('service.real_time_short') %>">
                                 -
                                 <span class="material-symbols-filled">speed</span>
                               </div>
@@ -215,7 +215,7 @@
             <% end %>
           </div>
 
-          <%= f.button :submit, 
+          <%= f.button :submit,
             class: "custom-primary-btn mx-auto main-form d-flex align-items-center justify-content-center gap-2",
             data: { loading_target: "button" } do %>
             <span class="material-symbols-outlined fs-5">save</span>

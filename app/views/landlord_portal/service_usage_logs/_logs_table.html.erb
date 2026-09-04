@@ -3,7 +3,7 @@
         controller: "pagination-sync",
         pagination_sync_canonical_url_value: landlord_house_service_usage_logs_path(house),
         pagination_sync_default_params_value: (params[:service_id].present? ? { service_id: params[:service_id].to_s } : {}).to_json,
-        pagination_sync_query_params_value: ["month", "room_id", "service_id", "service_variant_id", "status"].to_json,
+        pagination_sync_query_params_value: ["month", "floor_id", "room_id", "service_id", "service_variant_id", "status"].to_json,
         pagination_sync_total_pages_selector_value: "[data-pagination-total-pages]",
         action: "turbo:frame-load->pagination-sync#updateUrl"
       } do %>
@@ -21,7 +21,7 @@
       <thead class="table-light">
         <tr>
           <th class="ps-3"><%= t("invoice.room") %></th>
-          <th><%= t("form.service.self") %></th>
+          <th><%= t("service.self") %></th>
           <th><%= t("invoice.prev_reading") %></th>
           <th><%= t("invoice.latest_reading") %></th>
           <th><%= t("invoice.consumption") %></th>
@@ -40,6 +40,7 @@
                 <span><%= log.room.title_name %></span>
                 <span class="material-symbols-outlined fs-6 text-primary">open_in_new</span>
               <% end %>
+              <span class="text-secondary small d-block fw-normal"><%= log.room.floor.title_name %></span>
             </td>
             <td>
               <span class="badge bg-secondary-subtle text-secondary border">
@@ -68,9 +69,13 @@
             </td>
             <td>
               <% if log.reading_photo.attached? %>
-                <a href="<%= url_for(log.reading_photo) %>" target="_blank" rel="noopener" class="d-inline-block position-relative" title="<%= t('service_usage_logs.view_full_photo') %>">
+                <%= link_to landlord_house_service_usage_log_path(house, log), class: "d-inline-block position-relative text-decoration-none", data: { turbo_frame: "usage_log_detail_modal" }, title: t("service_usage_logs.view_detail") do %>
                   <%= image_tag log.reading_photo.variant(resize_to_limit: [50, 50]), class: "rounded border shadow-sm", alt: t("invoice.meter_photo") %>
-                </a>
+                <% end %>
+                <span class="text-secondary small d-block" title="<%= t('service_usage_logs.photo_uploaded_at') %>">
+                  <span class="material-symbols-outlined fs-6 align-middle text-muted">schedule</span>
+                  <%= log.reading_photo.blob.created_at.strftime("%d/%m %H:%M") %>
+                </span>
               <% else %>
                 <span class="text-secondary small fst-italic"><%= t("invoice.no_photo") %></span>
               <% end %>
@@ -88,6 +93,12 @@
                 <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 d-inline-flex align-items-center gap-1">
                   <span class="material-symbols-outlined fs-6">check_circle</span> <%= t("invoice.status_confirmed") %>
                 </span>
+                <% if log.confirmed_at.present? %>
+                  <span class="text-secondary small d-block mt-1" title="<%= t('service_usage_logs.confirmed_at_label') %>">
+                    <span class="material-symbols-outlined fs-6 align-middle text-muted">done</span>
+                    <%= log.confirmed_at.strftime("%d/%m %H:%M") %>
+                  </span>
+                <% end %>
               <% else %>
                 <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle px-2 py-1 d-inline-flex align-items-center gap-1">
                   <span class="material-symbols-outlined fs-6">schedule</span> <%= t("invoice.status_unconfirmed") %>
@@ -102,6 +113,13 @@
             </td>
             <td class="text-center pe-3">
               <div class="d-flex align-items-center justify-content-center gap-2">
+                <%= link_to landlord_house_service_usage_log_path(house, log),
+                            class: "table-action text-primary border-0 bg-transparent p-0",
+                            data: { turbo_frame: "usage_log_detail_modal" },
+                            title: t("service_usage_logs.view_detail") do %>
+                  <span class="material-symbols-outlined">visibility</span>
+                <% end %>
+
                 <% unless log.is_confirmed? %>
                   <%= button_to confirm_landlord_house_service_usage_log_path(house, log),
                                 method: :patch,

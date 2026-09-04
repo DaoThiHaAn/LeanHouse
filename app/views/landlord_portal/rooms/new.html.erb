@@ -9,7 +9,7 @@
   <h1 class="text-center flex-grow-1">
     <%= t('page_titles.new_room') %> - <%= @house.name %>
   </h1>
-</div>  
+</div>
 
 <div class="info-container px-3 py-2 mb-4 mx-auto">
   <%= field_info(
@@ -21,7 +21,7 @@
 
   <%= form_with model: @room, url: landlord_house_rooms_path(@house, @room), method: :post,
         class:"d-flex flex-column gap-4 px-3 mx-auto" ,
-        data: { 
+        data: {
           controller: "loading",
           loading_text_value: t("saving") + "...",
           action: "submit->loading#submit"
@@ -35,12 +35,12 @@
               <span class="asterisk">*</span>
         <% end %>
 
-        <%= f.text_field :name, minlength: 1, maxlength: 50, class: "mb-1 form-control w-50 #{invalid_class(@room, :name)}", 
+        <%= f.text_field :name, minlength: 1, maxlength: 50, class: "mb-1 form-control w-50 #{invalid_class(@room, :name)}",
             placeholder: t('form.room.input'), required: true, autofocus: true,
             data: {
                 form_target: "input",
                 action: "input->form#update"
-            } 
+            }
         %>
 
         <small class="counter-text">
@@ -83,7 +83,7 @@
       </div>
 
       <div class="ms-4 input-group w-50">
-        <span class="input-group-text" 
+        <span class="input-group-text"
               data-label-capacity-target="label">
           <%= bed_field_title(@house) %>
         </span>
@@ -113,13 +113,13 @@
               required: true %>
         <% if @house.bed?  %>
           <span class="input-group-text"> <%= t("form.room.per_bed") %> </span>
-        <% end %>           
+        <% end %>
       </div>
     </div>
 
     <%# Services %>
     <div>
-      <div class="form-label"><%= t('form.service.self')%>:</div>
+      <div class="form-label"><%= t('service.self')%>:</div>
 
       <% @services.each do |service| %>
         <div class="mb-4">
@@ -142,7 +142,7 @@
               <%= label_tag(
                   "service_#{service.id}",
                   service.name,
-                  class: "form-check-label ms-2") 
+                  class: "form-check-label ms-2")
               %>
             </div>
 
@@ -167,8 +167,8 @@
               >
                 <div class="d-flex align-items-center pe-none"
                     data-service-selection-target="variantLabel"
-                    data-placeholder="<%= t("form.service.select_variant") %>">
-                  <%= t("form.service.select_variant") %>
+                    data-placeholder="<%= t("service.select_variant") %>">
+                  <%= t("service.select_variant") %>
                 </div>
               </button>
 
@@ -183,7 +183,7 @@
                       <span class="material-symbols-filled me-2">payments</span>
                       <%= "#{number_with_delimiter(variant.fee)} đ / #{t("enums.room_service.unit.#{variant.unit}")}" %>
                       <% if variant.is_real_time %>
-                        <div class="ms-2" title="<%= t('form.service.real_time_short')%>">
+                        <div class="ms-2" title="<%= t('service.real_time_short')%>">
                           -
                           <span class="material-symbols-filled">speed</span>
                         </div>
@@ -204,7 +204,7 @@
       <% end %>
     </div>
 
-    <%= f.button :submit, 
+    <%= f.button :submit,
       class: "custom-primary-btn mx-auto main-form d-flex align-items-center justify-content-center gap-2",
       data: { loading_target: "button" } do%>
       <span data-loading-target="text"><%= t("save") %></span>

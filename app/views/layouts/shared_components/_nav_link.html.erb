@@ -1,6 +1,5 @@
 <div class="overflow-x-auto collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav d-flex align-items-md-center">
-    <%# TODO Authorize and insert the links %>
     <%if !logged_in?%>
         <%= nav_item t("bar.home"), "Home", path: root_path, icon: "home" %>
         <%= nav_item t("bar.find_rooms"), "Finding Rooms", path: posts_path, icon: "search" %>
@@ -22,26 +21,6 @@
         <%= nav_item t("bar.my_invoices"), "My Invoices", path: tenant_invoices_path %>
         <%= nav_item t("bar.my_requests"), "My Requests", path: tenant_requests_path %>
         <%= nav_item t("bar.find_rooms"), "Finding Rooms", path: posts_path, icon: "search" %>
-    <%else%>
-
     <%end%>
-    <!-- Dropdown 
-    <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle"
-            href="#"
-            role="button"
-            data-bs-toggle="dropdown"
-            aria-expanded="false">
-        Dropdown
-        </a>
-
-        <ul class="dropdown-menu">
-        <li><%= link_to "Action", "#", class: "dropdown-item" %></li>
-        <li><%= link_to "Another action", "#", class: "dropdown-item" %></li>
-        <li><hr class="dropdown-divider"></li>
-        <li><%= link_to "Something else", "#", class: "dropdown-item" %></li>
-        </ul>
-    </li>
-    -->
     </ul>
 </div>

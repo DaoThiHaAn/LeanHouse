@@ -79,6 +79,36 @@ class LandlordPortal::ServiceUsageLogsControllerTest < ActionDispatch::Integrati
     assert_response :success
     assert_select "nav[aria-label='breadcrumb']", text: /#{@service.name}/
     assert_select "h2", text: /#{@service.name}/
+    assert_select "select[name='floor_id']"
+    assert_select "select[name='room_id']"
+  end
+
+  test "should get filtered logs for house with floor_id" do
+    get filtered_landlord_house_service_usage_logs_path(@house, month: @billing_month.strftime("%Y-%m"), floor_id: @floor.id)
+    assert_response :success
+    assert_select "turbo-frame#logs_table"
+  end
+
+  test "index renders floor name in room column" do
+    get landlord_house_service_usage_logs_path(@house)
+    assert_response :success
+    assert_select "tr##{dom_id(@log)} td" do
+      assert_select "span", text: /#{@floor.title_name}/
+    end
+  end
+
+  test "show renders turbo modal with usage log details and timestamps" do
+    @log.update!(
+      is_confirmed: true,
+      confirmed_at: Time.current,
+      confirmed_by: @landlord_user
+    )
+    get landlord_house_service_usage_log_path(@house, @log), headers: { "Turbo-Frame" => "usage_log_detail_modal" }
+    assert_response :success
+    assert_select "turbo-frame#usage_log_detail_modal"
+    assert_select "#usageLogDetailModal"
+    assert_select ".modal-title", text: /#{@service.name}/
+    assert_select ".badge", text: /#{@floor.title_name}/
   end
 
   test "should get dedicated room service usage logs index" do

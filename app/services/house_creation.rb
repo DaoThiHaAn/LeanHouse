@@ -2,10 +2,10 @@
 
 class HouseCreation
   SERVICES = {
-    elec: "form.service.elec_money",
-    water: "form.service.water_money",
-    wifi: "form.service.wifi_money",
-    parking: "form.service.parking_money"
+    elec: "service.elec_money",
+    water: "service.water_money",
+    wifi: "service.wifi_money",
+    parking: "service.parking_money"
   }.freeze
 
 

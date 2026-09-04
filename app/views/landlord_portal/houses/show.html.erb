@@ -32,9 +32,9 @@
 
             <% if @house.regulation_file.attached? %>
               <div>
-                <%= link_to rails_blob_path(@house.regulation_file, disposition: "inline"), 
+                <%= link_to rails_blob_path(@house.regulation_file, disposition: "inline"),
                             target: "_blank",  title: t("form.file.view"),
-                            rel: "noopener", 
+                            rel: "noopener",
                             class: "btn btn-outline-primary d-inline-flex align-items-center gap-2" do %>
                   <span class="material-symbols-outlined">contract</span>
                   <%= @house.regulation_file.filename.to_s %>
@@ -84,7 +84,7 @@
           <%# Services %>
           <div class="mt-3 pt-3 border-top">
             <div class="d-flex gap-2 align-items-center">
-              <h6 class="fw-bold m-0"><%= t("form.service.self") + ":" %></h6>
+              <h6 class="fw-bold m-0"><%= t("service.self") + ":" %></h6>
 
               <%= link_to landlord_house_services_path(@house), class: "d-inline-flex align-items-center",
                 data: { turbo_frame: "_top",
@@ -97,9 +97,9 @@
               <table class="table table-bordered table-hover align-middle mb-0">
                 <thead class="table-light sticky-top">
                   <tr>
-                    <th><%= t("form.service.price") %></th>
-                    <th><%= t("form.service.unit") %></th>
-                    <th class="text-center"><%= t("form.service.real_time_short") %></th>
+                    <th><%= t("service.price") %></th>
+                    <th><%= t("service.unit") %></th>
+                    <th class="text-center"><%= t("service.real_time_short") %></th>
                   </tr>
                 </thead>
 
@@ -158,7 +158,7 @@
 
         <div class="modal-footer d-flex justify-content-between align-items-center">
           <%# Edit button %>
-          <%= link_to edit_landlord_house_path(@house), 
+          <%= link_to edit_landlord_house_path(@house),
                 data: { turbo_frame: "_top" }, # force Rails to direct to a new page
                 class: "main-btn d-flex align-items-center justify-content-center gap-1" do %>
             <span class="material-symbols-filled">edit</span>

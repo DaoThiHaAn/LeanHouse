@@ -5,7 +5,7 @@ class LandlordPortal::ServiceUsageLogsController < LandlordPortal::BaseControlle
 
   before_action :set_room, only: %i[index filtered confirm_all new]
   before_action :set_billing_month, only: %i[index filtered]
-  before_action :set_service_usage_log, only: %i[edit update confirm destroy]
+  before_action :set_service_usage_log, only: %i[show edit update confirm destroy]
 
   def index
     if @room
@@ -66,6 +66,9 @@ class LandlordPortal::ServiceUsageLogsController < LandlordPortal::BaseControlle
     else
       render :new, status: :unprocessable_entity
     end
+  end
+
+  def show
   end
 
   def edit

@@ -45,6 +45,8 @@ class LandlordPortal::ServicesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "h1", /#{I18n.t('page_titles.service_mng')}/
     assert_select "#service_#{@service.id}"
+    assert_select "button[data-bs-target='#serviceGuideModal']"
+    assert_select "#serviceGuideModal"
   end
 
   test "show renders turbo frame partial when requested via turbo frame" do

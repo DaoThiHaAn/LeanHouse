@@ -64,7 +64,7 @@
 
       <!-- Filter Service -->
       <div class="d-flex align-items-center gap-2">
-        <%= f.label :service_id, "#{t('form.service.self')}:", class: "fw-bold text-nowrap" %>
+        <%= f.label :service_id, "#{t('service.self')}:", class: "fw-bold text-nowrap" %>
         <%= f.select :service_id,
                      [[t("service_usage_logs.all_services"), ""]] + @services.map { |s| [s.name, s.id] },
                      { selected: params[:service_id] },
@@ -101,3 +101,4 @@
   </div>
 
   <%= render "room_logs_table", house: @house, room: @room, logs: @logs %>
+  <%= turbo_frame_tag "usage_log_detail_modal" %>

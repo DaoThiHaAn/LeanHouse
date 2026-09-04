@@ -15,7 +15,7 @@
         <div class="d-flex align-items-center gap-3">
           <h2 class="fs-4 fw-bold m-0 text-dark"><%= service.name %></h2>
           <span id="service_variants_count" class="badge bg-light text-secondary border">
-            <%= t("form.service.total_variants", val: variants.size) %>
+            <%= t("service.total_variants", val: variants.size) %>
           </span>
         </div>
         <% if service.note.present? %>
@@ -42,7 +42,7 @@
                   class: "custom-primary-btn d-flex align-items-center gap-2 px-3 py-2",
                   data: { turbo_frame: "service_variant_modal" } do %>
         <span class="material-symbols-filled fs-5">add_circle</span>
-        <span><%= t("form.service.variant.add") %></span>
+        <span><%= t("service.variant.add") %></span>
       <% end %>
     </div>
   </div>
@@ -67,9 +67,9 @@
     <div id="no_variants_prompt" class="text-center py-5 <%= 'd-none' if variants.any? %>">
       <span class="empty-state-icon material-symbols-outlined text-secondary mb-3">category</span>
 
-      <p class="fw-bold text-secondary mb-2 fs-5"><%= t("form.service.no_variants") %></p>
+      <p class="fw-bold text-secondary mb-2 fs-5"><%= t("service.no_variants") %></p>
       <p class="text-secondary mx-auto mb-4">
-        <%= t("form.service.no_variants_prompt") %>
+        <%= t("service.no_variants_prompt") %>
       </p>
     </div>
   </div>
