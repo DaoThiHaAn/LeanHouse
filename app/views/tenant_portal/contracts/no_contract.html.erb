@@ -1,7 +1,7 @@
 
 <% content_for :title, t("page_titles.my_contract") %>
 
-<div class="tenant-contract main-container w-75">
+<div class="tenant-contract main-container">
   <h1 class="w-100 text-center mb-5"><%= t("page_titles.my_contract") %></h1>
 
   <p class="fs-5 text-center fw-bold mb-2"><%= t("form.contract.none") %></p>
@@ -12,5 +12,13 @@
       extra_classes: "gap-1"
     ) %>
   </div>
-  <%= image_tag "agreement.gif", alt: "Aggrement gif", width: "200px", class:"mx-auto d-block" %>
+
+  <div class="text-center my-4">
+    <%= link_to tenant_all_contracts_path, class: "btn btn-outline-primary d-inline-flex align-items-center gap-1 shadow-sm" do %>
+      <span class="material-symbols-outlined fs-6">history</span>
+      <span><%= t("form.contract.view_all") %></span>
+    <% end %>
+  </div>
+
+  <%= image_tag "agreement.gif", alt: "Aggrement gif", width: 200, class: "mx-auto d-block" %>
 </div>

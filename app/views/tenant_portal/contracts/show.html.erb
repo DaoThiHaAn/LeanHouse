@@ -3,7 +3,21 @@
 <% content_for :title, t("page_titles.my_contract") %>
 
 <div class="contract-detail-wrapper main-container px-0 border rounded-2">
-  <h1 class="w-100 text-center mb-3"><%= t("page_titles.my_contract") %></h1>
+  <div class="position-relative d-flex align-items-center justify-content-center px-4 pt-4 pb-2">
+    <% if params[:id].present? %>
+      <div class="position-absolute start-0 ms-4">
+        <%= link_to tenant_all_contracts_path, class: "text-secondary d-inline-flex align-items-center gap-1 text-decoration-none" do %>
+          <span class="material-symbols-outlined fs-5">arrow_back</span>
+          <span class="small"><%= t("turn_back") %></span>
+        <% end %>
+      </div>
+    <% end %>
 
-  <%= render 'landlord_portal/contracts/detail', contract: @contract, house: @house, tenant_stay: @tenant_stay %>
+    <h1 class="text-center mb-0"><%= t("page_titles.my_contract") %></h1>
+  </div>
+
+  <%= render 'landlord_portal/contracts/detail',
+             contract: @contract,
+             house: @house,
+             tenant_stay: (@tenant_stay&.rental_unit&.house&.id == @contract.house_id ? @tenant_stay : nil) %>
 </div>

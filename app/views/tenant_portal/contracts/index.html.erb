@@ -1,0 +1,96 @@
+<% content_for :title, t("page_titles.all_contracts") %>
+
+<div class="contract main-container">
+  <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3 flex-wrap gap-2">
+    <div>
+      <h1 class="mb-2"><%= t("form.contract.all_contracts") %></h1>
+      <p class="text-secondary fw-medium">
+        <%= t("form.contract.all_contracts_sub") %>
+      </p>
+    </div>
+    <% if @active_contract.present? %>
+      <%= link_to tenant_contract_path, class: "btn btn-outline-primary d-inline-flex align-items-center gap-1 shadow-sm" do %>
+        <span class="material-symbols-outlined fs-6">description</span>
+        <span><%= t("form.contract.current_contract") %></span>
+      <% end %>
+    <% end %>
+  </div>
+
+  <% if @contracts.empty? %>
+    <div class="card border-0 bg-light rounded-4 text-center py-5 px-3">
+      <div class="mb-3">
+        <span class="material-symbols-outlined text-secondary fs-1">description</span>
+      </div>
+      <p class="fs-5 fw-bold mb-2"><%= t("form.contract.unfound") %></p>
+      <p class="text-secondary mb-0"><%= t("form.contract.empty_desc") %></p>
+    </div>
+
+  <% else %>
+    <h2 class="my-3 ms-2">
+      <%= t("form.contract.list") %>
+      <span class="material-symbols-outlined fs-6 align-middle text-secondary cursor-pointer"
+        <%= tooltip("top", :"form.contract.landlord_info_tooltip", html: true) %>>
+        info
+      </span>
+    </h2>
+
+    <div class="table-responsive bg-white rounded-3 shadow-sm border">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th class="ps-3"><%= t("form.contract.id") %></th>
+            <th><%= t("form.contract.name") %></th>
+            <th><%= t("page_titles.house_mng") %></th>
+            <th><%= t("role.landlord") %></th>
+            <th><%= t("form.contract.period") %></th>
+            <th><%= t("form.contract.contract_state") %></th>
+            <th><%= t("form.contract.end") %></th>
+            <th class="text-center pe-3"><%= t("actions") %></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @contracts.each do |contract| %>
+            <tr>
+              <td class="ps-3 fw-medium text-secondary">#<%= contract.id %></td>
+              <td>
+                <%= link_to contract.title_name, tenant_contract_path(id: contract.id), class: "fw-bold link text-dark" %>
+              </td>
+              <td><%= contract.house&.name || t("none") %></td>
+              <td>
+                <div class="fw-semibold"><%= vn_name(contract.landlord.user.fullname) %></div>
+                <div class="small text-secondary">
+                  <a href="tel:<%= contract.landlord.user.tel %>" class="text-secondary text-decoration-none d-inline-flex align-items-center gap-1">
+                    <span class="material-symbols-outlined fs-6">call</span>
+                    <%= contract.landlord.user.tel %>
+                  </a>
+                </div>
+              </td>
+              <td><%= contract.formatted_period %></td>
+              <td>
+                <% if contract.end_date.present? %>
+                  <span class="badge bg-secondary"><%= t("form.contract.contract_ended") %></span>
+                <% else %>
+                  <%= contract_state_tag(contract.due_status) %>
+                <% end %>
+              </td>
+              <td><%= contract.formatted_end_date %></td>
+              <td class="text-center pe-3">
+                <%= link_to tenant_contract_path(id: contract.id),
+                            class: "table-action",
+                            title: t("view_detail") do %>
+                  <span class="material-symbols-filled fs-5">visibility</span>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+
+    <% if @contracts.respond_to?(:total_pages) && @contracts.total_pages > 1 %>
+      <div class="mt-4 d-flex justify-content-center">
+        <%= paginate @contracts %>
+      </div>
+    <% end %>
+  <% end %>
+</div>

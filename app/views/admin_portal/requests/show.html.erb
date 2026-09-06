@@ -1,0 +1,64 @@
+<%= turbo_frame_tag "request_detail_modal" do %>
+  <div class="modal fade" id="requestDetailModal" tabindex="-1" aria-hidden="true"
+        data-controller="modal" data-modal-auto-open-value="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+      <div class="modal-content px-2">
+        <div class="modal-header border-bottom py-3">
+          <div class="d-flex align-items-center justify-content-center gap-3 flex-wrap flex-grow-1">
+            <h1 class="modal-title mb-0">
+              <%= @request.human_request_type %>
+            </h1>
+            <span class="badge bg-secondary-subtle text-secondary font-monospace border fs-5">#<%= @request.id %></span>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body p-4 d-flex flex-column gap-3">
+          <!-- 1. Common Metadata -->
+          <%= render "landlord_portal/requests/meta", request: @request %>
+
+          <!-- 2. Dynamic Polymorphic Details (Vehicle / Repair / Leave House) -->
+          <% type_partial = "tenant_portal/requests/types/#{@request.requestable_type.underscore}" %>
+          <% if lookup_context.template_exists?(type_partial, [], true) %>
+            <%= render partial: type_partial, locals: { requestable: @request.requestable, request: @request } %>
+          <% end %>
+
+          <!-- 3. Resolution Details -->
+          <% if @request.resolved_at.present? %>
+            <div class="handle-bg d-flex align-items-center justify-content-between flex-wrap gap-2 py-2 px-3 rounded-3 border">
+              <div class="d-flex align-items-center gap-2">
+                <span class="material-symbols-filled handle-text fs-4">verified</span>
+                <span class="handle-text fw-semibold">
+                  <%= t("request.handled") %>: <%= request_status_badge(@request.status) %>
+                </span>
+              </div>
+              <div class="small text-secondary">
+                <%= @request.resolved_at.strftime("%H:%M - %d/%m/%Y") %>
+                <% if @request.resolved_by.present? %>
+                  • <%= vn_name(@request.resolved_by.fullname) %>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+
+          <!-- 4. Rejection reason if present -->
+          <% if @request.rejected? && @request.rejection_reason.present? %>
+            <div class="alert alert-danger rounded-3 mb-0">
+              <div class="fw-bold mb-1 d-flex align-items-center gap-1">
+                <span class="material-symbols-filled fs-5">cancel</span>
+                <span><%= t("request.rejection_reason", default: "Lý do từ chối") %>:</span>
+              </div>
+              <p class="mb-0"><%= @request.rejection_reason %></p>
+            </div>
+          <% end %>
+        </div>
+
+        <div class="modal-footer justify-content-center">
+          <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">
+            <%= t("close") %>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

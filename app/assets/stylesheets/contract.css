@@ -1,5 +1,7 @@
 /* Tenant view */
-
+.contract.main-container {
+  width: 95%;
+}
 
 
 /* Landlord View */

@@ -203,7 +203,7 @@ Rails.application.routes.draw do
     end
     resources :service_usage_logs, only: %i[index edit update create]
     resource :contract, only: [ :show ]
-    get "/old-contracts", to: "contracts#old_index"
+    get "/all-contracts", to: "contracts#index"
     resource :room, only: [ :show ]
     resources :services, only: [ :index ]
 
@@ -249,5 +249,6 @@ Rails.application.routes.draw do
     end
     resources :contracts, only: [ :show ]
     resources :invoices, only: [ :show ]
+    resources :requests, only: [ :index, :show ]
   end
 end

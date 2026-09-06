@@ -96,12 +96,49 @@ class LandlordPortal::RequestsControllerTest < ActionDispatch::IntegrationTest
     assert_select ".stat-card-title", text: I18n.t("request.stats.pending")
     assert_select ".stat-card-title", text: I18n.t("request.stats.expiring_soon")
     assert_select "form[action='#{filtered_landlord_requests_path}']"
+    assert_select "label[for='from_date']"
+    assert_select "label[for='to_date']"
+    assert_select "input[name='from_date'][max='#{Date.current}']"
+    assert_select "input[name='to_date'][max='#{Date.current}'][value='#{Date.current}']"
     assert_select "select[name='house_id']"
     assert_select "select[name='month']"
     assert_select "select[name='year']"
     assert_select "select[name='status']"
     assert_select "select[name='request_type']"
     assert_select "turbo-frame#requests_table"
+  end
+
+  test "filtered returns requests matching sent time range with max today" do
+    old_repair_req = RepairRequest.create!(
+      title: "Broken Door",
+      content: "Door lock is broken"
+    )
+    old_request = Request.create!(
+      tenant: @tenant,
+      house: @house,
+      requestable: old_repair_req,
+      status: :pending,
+      created_at: 10.days.ago
+    )
+
+    sign_in_as(@landlord_user)
+
+    # Filter for today only (@landlord_request created today)
+    get filtered_landlord_requests_path,
+        params: { from_date: Date.current.to_s, to_date: Date.current.to_s },
+        headers: { "Turbo-Frame" => "requests_table" }
+    assert_response :success
+    assert_select "turbo-frame#requests_table"
+    assert_select "tr#request_row_#{@landlord_request.id}"
+    assert_select "tr#request_row_#{old_request.id}", count: 0
+
+    # Filter for 10 days ago (old_request)
+    get filtered_landlord_requests_path,
+        params: { from_date: 11.days.ago.to_date.to_s, to_date: 9.days.ago.to_date.to_s },
+        headers: { "Turbo-Frame" => "requests_table" }
+    assert_response :success
+    assert_select "tr#request_row_#{old_request.id}"
+    assert_select "tr#request_row_#{@landlord_request.id}", count: 0
   end
 
   test "filtered returns request table partial with row expiry badge for landlord" do

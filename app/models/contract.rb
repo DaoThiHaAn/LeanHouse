@@ -22,6 +22,7 @@ class Contract < ApplicationRecord
 
   scope :expiring_soonest, -> { order(due_date: :asc, id: :asc) }
   scope :latest_started, -> { order(start_date: :desc, id: :desc) }
+  scope :active, -> { unfinished.where("contracts.due_date >= ?", Date.current) }
 
   # Contract due scopes
   scope :overdue, -> { where("contracts.due_date < ?", Date.current) }

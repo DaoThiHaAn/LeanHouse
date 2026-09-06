@@ -26,6 +26,7 @@
     <%= stylesheet_link_tag "admin", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "contract", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "invoice", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "request", "data-turbo-track": "reload" %>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
@@ -73,6 +74,13 @@
               <%= link_to admin_houses_path, class: "nav-link d-flex align-items-center gap-1 px-3 py-2" do %>
                 <span class="material-symbols-filled fs-5">home_work</span>
                 <span><%= t("admin.nav.houses") %></span>
+              <% end %>
+            </li>
+
+            <li class="nav-item custom <%= 'active' if controller_name == 'requests' %>">
+              <%= link_to admin_requests_path, class: "nav-link d-flex align-items-center gap-1 px-3 py-2" do %>
+                <span class="material-symbols-filled fs-5">assignment</span>
+                <span><%= t("admin.nav.requests") %></span>
               <% end %>
             </li>
 
@@ -154,5 +162,7 @@
     <%= turbo_frame_tag "contract_detail_modal" %>
     <!-- Modal container for invoice detail -->
     <%= turbo_frame_tag "invoice_detail_modal" %>
+    <!-- Modal container for request detail -->
+    <%= turbo_frame_tag "request_detail_modal" %>
   </body>
 </html>

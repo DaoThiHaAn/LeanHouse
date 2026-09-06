@@ -1,0 +1,332 @@
+<% content_for :title, t("page_titles.admin_requests") %>
+
+<div class="d-flex flex-column align-items-center gap-3 pb-3 mb-4 border-bottom">
+  <h1 class="admin-title mb-0"><%= t("admin.requests.title") %></h1>
+  <p class="text-secondary mb-0 text-center">
+    <%= t("admin.requests.subtitle") %>
+  </p>
+</div>
+
+<!-- KPI Stat Cards Row -->
+<div class="row g-3 mb-4">
+  <!-- Total Requests -->
+  <div class="col-6 col-md-4 col-lg-2">
+    <div class="admin-stat-card admin-stat-slate">
+      <div>
+        <div class="small admin-stat-title fw-semibold text-uppercase d-flex align-items-center gap-1">
+          <span class="material-symbols-filled fs-4 admin-stat-icon">functions</span>
+          <span><%= t("admin.requests.total_requests") %></span>
+        </div>
+        <div class="fs-4 fw-bold admin-stat-number mt-1"><%= @total_requests_count %></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pending -->
+  <div class="col-6 col-md-4 col-lg-2">
+    <div class="admin-stat-card admin-stat-amber">
+      <div>
+        <div class="small admin-stat-title fw-semibold text-uppercase d-flex align-items-center gap-1">
+          <span class="material-symbols-filled fs-4 admin-stat-icon">hourglass_top</span>
+          <span><%= t("admin.requests.pending_requests") %></span>
+        </div>
+        <div class="fs-4 fw-bold admin-stat-number mt-1"><%= @pending_count %></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Handling -->
+  <div class="col-6 col-md-4 col-lg-2">
+    <div class="admin-stat-card admin-stat-blue">
+      <div>
+        <div class="small admin-stat-title fw-semibold text-uppercase d-flex align-items-center gap-1">
+          <span class="material-symbols-filled fs-4 admin-stat-icon">sync</span>
+          <span><%= t("admin.requests.handling_requests") %></span>
+        </div>
+        <div class="fs-4 fw-bold admin-stat-number mt-1"><%= @handling_count %></div>
+      </div>
+      <div class="small text-secondary fst-italic mt-1">
+        <%= t("admin.requests.handling_subtext") %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Completed / Approved -->
+  <div class="col-6 col-md-4 col-lg-2">
+    <div class="admin-stat-card admin-stat-green">
+      <div>
+        <div class="small admin-stat-title fw-semibold text-uppercase d-flex align-items-center gap-1">
+          <span class="material-symbols-filled fs-4 admin-stat-icon">check_circle</span>
+          <span><%= t("admin.requests.completed_requests") %></span>
+        </div>
+        <div class="fs-4 fw-bold admin-stat-number mt-1"><%= @completed_count %></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rejected -->
+  <div class="col-6 col-md-4 col-lg-2">
+    <div class="admin-stat-card admin-stat-red">
+      <div>
+        <div class="small admin-stat-title fw-semibold text-uppercase d-flex align-items-center gap-1">
+          <span class="material-symbols-filled fs-4 admin-stat-icon">cancel</span>
+          <span><%= t("admin.requests.rejected_requests") %></span>
+        </div>
+        <div class="fs-4 fw-bold admin-stat-number mt-1"><%= @rejected_count %></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Overdue -->
+  <div class="col-6 col-md-4 col-lg-2">
+    <div class="admin-stat-card admin-stat-purple">
+      <div>
+        <div class="small admin-stat-title fw-semibold text-uppercase d-flex align-items-center gap-1">
+          <span class="material-symbols-filled fs-4 admin-stat-icon">timer_off</span>
+          <span><%= t("admin.requests.overdue_requests") %></span>
+        </div>
+        <div class="fs-4 fw-bold admin-stat-number mt-1"><%= @overdue_count %></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Search & Filter Form (AJAX via Turbo Frame and Stimulus SearchController) -->
+<div class="mb-4">
+  <%= form_with url: admin_requests_path, method: :get,
+                class: "row g-3 align-items-center justify-content-center",
+                data: {
+                  controller: "search",
+                  turbo_frame: "admin_requests_table",
+                  turbo_action: "advance"
+                } do |f| %>
+
+    <!-- Search Input -->
+    <div class="col-12 col-sm-6 col-lg-3">
+      <div class="input-group border rounded-3 overflow-hidden shadow-sm transition-all">
+        <span class="input-group-text bg-white border-0 pe-1">
+          <span class="material-symbols-outlined fs-5 text-secondary">search</span>
+        </span>
+        <%= f.search_field :q,
+            value: @query,
+            placeholder: t("admin.requests.search_placeholder"),
+            class: "form-control border-0 ps-2 bg-white shadow-none",
+            data: {
+              search_target: "input",
+              action: "input->search#debounce search->search#debounce"
+            } %>
+      </div>
+    </div>
+
+    <!-- Time Range Filter (From Date - To Date, limited up to today) -->
+    <div class="col-12 col-sm-6 col-lg-4">
+      <div class="input-group border rounded-3 overflow-hidden shadow-sm">
+        <span class="input-group-text bg-white border-0 pe-1 text-secondary"
+              data-controller="tooltip"
+              data-bs-toggle="tooltip"
+              data-bs-placement="top"
+              data-bs-title="<%= t("request.time_range", default: "Khoảng thời gian") %>">
+          <span class="material-symbols-outlined fs-5">calendar_month</span>
+        </span>
+        <%= f.label :from_date, t("request.from_date", default: "Từ"), class: "input-group-text bg-white border-0 text-secondary small px-1" %>
+        <%= f.date_field :from_date,
+            value: @from_date,
+            max: Date.current,
+            id: "from_date",
+            class: "form-control border-0 ps-1 pe-2 bg-white shadow-none",
+            data: {
+              action: "change->search#changed"
+            } %>
+        <%= f.label :to_date, t("request.to_date", default: "Đến"), class: "input-group-text bg-white border-0 text-secondary small px-1" %>
+        <%= f.date_field :to_date,
+            value: @to_date.presence || Date.current,
+            max: Date.current,
+            id: "to_date",
+            class: "form-control border-0 ps-1 bg-white shadow-none",
+            data: {
+              default_value: Date.current.to_s,
+              action: "change->search#changed"
+            } %>
+      </div>
+    </div>
+
+    <!-- Request Type Filter -->
+    <div class="col-6 col-md-3 col-lg-2">
+      <div class="form-floating shadow-sm rounded">
+        <%= f.select :request_type,
+            options_for_select([[t("admin.requests.filter_all_types"), ""]] + Request.request_type_options, @request_type),
+            {},
+            class: "form-select",
+            id: "floatingRequestTypeSelect",
+            data: {
+              action: "change->search#changed"
+            } %>
+        <label for="floatingRequestTypeSelect" class="text-secondary small fw-medium">
+          <%= t("request.type") %>
+        </label>
+      </div>
+    </div>
+
+    <!-- Status Filter -->
+    <div class="col-6 col-md-3 col-lg-2">
+      <div class="form-floating shadow-sm rounded">
+        <%= f.select :status,
+            options_for_select([[t("admin.requests.filter_all_statuses"), ""]] + Request.status_options, @status),
+            {},
+            class: "form-select",
+            id: "floatingStatusSelect",
+            data: {
+              action: "change->search#changed"
+            } %>
+        <label for="floatingStatusSelect" class="text-secondary small fw-medium">
+          <%= t("request.status") %>
+        </label>
+      </div>
+    </div>
+
+    <!-- Clear Filter Button -->
+    <div class="col-auto <%= 'd-none' unless @query.present? || @from_date.present? || (@to_date.present? && @to_date != Date.current.to_s) || @request_type.present? || @status.present? %>" data-search-target="clearButton">
+      <button type="button"
+              class="btn btn-outline-secondary d-flex align-items-center gap-1 shadow-sm"
+              data-action="click->search#clear">
+        <span class="material-symbols-outlined fs-6">filter_alt_off</span>
+        <span class="small"><%= t("request.clear_filter", default: "Xóa lọc") %></span>
+      </button>
+    </div>
+  <% end %>
+</div>
+
+<h2 class="my-3 ms-3"> <%= t("request.list") %> </h2>
+
+<!-- Requests Table (Turbo Frame) -->
+<%= turbo_frame_tag "admin_requests_table",
+      data: {
+        controller: "pagination-sync",
+        pagination_sync_canonical_url_value: admin_requests_path,
+        pagination_sync_default_params_value: {}.to_json,
+        pagination_sync_query_params_value: ["q", "request_type", "status", "from_date", "to_date"].to_json,
+        pagination_sync_total_pages_selector_value: "[data-pagination-total-pages]",
+        action: "turbo:frame-load->pagination-sync#updateUrl"
+      } do %>
+
+  <span hidden data-pagination-total-pages="<%= @requests.respond_to?(:total_pages) ? @requests.total_pages : 1 %>"></span>
+
+  <div class="table-responsive bg-white rounded-3 shadow-sm border">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th scope="col" class="py-3 px-3"><%= t("request.id") %></th>
+          <th scope="col" class="py-3 px-3"><%= t("request.type") %></th>
+          <th scope="col" class="py-3 px-3"><%= t("request.house") %></th>
+          <th scope="col" class="py-3 px-3"><%= t("admin.requests.sender") %></th>
+          <th scope="col" class="py-3 px-3 text-center"><%= t("request.status") %></th>
+          <th scope="col" class="py-3 px-3 text-center"><%= t("admin.requests.sent_at") %></th>
+          <th scope="col" class="py-3 px-3 text-center"><%= t("admin.requests.resolved_info") %></th>
+          <th scope="col" class="py-3 px-3 text-center"><%= t("admin.requests.actions") %></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if @requests.empty? %>
+          <tr>
+            <td colspan="8" class="text-center py-5 text-secondary fw-semibold">
+              <span class="material-symbols-outlined fs-2 text-secondary d-block mb-2">assignment_late</span>
+              <%= t("admin.requests.no_requests") %>
+            </td>
+          </tr>
+        <% else %>
+          <% @requests.each do |req| %>
+            <tr id="request_row_<%= req.id %>">
+              <!-- Request ID -->
+              <td class="px-3 fw-semibold text-secondary">
+                #<%= req.id %>
+              </td>
+
+              <!-- Request Type -->
+              <td class="px-3">
+                <%= link_to admin_request_path(req),
+                      class: "text-decoration-none fw-semibold link text-dark d-inline-flex align-items-center gap-1",
+                      data: { turbo_frame: "request_detail_modal" } do %>
+                  <%= req.human_request_type %>
+                <% end %>
+              </td>
+
+              <!-- House Name -->
+              <td class="px-3">
+                <% if req.house %>
+                  <%= link_to req.house.name, admin_house_path(req.house), class: "link fw-semibold" %>
+                <% else %>
+                  <span class="text-secondary">-</span>
+                <% end %>
+              </td>
+
+              <!-- Sender / Tenant -->
+              <td class="px-3">
+                <% if req.tenant&.user %>
+                  <%= link_to admin_user_path(req.tenant.user), class: "link fw-bold text-dark d-block" do %>
+                    <%= vn_name(req.tenant.user.fullname) %>
+                  <% end %>
+                  <div class="text-secondary small font-monospace"><%= req.tenant.user.tel %></div>
+                <% else %>
+                  <span class="text-secondary">-</span>
+                <% end %>
+              </td>
+
+              <!-- Status -->
+              <td class="px-3 text-center">
+                <div class="d-flex flex-column align-items-center justify-content-center">
+                  <%= request_status_badge(req.status) %>
+                  <%= request_expiry_badge(req) %>
+                </div>
+              </td>
+
+              <!-- Sent Time -->
+              <td class="px-3 text-center text-secondary small">
+                <%= req.created_at.strftime("%H:%M - %d/%m/%Y") %>
+              </td>
+
+              <!-- Resolved Info -->
+              <td class="px-3 text-center text-secondary small">
+                <% if req.resolved_at.present? %>
+                  <div class="fw-semibold text-dark"><%= req.resolved_at.strftime("%H:%M - %d/%m/%Y") %></div>
+                  <% if req.resolved_by.present? %>
+                    <div class="small text-secondary"><%= vn_name(req.resolved_by.fullname) %></div>
+                  <% end %>
+                <% else %>
+                  <span class="text-secondary">-</span>
+                <% end %>
+              </td>
+
+              <!-- Action: View Detail Modal -->
+              <td class="px-3 text-center">
+                <%= link_to admin_request_path(req),
+                      class: "table-action",
+                      data: { turbo_frame: "request_detail_modal" },
+                      title: t("admin.requests.view_detail") do %>
+                  <span class="material-symbols-filled fs-5">visibility</span>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <% if @requests.respond_to?(:total_pages) && @requests.total_pages > 1 %>
+    <div class="d-flex justify-content-between align-items-center p-3 border-top bg-white flex-wrap gap-2 mt-3 rounded shadow-xs">
+      <div class="small text-secondary">
+        <%= t("admin.requests.total_requests") %>: <%= @requests.respond_to?(:total_count) ? @requests.total_count : @requests.size %>
+      </div>
+      <div>
+        <%= paginate @requests,
+              params: {
+                q: params[:q],
+                request_type: params[:request_type],
+                status: params[:status],
+                from_date: params[:from_date],
+                to_date: params[:to_date]
+              } %>
+      </div>
+    </div>
+  <% end %>
+<% end %>

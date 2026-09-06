@@ -52,6 +52,13 @@ en:
     all: "All"
     unread: "Unread"
     read: "Read"
+  bar:
+    my_profile: "My Profile"
+    my_bank_acc: "Bank Accounts"
+    my_vehicle: "My Vehicles"
+    my_saved_post: "Saved Posts"
+    my_contract: "My Contract"
+    all_contracts: "All Contracts"
   role:
     landlord: "Landlord"
     tenant: "Tenant"
@@ -81,6 +88,10 @@ en:
     admin_house_services: "Services: %{house_name}"
     admin_house_contracts: "Contracts: %{house_name}"
     admin_house_invoices: "Invoices: %{house_name}"
+    admin_requests: "Request Management"
+    my_contract: "My Contract"
+    all_contracts: "All Contracts"
+    house_mng: "House"
   view_detail: "View details"
   view_all: "View all"
   view: "View"
@@ -93,6 +104,10 @@ en:
   common:
     month: "Month"
     status: "Status"
+  request:
+    from_date: "From"
+    to_date: "To"
+    time_range: "Time range"
   filter: "Filter"
   clear_filter: "Clear filter"
   clear_search: "Clear search"

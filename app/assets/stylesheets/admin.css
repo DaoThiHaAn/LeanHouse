@@ -90,18 +90,20 @@
 .admin-stat-card {
   border-radius: 12px;
   padding: 1rem;
-  box-shadow: 1px 2px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 1px 2px 6px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
+  border: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .admin-stat-purple {
   background-color: #F8F5FF;
   border-left: 4px solid #7B42BC;
 }
-.admin-stat-purple .admin-stat-icon {
+.admin-stat-purple .admin-stat-icon,
+.admin-stat-purple .admin-stat-title {
   color: #7B42BC;
 }
 .admin-stat-purple .admin-stat-number {
@@ -112,7 +114,8 @@
   background-color: #F0FAF7;
   border-left: 4px solid #1D9A6C;
 }
-.admin-stat-green .admin-stat-icon {
+.admin-stat-green .admin-stat-icon,
+.admin-stat-green .admin-stat-title {
   color: #1D9A6C;
 }
 .admin-stat-green .admin-stat-number {
@@ -123,7 +126,8 @@
   background-color: #F0F7FC;
   border-left: 4px solid #0087CA;
 }
-.admin-stat-blue .admin-stat-icon {
+.admin-stat-blue .admin-stat-icon,
+.admin-stat-blue .admin-stat-title {
   color: #0087CA;
 }
 .admin-stat-blue .admin-stat-number {
@@ -134,11 +138,48 @@
   background-color: #FFF8F0;
   border-left: 4px solid #E67E22;
 }
-.admin-stat-orange .admin-stat-icon {
+.admin-stat-orange .admin-stat-icon,
+.admin-stat-orange .admin-stat-title {
   color: #E67E22;
 }
 .admin-stat-orange .admin-stat-number {
   color: #A04000;
+}
+
+.admin-stat-slate {
+  background-color: #F8FAFC;
+  border-left: 4px solid #64748B;
+}
+.admin-stat-slate .admin-stat-icon,
+.admin-stat-slate .admin-stat-title {
+  color: #64748B;
+}
+.admin-stat-slate .admin-stat-number {
+  color: #1E293B;
+}
+
+.admin-stat-amber {
+  background-color: #FFFDF0;
+  border-left: 4px solid #D97706;
+}
+.admin-stat-amber .admin-stat-icon,
+.admin-stat-amber .admin-stat-title {
+  color: #B45309;
+}
+.admin-stat-amber .admin-stat-number {
+  color: #78350F;
+}
+
+.admin-stat-red {
+  background-color: #FEF2F2;
+  border-left: 4px solid #DC2626;
+}
+.admin-stat-red .admin-stat-icon,
+.admin-stat-red .admin-stat-title {
+  color: #DC2626;
+}
+.admin-stat-red .admin-stat-number {
+  color: #991B1B;
 }
 
 /* --- Role Badges --- */

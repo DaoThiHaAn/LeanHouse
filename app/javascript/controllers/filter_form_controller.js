@@ -7,7 +7,9 @@ export default class extends Controller {
     "monthSelect",
     "yearSelect",
     "statusSelect",
-    "requestTypeSelect"
+    "requestTypeSelect",
+    "fromInput",
+    "toInput"
   ]
 
   static values = {
@@ -39,6 +41,12 @@ export default class extends Controller {
     if (this.hasRequestTypeSelectTarget) {
       this.requestTypeSelectTarget.value = ""
     }
+    if (this.hasFromInputTarget) {
+      this.fromInputTarget.value = ""
+    }
+    if (this.hasToInputTarget) {
+      this.toInputTarget.value = this.toInputTarget.dataset.defaultValue || ""
+    }
 
     this.updateClearButton()
     this.element.requestSubmit()
@@ -53,12 +61,17 @@ export default class extends Controller {
     const currentYear = this.hasYearSelectTarget ? this.yearSelectTarget.value : ""
     const currentStatus = this.hasStatusSelectTarget ? this.statusSelectTarget.value : ""
     const currentType = this.hasRequestTypeSelectTarget ? this.requestTypeSelectTarget.value : ""
+    const currentFrom = this.hasFromInputTarget ? this.fromInputTarget.value : ""
+    const currentTo = this.hasToInputTarget ? this.toInputTarget.value : ""
+    const defaultTo = this.hasToInputTarget ? (this.toInputTarget.dataset.defaultValue || "") : ""
 
     const isFiltered = (currentHouse !== defaultHouse) ||
                        (currentMonth !== "") ||
                        (currentYear !== "") ||
                        (currentStatus !== "") ||
-                       (currentType !== "")
+                       (currentType !== "") ||
+                       (currentFrom !== "") ||
+                       (currentTo !== defaultTo && currentTo !== "")
 
     if (isFiltered) {
       this.clearButtonTarget.classList.remove("d-none")
@@ -67,4 +80,3 @@ export default class extends Controller {
     }
   }
 }
-

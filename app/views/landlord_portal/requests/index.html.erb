@@ -10,7 +10,7 @@
   <%= form_with url: filtered_landlord_requests_path,
       method: :get,
       class: "request-form d-flex align-items-center flex-wrap gap-5 mb-5 p-3 rounded-3",
-      data: { 
+      data: {
         controller: "filter-form",
         turbo_frame: "requests_table",
         turbo_action: "advance"
@@ -29,7 +29,38 @@
             } %>
     </div>
 
-    <!-- 2. Sent Time Filter (Month + Year) -->
+    <!-- 2. Sent Time Range Filter (From Date - To Date, limited up to today) -->
+    <div class="d-flex flex-column gap-1">
+      <span class="form-label fw-semibold mb-0"><%= t("request.time_range") %></span>
+      <div class="input-group flex-nowrap shadow-sm">
+        <%= f.label :from_date, class: "input-group-text bg-white text-secondary small" do %>
+          <span class="material-symbols-filled fs-6 me-1">calendar_month</span>
+          <%= t("request.from_date") %>
+        <% end %>
+        <%= f.date_field :from_date,
+              value: params[:from_date],
+              max: Date.current,
+              id: "from_date",
+              class: "form-control form-control-sm",
+              data: {
+                filter_form_target: "fromInput",
+                action: "change->filter-form#changed"
+              } %>
+        <%= f.label :to_date, t("request.to_date"), class: "input-group-text bg-white text-secondary small" %>
+        <%= f.date_field :to_date,
+              value: params[:to_date].presence || Date.current,
+              max: Date.current,
+              id: "to_date",
+              class: "form-control form-control-sm",
+              data: {
+                default_value: Date.current.to_s,
+                filter_form_target: "toInput",
+                action: "change->filter-form#changed"
+              } %>
+      </div>
+    </div>
+
+    <!-- 3. Sent Time Filter (Month + Year) -->
     <div class="d-flex flex-column gap-1">
       <%= f.label :month, t("request.sent_time"), class: "form-label  fw-semibold mb-0" %>
 
@@ -56,7 +87,7 @@
       </div>
     </div>
 
-    <!-- 3. Status Filter -->
+    <!-- 4. Status Filter -->
     <div class="d-flex flex-column gap-1">
       <%= f.label :status, t("request.status"), class: "form-label  fw-semibold mb-0" %>
       <%= f.select :status,
@@ -69,7 +100,7 @@
             } %>
     </div>
 
-    <!-- 4. Request Type Filter -->
+    <!-- 5. Request Type Filter -->
     <div class="d-flex flex-column gap-1">
       <%= f.label :request_type, t("request.type"), class: "form-label  fw-semibold mb-0" %>
       <%= f.select :request_type,
@@ -97,13 +128,13 @@
 
   <!-- Requests Table Section (Turbo Frame) -->
   <%= turbo_frame_tag "requests_table",
-        src: filtered_landlord_requests_path(params.permit(:page, :house_id, :month, :year, :status, :request_type)),
+        src: filtered_landlord_requests_path(params.permit(:page, :house_id, :month, :year, :status, :request_type, :from_date, :to_date)),
         loading: :lazy,
         data: {
           controller: "pagination-sync",
           pagination_sync_canonical_url_value: landlord_requests_path,
           pagination_sync_default_params_value: {}.to_json,
-          pagination_sync_query_params_value: ["house_id", "month", "year", "status", "request_type"].to_json,
+          pagination_sync_query_params_value: ["house_id", "month", "year", "status", "request_type", "from_date", "to_date"].to_json,
           pagination_sync_total_pages_selector_value: "[data-pagination-total-pages]",
           action: "turbo:frame-load->pagination-sync#updateUrl"
         } do %>

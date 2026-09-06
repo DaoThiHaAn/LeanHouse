@@ -257,7 +257,8 @@ vi:
     admin_house_services: "Dịch vụ: %{house_name}"
     admin_house_contracts: "Hợp đồng: %{house_name}"
     admin_house_invoices: "Hóa đơn: %{house_name}"
-
+    admin_requests: "Quản lý Yêu cầu"
+    all_contracts: "Tất cả hợp đồng"
 
 
   pagination:

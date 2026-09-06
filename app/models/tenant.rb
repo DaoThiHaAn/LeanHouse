@@ -35,6 +35,10 @@ class Tenant < ApplicationRecord
     contracts.latest_started.first
   end
 
+  def latest_active_contract
+    contracts.active.latest_started.first || contracts.unfinished.latest_started.first
+  end
+
   # Returns all distinct houses this tenant has ever been linked to
   def linked_houses
     stay_unit_ids = tenant_stays.select(:rental_unit_id)

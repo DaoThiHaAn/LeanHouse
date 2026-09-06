@@ -31,8 +31,8 @@ export default class extends Controller {
     }
     clearTimeout(this.timeout)
 
-    // Clear all text and search inputs in the form
-    const inputs = this.element.querySelectorAll("input[type='search'], input[type='text']")
+    // Clear all text, date and search inputs in the form
+    const inputs = this.element.querySelectorAll("input[type='search'], input[type='text'], input[type='date']")
     inputs.forEach(input => {
       input.value = input.dataset.defaultValue || ""
     })
@@ -72,8 +72,8 @@ export default class extends Controller {
   }
 
   checkIfFiltered() {
-    // Check all text/search inputs
-    const inputs = this.element.querySelectorAll("input[type='search'], input[type='text']")
+    // Check all text/date/search inputs
+    const inputs = this.element.querySelectorAll("input[type='search'], input[type='text'], input[type='date']")
     for (const input of inputs) {
       const defaultVal = input.dataset.defaultValue || ""
       if (input.value.trim() !== defaultVal) {

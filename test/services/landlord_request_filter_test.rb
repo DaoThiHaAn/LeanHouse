@@ -166,4 +166,45 @@ class LandlordRequestFilterTest < ActiveSupport::TestCase
     results_none = LandlordRequestFilter.call(landlord: @landlord1, params: { request_type: "RepairRequest" })
     assert_equal 0, results_none.size
   end
+
+  test "filters by date range from_date and to_date" do
+    # @req1 is created_at Time.current, @req2 is 1.month.ago
+    results = LandlordRequestFilter.call(
+      landlord: @landlord1,
+      params: {
+        from_date: 2.days.ago.to_date.to_s,
+        to_date: Date.current.to_s
+      }
+    )
+    assert_includes results, @req1
+    assert_not_includes results, @req2
+
+    past_results = LandlordRequestFilter.call(
+      landlord: @landlord1,
+      params: {
+        from_date: 2.months.ago.to_date.to_s,
+        to_date: 20.days.ago.to_date.to_s
+      }
+    )
+    assert_includes past_results, @req2
+    assert_not_includes past_results, @req1
+  end
+
+  test "filters by only from_date" do
+    results = LandlordRequestFilter.call(
+      landlord: @landlord1,
+      params: { from_date: 5.days.ago.to_date.to_s }
+    )
+    assert_includes results, @req1
+    assert_not_includes results, @req2
+  end
+
+  test "filters by only to_date" do
+    results = LandlordRequestFilter.call(
+      landlord: @landlord1,
+      params: { to_date: 10.days.ago.to_date.to_s }
+    )
+    assert_includes results, @req2
+    assert_not_includes results, @req1
+  end
 end

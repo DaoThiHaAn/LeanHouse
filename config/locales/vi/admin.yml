@@ -8,6 +8,7 @@ vi:
       users: "Người dùng"
       houses: "Nhà"
       admins: "Nhân sự"
+      requests: "Yêu cầu"
 
     auth:
       unauthorized: "Bạn không có quyền truy cập chức năng này."
@@ -251,7 +252,7 @@ vi:
       view_profile: "Xem hồ sơ"
 
     invoices:
-      title: "Danh sách Hóa đơn thu tiền"
+      title: "Danh sách Hóa đơn"
       total_invoices: "Tổng hóa đơn"
       items_unit: "hóa đơn"
       state_paid: "Đã thanh toán"
@@ -321,3 +322,27 @@ vi:
       lock_button: "Khóa tài khoản"
       unlock_button: "Mở khóa"
       self_account_tooltip: "Tài khoản của bạn"
+
+    requests:
+      title: "Quản lý Yêu cầu"
+      subtitle: "Theo dõi và giám sát tất cả yêu cầu của khách thuê trên toàn hệ thống (xe, sửa chữa, rời nhà)."
+      total_requests: "Tổng yêu cầu"
+      pending_requests: "Chờ xử lý"
+      handling_requests: "Đang xử lý"
+      handling_subtext: "(Yêu cầu sửa chữa)"
+      completed_requests: "Đã hoàn thành"
+      rejected_requests: "Bị từ chối"
+      overdue_requests: "Quá hạn"
+      filter_all_types: "Tất cả loại yêu cầu"
+      filter_all_statuses: "Tất cả trạng thái"
+      search_placeholder: "Tìm theo mã yêu cầu, tên khách, SĐT, tên nhà..."
+      no_requests: "Không tìm thấy yêu cầu nào."
+      request_detail: "Chi tiết Yêu cầu"
+      actions: "Thao tác"
+      view_detail: "Xem chi tiết"
+      sender: "Người gửi"
+      sent_at: "Ngày gửi"
+      resolved_info: "Xử lý lúc"
+      from_date: "Từ"
+      to_date: "Đến"
+      time_range: "Khoảng thời gian"

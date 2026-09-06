@@ -491,6 +491,11 @@ thead {
   vertical-align: middle !important
 }
 
+.subtle-view-link {
+  color: rgb(114, 168, 147);
+  margin: 10px auto 20px;
+}
+
 /* RESPONSIVE */
 @media (max-width: 991.98px) {
   html {
@@ -499,11 +504,14 @@ thead {
 }
 
 @media (max-width: 768px) {
-  html {
-    font-size: 11px;
-  }
   .main-container {
     width: 95%;
+  }
+}
+
+@media (max-width: 600px) {
+  html {
+    font-size: 11px;
   }
 }
 
