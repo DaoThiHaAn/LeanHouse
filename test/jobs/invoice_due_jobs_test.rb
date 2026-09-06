@@ -54,7 +54,7 @@ class InvoiceDueJobsTest < ActiveJob::TestCase
       landlord: @landlord,
       tenant: @tenant,
       house: @house,
-      name: "HĐ Phòng 101",
+      name: "hoá đơn Phòng 101",
       start_date: 1.month.ago.to_date,
       due_date: 11.months.from_now.to_date,
       tenant_citizen_id: "012345678901",

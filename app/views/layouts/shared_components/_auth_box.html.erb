@@ -1,7 +1,6 @@
 <%# Local varianles: unread_count, notifications %>
 
 <% if logged_in? %>
-    <!--TODO Profile -->
     <div class="dropdown profile-dropdown">
         <button class="py-1 dropdown-toggle d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
             <span id="navbar_avatar" class="d-inline-flex align-items-center">
@@ -15,21 +14,22 @@
 
         <ul class="dropdown-menu">
           <% if current_user.role == "landlord" %>
-            <li><a class="dropdown-item" href="<%= landlord_profile_path %>"><%= t('bar.my_profile') %></a></li>
-            <li><a class="dropdown-item" href="<%= landlord_bank_accounts_path %>"><%= t("bar.my_bank_acc") %></a></li>
+            <li><%= link_to t("bar.my_profile"), landlord_profile_path, class: "dropdown-item" %></li>
+            <li><%= link_to t("bar.my_bank_acc"), landlord_bank_accounts_path, class: "dropdown-item" %></li>
           <% else %>
-            <li><a class="dropdown-item" href="<%= tenant_profile_path %>"><%= t('bar.my_profile') %></a></li>
-            <li><a class="dropdown-item" href="<%= tenant_vehicles_path %>"><%= t("bar.my_vehicle") %></a></li>
-            <li><a class="dropdown-item" href="<%= tenant_all_contracts_path %>"><%= t("bar.all_contracts") %></a></li>
+            <li><%= link_to t("bar.my_profile"), tenant_profile_path, class: "dropdown-item" %></li>
+            <li><%= link_to t("bar.my_vehicle"), tenant_vehicles_path, class: "dropdown-item" %></li>
+            <li><%= link_to t("bar.all_contracts"), tenant_all_contracts_path, class: "dropdown-item" %></li>
           <% end %>
-          <li><a class="dropdown-item d-flex gap-1 align-items-center" href="<%= logout_path %>">
-            <%= t("auth.log_out") %>
-            <span class="material-symbols-outlined">logout</span>
-          </a></li>
+          <li>
+            <%= link_to logout_path, class: "dropdown-item d-flex gap-1 align-items-center" do %>
+              <%= t("auth.log_out") %>
+              <span class="material-symbols-outlined">logout</span>
+            <% end %>
+          </li>
         </ul>
     </div>
 
-    <!-- TODO: Notification -->
     <!-- Mở kết nối WebSocket lắng nghe thông báo riêng của current_user -->
     <%= turbo_stream_from current_user, :notifications %>
 

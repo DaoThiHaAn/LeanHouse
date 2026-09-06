@@ -51,7 +51,7 @@ class TenantDashboardStatsServiceTest < ActiveSupport::TestCase
     @contract = @house.contracts.build(
       tenant: @tenant,
       landlord: @landlord,
-      name: "HĐ Thuê Nhà",
+      name: "hoá đơn Thuê Nhà",
       tenant_citizen_id: "012345678901",
       landlord_citizen_id: "098765432109",
       start_date: 30.days.ago.to_date,

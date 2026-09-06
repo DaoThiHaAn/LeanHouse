@@ -1,0 +1,2 @@
+<%= turbo_stream.update "flash", partial: "layouts/shared_components/flash_message" %>
+<%= turbo_stream.update "bank_accounts_list_container", partial: "landlord_portal/bank_accounts/bank_accounts_list", locals: { bank_accounts: @bank_accounts } %>

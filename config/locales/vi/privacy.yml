@@ -15,6 +15,7 @@ vi:
         content_1: "Họ tên, số điện thoại, số căn cước công dân"
         content_2: "Thông tin phòng trọ và hợp đồng"
         content_3: "Hình ảnh giấy tờ (nếu người dùng tải lên)"
+        content_4: "Thông tin tài khoản ngân hàng nhận tiền của chủ trọ (Ngân hàng, số tài khoản, tên chủ tài khoản)"
 
       technical:
         title: "1.2. Thông tin kỹ thuật tự động thu thập"
@@ -26,7 +27,7 @@ vi:
       title: "2. Mục đích sử dụng thông tin"
       content: "Thông tin thu thập được sử dụng cho:"
       content_1: "Quản lý tài khoản và dữ liệu người thuê/phòng trọ"
-      content_2: "Hiển thị hợp đồng, hóa đơn, yêu cầu dịch vụ"
+      content_2: "Hiển thị hợp đồng, hóa đơn, thông tin thanh toán VietQR và yêu cầu dịch vụ"
       content_3: "Nâng cấp tính năng và đảm bảo an toàn hệ thống"
       content_4: "Liên hệ hỗ trợ khi cần thiết"
       content_5: "LeanHouse không sử dụng thông tin cho mục đích thương mại hóa hoặc gửi quảng cáo không mong muốn"
@@ -38,6 +39,7 @@ vi:
       content_2: "Có yêu cầu của cơ quan chức năng theo quy định pháp luật"
       content_3: "Cần thiết để vận hành hệ thống (ví dụ: dịch vụ lưu trữ dữ liệu)"
       content_4: "Các đối tác kỹ thuật chỉ được tiếp cận thông tin ở mức tối thiểu cần thiết"
+      content_5: "Thông tin tài khoản ngân hàng nhận tiền của chủ trọ được hiển thị trên hóa đơn và mã VietQR cho khách thuê của phòng trọ tương ứng để phục vụ thanh toán tiền phòng"
 
     security:
       title: "4. Lưu trữ và bảo mật dữ liệu"
@@ -73,4 +75,3 @@ vi:
     changes:
       title: "8. Thay đổi chính sách bảo mật"
       content: "LeanHouse có quyền điều chỉnh chính sách để phù hợp với quy định mới hoặc nhu cầu vận hành. Mọi thay đổi sẽ được thông báo trên hệ thống."
-      

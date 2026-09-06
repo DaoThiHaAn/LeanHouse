@@ -1,6 +1,6 @@
 <% content_for :title, t("bar.my_profile") %>
 
-<div class="profile main-container w-75">
+<div class="profile main-container">
   <h1 class="w-100 text-center mb-5"><%= t("bar.my_profile") %></h1>
 
   <div class="d-flex gap-5 px-3">
@@ -18,6 +18,8 @@
         </span>
         <%= @user.updated_at.strftime('%H:%M:%S %d/%m/%Y') %>
       </p>
+
+      <%= link_to t("bar.my_bank_acc"), landlord_bank_accounts_path, class: "subtle-view-link fw-medium" %>
     </div>
 
     <%# Main section %>

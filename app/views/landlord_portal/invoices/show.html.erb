@@ -307,7 +307,10 @@
               </div>
             </div>
           <% else %>
-            <div class="p-3 bg-light rounded text-secondary small"><%= t('invoice.no_bank_account_landlord') %></div>
+            <div class="p-3 bg-light rounded-3 text-secondary small border d-flex align-items-center gap-2">
+              <span class="material-symbols-outlined text-warning fs-5">warning</span>
+              <span><%= t('invoice.no_bank_account_landlord') %></span>
+            </div>
           <% end %>
         </div>
 

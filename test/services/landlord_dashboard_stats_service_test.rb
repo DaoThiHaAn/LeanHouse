@@ -112,7 +112,7 @@ class LandlordDashboardStatsServiceTest < ActiveSupport::TestCase
       tenant: @tenant1,
       landlord: @landlord,
       house: @house1,
-      name: "HĐ Overdue",
+      name: "hoá đơn Overdue",
       start_date: 6.months.ago.to_date,
       due_date: 5.days.ago.to_date
     )
@@ -122,7 +122,7 @@ class LandlordDashboardStatsServiceTest < ActiveSupport::TestCase
       tenant: @tenant2,
       landlord: @landlord,
       house: @house1,
-      name: "HĐ Nearly Due",
+      name: "hoá đơn Nearly Due",
       start_date: 5.months.ago.to_date,
       due_date: 15.days.from_now.to_date
     )
@@ -132,7 +132,7 @@ class LandlordDashboardStatsServiceTest < ActiveSupport::TestCase
       tenant: @tenant1,
       landlord: @landlord,
       house: @house2,
-      name: "HĐ Future",
+      name: "hoá đơn Future",
       start_date: 1.month.ago.to_date,
       due_date: 60.days.from_now.to_date
     )

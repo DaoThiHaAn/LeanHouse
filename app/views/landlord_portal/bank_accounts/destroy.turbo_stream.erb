@@ -1,0 +1,4 @@
+<%= turbo_stream.update "flash", partial: "layouts/shared_components/flash_message" %>
+<%= turbo_stream.update "bank_accounts_count", t("bank_account.accounts_count", count: @bank_accounts.size, max: BankAccount::MAX_ACCOUNTS) %>
+<%= turbo_stream.update "bank_accounts_list_container", partial: "landlord_portal/bank_accounts/bank_accounts_list", locals: { bank_accounts: @bank_accounts } %>
+<%= turbo_stream.update "bank_account_form_container", partial: "landlord_portal/bank_accounts/form", locals: { bank_account: @new_bank_account || @landlord.bank_accounts.build, banks: @banks, bank_accounts_count: @bank_accounts.size } %>

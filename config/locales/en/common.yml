@@ -101,6 +101,7 @@ en:
   actions: "Actions"
   note: "Note"
   none: "None"
+  saving: "Saving"
   common:
     month: "Month"
     status: "Status"

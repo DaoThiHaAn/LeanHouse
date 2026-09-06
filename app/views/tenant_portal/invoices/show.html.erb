@@ -292,13 +292,16 @@
                 <span>VIETQR</span>
                 <span class="material-symbols-outlined text-secondary fs-6 d-print-none">zoom_in</span>
               </div>
-              <img src="<%= qr_url %>" alt="<%= t('invoice.vietqr.qr_alt') %>" class="rounded vietqr-thumb-img">
+              <%= image_tag qr_url, alt: t('invoice.vietqr.qr_alt'), class: "rounded vietqr-thumb-img" %>
               <div class="small text-secondary mt-1 font-monospace vietqr-account-subtext">
                 <%= @bank_account.bank.code %> - <%= @bank_account.account_number %>
               </div>
             </div>
           <% else %>
-            <div class="p-3 bg-light rounded text-secondary small"><%= t('invoice.no_bank_account_tenant') %></div>
+            <div class="p-3 bg-light rounded-3 text-secondary small border d-flex align-items-center gap-2">
+              <span class="material-symbols-outlined text-warning fs-5">warning</span>
+              <span><%= t('invoice.no_bank_account_tenant') %></span>
+            </div>
           <% end %>
         </div>
 

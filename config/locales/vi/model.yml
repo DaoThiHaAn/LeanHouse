@@ -8,7 +8,7 @@ vi:
             fullname:
               invalid: "Họ và tên chỉ được chứa chữ cái và khoảng trắng"
               blank: "Tên không được để trống!"
-            tel:  
+            tel:
               invalid: "Số điện thoại phải bao gồm 10 ký tự số và bắt đầu bằng số 0!"
               blank: "Số điện thoại không được để trống!"
               existed_acc: "Số điện thoại đã được đăng ký cho loại tài khoản này!"
@@ -73,7 +73,18 @@ vi:
           attributes:
             name:
               taken: "Phòng %{value} đã tồn tại trong tầng được chọn!"
-        
+
+        bank_account:
+          attributes:
+            account_number:
+              already_added: "Tài khoản ngân hàng này đã tồn tại trong danh sách của bạn!"
+              invalid: "Số tài khoản chỉ được chứa chữ cái và chữ số!"
+              blank: "Số tài khoản không được để trống!"
+            account_holder:
+              blank: "Tên chủ tài khoản không được để trống!"
+            consent_accepted:
+              accepted: "Bạn cần đồng ý với điều khoản thu thập và hiển thị thông tin tài khoản ngân hàng."
+
         contract:
           attributes:
             tenant_citizen_id:

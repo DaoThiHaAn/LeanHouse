@@ -3,7 +3,7 @@
 
 <% if @selected_service %>
   <!-- Breadcrumb back to Services -->
-  <nav aria-label="breadcrumb" class="mb-3">
+  <nav aria-label="Breadcrumb navigation" class="mb-3">
     <ol class="breadcrumb mb-0">
       <li class="breadcrumb-item">
         <%= link_to landlord_house_services_path(@house), class: "text-decoration-none d-inline-flex align-items-center gap-1" do %>
@@ -20,14 +20,15 @@
 
 <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3 pb-2 border-bottom">
   <div>
-    <h2 class="fw-bold mb-1 d-flex align-items-center gap-2">
-      <span class="material-symbols-outlined text-primary">electric_meter</span>
+    <h1 class="mb-2 d-flex align-items-center gap-2">
+      <span class="material-symbols-outlined fs-3">electric_meter</span>
       <span><%= @selected_service ? t("service_usage_logs.service_title", service: @selected_service.name) : t("invoice.meter_logs_title") %></span>
-    </h2>
+    </h1>
     <p class="text-secondary mb-0">
       <%= @selected_service ? t("service_usage_logs.service_subtitle", service: @selected_service.name) : t("invoice.meter_logs_subtitle") %>
     </p>
   </div>
+
   <div class="d-flex align-items-center gap-2">
     <%= link_to new_landlord_house_service_usage_log_path(@house, month: @billing_month.strftime("%Y-%m")), class: "btn btn-primary d-flex align-items-center gap-1 shadow-sm" do %>
       <span class="material-symbols-outlined fs-6">add</span>

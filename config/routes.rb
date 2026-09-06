@@ -54,7 +54,7 @@ Rails.application.routes.draw do
 
     resource :dashboard, only: [ :show ]
 
-    resources :bank_accounts, only: %i[index new create destroy] do
+    resources :bank_accounts, only: %i[index new create edit update destroy] do
       member do
         patch :set_default
       end

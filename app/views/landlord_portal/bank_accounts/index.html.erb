@@ -3,127 +3,24 @@
 <div class="container py-4 bank-account-container">
   <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
     <div>
-      <h2 class="mb-1 d-flex align-items-center gap-2">
+      <h1 class="mb-2 d-flex align-items-center gap-2">
         <span class="material-symbols-filled fs-2">account_balance</span>
         <%= t("bank_account.title") %>
-      </h2>
+      </h1>
       <p><%= t("bank_account.subtitle") %></p>
     </div>
-    <span class="badge custom-primary-btn fs-6 px-3 py-2 rounded-pill">
+    <span class="badge custom-primary-btn fs-6 px-3 py-2 rounded-pill" id="bank_accounts_count">
       <%= t("bank_account.accounts_count", count: @bank_accounts.size, max: BankAccount::MAX_ACCOUNTS) %>
     </span>
   </div>
 
   <!-- Danh sách tài khoản đã thêm -->
-  <div class="row g-3 mb-5">
-    <% @bank_accounts.each do |acc| %>
-      <div class="col-md-6">
-        <div class="bank card h-100 shadow-sm border <%= 'default' if acc.is_default? %> rounded-3">
-          <div class="card-body d-flex flex-column justify-content-between">
-            <div>
-              <div class="d-flex justify-content-between align-items-start mb-2">
-                <div class="d-flex align-items-center gap-2">
-                  <% if acc.bank.logo_url.present? %>
-                    <%= image_tag acc.bank.logo_url, alt: acc.bank.short_name, class: "bank-account-card-logo" %>
-                  <% else %>
-                    <span class="badge bg-secondary"><%= acc.bank.code %></span>
-                  <% end %>
-                  <span class="fw-bold text-dark"><%= acc.bank.short_name %></span>
-                </div>
-                <% if acc.is_default? %>
-                  <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">
-                    <%= t("bank_account.default_badge") %>
-                  </span>
-                <% end %>
-              </div>
-
-              <div class="mt-3">
-                <div class="text-secondary small"><%= t("bank_account.account_number_label") %></div>
-                <div class="fs-5 font-monospace fw-bold text-primary"><%= acc.account_number %></div>
-              </div>
-
-              <div class="mt-2">
-                <div class="text-secondary small"><%= t("bank_account.account_holder_label") %></div>
-                <div class="fw-semibold"><%= acc.account_holder %></div>
-              </div>
-            </div>
-
-            <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
-              <% unless acc.is_default? %>
-                <%= button_to t("bank_account.set_as_default"), set_default_landlord_bank_account_path(acc), method: :patch, class: "btn btn-sm btn-outline-primary" %>
-              <% else %>
-                <span class="text-secondary small"><%= t("bank_account.auto_selected_hint") %></span>
-              <% end %>
-
-              <%= button_to landlord_bank_account_path(acc), method: :delete, data: { turbo_confirm: t("bank_account.delete_confirm") }, class: "btn btn-sm btn-outline-danger d-flex align-items-center gap-1" do %>
-                <span class="material-symbols-outlined fs-6">delete</span>
-                <span><%= t("bank_account.delete") %></span>
-              <% end %>
-            </div>
-          </div>
-        </div>
-      </div>
-    <% end %>
-
-    <% if @bank_accounts.empty? %>
-      <div class="col-12">
-        <div class="card bg-light border-0 text-center py-4 rounded-3">
-          <p class="text-secondary mb-0"><%= t("bank_account.no_accounts_hint") %></p>
-        </div>
-      </div>
-    <% end %>
+  <div id="bank_accounts_list_container">
+    <%= render "bank_accounts_list", bank_accounts: @bank_accounts %>
   </div>
 
   <!-- Form thêm tài khoản mới -->
-  <% if @bank_accounts.size < BankAccount::MAX_ACCOUNTS %>
-    <div class="card shadow-sm border-0 rounded-4">
-      <div class="card-header bg-white py-3 border-bottom">
-        <h5 class="card-title fw-bold mb-0 d-flex align-items-center gap-2">
-          <span class="material-symbols-outlined text-success">add_circle</span>
-          <%= t("bank_account.new_account_title") %>
-        </h5>
-      </div>
-      <div class="card-body p-4">
-        <%= form_with model: [:landlord, @bank_account], local: true do |f| %>
-          <% if @bank_account.errors.any? %>
-            <div class="alert alert-danger">
-              <ul class="mb-0">
-                <% @bank_account.errors.full_messages.each do |msg| %>
-                  <li><%= msg %></li>
-                <% end %>
-              </ul>
-            </div>
-          <% end %>
-
-          <div class="row g-3">
-            <div class="col-md-6">
-              <%= f.label :bank_id, t("bank_account.select_bank"), class: "form-label fw-semibold" %>
-              <%= f.collection_select :bank_id, @banks, :id, :display_name, { prompt: t("bank_account.select_bank_prompt") }, class: "form-select shadow-sm", required: true %>
-            </div>
-
-            <div class="col-md-6">
-              <%= f.label :account_number, t("bank_account.account_number"), class: "form-label fw-semibold" %>
-              <%= f.text_field :account_number, class: "form-control shadow-sm font-monospace", placeholder: t("bank_account.account_number_placeholder"), required: true %>
-            </div>
-
-            <div class="col-md-6">
-              <%= f.label :account_holder, t("bank_account.account_holder_help"), class: "form-label fw-semibold" %>
-              <%= f.text_field :account_holder, class: "form-control shadow-sm text-uppercase", placeholder: t("bank_account.account_holder_placeholder"), required: true %>
-            </div>
-
-            <div class="col-md-6 d-flex align-items-end">
-              <div class="form-check mb-2">
-                <%= f.check_box :is_default, class: "form-check-input", id: "is_default_check" %>
-                <%= f.label :is_default, t("bank_account.set_as_default_checkbox"), class: "form-check-label", for: "is_default_check" %>
-              </div>
-            </div>
-
-            <div class="col-12 mt-4 text-end">
-              <%= f.submit t("bank_account.save_button"), class: "btn btn-primary px-4 py-2 fw-semibold" %>
-            </div>
-          </div>
-        <% end %>
-      </div>
-    </div>
-  <% end %>
+  <div id="bank_account_form_container">
+    <%= render "form", bank_account: @bank_account, banks: @banks, bank_accounts_count: @bank_accounts.size %>
+  </div>
 </div>

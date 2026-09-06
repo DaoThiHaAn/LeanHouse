@@ -7,8 +7,11 @@ class BankAccount < ApplicationRecord
 
   alias_attribute :account_name, :account_holder
 
+  attr_accessor :consent_accepted
+
   before_validation :normalize_inputs
   before_save :ensure_single_default
+  after_destroy :ensure_has_default
 
   validates :account_number, :account_holder, presence: true
   validates :account_number, format: { with: /\A[0-9A-Za-z]+\z/, message: :invalid }
@@ -16,12 +19,17 @@ class BankAccount < ApplicationRecord
     scope: [ :landlord_id, :bank_id ],
     message: :already_added
   }
+  validates :consent_accepted, acceptance: true, on: :create, if: -> { !consent_accepted.nil? }
   validate :max_ten_accounts_per_landlord, on: :create
 
   scope :default_first, -> { order(is_default: :desc, created_at: :desc) }
 
   def display_label
     "#{bank.short_name} - #{account_number} (#{account_holder})"
+  end
+
+  def has_unpaid_invoices?
+    invoices.where(status: %i[pending overdue]).exists?
   end
 
   private
@@ -36,6 +44,12 @@ class BankAccount < ApplicationRecord
       landlord.bank_accounts.where.not(id: id).update_all(is_default: false)
     elsif landlord.bank_accounts.where.not(id: id).empty?
       self.is_default = true
+    end
+  end
+
+  def ensure_has_default
+    if is_default? && landlord&.bank_accounts&.any?
+      landlord.bank_accounts.first.update_column(:is_default, true)
     end
   end
 

@@ -1,0 +1,14 @@
+en:
+  activerecord:
+    errors:
+      models:
+        bank_account:
+          attributes:
+            account_number:
+              already_added: "This bank account has already been added to your list!"
+              invalid: "Account number can only contain letters and numbers!"
+              blank: "Account number cannot be blank!"
+            account_holder:
+              blank: "Account holder name cannot be blank!"
+            consent_accepted:
+              accepted: "You must agree to the terms of collecting and displaying bank account information."

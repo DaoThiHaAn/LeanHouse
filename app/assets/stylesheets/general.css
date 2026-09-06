@@ -242,6 +242,20 @@ textarea {
   border: 1px solid var(--alert-text) !important;
 }
 
+.spin {
+  animation: spin 0.8s linear infinite;
+  font-size: 20px;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .custom-primary-btn {
   width: fit-content;
   padding: 5px 30px;
@@ -494,6 +508,10 @@ thead {
 .subtle-view-link {
   color: rgb(114, 168, 147);
   margin: 10px auto 20px;
+}
+
+.subtle-view-link:hover {
+  color:rgb(52, 101, 83)
 }
 
 /* RESPONSIVE */

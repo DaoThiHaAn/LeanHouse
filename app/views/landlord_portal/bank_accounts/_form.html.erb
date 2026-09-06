@@ -1,0 +1,80 @@
+<% if bank_accounts_count >= BankAccount::MAX_ACCOUNTS %>
+  <div class="card bg-light border-0 text-center py-4 rounded-4 shadow-sm">
+    <p class="text-secondary mb-0">
+      <span class="material-symbols-outlined align-middle me-1">info</span>
+      <%= t("bank_account.limit_reached_hint", max: BankAccount::MAX_ACCOUNTS) %>
+    </p>
+  </div>
+
+<% else %>
+  <div class="card shadow-sm">
+    <div class="bank card-header py-3 border-bottom">
+      <h2 class="d-flex align-items-center gap-2 mb-0">
+        <span class="material-symbols-outlined fs-4">add_circle</span>
+        <%= t("bank_account.new_account_title") %>
+      </h2>
+    </div>
+    <div class="bank card-body p-4">
+      <p class="text-danger mb-3 ms-4 fw-semibold fst-italic"><%= t("bank_account.note") %></p>
+
+      <%= form_with model: [:landlord, bank_account], id: "new_bank_account_form", local: true,
+            data: {
+              controller: "loading",
+              loading_text_value: t("saving") + "...",
+              action: "submit->loading#submit"
+            } do |f| %>
+        <% if bank_account.errors.any? %>
+          <div class="alert alert-danger">
+            <ul class="mb-0">
+              <% bank_account.errors.full_messages.each do |msg| %>
+                <li><%= msg %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <div class="row g-3 px-3">
+          <div class="col-md-6">
+            <%= f.label :bank_id, t("bank_account.select_bank"), class: "form-label fw-semibold" %>
+            <%= f.collection_select :bank_id, banks, :id, :display_name, { prompt: t("bank_account.select_bank_prompt") }, class: "form-select shadow-sm", required: true %>
+          </div>
+
+          <div class="col-md-6">
+            <%= f.label :account_number, t("bank_account.account_number"), class: "form-label fw-semibold" %>
+            <%= f.text_field :account_number, class: "form-control shadow-sm font-monospace", placeholder: t("bank_account.account_number_placeholder"), required: true %>
+          </div>
+
+          <div class="col-md-6">
+            <%= f.label :account_holder, t("bank_account.account_holder_help"), class: "form-label fw-semibold" %>
+            <%= f.text_field :account_holder, class: "form-control shadow-sm text-uppercase", placeholder: t("bank_account.account_holder_placeholder"), required: true %>
+          </div>
+
+          <div class="col-md-6 d-flex align-items-end">
+            <div class="form-check mb-2">
+              <%= f.check_box :is_default, class: "form-check-input", id: "is_default_check" %>
+              <%= f.label :is_default, t("bank_account.set_as_default_checkbox"), class: "form-check-label", for: "is_default_check" %>
+            </div>
+          </div>
+
+          <div class="col-10 mt-4 mx-auto">
+            <div class="form-check text-info-emphasis bg-info-subtle fw-medium d-flex gap-2 py-2 pe-2">
+              <%= f.check_box :consent_accepted, class: "form-check-input ms-1", id: "consent_check", required: true %>
+              <%= f.label :consent_accepted, t("bank_account.consent_checkbox_html"), class: "form-check-label small", for: "consent_check" %>
+            </div>
+          </div>
+
+          <div class="col-12 mt-4 text-end">
+            <%= f.button type: :submit,
+                  class: "custom-primary-btn d-inline-flex align-items-center justify-content-center gap-2",
+                  data: { loading_target: "button" } do %>
+              <span data-loading-target="text"><%= t("bank_account.save_button") %></span>
+              <span class="material-symbols-outlined spin d-none" data-loading-target="spinner">
+                progress_activity
+              </span>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>

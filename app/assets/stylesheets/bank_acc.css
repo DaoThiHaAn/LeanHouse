@@ -6,3 +6,16 @@
 .badge.custom-primary-btn:hover {
   background-color: var(--primary-bg);
 }
+
+.bank.card-header {
+  background-color: rgb(227, 241, 235);
+}
+
+.bank.card-body {
+  background-color: rgb(248, 255, 253);
+}
+
+.bank.card.default {
+  border-color: rgb(71, 140, 141) !important;
+  border-width: 1.5px !important;
+}
