@@ -170,4 +170,21 @@ class ContractUpdateTest < ActiveSupport::TestCase
       )
     end
   end
+
+  test "raises RecordInvalid when attempting to update a finished contract" do
+    @contract.update!(end_date: Date.current)
+
+    error = assert_raises(ActiveRecord::RecordInvalid) do
+      ContractUpdate.call(
+        house: @house,
+        contract: @contract,
+        params: {
+          name: "Attempt To Alter Name"
+        }
+      )
+    end
+
+    assert_includes error.record.errors[:base], I18n.t("errors.contract.cannot_edit_finished", default: "Hợp đồng đã kết thúc không thể chỉnh sửa thông tin.")
+    assert_equal "Original Contract", @contract.reload.name
+  end
 end

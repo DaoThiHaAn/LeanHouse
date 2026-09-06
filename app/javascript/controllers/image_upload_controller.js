@@ -5,7 +5,8 @@ export default class extends Controller {
   static values = {
     maxFiles: { type: Number, default: 10 },
     maxSizeMb: { type: Number, default: 20 },
-    existingFiles: { type: Array, default: [] }
+    existingFiles: { type: Array, default: [] },
+    readonly: { type: Boolean, default: false }
   }
 
   connect() {
@@ -47,6 +48,10 @@ export default class extends Controller {
     this.inputTarget.click()
   }
 
+  isValidFileType(file) {
+    return ["image/jpeg", "image/jpg", "image/png"].includes(file.type)
+  }
+
   handleFiles(event) {
     const selectedFiles = Array.from(event.target.files)
     this.clearError()
@@ -58,17 +63,24 @@ export default class extends Controller {
       return
     }
 
-    // 2. Kiểm tra dung lượng từng ảnh
-    const maxSizeBytes = this.maxSizeMbValue * 1024 * 1024
+    // 2. Validate từng ảnh
     for (const file of selectedFiles) {
+      // Validate định dạng
+      if (!this.isValidFileType(file)) {
+        this.showError("Chỉ cho phép tải lên file ảnh (.jpg, .jpeg, .png)!")
+        return
+      }
+
+      // Validate kích thước (20MB)
+      const maxSizeBytes = this.maxSizeMbValue * 1024 * 1024
       if (file.size > maxSizeBytes) {
-        this.showError(`Ảnh "${file.name}" vượt quá dung lượng tối đa ${this.maxSizeMbValue}MB!`)
+        this.showError(`Ảnh "${file.name}" vượt quá dung lượng cho phép (${this.maxSizeMbValue}MB)!`)
         return
       }
     }
 
-    // Cộng dồn danh sách file
-    this.files = this.files.concat(selectedFiles)
+    // 3. Thêm vào mảng nếu hợp lệ
+    this.files.push(...selectedFiles)
     this.syncInputFiles()
     this.renderPreviews()
     this.updateCounter()
@@ -84,15 +96,24 @@ export default class extends Controller {
   }
 
   removeExistingFile(event) {
-    const id = parseInt(event.currentTarget.dataset.id, 10)
-    const index = this.existingFiles.findIndex((f) => f.id === id)
-    if (index !== -1) {
-      this.existingFiles.splice(index, 1)
-      this.purgedIds.push(id)
-      this.renderPreviews()
-      this.updateCounter()
-      this.clearError()
-    }
+    const fileId = parseInt(event.currentTarget.dataset.id, 10)
+    this.existingFiles = this.existingFiles.filter((f) => f.id !== fileId)
+    this.purgedIds.push(fileId)
+
+    this.renderPurgeInputs()
+    this.renderPreviews()
+    this.updateCounter()
+    this.clearError()
+  }
+
+  removeNewFile(event) {
+    const index = parseInt(event.currentTarget.dataset.index, 10)
+    this.files.splice(index, 1)
+
+    this.syncInputFiles()
+    this.renderPreviews()
+    this.updateCounter()
+    this.clearError()
   }
 
   syncInputFiles() {
@@ -122,20 +143,22 @@ export default class extends Controller {
       img.src = file.url
       img.alt = file.name || "Document"
       img.className = "rounded border object-fit-cover w-100 h-100 shadow-sm"
-
-      const removeBtn = document.createElement("button")
-      removeBtn.type = "button"
-      removeBtn.className = "btn btn-danger btn-sm rounded-circle position-absolute top-0 end-0 d-flex align-items-center justify-content-center p-0 shadow"
-      removeBtn.style.width = "22px"
-      removeBtn.style.height = "22px"
-      removeBtn.style.transform = "translate(30%, -30%)"
-      removeBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size: 14px;">close</span>'
-      removeBtn.dataset.id = file.id
-      removeBtn.dataset.action = "click->image-upload#removeExistingFile"
-      removeBtn.title = "Xóa ảnh"
-
       wrapper.appendChild(img)
-      wrapper.appendChild(removeBtn)
+
+      if (!this.readonlyValue) {
+        const removeBtn = document.createElement("button")
+        removeBtn.type = "button"
+        removeBtn.className = "btn btn-danger btn-sm rounded-circle position-absolute top-0 end-0 d-flex align-items-center justify-content-center p-0 shadow"
+        removeBtn.style.width = "22px"
+        removeBtn.style.height = "22px"
+        removeBtn.style.transform = "translate(30%, -30%)"
+        removeBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size: 14px;">close</span>'
+        removeBtn.dataset.id = file.id
+        removeBtn.dataset.action = "click->image-upload#removeExistingFile"
+        removeBtn.title = "Xóa ảnh"
+        wrapper.appendChild(removeBtn)
+      }
+
       this.previewContainerTarget.appendChild(wrapper)
     })
 

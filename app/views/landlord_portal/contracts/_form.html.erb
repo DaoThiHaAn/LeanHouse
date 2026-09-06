@@ -1,6 +1,7 @@
 <%# locals: (contract:, url:, old_contract: nil, submit_text: nil, is_edit: false) %>
 
 <%
+  is_finished_edit = local_assigns[:is_edit] && contract.finished?
   existing_docs = if contract.persisted? && contract.documents.attached?
     contract.documents.map do |doc|
       {
@@ -16,11 +17,20 @@
 
 <%= form_with model: contract, url: url,
     class: "px-4 mt-4 d-flex flex-column gap-4",
-    data: { 
+    data: {
       controller: "loading",
       loading_text_value: t("saving") + "...",
       action: "submit->loading#submit"
     } do |f| %>
+
+  <% if is_finished_edit %>
+    <div class="alert alert-info d-flex align-items-center gap-2 mb-0 py-2 px-3">
+      <span class="material-symbols-outlined fs-5 text-info-emphasis">info</span>
+      <span class="fw-medium">
+        <%= t("form.contract.finished_edit_note", default: "Hợp đồng này đã kết thúc. Để đảm bảo tính toàn vẹn của hợp đồng, bạn chỉ có thể gia hạn ngày hết hạn mà không thể chỉnh sửa các thông tin khác.") %>
+      </span>
+    </div>
+  <% end %>
 
   <% if old_contract.present? %>
     <div class="alert alert-warning d-flex align-items-center gap-2 mb-0 py-2 px-3">
@@ -46,12 +56,13 @@
 
     <div class="input-group">
       <span class="input-group-text"><%= t("form.contract.self") %></span>
-      <%= f.text_field :name, maxlength: 50, class: "form-control #{invalid_class(contract, :name)}", 
+      <%= f.text_field :name, maxlength: 50, class: "form-control #{invalid_class(contract, :name)}",
         placeholder: t('form.contract.name_placeholder'), required: true,
+        disabled: is_finished_edit,
         data: {
             form_target: "input",
             action: "input->form#update"
-        } 
+        }
       %>
     </div>
 
@@ -71,12 +82,13 @@
       </small>
     <% end %>
 
-    <%= f.text_field :landlord_citizen_id, maxlength: 12, class: "form-control #{invalid_class(contract, :landlord_citizen_id)}", 
+    <%= f.text_field :landlord_citizen_id, maxlength: 12, class: "form-control #{invalid_class(contract, :landlord_citizen_id)}",
       placeholder: t('form.contract.citizen_id_placeholder'), required: true,
+      disabled: is_finished_edit,
       data: {
           form_target: "input",
           action: "input->form#update"
-      } 
+      }
     %>
 
     <%= field_error(contract, :landlord_citizen_id) %>
@@ -95,12 +107,13 @@
       </small>
     <% end %>
 
-    <%= f.text_field :tenant_citizen_id, maxlength: 12, class: "form-control #{invalid_class(contract, :tenant_citizen_id)}", 
+    <%= f.text_field :tenant_citizen_id, maxlength: 12, class: "form-control #{invalid_class(contract, :tenant_citizen_id)}",
       placeholder: t('form.contract.citizen_id_placeholder'), required: true,
+      disabled: is_finished_edit,
       data: {
           form_target: "input",
           action: "input->form#update"
-      } 
+      }
     %>
 
     <%= field_error(contract, :tenant_citizen_id) %>
@@ -113,7 +126,26 @@
       <span class="asterisk">*</span>
     </div>
 
-    <% if local_assigns[:is_edit] %>
+    <% if is_finished_edit %>
+      <p class="fst-italic mt-2 mb-3 text-primary fw-medium"><%= t("form.contract.extend_period_note", default: "Nhập ngày hết hạn mới để gia hạn hợp đồng (ngày mới phải sau ngày hết hạn hiện tại).") %></p>
+
+      <div class="d-flex justify-content-between mt-2 gap-2">
+        <div class="input-group mb-3">
+          <span class="input-group-text"><%= t("form.contract.start") %></span>
+          <%= f.date_field :start_date, class: "date form-control bg-light", disabled: true %>
+        </div>
+
+        <div class="input-group mb-3">
+          <span class="input-group-text"><%= t("form.contract.end_new", default: "Ngày kết thúc mới") %></span>
+          <%= f.date_field :due_date,
+                min: (contract.due_date ? (contract.due_date + 1.day).to_s : Date.current.to_s),
+                class: "date form-control #{invalid_class(contract, :due_date)}",
+                required: true %>
+        </div>
+      </div>
+
+      <%= field_error(contract, :due_date) %>
+    <% elsif local_assigns[:is_edit] %>
       <p class="fst-italic mt-2 mb-3 text-secondary fw-medium"><%= t("form.contract.period_note") %></p>
 
       <div class="d-flex justify-content-between mt-2 gap-2">
@@ -149,23 +181,24 @@
   <!-- Deposit paid -->
   <div class="form-group">
     <div class="d-flex align-items-center gap-3">
-      <%= f.label :deposit_paid, 
-            t("form.contract.deposit_paid", default: "Đã chuyển tiền cọc") + ":", 
-            class: "form-label fw-semibold m-0 flex-shrink-0 cursor-pointer", 
+      <%= f.label :deposit_paid,
+            t("form.contract.deposit_paid", default: "Đã chuyển tiền cọc") + ":",
+            class: "form-label fw-semibold m-0 flex-shrink-0 cursor-pointer",
             for: "deposit_paid_switch" %>
 
       <div class="form-check form-switch m-0">
-        <%= f.check_box :deposit_paid, 
-              class: "form-check-input", 
-              role: "switch", 
-              id: "deposit_paid_switch" %>
+        <%= f.check_box :deposit_paid,
+              class: "form-check-input",
+              role: "switch",
+              id: "deposit_paid_switch",
+              disabled: is_finished_edit %>
       </div>
     </div>
     <%= field_error(contract, :deposit_paid) %>
   </div>
 
   <!-- Temp residence registration -->
-  <div class="form-group" data-controller="toggle-extra-fields">
+  <div class="form-group" <%= 'data-controller="toggle-extra-fields"' unless is_finished_edit %>>
     <div class="d-flex gap-4">
       <label class="form-label fw-semibold m-0 flex-shrink-0">
         <%= t("form.contract.resid_register", default: "Đăng ký tạm trú") %>:
@@ -178,7 +211,8 @@
                 checked: !contract.temp_resid_registered?,
                 class: "form-check-input",
                 id: "temp_resid_false",
-                data: { action: "change->toggle-extra-fields#toggle" } %>
+                disabled: is_finished_edit,
+                data: (is_finished_edit ? {} : { action: "change->toggle-extra-fields#toggle" }) %>
           <%= label_tag "temp_resid_false", "Chưa", class: "form-check-label" %>
         </div>
 
@@ -189,10 +223,11 @@
                   checked: contract.temp_resid_registered?,
                   class: "form-check-input",
                   id: "temp_resid_true",
-                  data: {
+                  disabled: is_finished_edit,
+                  data: (is_finished_edit ? {} : {
                     toggle_extra_fields_target: "checkbox",
                     action: "change->toggle-extra-fields#toggle"
-                  } %>
+                  }) %>
             <%= label_tag "temp_resid_true", "Rồi", class: "form-check-label" %>
           </div>
 
@@ -202,7 +237,8 @@
             <span class="fw-semibold"><%= t("form.contract.due") %>:</span>
             <%= f.date_field :temp_resid_due_date,
                   min: Date.current.to_s,
-                  class: "date form-control",
+                  disabled: is_finished_edit,
+                  class: "date form-control #{'bg-light' if is_finished_edit}",
                   placeholder: "dd/mm/yyyy" %>
           </div>
         </div>
@@ -224,13 +260,14 @@
       </small>
     </div>
 
-    <%= f.text_area :note, maxlength: 1000, class: "form-control", 
+    <%= f.text_area :note, maxlength: 1000, class: "form-control",
         placeholder: t('note_placeholder'),
         rows: 5,
+        disabled: is_finished_edit,
         data: {
             form_target: "input",
             action: "input->form#update"
-        } 
+        }
     %>
   </div>
 
@@ -238,6 +275,7 @@
   <div class="form-group mb-3" data-controller="image-upload"
         data-image-upload-max-files-value="10"
         data-image-upload-max-size-mb-value="20"
+        data-image-upload-readonly-value="<%= is_finished_edit %>"
         data-image-upload-existing-files-value="<%= existing_docs.to_json %>">
     <div class="d-flex justify-content-between align-items-center mb-2">
       <div class="d-flex gap-1">
@@ -257,7 +295,7 @@
 
     <div class="d-flex flex-wrap gap-3 align-items-center">
       <button type="button"
-              class="upload-img-btn btn btn-light border d-flex align-items-center justify-content-center p-0"
+              class="upload-img-btn btn btn-light border d-flex align-items-center justify-content-center p-0 <%= 'd-none' if is_finished_edit %>"
               data-action="click->image-upload#triggerUpload"
               title="<%= t("add_img") %>">
         <span class="material-symbols-outlined text-secondary">
@@ -269,6 +307,7 @@
             multiple: true,
             accept: "image/*",
             class: "d-none",
+            disabled: is_finished_edit,
             data: {
               image_upload_target: "input",
               action: "change->image-upload#handleFiles"
@@ -289,18 +328,20 @@
   </div>
 
   <div class="d-flex justify-content-center align-items-center gap-3 mt-3">
-    <button type="reset"
-            class="cancel-btn d-inline-flex align-items-center justify-content-center gap-1 px-4 py-2"
-            title="<%= t("reset") %>">
-      <span class="material-symbols-outlined fs-5">restart_alt</span>
-      <%= t("reset") %>
-    </button>
+    <% unless is_finished_edit %>
+      <button type="reset"
+              class="cancel-btn d-inline-flex align-items-center justify-content-center gap-1 px-4 py-2"
+              title="<%= t("reset") %>">
+        <span class="material-symbols-outlined fs-5">restart_alt</span>
+        <%= t("reset") %>
+      </button>
+    <% end %>
 
-    <%= f.button :submit, 
+    <%= f.button :submit,
       class: "custom-primary-btn main-form d-flex align-items-center justify-content-center gap-2 m-0",
       data: { loading_target: "button" } do %>
-      <span class="material-symbols-outlined fs-5">save</span>
-      <span data-loading-target="text"><%= local_assigns[:submit_text] || t("save") %></span>
+      <span class="material-symbols-outlined fs-5"><%= is_finished_edit ? "more_time" : "save" %></span>
+      <span data-loading-target="text"><%= is_finished_edit ? t("form.contract.extend", default: "Gia hạn hợp đồng") : (local_assigns[:submit_text] || t("save")) %></span>
       <span class="material-symbols-outlined spin d-none"
         data-loading-target="spinner">
         progress_activity

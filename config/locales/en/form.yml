@@ -109,3 +109,7 @@ en:
       empty_desc: "You have no recorded contracts in the system."
       landlord_info_tooltip: "House name, landlord name, and phone number reflect current account details and may change if the landlord updates their profile."
       contract_ended: "Ended"
+      finished_edit_note: "This contract has ended. To ensure contract integrity, you can only extend the due date and cannot edit other fields."
+      extend_finished_title: "Extend Finished Contract"
+      extend_period_note: "Enter a new due date to extend the contract (new date must be after the current due date)."
+      cannot_edit_finished: "Cannot edit fields of a finished contract."

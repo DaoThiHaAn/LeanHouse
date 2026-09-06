@@ -48,15 +48,26 @@ class LandlordPortal::ContractsController < LandlordPortal::BaseController
     @tenant_stay = @house.tenant_stay_for(@contract.tenant_id)
     @user = @contract.tenant.user
 
-    ContractUpdate.call(
-      house: @house,
-      contract: @contract,
-      params: update_contract_params
-    )
+    if @contract.finished?
+      ContractExtension.call(
+        house: @house,
+        contract: @contract,
+        params: extend_contract_params
+      )
 
-    redirect_to landlord_house_contract_path(@house, @contract),
-                notice: t("success_messages.contract_updated", default: "Cập nhật hợp đồng thành công!")
-  rescue ActiveRecord::RecordInvalid => e
+      redirect_to landlord_house_contract_path(@house, @contract),
+                  notice: t("success_messages.contract_extended")
+    else
+      ContractUpdate.call(
+        house: @house,
+        contract: @contract,
+        params: update_contract_params
+      )
+
+      redirect_to landlord_house_contract_path(@house, @contract),
+                  notice: t("success_messages.contract_updated")
+    end
+  rescue ActiveRecord::RecordInvalid
     render :edit, status: :unprocessable_entity
   end
 
@@ -73,11 +84,11 @@ class LandlordPortal::ContractsController < LandlordPortal::BaseController
     respond_to do |format|
       format.turbo_stream do
         @tenant_stay = @house.tenant_stay_for(@contract.tenant_id)
-        flash.now[:notice] = t("success_messages.contract_extended", default: "Gia hạn hợp đồng thành công!")
+        flash.now[:notice] = t("success_messages.contract_extended")
       end
       format.html do
         redirect_to landlord_house_contracts_path(@house),
-                    notice: t("success_messages.contract_extended", default: "Gia hạn hợp đồng thành công!")
+                    notice: t("success_messages.contract_extended")
       end
     end
   rescue ActiveRecord::RecordInvalid => e
@@ -121,7 +132,7 @@ class LandlordPortal::ContractsController < LandlordPortal::BaseController
     )
 
     redirect_to landlord_house_contract_path(@house, @contract),
-                notice: t("success_messages.contract_signed_new", default: "Ký hợp đồng mới thành công!")
+                notice: t("success_messages.contract_signed_new")
   rescue ActiveRecord::RecordInvalid => e
     @contract = e.record.is_a?(Contract) ? e.record : @house.contracts.build(contract_params)
     render :sign_new, status: :unprocessable_entity
@@ -141,7 +152,7 @@ class LandlordPortal::ContractsController < LandlordPortal::BaseController
     )
 
     redirect_to landlord_house_contracts_path(@house),
-                notice: t("success_messages.contract_closed", default: "Kết thúc hợp đồng thành công!")
+                notice: t("success_messages.contract_closed")
   end
 
   private

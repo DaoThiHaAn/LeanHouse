@@ -349,3 +349,7 @@ vi:
       empty_desc: "Bạn chưa có hợp đồng nào được ghi nhận trên hệ thống."
       landlord_info_tooltip: "Tên nhà, tên chủ nhà và số điện thoại hiển thị theo thông tin tài khoản hiện tại và có thể thay đổi nếu chủ nhà cập nhật thông tin cá nhân."
       contract_ended: "Đã kết thúc"
+      finished_edit_note: "Hợp đồng này đã kết thúc. Để đảm bảo tính toàn vẹn của hợp đồng, bạn chỉ có thể gia hạn ngày hết hạn mà không thể chỉnh sửa các thông tin khác."
+      extend_finished_title: "Gia hạn hợp đồng đã kết thúc"
+      extend_period_note: "Nhập ngày hết hạn mới để gia hạn hợp đồng (ngày mới phải sau ngày hết hạn hiện tại)."
+      cannot_edit_finished: "Hợp đồng đã kết thúc không thể chỉnh sửa thông tin."

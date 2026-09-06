@@ -38,6 +38,14 @@ class Contract < ApplicationRecord
 
   # METHODS
 
+  def finished?
+    end_date.present?
+  end
+
+  def unfinished?
+    end_date.nil?
+  end
+
   # Generate the status of the contract
   # @return [Symbol]
   def due_status

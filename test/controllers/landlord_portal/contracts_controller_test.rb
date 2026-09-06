@@ -125,4 +125,85 @@ class LandlordPortal::ContractsControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
     assert_not_equal "", @contract.reload.name
   end
+
+  test "landlord viewing edit of finished contract sees fields disabled and due_date enabled with notice" do
+    @contract.update!(end_date: Date.current)
+    sign_in_as(@landlord_user)
+
+    get edit_landlord_house_contract_path(@house, @contract)
+    assert_response :success
+    assert_select ".alert.alert-info"
+    assert_select "input[name='contract[name]'][disabled]"
+    assert_select "input[name='contract[landlord_citizen_id]'][disabled]"
+    assert_select "input[name='contract[tenant_citizen_id]'][disabled]"
+    assert_select "input[name='contract[start_date]'][disabled]"
+    assert_select "input[name='contract[deposit_paid]'][disabled]"
+    assert_select "textarea[name='contract[note]'][disabled]"
+    # due_date is enabled for extension
+    assert_select "input[name='contract[due_date]']:not([disabled])"
+  end
+
+  test "landlord can extend due date on finished contract via update PATCH keeping other fields intact" do
+    @contract.update!(end_date: Date.current)
+    sign_in_as(@landlord_user)
+
+    new_due = Date.current + 1.year
+    patch landlord_house_contract_path(@house, @contract), params: {
+      contract: {
+        name: "Attempted Name Tamper",
+        due_date: new_due.to_s
+      }
+    }
+
+    assert_redirected_to landlord_house_contract_path(@house, @contract)
+    @contract.reload
+    assert_equal new_due, @contract.due_date
+    assert_nil @contract.end_date
+    # name is unchanged and remains intact
+    assert_equal "Standard Contract", @contract.name
+  end
+
+  test "landlord update fails when extending finished contract with invalid due date" do
+    @contract.update!(end_date: Date.current)
+    sign_in_as(@landlord_user)
+
+    patch landlord_house_contract_path(@house, @contract), params: {
+      contract: {
+        due_date: (@contract.due_date - 1.day).to_s
+      }
+    }
+
+    assert_response :unprocessable_entity
+    assert_not_nil @contract.reload.end_date
+  end
+
+  test "show page displays edit button for active contract but hides it for finished contract" do
+    sign_in_as(@landlord_user)
+
+    get landlord_house_contract_path(@house, @contract)
+    assert_response :success
+    assert_select "a[href='#{edit_landlord_house_contract_path(@house, @contract)}']", 1
+    assert_select "a[href='#{extend_landlord_house_contract_path(@house, @contract)}']", 1
+
+    @contract.update!(end_date: Date.current)
+    get landlord_house_contract_path(@house, @contract)
+    assert_response :success
+    assert_select "a[href='#{edit_landlord_house_contract_path(@house, @contract)}']", 0
+    assert_select "a[href='#{extend_landlord_house_contract_path(@house, @contract)}']", 1
+  end
+
+  test "contract table row displays edit icon for active contract but hides it for finished contract" do
+    sign_in_as(@landlord_user)
+
+    get filtered_landlord_house_contracts_path(@house)
+    assert_response :success
+    assert_select "tr#contract_#{@contract.id} a[href='#{edit_landlord_house_contract_path(@house, @contract)}']", 1
+    assert_select "tr#contract_#{@contract.id} a[href='#{extend_landlord_house_contract_path(@house, @contract)}']", 1
+
+    @contract.update!(end_date: Date.current)
+    get filtered_landlord_house_contracts_path(@house)
+    assert_response :success
+    assert_select "tr#contract_#{@contract.id} a[href='#{edit_landlord_house_contract_path(@house, @contract)}']", 0
+    assert_select "tr#contract_#{@contract.id} a[href='#{extend_landlord_house_contract_path(@house, @contract)}']", 1
+  end
 end

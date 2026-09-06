@@ -30,11 +30,13 @@
         <span class="material-symbols-filled">visibility</span>
       <% end %>
 
-      <%= link_to edit_landlord_house_contract_path(house, contract),
-                data: { turbo_frame: "_top" },
-                title: t("edit"),
-                class: "table-action" do %>
-        <span class="material-symbols-filled">edit</span>
+      <% unless contract.finished? %>
+        <%= link_to edit_landlord_house_contract_path(house, contract),
+                  data: { turbo_frame: "_top" },
+                  title: t("edit"),
+                  class: "table-action" do %>
+          <span class="material-symbols-filled">edit</span>
+        <% end %>
       <% end %>
 
       <%= link_to extend_landlord_house_contract_path(house, contract),

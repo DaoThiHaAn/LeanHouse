@@ -1,12 +1,15 @@
 <%# Variables: @contract, @user, @house %>
 
-<% content_for :title, t("page_titles.edit_contract", default: "Chỉnh sửa hợp đồng") %>
+<%
+  page_title = @contract.finished? ? t("form.contract.extend_finished_title", default: "Gia hạn hợp đồng đã kết thúc") : t("page_titles.edit_contract", default: "Chỉnh sửa hợp đồng")
+%>
+<% content_for :title, page_title %>
 
 <% provide :container_width, "contract-container w-50" %>
 
 <div class="d-flex align-items-center mb-5">
   <%= back_link_to %>
-  <h1 class="text-center flex-grow-1"><%= t('page_titles.edit_contract', default: "Chỉnh sửa hợp đồng") %></h1>
+  <h1 class="text-center flex-grow-1"><%= page_title %></h1>
 </div>
 
 <%= render "tenant_info_card", user: @user %>
@@ -14,5 +17,5 @@
 <%= render "form",
            contract: @contract,
            url: landlord_house_contract_path(@house, @contract),
-           submit_text: t("save_changes", default: "Lưu thay đổi"),
+           submit_text: (@contract.finished? ? t("form.contract.extend", default: "Gia hạn hợp đồng") : t("save_changes", default: "Lưu thay đổi")),
            is_edit: true %>

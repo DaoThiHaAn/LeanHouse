@@ -11,6 +11,11 @@ class ContractUpdate
   end
 
   def call
+    if contract.finished?
+      contract.errors.add(:base, I18n.t("errors.contract.cannot_edit_finished", default: "Hợp đồng đã kết thúc không thể chỉnh sửa thông tin."))
+      raise ActiveRecord::RecordInvalid.new(contract)
+    end
+
     purge_ids = params[:purge_document_ids] || []
     new_docs = params[:documents]
     clean_params = params.except(:purge_document_ids, :documents, :start_date, :due_date, :end_date)
