@@ -310,4 +310,27 @@ class LandlordPortal::RoomsControllerTest < ActionDispatch::IntegrationTest
     assert_equal I18n.t("errors.cannot_delete_room_occupied"), flash[:alert]
     assert_not @room_occupied.reload.deleted?
   end
+
+  test "filtered room list renders service log link with proper tab param" do
+    sign_in_as(@landlord_user)
+
+    # Room Alpha has a real-time service
+    service = @house.services.create!(name: "Điện")
+    variant_real_time = service.service_variants.create!(unit: "per_kwh", fee: 3500, is_real_time: true)
+    RoomService.create!(room: @room_occupied, service_variant: variant_real_time, service: service)
+
+    # Room Beta has only fixed service
+    service_wifi = @house.services.create!(name: "Wifi")
+    variant_fixed = service_wifi.service_variants.create!(unit: "per_room", fee: 100_000, is_real_time: false)
+    RoomService.create!(room: @room_full, service_variant: variant_fixed, service: service_wifi)
+
+    get filtered_landlord_house_rooms_path(@house)
+    assert_response :success
+
+    # Check room with real-time service links to tab=real_time
+    assert_select "a[href*='#{landlord_house_room_service_usage_logs_path(@house, @room_occupied)}?tab=real_time']"
+
+    # Check room with fixed service links to tab=fixed
+    assert_select "a[href*='#{landlord_house_room_service_usage_logs_path(@house, @room_full)}?tab=fixed']"
+  end
 end

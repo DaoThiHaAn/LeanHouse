@@ -226,4 +226,204 @@ class LandlordPortal::ServiceUsageLogsControllerTest < ActionDispatch::Integrati
     end
     assert_redirected_to landlord_house_service_usage_logs_path(@house, month: @billing_month.strftime("%Y-%m"))
   end
+
+  test "should get room index with real_time tab by default when real_time service exists" do
+    get landlord_house_room_service_usage_logs_path(@house, @room)
+    assert_response :success
+    assert_select "turbo-frame#room_service_logs_section"
+    # Tab navigation present
+    assert_select "a", text: /#{I18n.t('service_usage_logs.tab_real_time')}/
+    assert_select "a", text: /#{I18n.t('service_usage_logs.tab_fixed')}/
+    # Action buttons moved into real-time tab content
+    assert_select "a", text: /#{I18n.t('service_usage_logs.record_reading')}/
+    # Table of logs present
+    assert_select "turbo-frame#room_logs_table"
+  end
+
+  test "should get room index with fixed tab and show fixed services" do
+    fixed_service = @house.services.create!(name: "Internet", note: "Wifi tốc độ cao")
+    fixed_variant = fixed_service.service_variants.create!(
+      unit: "per_room",
+      fee: 100_000,
+      is_real_time: false
+    )
+    RoomService.create!(room: @room, service_variant: fixed_variant, service: fixed_service)
+
+    get landlord_house_room_service_usage_logs_path(@house, @room, tab: "fixed")
+    assert_response :success
+    assert_select "turbo-frame#room_service_logs_section"
+    # Shows fixed service details
+    assert_select "div", text: /Internet/
+    assert_select "div", text: /100,000 đ/
+  end
+
+  test "should automatically default to fixed tab when room has only fixed services" do
+    fixed_room = @floor.rooms.create!(name: "102", max_slots: 2, tenants_count: 1, area: 20)
+    fixed_service = @house.services.create!(name: "Rác", note: "Vệ sinh môi trường")
+    fixed_variant = fixed_service.service_variants.create!(
+      unit: "per_room",
+      fee: 50_000,
+      is_real_time: false
+    )
+    RoomService.create!(room: fixed_room, service_variant: fixed_variant, service: fixed_service)
+
+    get landlord_house_room_service_usage_logs_path(@house, fixed_room)
+    assert_response :success
+    # Should render fixed service content
+    assert_select "div", text: /Rác/
+    assert_select "div", text: /50,000 đ/
+  end
+
+  test "fixed tab shows actual billed quantity when active invoice exists and handles waived services" do
+    past_month = 2.months.ago.beginning_of_month
+
+    service_wifi = @house.services.create!(name: "Wifi")
+    variant_wifi = service_wifi.service_variants.create!(unit: "per_room", fee: 100_000, is_real_time: false)
+    rs_wifi = RoomService.create!(room: @room, service_variant: variant_wifi, service: service_wifi, created_at: 3.months.ago)
+
+    service_trash = @house.services.create!(name: "Rác sinh hoạt")
+    variant_trash = service_trash.service_variants.create!(unit: "per_room", fee: 30_000, is_real_time: false)
+    rs_trash = RoomService.create!(room: @room, service_variant: variant_trash, service: service_trash, created_at: 3.months.ago)
+
+    # Edge case: Washing machine was added yesterday (AFTER past_month)
+    service_wash = @house.services.create!(name: "Máy giặt riêng")
+    variant_wash = service_wash.service_variants.create!(unit: "per_room", fee: 150_000, is_real_time: false)
+    rs_wash = RoomService.create!(room: @room, service_variant: variant_wash, service: service_wash, created_at: 1.day.ago)
+
+    # Invoice for past_month ONLY billed Trash (Wifi was waived / not selected)
+    invoice = Invoice.create!(
+      code: "INV-PAST-01",
+      title: "Hóa đơn tháng #{past_month.strftime('%m/%Y')}",
+      house: @house,
+      room: @room,
+      created_by: @landlord_user,
+      invoice_type: "room",
+      billing_month: past_month,
+      due_date: past_month + 10.days,
+      subtotal: 30_000,
+      total_amount: 30_000,
+      status: :paid,
+      payment_method: :cash
+    )
+    invoice.invoice_items.create!(
+      service_variant: variant_trash,
+      item_type: "fixed_service",
+      name: "Rác sinh hoạt",
+      unit: "phòng",
+      unit_price: 30_000,
+      quantity: 1.0,
+      amount: 30_000
+    )
+
+    get landlord_house_room_service_usage_logs_path(@house, @room, tab: "fixed", month: past_month.strftime("%Y-%m"))
+    assert_response :success
+
+    # Trash is billed
+    assert_select "div", text: /Rác sinh hoạt/
+    assert_select "span", text: /#{I18n.t('service_usage_logs.billed_in_invoice_badge')}/
+
+    # Wifi was assigned at that time but waived from invoice -> displays with quantity 0
+    assert_select "div", text: /Wifi/
+    assert_select "span", text: /#{I18n.t('service_usage_logs.not_billed_in_invoice_badge')}/
+
+    # Washing machine was added AFTER past_month -> MUST NOT APPEAR AT ALL!
+    assert_select "div", text: /Máy giặt riêng/, count: 0
+  end
+
+  test "fixed tab shows warning banner and falls back to draft when invoice is cancelled" do
+    past_month = 1.month.ago.beginning_of_month
+
+    service_wifi = @house.services.create!(name: "Wifi Cáp Quang")
+    variant_wifi = service_wifi.service_variants.create!(unit: "per_room", fee: 80_000, is_real_time: false)
+    RoomService.create!(room: @room, service_variant: variant_wifi, service: service_wifi, created_at: 2.months.ago)
+
+    # Create a cancelled invoice
+    cancelled_inv = Invoice.create!(
+      code: "INV-CANCELLED-99",
+      title: "Hóa đơn đã hủy",
+      house: @house,
+      room: @room,
+      created_by: @landlord_user,
+      invoice_type: "room",
+      billing_month: past_month,
+      due_date: past_month + 10.days,
+      subtotal: 80_000,
+      total_amount: 80_000,
+      status: :cancelled,
+      discarded_at: Time.current
+    )
+
+    get landlord_house_room_service_usage_logs_path(@house, @room, tab: "fixed", month: past_month.strftime("%Y-%m"))
+    assert_response :success
+
+    # Shows cancelled invoice notice with code
+    assert_select ".alert-warning", text: /INV-CANCELLED-99/
+    # Falls back to estimated badge
+    assert_select "span", text: /#{I18n.t('service_usage_logs.estimated_badge')}/
+  end
+
+  test "fixed tab shows warning banner for multiple cancelled invoices and links to filtered list" do
+    past_month = 1.month.ago.beginning_of_month
+
+    service_wifi = @house.services.create!(name: "Wifi Cáp Quang")
+    variant_wifi = service_wifi.service_variants.create!(unit: "per_room", fee: 80_000, is_real_time: false)
+    RoomService.create!(room: @room, service_variant: variant_wifi, service: service_wifi, created_at: 2.months.ago)
+
+    # Create 2 cancelled invoices
+    Invoice.create!(
+      code: "INV-CANCEL-A1",
+      title: "Hóa đơn đã hủy 1",
+      house: @house,
+      room: @room,
+      created_by: @landlord_user,
+      invoice_type: "room",
+      billing_month: past_month,
+      due_date: past_month + 10.days,
+      subtotal: 80_000,
+      total_amount: 80_000,
+      status: :cancelled,
+      discarded_at: Time.current
+    )
+    Invoice.create!(
+      code: "INV-CANCEL-B2",
+      title: "Hóa đơn đã hủy 2",
+      house: @house,
+      room: @room,
+      created_by: @landlord_user,
+      invoice_type: "room",
+      billing_month: past_month,
+      due_date: past_month + 10.days,
+      subtotal: 80_000,
+      total_amount: 80_000,
+      status: :cancelled,
+      discarded_at: Time.current
+    )
+
+    get landlord_house_room_service_usage_logs_path(@house, @room, tab: "fixed", month: past_month.strftime("%Y-%m"))
+    assert_response :success
+
+    # Shows both codes in warning notice
+    assert_select ".alert-warning", text: /INV-CANCEL-A1/
+    assert_select ".alert-warning", text: /INV-CANCEL-B2/
+    # Link to filtered cancelled invoices list
+    assert_select ".alert-warning a", text: /#{I18n.t('service_usage_logs.view_cancelled_invoices_list')}/
+    # Count badge in stat card
+    assert_select ".stat-card", text: /#{I18n.t('service_usage_logs.cancelled_invoices_count_badge', count: 2)}/
+  end
+
+  test "fixed tab supports pagination when fixed services exceed per_page" do
+    12.times do |i|
+      svc = @house.services.create!(name: "Fixed Svc #{i + 1}")
+      variant = svc.service_variants.create!(unit: "per_room", fee: 10_000, is_real_time: false)
+      RoomService.create!(room: @room, service_variant: variant, service: svc)
+    end
+
+    get landlord_house_room_service_usage_logs_path(@house, @room, tab: "fixed", page: 1)
+    assert_response :success
+    assert_select "span[data-pagination-total-pages]", minimum: 1
+    assert_select ".pagination", minimum: 1
+
+    get landlord_house_room_service_usage_logs_path(@house, @room, tab: "fixed", page: 2)
+    assert_response :success
+  end
 end

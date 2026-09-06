@@ -8,9 +8,9 @@
     <p class="text-secondary ms-2"><%= t("service.mng_note") %></p>
   </div>
   <div>
-    <button type="button" class="btn btn-outline-primary d-flex align-items-center gap-1 border rounded-pill px-3 py-2"
+    <button type="button" class="btn btn-outline-primary d-flex align-items-center gap-2 px-3 py-2"
           data-bs-toggle="modal" data-bs-target="#serviceGuideModal">
-      <span class="material-symbols-outlined fs-6 text-primary">menu_book</span>
+      <span class="material-symbols-outlined fs-6">menu_book</span>
       <span class="fw-semibold"><%= t("service.guide.btn_title") %></span>
     </button>
   </div>
@@ -107,13 +107,9 @@
           <!-- Empty State Prompt -->
           <div class="d-flex flex-column align-items-center justify-content-center h-100 text-secondary p-5">
             <div class="empty-state-icon mb-3 d-flex align-items-center justify-content-center rounded-circle bg-white border shadow-sm service-empty-icon">
-              <span class="material-symbols-outlined fs-1 text-primary">left_click</span>
+              <span class="material-symbols-outlined fs-1 text-secondary">left_click</span>
             </div>
             <h5 class="fw-bold text-dark mb-2 text-center"><%= t("service.select_service_prompt") %></h5>
-            <button type="button" class="btn btn-sm btn-outline-primary mt-2 d-inline-flex align-items-center gap-1 rounded-pill px-3 py-1" data-bs-toggle="modal" data-bs-target="#serviceGuideModal">
-              <span class="material-symbols-outlined fs-6">menu_book</span>
-              <span><%= t("service.guide.btn_title") %></span>
-            </button>
           </div>
         <% end %>
       <% end %>

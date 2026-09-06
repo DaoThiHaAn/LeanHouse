@@ -9,9 +9,29 @@ class LandlordPortal::ServiceUsageLogsController < LandlordPortal::BaseControlle
 
   def index
     if @room
-      @logs = LandlordServiceUsageLogsFilter.call(house: @house, room: @room, params: params)
       @unconfirmed_count = @room.service_usage_logs.unconfirmed.count
-      @services = @house.services.name_sorted
+      @fixed_services_count = @room.room_services.joins(:service_variant).where(service_variants: { is_real_time: false }).count
+      @current_tab = if params[:tab].present?
+        params[:tab] == "fixed" ? "fixed" : "real_time"
+      elsif @room.service_variants.any?(&:is_real_time?)
+        "real_time"
+      elsif @fixed_services_count.positive?
+        "fixed"
+      else
+        "real_time"
+      end
+
+      if @current_tab == "fixed"
+        @fixed_services_summary = RoomFixedServicesSummary.call(
+          room: @room,
+          billing_month: @billing_month,
+          page: params[:page],
+          per_page: params[:per_page]
+        )
+      else
+        @logs = LandlordServiceUsageLogsFilter.call(house: @house, room: @room, params: params)
+        @services = @house.services.name_sorted
+      end
       render :room_index
     else
       @logs = LandlordServiceUsageLogsFilter.call(house: @house, params: params.reverse_merge(month: @billing_month.strftime("%Y-%m")))

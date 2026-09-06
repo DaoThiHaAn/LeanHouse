@@ -3,8 +3,8 @@
       data: {
         controller: "pagination-sync",
         pagination_sync_canonical_url_value: landlord_house_room_service_usage_logs_path(house, room),
-        pagination_sync_default_params_value: { room_id: room.id.to_s }.to_json,
-        pagination_sync_query_params_value: ["month", "service_id", "status"].to_json,
+        pagination_sync_default_params_value: { room_id: room.id.to_s, tab: "real_time" }.to_json,
+        pagination_sync_query_params_value: ["tab", "month", "service_id", "status"].to_json,
         pagination_sync_total_pages_selector_value: "[data-pagination-total-pages]",
         action: "turbo:frame-load->pagination-sync#updateUrl"
       } do %>

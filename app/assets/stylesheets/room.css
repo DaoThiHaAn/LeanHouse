@@ -37,27 +37,6 @@
   pointer-events: none;
 }
 
-.table-action {
-  color: var(--table-action-icon);
-  background-color: transparent;
-  transition: background-color 0.2s ease;
-  border-radius: 50%;
-  padding: 1px 4px;
-  border: none;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.table-action:hover {
-  background-color: rgb(216, 215, 215);
-}
-
-.table-action span {
-  font-size: 1.5rem;
-}
-
 .modal .main-btn {
   font-size: 0.9rem;
   width: fit-content;

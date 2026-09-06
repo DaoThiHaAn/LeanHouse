@@ -61,6 +61,10 @@ class Room < ApplicationRecord
     I18n.t("form.room.self") + " " + self.name
   end
 
+  def has_real_time_service?
+    service_variants.any?(&:is_real_time?)
+  end
+
   # Can be rented
   def available?
     !deleted && tenants_count < max_slots

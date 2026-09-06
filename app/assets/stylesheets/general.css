@@ -464,6 +464,11 @@ textarea {
   background-color: rgb(210, 210, 210);
 }
 
+table form.button_to {
+  width: min-content;
+  display: inline-flex;
+}
+
 /* Separated divider in dropdown list */
 .divided.dropdown-menu li:not(:last-child) {
   border-bottom: 1px solid #7D96A5;
@@ -501,6 +506,28 @@ figcaption {
   min-width: 100px;
 }
 
+.table-action {
+  color: var(--table-action-icon);
+  background-color: transparent;
+  transition: background-color 0.2s ease;
+  border-radius: 50%;
+  padding: 1px 4px;
+  border: none;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.table-action:hover {
+  background-color: rgb(216, 215, 215);
+}
+
+.table-action span {
+  font-size: 1.5rem;
+}
+
+
 thead {
   vertical-align: middle !important
 }
@@ -523,7 +550,7 @@ thead {
 
 @media (max-width: 768px) {
   .main-container {
-    width: 95%;
+    width: 97%;
   }
 }
 

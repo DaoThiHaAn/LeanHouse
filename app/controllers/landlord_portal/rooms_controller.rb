@@ -191,7 +191,7 @@ class LandlordPortal::RoomsController < LandlordPortal::BaseController
 
   # Filter rooms based on url params
   def filtered_rooms
-    scope = @house.rooms.active.includes(:floor)
+    scope = @house.rooms.active.includes(:floor, :rental_unit, :service_variants)
 
     case params[:state]
     when "available"

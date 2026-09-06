@@ -13,88 +13,136 @@
   </ol>
 </nav>
 
-<!-- Header -->
-<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-5 pb-2 border-bottom">
-  <div>
-    <h1 class="mb-2 d-flex align-items-center gap-2">
-      <span class="material-symbols-filled fs-2">electric_meter</span>
-      <span><%= t("service_usage_logs.room_logs_title", room: @room.name) %></span>
-    </h1>
-    <p class="text-secondary mb-0"><%= t("service_usage_logs.room_logs_subtitle") %></p>
-  </div>
+<%= turbo_frame_tag "room_service_logs_section",
+      data: {
+        controller: "pagination-sync",
+        pagination_sync_canonical_url_value: landlord_house_room_service_usage_logs_path(@house, @room),
+        pagination_sync_default_params_value: { tab: @current_tab }.to_json,
+        pagination_sync_query_params_value: ["tab", "month"].to_json,
+        pagination_sync_total_pages_selector_value: "[data-pagination-total-pages]",
+        action: "turbo:frame-load->pagination-sync#updateUrl"
+      } do %>
+  <!-- Header -->
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4 pb-2 border-bottom">
+    <div>
+      <h1 class="mb-2 d-flex align-items-center gap-2">
+        <span class="material-symbols-filled fs-2">electric_meter</span>
+        <span><%= t("service_usage_logs.room_logs_title", room: @room.name) %></span>
+      </h1>
+      <p class="text-secondary mb-0"><%= t("service_usage_logs.room_logs_subtitle") %></p>
+    </div>
 
-  <div class="d-flex align-items-center gap-2">
-    <% if @unconfirmed_count > 0 %>
-      <%= button_to confirm_all_landlord_house_room_service_usage_logs_path(@house, @room),
-                    method: :patch,
-                    data: { turbo_confirm: t("service_usage_logs.confirm_all_room_prompt", count: @unconfirmed_count, room: @room.name) },
-                    class: "btn btn-success d-flex align-items-center gap-1 shadow-sm" do %>
-        <span class="material-symbols-outlined fs-6">done_all</span>
-        <span><%= t("service_usage_logs.confirm_all_room_btn", count: @unconfirmed_count) %></span>
+    <!-- 2 Tabs at the right end of the header row -->
+    <div class="d-inline-flex bg-light p-1 rounded-pill border gap-1">
+      <%= link_to landlord_house_room_service_usage_logs_path(@house, @room, tab: "real_time"),
+                  class: "log-tab d-flex align-items-center gap-1 px-3 py-1 rounded-pill small text-decoration-none fw-semibold transition #{@current_tab == 'real_time' ? 'active shadow-sm' : 'text-secondary'}",
+                  data: { turbo_action: "advance" } do %>
+        <span class="material-symbols-outlined fs-6">speed</span>
+        <span><%= t("service_usage_logs.tab_real_time") %></span>
+        <% if @unconfirmed_count.to_i > 0 %>
+          <span class="badge bg-danger rounded-pill ms-1"><%= @unconfirmed_count %></span>
+        <% end %>
       <% end %>
-    <% end %>
 
-    <%= link_to new_landlord_house_service_usage_log_path(@house, room_id: @room.id, from_room: true),
-                class: "main-btn shadow-sm gap-2" do %>
-      <span class="material-symbols-filled fs-4">add_circle</span>
-      <span><%= t("service_usage_logs.record_reading") %></span>
-    <% end %>
+      <%= link_to landlord_house_room_service_usage_logs_path(@house, @room, tab: "fixed"),
+                  class: "log-tab d-flex align-items-center gap-1 px-3 py-1 rounded-pill small text-decoration-none fw-semibold transition #{@current_tab == 'fixed' ? 'active shadow-sm' : 'text-secondary'}",
+                  data: { turbo_action: "advance" } do %>
+        <span class="material-symbols-outlined fs-6">lock</span>
+        <span><%= t("service_usage_logs.tab_fixed") %></span>
+        <% if @fixed_services_count.to_i > 0 %>
+          <span class="fixed badge bg-secondary bg-opacity-25 text-dark rounded-pill ms-1"><%= @fixed_services_count %></span>
+        <% end %>
+      <% end %>
+    </div>
   </div>
-</div>
 
-  <!-- Filter Toolbar -->
-  <%= form_with url: filtered_landlord_house_service_usage_logs_path(@house),
-                method: :get,
-                class: "d-flex gap-3 align-items-center flex-wrap mb-5",
-                data: { turbo_frame: "room_logs_table", turbo_action: "advance" } do |f| %>
-    <%= f.hidden_field :room_id, value: @room.id %>
+  <% if @current_tab == "fixed" %>
+    <%= render "room_fixed_services",
+               house: @house,
+               room: @room,
+               summary: @fixed_services_summary %>
+  <% else %>
+    <!-- Real-time Tab Content -->
+    <!-- Filter Toolbar & Actions -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+      <%= form_with url: filtered_landlord_house_service_usage_logs_path(@house),
+                    method: :get,
+                    class: "d-flex gap-3 align-items-center flex-wrap",
+                    data: { turbo_frame: "room_logs_table", turbo_action: "advance" } do |f| %>
+        <%= f.hidden_field :room_id, value: @room.id %>
 
-    <!-- Filter Month -->
-    <div class="d-flex align-items-center gap-2">
-      <%= f.label :month, "#{t('month')}:", class: "fw-bold text-nowrap" %>
-      <%= f.month_field :month,
-                        placeholder: "YYYY-MM",
-                        value: params[:month],
-                        class: "form-control shadow-sm w-auto",
+        <!-- Filter Month -->
+        <div class="d-flex align-items-center gap-2">
+          <%= f.label :month, "#{t('month')}:", class: "fw-bold text-nowrap" %>
+          <%= f.month_field :month,
+                            placeholder: "YYYY-MM",
+                            value: params[:month],
+                            class: "form-control shadow-sm w-auto",
+                            onchange: "this.form.requestSubmit()" %>
+        </div>
+
+        <!-- Filter Service -->
+        <div class="d-flex align-items-center gap-2">
+          <%= f.label :service_id, "#{t('service.self')}:", class: "fw-bold text-nowrap" %>
+          <%= f.select :service_id,
+                        [[t("service_usage_logs.all_services"), ""]] + @services.map { |s| [s.name, s.id] },
+                        { selected: params[:service_id] },
+                        class: "form-select shadow-sm w-auto",
                         onchange: "this.form.requestSubmit()" %>
-    </div>
+        </div>
 
-    <!-- Filter Service -->
-    <div class="d-flex align-items-center gap-2">
-      <%= f.label :service_id, "#{t('service.self')}:", class: "fw-bold text-nowrap" %>
-      <%= f.select :service_id,
-                    [[t("service_usage_logs.all_services"), ""]] + @services.map { |s| [s.name, s.id] },
-                    { selected: params[:service_id] },
-                    class: "form-select shadow-sm w-auto",
-                    onchange: "this.form.requestSubmit()" %>
-    </div>
+        <!-- Filter Status -->
+        <div class="d-flex align-items-center gap-2">
+          <%= f.label :status, "#{t('status')}:", class: "fw-bold text-nowrap" %>
+          <%= f.select :status,
+                        [
+                          [t("all"), ""],
+                          [t("invoice.status_unconfirmed"), "unconfirmed"],
+                          [t("invoice.status_confirmed"), "confirmed"],
+                          [t("invoice.status_billed"), "billed"]
+                        ],
+                        { selected: params[:status] },
+                        class: "form-select shadow-sm w-auto",
+                        onchange: "this.form.requestSubmit()" %>
+        </div>
 
-    <!-- Filter Status -->
-    <div class="d-flex align-items-center gap-2">
-      <%= f.label :status, "#{t('status')}:", class: "fw-bold text-nowrap" %>
-      <%= f.select :status,
-                    [
-                      [t("all"), ""],
-                      [t("invoice.status_unconfirmed"), "unconfirmed"],
-                      [t("invoice.status_confirmed"), "confirmed"],
-                      [t("invoice.status_billed"), "billed"]
-                    ],
-                    { selected: params[:status] },
-                    class: "form-select shadow-sm w-auto",
-                    onchange: "this.form.requestSubmit()" %>
-    </div>
+        <!-- Reset filter button if filtered -->
+        <% if params[:month].present? || params[:service_id].present? || params[:status].present? %>
+          <div>
+            <%= link_to landlord_house_room_service_usage_logs_path(@house, @room, tab: "real_time"),
+                        class: "btn btn-outline-secondary btn-sm d-flex align-items-center gap-1" do %>
+              <span class="material-symbols-outlined fs-6">restart_alt</span>
+              <span><%= t("service_usage_logs.reset_filter") %></span>
+            <% end %>
+          </div>
+        <% end %>
+      <% end %>
 
-    <!-- Reset filter button if filtered -->
-    <% if params[:month].present? || params[:service_id].present? || params[:status].present? %>
-      <div>
-        <%= link_to landlord_house_room_service_usage_logs_path(@house, @room),
-                    class: "btn btn-outline-secondary btn-sm d-flex align-items-center gap-1" do %>
-          <span class="material-symbols-outlined fs-6">restart_alt</span>
-          <span><%= t("service_usage_logs.reset_filter") %></span>
+      <!-- The 2 action buttons moved into Real-time Tab Content -->
+      <div class="d-flex align-items-center gap-2 ms-auto">
+        <% if @unconfirmed_count > 0 %>
+          <%= button_to confirm_all_landlord_house_room_service_usage_logs_path(@house, @room),
+                        method: :patch,
+                        data: { turbo_confirm: t("service_usage_logs.confirm_all_room_prompt", count: @unconfirmed_count, room: @room.name) },
+                        class: "btn btn-success d-flex align-items-center gap-1 shadow-sm" do %>
+            <span class="material-symbols-outlined fs-6">done_all</span>
+            <span><%= t("service_usage_logs.confirm_all_room_btn", count: @unconfirmed_count) %></span>
+          <% end %>
+        <% end %>
+
+        <%= link_to new_landlord_house_service_usage_log_path(@house, room_id: @room.id, from_room: true),
+                    class: "main-btn shadow-sm gap-2",
+                    data: { turbo_frame: "_top" } do %>
+          <span class="material-symbols-filled fs-4">add_circle</span>
+          <span><%= t("service_usage_logs.record_reading") %></span>
         <% end %>
       </div>
-    <% end %>
-  <% end %>
+    </div>
 
-  <%= render "room_logs_table", house: @house, room: @room, logs: @logs %>
-  <%= turbo_frame_tag "usage_log_detail_modal" %>
+    <%= render "room_logs_table", house: @house, room: @room, logs: @logs %>
+  <% end %>
+<% end %>
+
+<%= turbo_frame_tag "usage_log_detail_modal" %>
+<%= turbo_frame_tag "service_variant_modal" %>
+<%= turbo_frame_tag "edit_room_modal" %>
