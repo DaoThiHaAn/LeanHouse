@@ -8,7 +8,7 @@
       <div class="fw-semibold text-dark small mt-1"><%= inv.title %></div>
     <% end %>
   </td>
-  <td class="fw-semibold"><%= t('common.month', default: 'Tháng') %> <%= inv.billing_month.strftime("%m/%Y") %></td>
+  <td class="fw-semibold"><%= t('month') %> <%= inv.billing_month.strftime("%m/%Y") %></td>
   <td>
     <span class="<%= 'text-danger fw-bold' if inv.overdue? %>">
       <%= inv.due_date.strftime("%d/%m/%Y") %>
@@ -16,7 +16,7 @@
   </td>
   <td>
     <span class="fs-6 invoice-amount-pill">
-      <%= number_to_currency(inv.total_amount, unit: "đ", format: "%n %u") %>
+      <%= format_money(inv.total_amount) %>
     </span>
   </td>
   <td>

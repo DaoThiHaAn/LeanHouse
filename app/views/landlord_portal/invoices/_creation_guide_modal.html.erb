@@ -113,9 +113,9 @@
                 <span class="material-symbols-outlined fs-4">schedule</span>
                 <%= t('invoice.guide.prepaid_postpaid_title') %>
               </h6>
-              <p class="text-secondary mb-4"><%= t('invoice.guide.prepaid_postpaid_p1') %></p>
+              <p class="text-secondary mb-3"><%= t('invoice.guide.prepaid_postpaid_p1') %></p>
 
-              <div class="row g-3">
+              <div class="row g-3 mb-4">
                 <div class="col-md-6">
                   <div class="p-3 bg-white rounded-3 shadow-sm border border-primary-subtle h-100">
                     <div class="fw-bold text-primary d-flex align-items-center gap-1 mb-2">
@@ -137,9 +137,61 @@
                 </div>
               </div>
 
-              <div class="alert alert-info border-0 rounded-3 mt-4 mb-0 d-flex align-items-center gap-2">
-                <span class="material-symbols-outlined text-info-emphasis fs-4">sync</span>
-                <span class="small"><%= t('invoice.guide.meter_sync_point') %></span>
+              <!-- Practical Scenario Instructions -->
+              <div class="bg-white rounded-3 shadow-sm border p-4 mb-3">
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2 pb-2 border-bottom">
+                  <h6 class="fw-bold text-dark d-flex align-items-center gap-2 mb-0">
+                    <span class="material-symbols-outlined text-primary fs-5">psychology_alt</span>
+                    <span><%= t('invoice.guide.scenario_title') %></span>
+                  </h6>
+                  <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1 small">
+                    <%= t('invoice.guide.scenario_badge') %>
+                  </span>
+                </div>
+                <p class="text-secondary small mb-3"><%= t('invoice.guide.scenario_subtitle') %></p>
+
+                <div class="row g-3">
+                  <!-- Scenario 1: Beginning of the month (Recommended / Automatic) -->
+                  <div class="col-12">
+                    <div class="p-3 rounded-3 bg-light border border-success-subtle">
+                      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
+                        <div class="fw-bold text-success d-flex align-items-center gap-1">
+                          <span class="material-symbols-outlined fs-5">today</span>
+                          <span><%= t('invoice.guide.scenario_beginning_title') %></span>
+                        </div>
+                        <span class="badge bg-success-subtle text-success border border-success-subtle small"><%= t('invoice.guide.scenario_beginning_badge') %></span>
+                      </div>
+                      <div class="small text-secondary guide-step-desc">
+                        <%= sanitize(t('invoice.guide.scenario_beginning_desc')) %>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Scenario 2: End of the month -->
+                  <div class="col-12">
+                    <div class="p-3 rounded-3 bg-light border border-primary-subtle">
+                      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
+                        <div class="fw-bold text-primary d-flex align-items-center gap-1">
+                          <span class="material-symbols-outlined fs-5">event_repeat</span>
+                          <span><%= t('invoice.guide.scenario_monthend_title') %></span>
+                        </div>
+                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle small"><%= t('invoice.guide.scenario_monthend_badge') %></span>
+                      </div>
+                      <div class="small text-secondary guide-step-desc">
+                        <%= sanitize(t('invoice.guide.scenario_monthend_desc')) %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Lock and Data Integrity Note -->
+              <div class="alert alert-info border-0 rounded-3 mb-0 d-flex align-items-start gap-2">
+                <span class="material-symbols-outlined text-info-emphasis fs-4 mt-1">lock_reset</span>
+                <div class="small">
+                  <strong class="d-block text-info-emphasis mb-1"><%= t('invoice.guide.scenario_lock_title') %></strong>
+                  <span><%= t('invoice.guide.scenario_lock_desc') %></span>
+                </div>
               </div>
             </div>
           </div>

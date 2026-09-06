@@ -10,7 +10,7 @@
     <div class="d-flex align-items-center justify-content-center gap-2">
       <%= link_to landlord_house_room_service_usage_logs_path(house, room),
                   class: "table-action",
-                  data: {turbo_stream: "_top"},
+                  data: {turbo_frame: "_top"},
                   title: t("service_usage_logs.room_logs_action") do %>
         <span class="material-symbols-filled text-primary">electric_meter</span>
       <% end %>

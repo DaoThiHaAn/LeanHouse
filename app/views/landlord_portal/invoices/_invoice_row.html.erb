@@ -17,7 +17,7 @@
   </td>
   <td>
     <span class="fw-bold">
-      <%= number_to_currency(inv.total_amount, unit: "đ", format: "%n %u") %>
+      <%= format_money(inv.total_amount) %>
     </span>
   </td>
   <td>

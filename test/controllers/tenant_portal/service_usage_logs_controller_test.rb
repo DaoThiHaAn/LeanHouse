@@ -182,4 +182,15 @@ class TenantPortal::ServiceUsageLogsControllerTest < ActionDispatch::Integration
     get edit_tenant_service_usage_log_path(@pre_stay_log)
     assert_response :not_found
   end
+
+  test "GET index renders service name and price per unit badge in service column" do
+    sign_in_as(@tenant_user)
+
+    get tenant_service_usage_logs_path
+    assert_response :success
+    assert_select "tr td" do
+      assert_select "div", text: @during_stay_log.service_name
+      assert_select "span.badge", text: /#{ActiveSupport::NumberHelper.number_to_delimited(@during_stay_log.unit_price)} đ \/ #{@during_stay_log.unit}/
+    end
+  end
 end

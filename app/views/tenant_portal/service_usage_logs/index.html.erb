@@ -90,8 +90,9 @@
               <tr>
                 <td class="ps-3 fw-bold font-monospace"><%= log.billing_month.strftime("%m/%Y") %></td>
                 <td>
-                  <span class="badge bg-secondary-subtle text-secondary border">
-                    <%= log.service_name %>
+                  <div class="fw-semibold text-dark"><%= log.service_name %></div>
+                  <span class="badge bg-secondary-subtle text-secondary border mt-1">
+                    <%= number_with_delimiter(log.unit_price) %> đ / <%= log.unit %>
                   </span>
                 </td>
                 <td class="font-monospace text-secondary"><%= log.prev_reading %></td>

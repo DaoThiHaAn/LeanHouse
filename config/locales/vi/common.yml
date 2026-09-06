@@ -94,9 +94,6 @@ vi:
   all: "Tất cả"
   actions: "Hành động"
   note: "Ghi chú"
-  common:
-    month: "Tháng"
-    status: "Trạng thái"
   loading: "Đang tải"
   filtering: "Đang lọc"
   filter: "Lọc"
@@ -136,6 +133,7 @@ vi:
   person_unit: "Người"
   you: "Bạn"
   clear_search: "Xóa từ khóa"
+  status: "Trạng thái"
 
   errors:
     session_expired: |

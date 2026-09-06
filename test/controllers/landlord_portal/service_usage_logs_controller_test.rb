@@ -71,14 +71,14 @@ class LandlordPortal::ServiceUsageLogsControllerTest < ActionDispatch::Integrati
   test "should get house service usage logs index" do
     get landlord_house_service_usage_logs_path(@house)
     assert_response :success
-    assert_select "h2", text: /#{I18n.t('invoice.meter_logs_title')}/
+    assert_select "h1", text: /#{I18n.t('invoice.meter_logs_title')}/
   end
 
   test "should get house service usage logs index scoped to service" do
     get landlord_house_service_usage_logs_path(@house, service_id: @service.id)
     assert_response :success
-    assert_select "nav[aria-label='breadcrumb']", text: /#{@service.name}/
-    assert_select "h2", text: /#{@service.name}/
+    assert_select "nav[aria-label*='readcrumb']", text: /#{@service.name}/
+    assert_select "h1", text: /#{@service.name}/
     assert_select "select[name='floor_id']"
     assert_select "select[name='room_id']"
   end
@@ -94,6 +94,24 @@ class LandlordPortal::ServiceUsageLogsControllerTest < ActionDispatch::Integrati
     assert_response :success
     assert_select "tr##{dom_id(@log)} td" do
       assert_select "span", text: /#{@floor.title_name}/
+    end
+  end
+
+  test "index renders service name and price per unit in service column" do
+    get landlord_house_service_usage_logs_path(@house)
+    assert_response :success
+    assert_select "tr##{dom_id(@log)} td" do
+      assert_select "div", text: @log.service_name
+      assert_select "span.badge", text: /#{ActiveSupport::NumberHelper.number_to_delimited(@log.unit_price)} đ \/ #{@log.unit}/
+    end
+  end
+
+  test "room index renders service name and price per unit in service column" do
+    get landlord_house_room_service_usage_logs_path(@house, @room)
+    assert_response :success
+    assert_select "tr##{dom_id(@log)} td" do
+      assert_select "div", text: @log.service_name
+      assert_select "span.badge", text: /#{ActiveSupport::NumberHelper.number_to_delimited(@log.unit_price)} đ \/ #{@log.unit}/
     end
   end
 
@@ -114,8 +132,8 @@ class LandlordPortal::ServiceUsageLogsControllerTest < ActionDispatch::Integrati
   test "should get dedicated room service usage logs index" do
     get landlord_house_room_service_usage_logs_path(@house, @room)
     assert_response :success
-    assert_select "h2", text: /#{@room.name}/
-    assert_select "nav[aria-label='breadcrumb']"
+    assert_select "h1", text: /#{@room.name}/
+    assert_select "nav[aria-label*='readcrumb']"
   end
 
   test "should get filtered logs for house" do

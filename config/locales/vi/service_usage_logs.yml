@@ -43,3 +43,4 @@ vi:
     billing_state: "Trạng thái hóa đơn"
     not_billed_yet: "Chưa lập hóa đơn"
     view_detail: "Xem chi tiết"
+    list: "Danh sách Mức sử dụng dịch vụ"

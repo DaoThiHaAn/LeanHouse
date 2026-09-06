@@ -43,8 +43,9 @@
               <span class="text-secondary small d-block fw-normal"><%= log.room.floor.title_name %></span>
             </td>
             <td>
-              <span class="badge bg-secondary-subtle text-secondary border">
-                <%= log.service_name %> (<%= log.unit %>)
+              <div class="fw-semibold text-dark"><%= log.service_name %></div>
+              <span class="badge bg-secondary-subtle text-secondary border mt-1">
+                <%= number_with_delimiter(log.unit_price) %> đ / <%= log.unit %>
               </span>
             </td>
             <td class="text-secondary">

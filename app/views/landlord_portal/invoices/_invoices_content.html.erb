@@ -21,7 +21,7 @@
                   data: { turbo_frame: "invoices_content", turbo_action: "advance" } do |f| %>
       <!-- Chọn tháng -->
       <div class="d-flex align-items-center gap-2">
-        <%= f.label :month, "#{t('invoice.month')}:", class: "fw-bold text-nowrap" %>
+        <%= f.label :month, "#{t('invoice.billing_month')}:", class: "fw-bold text-nowrap" %>
         <%= f.month_field :month,
                           value: billing_month.strftime("%Y-%m"),
                           placeholder: t('invoice.month_placeholder'),
@@ -65,7 +65,7 @@
           <%= f.label :invoice_type, "#{t('invoice.invoice_type')}:", class: "fw-bold text-nowrap" %>
           <%= f.select :invoice_type,
                      options_for_select([
-                       [t('invoice.all_types'), ""],
+                       [t('all'), ""],
                        [t('invoice.type_room'), "room"],
                        [t('invoice.type_individual'), "individual"]
                      ], params[:invoice_type]),

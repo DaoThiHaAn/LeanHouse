@@ -6,12 +6,9 @@
   <nav aria-label="Breadcrumb navigation" class="mb-3">
     <ol class="breadcrumb mb-0">
       <li class="breadcrumb-item">
-        <%= link_to landlord_house_services_path(@house), class: "text-decoration-none d-inline-flex align-items-center gap-1" do %>
-          <span class="material-symbols-outlined fs-6">arrow_back</span>
-          <span><%= t("service.list") %></span>
-        <% end %>
+        <%= back_link_to landlord_house_services_path(@house), t("service_usage_logs.back_to_rooms") %>
       </li>
-      <li class="breadcrumb-item active" aria-current="page">
+      <li class="breadcrumb-item active align-self-center" aria-current="page">
         <%= @selected_service.name %>
       </li>
     </ol>
@@ -64,7 +61,7 @@
 
       <!-- Chọn tháng -->
       <div class="d-flex align-items-center gap-2">
-        <%= f.label :month, "#{t('common.month')}:", class: "fw-bold text-nowrap" %>
+        <%= f.label :month, "#{t('month')}:", class: "fw-bold text-nowrap" %>
         <%= f.month_field :month, value: @billing_month.strftime("%Y-%m"), class: "form-control shadow-sm w-auto", onchange: "this.form.requestSubmit()" %>
       </div>
 
@@ -104,7 +101,7 @@
 
       <!-- Trạng thái duyệt -->
       <div class="d-flex align-items-center gap-2">
-        <%= f.label :status, "#{t('common.status')}:", class: "fw-bold text-nowrap" %>
+        <%= f.label :status, "#{t('status')}:", class: "fw-bold text-nowrap" %>
         <%= f.select :status, [
               [t("all"), ""],
               [t("invoice.status_unconfirmed"), "unconfirmed"],

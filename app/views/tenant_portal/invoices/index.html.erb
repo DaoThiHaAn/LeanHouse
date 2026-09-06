@@ -35,7 +35,7 @@
 
       <!-- Month Filter -->
       <div class="d-flex align-items-center gap-2">
-        <%= f.label :month, "#{t('invoice.month')}:", class: "fw-bold text-nowrap" %>
+        <%= f.label :month, "#{t('invoice.billing_month')}:", class: "fw-bold text-nowrap" %>
         <%= f.month_field :month,
                           value: params[:month],
                           placeholder: t('invoice.month_placeholder'),

@@ -243,10 +243,16 @@
   display: block;
 }
 
+
+
 @media (max-width: 768px) {
   .sidebar {
     width: 170px;
   }
+}
+
+#serviceGuideTabs .nav-link.active {
+  color: white !important
 }
 
 /* =========================================================
