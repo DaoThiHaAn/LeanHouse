@@ -16,7 +16,7 @@
         <span class="material-symbols-outlined fs-5" title="<%= t("last_updated") %>">
           update
         </span>
-        <%= @user.updated_at.strftime('%H:%M:%S %d/%m/%Y') %>
+        <%= format_datetime(@user.updated_at) %>
       </p>
     </div>
 

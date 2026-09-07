@@ -17,11 +17,11 @@
           <div class="bg-light p-3 rounded-3 mb-3 border">
             <div class="d-flex justify-content-between mb-1">
               <span class="text-secondary small"><%= t('invoice.payment_term') %>:</span>
-              <span class="fw-semibold text-dark"><%= invoice.billing_month.strftime("%m/%Y") %></span>
+              <span class="fw-semibold text-dark"><%= format_month(invoice.billing_month) %></span>
             </div>
             <div class="d-flex justify-content-between">
               <span class="text-secondary small"><%= t('invoice.total') %>:</span>
-              <span class="fw-bold fs-6 text-primary"><%= invoice.formatted_total_amount %></span>
+              <span class="fw-bold fs-6 text-primary"><%= format_money(invoice.total_amount) %></span>
             </div>
           </div>
 

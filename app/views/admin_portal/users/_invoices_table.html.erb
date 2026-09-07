@@ -28,8 +28,8 @@
               <% end %>
             </td>
             <td><%= inv.room&.title_name || "-" %></td>
-            <td><span><%= inv.billing_month.strftime("%m/%Y") %></span></td>
-            <td><span class="fw-bold font-monospace text-primary"><%= inv.formatted_total_amount %></span></td>
+            <td><span><%= format_month(inv.billing_month) %></span></td>
+            <td><span class="fw-bold font-monospace text-primary"><%= format_money(inv.total_amount) %></span></td>
             <td>
               <% if inv.paid? %>
                 <span class="badge bg-success-subtle text-success border border-success-subtle"><%= t("admin.invoices.state_paid") %></span>

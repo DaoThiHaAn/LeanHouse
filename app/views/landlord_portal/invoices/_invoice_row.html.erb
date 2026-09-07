@@ -9,10 +9,10 @@
     </p>
     <div class="mt-1"><%= invoice_type_badge(inv) %></div>
   </td>
-  <td><%= inv.billing_month.strftime("%m/%Y") %></td>
+  <td><%= format_month(inv.billing_month) %></td>
   <td>
     <p class="<%= 'text-danger small fw-bold' if inv.overdue? %>">
-      <%= inv.due_date.strftime("%d/%m/%Y") %>
+      <%= format_date(inv.due_date) %>
     </p>
   </td>
   <td>

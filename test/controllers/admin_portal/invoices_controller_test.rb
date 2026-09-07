@@ -164,7 +164,7 @@ class AdminPortal::InvoicesControllerTest < ActionDispatch::IntegrationTest
     assert_select "#invoiceDetailModal"
     assert_includes response.body, "INV-ADMIN-001"
     assert_includes response.body, "Tiền phòng 101"
-    assert_includes response.body, "3.500.000"
+    assert_includes response.body, "3,500,000"
 
     # Confirms no mutation buttons exist for admin
     assert_select "button[data-bs-target='#markPaidModal']", 0

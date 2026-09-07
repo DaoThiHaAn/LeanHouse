@@ -82,14 +82,14 @@
 
           <td>
             <% if admin.last_login_at.present? %>
-              <%= l(admin.last_login_at, format: :default) rescue admin.last_login_at.strftime("%d/%m/%Y %H:%M") %>
+              <%= format_datetime(admin.last_login_at) %>
             <% else %>
               <span class="text-secondary small fst-italic"><%= t("admin.admins.never_logged_in") %></span>
             <% end %>
           </td>
 
           <td>
-            <%= l(admin.created_at.to_date, format: :default) rescue admin.created_at.strftime("%d/%m/%Y") %>
+            <%= format_date(admin.created_at) %>
           </td>
 
           <td class="text-center">

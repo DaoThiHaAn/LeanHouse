@@ -28,7 +28,7 @@ module Invoices
           house_id: invoice.house_id,
           code: invoice.code,
           room_name: invoice.room.title_name,
-          amount: invoice.formatted_total_amount,
+          amount: ApplicationController.helpers.format_money(invoice.total_amount),
           paid_by_role: paid_by.role,
           paid_by_id: paid_by.id,
           actor_name: paid_by.fullname,

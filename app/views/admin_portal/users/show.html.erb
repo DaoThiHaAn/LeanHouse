@@ -90,13 +90,13 @@
           <!-- Created At -->
           <div class="d-flex flex-row flex-md-column justify-content-between align-items-center align-items-md-start gap-1 pb-3 border-bottom">
             <p class="text-secondary small mb-0"><%= t("admin.users.created_at") %>:</p>
-            <p class="mb-0"><%= l(@user.created_at, format: :default) rescue @user.created_at.strftime("%d/%m/%Y %H:%M") %></p>
+            <p class="mb-0"><%= format_datetime(@user.created_at) %></p>
           </div>
 
           <!-- Last Updated -->
           <div class="d-flex flex-row flex-md-column justify-content-between align-items-center align-items-md-start gap-1">
             <p class="text-secondary small mb-0"><%= t("last_updated") %>:</p>
-            <p class="mb-0"><%= l(@user.updated_at, format: :default) rescue @user.updated_at.strftime("%d/%m/%Y %H:%M") %></p>
+            <p class="mb-0"><%= format_datetime(@user.updated_at) %></p>
           </div>
         </div>
       </div>

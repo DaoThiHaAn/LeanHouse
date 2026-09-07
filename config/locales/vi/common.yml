@@ -8,9 +8,9 @@ vi:
 
   time:
     formats:
-      default: "%d/%m/%Y %H:%M:%S"
-      short: "%d/%m/%y %H:%M"
-      long: "%d/%m/%Y %H:%M"
+      default: "%H:%M %d/%m/%Y"
+      short: "%H:%M %d/%m"
+      long: "%H:%M:%S %d/%m/%Y"
 
   lang:
     en: "Tiếng Anh"

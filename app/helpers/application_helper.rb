@@ -37,6 +37,31 @@ module ApplicationHelper
     "#{number_with_delimiter(num, delimiter: ",")} đ"
   end
 
+  # Format a date as "dd/mm/yyyy" (e.g. 08/09/2026)
+  def format_date(date, fallback: "-")
+    return fallback if date.blank?
+
+    date.to_date.strftime("%d/%m/%Y")
+  end
+
+  # Format a datetime/timestamp as "HH:MM dd/mm/yyyy" (e.g. 14:30 08/09/2026)
+  # Set include_seconds: true for "HH:MM:SS dd/mm/yyyy"
+  def format_datetime(datetime, include_seconds: false, fallback: "-")
+    return fallback if datetime.blank?
+
+    fmt = include_seconds ? "%H:%M:%S %d/%m/%Y" : "%H:%M %d/%m/%Y"
+    datetime.strftime(fmt)
+  end
+  alias_method :format_time, :format_datetime
+  alias_method :format_timestamp, :format_datetime
+
+  # Format a month as "mm/yyyy" (e.g. 09/2026)
+  def format_month(date_or_time, fallback: "-")
+    return fallback if date_or_time.blank?
+
+    date_or_time.strftime("%m/%Y")
+  end
+
   # Render the loading spinner
   def loading_spinner
     content_tag(

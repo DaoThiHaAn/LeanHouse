@@ -139,16 +139,16 @@
                           <% end %>
                         </td>
                         <td>
-                          <span class="fw-semibold"><%= inv.billing_month.strftime("%m/%Y") %></span>
+                          <span class="fw-semibold"><%= format_month(inv.billing_month) %></span>
                         </td>
                         <td>
                           <span class="small <%= 'text-danger fw-bold' if inv.overdue? %>">
-                            <%= inv.due_date ? inv.due_date.strftime("%d/%m/%Y") : "-" %>
+                            <%= format_date(inv.due_date) %>
                           </span>
                         </td>
                         <td>
                           <span class="fw-bold font-monospace text-primary">
-                            <%= inv.formatted_total_amount %>
+                            <%= format_money(inv.total_amount) %>
                           </span>
                         </td>
                         <td>

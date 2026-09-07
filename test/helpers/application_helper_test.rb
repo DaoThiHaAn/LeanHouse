@@ -63,4 +63,37 @@ class ApplicationHelperTest < ActionView::TestCase
     assert_includes result, 'class="turn-back link"'
     assert_includes result, I18n.t("turn_back")
   end
+
+  test "format_money formats integers as Vietnamese Dong" do
+    assert_equal "50,000 đ", format_money(50000)
+    assert_equal "1,500,000 đ", format_money(1500000)
+    assert_equal "0 đ", format_money(0)
+  end
+
+  test "format_date formats dates as dd/mm/yyyy" do
+    date = Date.new(2026, 9, 8)
+    assert_equal "08/09/2026", format_date(date)
+    assert_equal "-", format_date(nil)
+    assert_equal "N/A", format_date(nil, fallback: "N/A")
+  end
+
+  test "format_datetime formats timestamps as HH:MM dd/mm/yyyy" do
+    time = Time.zone.local(2026, 9, 8, 14, 30, 45)
+    assert_equal "14:30 08/09/2026", format_datetime(time)
+    assert_equal "14:30:45 08/09/2026", format_datetime(time, include_seconds: true)
+    assert_equal "-", format_datetime(nil)
+    assert_equal "Chưa cập nhật", format_datetime(nil, fallback: "Chưa cập nhật")
+  end
+
+  test "format_time and format_timestamp are aliases for format_datetime" do
+    time = Time.zone.local(2026, 9, 8, 9, 15, 0)
+    assert_equal "09:15 08/09/2026", format_time(time)
+    assert_equal "09:15 08/09/2026", format_timestamp(time)
+  end
+
+  test "format_month formats date or time as mm/yyyy" do
+    date = Date.new(2026, 9, 1)
+    assert_equal "09/2026", format_month(date)
+    assert_equal "-", format_month(nil)
+  end
 end

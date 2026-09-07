@@ -33,7 +33,7 @@
                 </span>
               </div>
               <div class="small text-secondary">
-                <%= @request.resolved_at.strftime("%H:%M - %d/%m/%Y") %>
+                <%= format_datetime(@request.resolved_at) %>
                 <% if @request.resolved_by.present? %>
                   • <%= vn_name(@request.resolved_by.fullname) %>
                 <% end %>

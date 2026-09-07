@@ -120,7 +120,7 @@ module Invoices
               room_name: room.title_name,
               month: invoice.billing_month.strftime("%m/%Y"),
               raw_month: invoice.billing_month.strftime("%Y-%m"),
-              amount: invoice.formatted_total_amount,
+              amount: ApplicationController.helpers.format_money(invoice.total_amount),
               due_date: invoice.due_date.strftime("%d/%m/%Y"),
               house_id: @house.id
             ).deliver_later(tenant_users)

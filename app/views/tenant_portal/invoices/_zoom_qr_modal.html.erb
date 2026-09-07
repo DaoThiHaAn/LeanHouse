@@ -25,7 +25,7 @@
             <div class="mb-1"><strong><%= t('invoice.bank_name') %>:</strong> <%= bank_acc.bank.short_name %> (<%= bank_acc.bank.code %>)</div>
             <div class="mb-1"><strong><%= t('invoice.account_number') %>:</strong> <span class="text-primary fw-bold fs-6"><%= bank_acc.account_number %></span></div>
             <div class="mb-1"><strong><%= t('invoice.account_holder') %>:</strong> <%= bank_acc.account_holder %></div>
-            <div class="mb-1"><strong><%= t('invoice.vietqr.amount') %>:</strong> <span class="text-danger fw-bold fs-6"><%= number_to_currency(inv.total_amount, unit: "đ", format: "%n %u") %></span></div>
+            <div class="mb-1"><strong><%= t('invoice.vietqr.amount') %>:</strong> <span class="text-danger fw-bold fs-6"><%= format_money(inv.total_amount) %></span></div>
             <div class="mb-0" data-controller="clipboard"
                  data-clipboard-copied-text-value="<%= t('invoice.vietqr.copied') %>"
                  data-clipboard-original-text-value="<%= t('invoice.vietqr.copy') %>">

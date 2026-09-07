@@ -281,13 +281,13 @@
 
               <!-- Sent Time -->
               <td class="px-3 text-center text-secondary small">
-                <%= req.created_at.strftime("%H:%M - %d/%m/%Y") %>
+                <%= format_datetime(req.created_at) %>
               </td>
 
               <!-- Resolved Info -->
               <td class="px-3 text-center text-secondary small">
                 <% if req.resolved_at.present? %>
-                  <div class="fw-semibold text-dark"><%= req.resolved_at.strftime("%H:%M - %d/%m/%Y") %></div>
+                  <div class="fw-semibold text-dark"><%= format_datetime(req.resolved_at) %></div>
                   <% if req.resolved_by.present? %>
                     <div class="small text-secondary"><%= vn_name(req.resolved_by.fullname) %></div>
                   <% end %>

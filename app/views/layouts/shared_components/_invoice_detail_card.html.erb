@@ -41,7 +41,7 @@
     <div class="row g-2 text-dark small">
       <div class="col-sm-6">
         <span class="text-secondary"><%= t('invoice.created_time') %>:</span>
-        <span class="fw-semibold"><%= invoice.created_at.strftime("%H:%M:%S %d/%m/%Y") %></span>
+        <span class="fw-semibold"><%= format_datetime(invoice.created_at) %></span>
       </div>
       <div class="col-sm-6">
         <span class="text-secondary"><%= t('invoice.payment_term') %>:</span>
@@ -52,7 +52,7 @@
     <div class="d-flex align-items-center gap-2 mt-3">
       <span class="fw-bold fs-6"><%= t('invoice.total') %>:</span>
       <span class="badge fs-5 px-3 py-2 font-monospace invoice-total-badge">
-        <%= number_to_currency(invoice.total_amount, unit: "đ", format: "%n %u") %>
+        <%= format_money(invoice.total_amount) %>
       </span>
       <button type="button" class="btn btn-link btn-sm p-0 text-secondary d-print-none" data-bs-toggle="modal" data-bs-target="#invoiceInfoModal" title="<%= t('invoice.view_details') %>">
         <span class="material-symbols-outlined fs-6 align-middle">info</span>
@@ -83,7 +83,7 @@
       <% if invoice.rent_total > 0 %>
         <div class="mb-3 ps-2">
           <span class="text-primary fw-bold"><%= t('invoice.rent_fee') %>:</span>
-          <span class="font-monospace fw-bold"><%= number_to_currency(invoice.rent_total, unit: "đ", format: "%n %u") %></span>
+          <span class="font-monospace fw-bold"><%= format_money(invoice.rent_total) %></span>
           <span class="text-secondary small">(<%= invoice.rent_period_text %>)</span>
         </div>
       <% end %>
@@ -117,8 +117,8 @@
                 <% invoice.service_items.each do |item| %>
                   <tr>
                     <td class="text-start ps-3 fw-semibold text-dark"><%= item.name %></td>
-                    <td class="text-secondary"><%= item.effective_start_date(invoice)&.strftime("%d/%m/%Y") %></td>
-                    <td class="text-secondary"><%= item.effective_end_date(invoice)&.strftime("%d/%m/%Y") %></td>
+                    <td class="text-secondary"><%= format_date(item.effective_start_date(invoice)) %></td>
+                    <td class="text-secondary"><%= format_date(item.effective_end_date(invoice)) %></td>
                     <td class="text-secondary"><%= item.unit %></td>
                     <td class="text-end font-monospace"><%= number_to_currency(item.unit_price, unit: "", precision: 0) %></td>
                     <td class="font-monospace text-secondary"><%= item.prev_reading.presence || "-" %></td>
@@ -259,7 +259,7 @@
                 <span class="material-symbols-outlined fs-5 text-danger">warning</span>
                 <span><%= t('invoice.previous_undo_alert') %></span>
                 <% if invoice.undone_at.present? %>
-                  <span class="text-secondary fw-normal small">(<%= invoice.undone_at.strftime("%H:%M %d/%m/%Y") %>)</span>
+                  <span class="text-secondary fw-normal small">(<%= format_datetime(invoice.undone_at) %>)</span>
                 <% end %>
               </div>
               <p class="undo-reason-text"><strong><%= t('invoice.undo_reason_view') %>:</strong> <%= invoice.undo_reason %></p>

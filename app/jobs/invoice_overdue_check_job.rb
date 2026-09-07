@@ -16,7 +16,7 @@ class InvoiceOverdueCheckJob < ApplicationJob
       # This prevents daily spamming while ensuring critical overdue reminders
       next unless [ 1, 3, 7 ].include?(days_overdue)
 
-      formatted_amount = "#{invoice.total_amount.to_s.reverse.gsub(/(\d{3})(?=\d)/, '\\1.').reverse}đ"
+      formatted_amount = ApplicationController.helpers.format_money(invoice.total_amount)
       landlord_user = invoice.house&.landlord&.user || invoice.created_by
       tenant_users = invoice.target_users
 

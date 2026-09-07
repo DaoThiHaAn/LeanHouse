@@ -15,16 +15,16 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body small">
-        <p class="mb-1"><strong><%= t('invoice.rent_fee') %>:</strong> <%= number_to_currency(r_total, unit: "đ", format: "%n %u") %></p>
-        <p class="mb-1"><strong><%= t('invoice.service_fee') %>:</strong> +<%= number_to_currency(s_total, unit: "đ", format: "%n %u") %></p>
+        <p class="mb-1"><strong><%= t('invoice.rent_fee') %>:</strong> <%= format_money(r_total) %></p>
+        <p class="mb-1"><strong><%= t('invoice.service_fee') %>:</strong> +<%= format_money(s_total) %></p>
         <% if a_total > 0 %>
-          <p class="mb-1 text-primary"><strong><%= t('invoice.addition_items') %>:</strong> +<%= number_to_currency(a_total, unit: "đ", format: "%n %u") %></p>
+          <p class="mb-1 text-primary"><strong><%= t('invoice.addition_items') %>:</strong> +<%= format_money(a_total) %></p>
         <% end %>
         <% if d_total > 0 %>
-          <p class="mb-1 text-danger"><strong><%= t('invoice.discount_items') %>:</strong> -<%= number_to_currency(d_total, unit: "đ", format: "%n %u") %></p>
+          <p class="mb-1 text-danger"><strong><%= t('invoice.discount_items') %>:</strong> -<%= format_money(d_total) %></p>
         <% end %>
         <hr>
-        <p class="mb-0 fw-bold fs-6"><%= t('invoice.total_payment') %>: <%= number_to_currency(inv.total_amount, unit: "đ", format: "%n %u") %></p>
+        <p class="mb-0 fw-bold fs-6"><%= t('invoice.total_payment') %>: <%= format_money(inv.total_amount) %></p>
       </div>
     </div>
   </div>

@@ -27,7 +27,7 @@
       title="<%= t("last_updated") %>">
       update
     </span>
-      <%= contract.updated_at.strftime('%H:%M:%S %d/%m/%Y') %>
+      <%= format_datetime(contract.updated_at) %>
     </p>
   </div>
 </div>

@@ -98,10 +98,6 @@ class Invoice < ApplicationRecord
     end
   end
 
-  def formatted_total_amount
-    "#{total_amount.to_s.reverse.gsub(/(\d{3})(?=\d)/, '\\1.').reverse}đ"
-  end
-
   def rent_items
     invoice_items.select(&:rent?)
   end

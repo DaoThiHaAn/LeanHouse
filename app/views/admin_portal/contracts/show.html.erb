@@ -74,7 +74,7 @@
               <div class="col-12 col-sm-6">
                 <div class="small text-secondary"><%= t("admin.contracts.updated_at") %>:</div>
                 <div class="small text-secondary">
-                  <%= l(@contract.updated_at, format: :default) rescue @contract.updated_at.strftime("%H:%M %d/%m/%Y") %>
+                  <%= format_datetime(@contract.updated_at) %>
                 </div>
               </div>
             </div>

@@ -6,7 +6,7 @@
       <%= t('invoice.payment_method_label') %>: <%= invoice.cash? ? t('invoice.payment_methods.cash') : t('invoice.payment_methods.transfer') %>
     </span>
     <% if invoice.paid_at.present? %>
-      <span class="text-secondary small"><%= invoice.paid_at.strftime("%H:%M %d/%m/%Y") %></span>
+      <span class="text-secondary small"><%= format_datetime(invoice.paid_at) %></span>
     <% end %>
     <% if invoice.paid_by.present? %>
       <span class="badge bg-light text-primary border px-2 py-1 small">

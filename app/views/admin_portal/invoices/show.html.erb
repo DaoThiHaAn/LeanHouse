@@ -8,7 +8,7 @@
           <div class="d-flex align-items-center gap-2 flex-wrap">
             <span class="material-symbols-filled text-primary fs-4">receipt_long</span>
             <h5 class="modal-title fw-bold mb-0">
-              <%= t("admin.invoices.detail_title", month: @invoice.billing_month.strftime("%m/%Y")) %>
+              <%= t("admin.invoices.detail_title", month: format_month(@invoice.billing_month)) %>
             </h5>
             <span class="badge bg-secondary-subtle text-secondary font-monospace border">#<%= @invoice.code %></span>
             <% if @invoice.paid? %>
@@ -63,14 +63,14 @@
               <div class="col-12 col-sm-6">
                 <div class="small text-secondary"><%= t("admin.invoices.period") %>:</div>
                 <div class="fw-semibold text-dark">
-                  <%= @invoice.start_date ? @invoice.start_date.strftime("%d/%m/%Y") : "-" %> → <%= @invoice.end_date ? @invoice.end_date.strftime("%d/%m/%Y") : "-" %>
+                  <%= format_date(@invoice.start_date) %> → <%= format_date(@invoice.end_date) %>
                 </div>
               </div>
 
               <div class="col-12 col-sm-6">
                 <div class="small text-secondary"><%= t("admin.invoices.due_date") %>:</div>
                 <div class="fw-semibold <%= @invoice.overdue? ? 'text-danger fw-bold' : 'text-dark' %>">
-                  <%= @invoice.due_date ? @invoice.due_date.strftime("%d/%m/%Y") : "-" %>
+                  <%= format_date(@invoice.due_date) %>
                 </div>
               </div>
             </div>
@@ -146,7 +146,7 @@
                   <tr class="fw-bold">
                     <td colspan="3" class="ps-3 fs-6"><%= t("admin.invoices.total_amount") %>:</td>
                     <td class="text-end pe-3 fs-5 font-monospace text-primary">
-                      <%= @invoice.formatted_total_amount %>
+                      <%= format_money(@invoice.total_amount) %>
                     </td>
                   </tr>
                 </tfoot>
@@ -167,7 +167,7 @@
                   <span class="material-symbols-outlined fs-5 text-danger">warning</span>
                   <span><%= t("invoice.previous_undo_alert") %></span>
                   <% if @invoice.undone_at.present? %>
-                    <span class="text-secondary fw-normal small">(<%= @invoice.undone_at.strftime("%H:%M %d/%m/%Y") %>)</span>
+                    <span class="text-secondary fw-normal small">(<%= format_datetime(@invoice.undone_at) %>)</span>
                   <% end %>
                 </div>
                 <p class="undo-reason-text"><strong><%= t("invoice.undo_reason_view") %>:</strong> <%= @invoice.undo_reason %></p>
@@ -206,7 +206,7 @@
                 <div class="col-12 col-sm-6">
                   <div class="small text-secondary"><%= t("admin.invoices.paid_at") %>:</div>
                   <div class="fw-semibold text-dark">
-                    <%= @invoice.paid_at ? @invoice.paid_at.strftime("%H:%M %d/%m/%Y") : "-" %>
+                    <%= format_datetime(@invoice.paid_at) %>
                   </div>
                 </div>
 
