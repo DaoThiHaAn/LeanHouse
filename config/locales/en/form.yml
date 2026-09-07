@@ -105,6 +105,7 @@ en:
       all_contracts: "All Contracts"
       all_contracts_sub: "List of all contracts linked to your account"
       current_contract: "Current Contract"
+      old_contracts: "Old Contracts"
       view_all: "View all contracts"
       empty_desc: "You have no recorded contracts in the system."
       landlord_info_tooltip: "House name, landlord name, and phone number reflect current account details and may change if the landlord updates their profile."

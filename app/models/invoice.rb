@@ -24,6 +24,7 @@ class Invoice < ApplicationRecord
   validates :subtotal, :total_discount, :total_addition, :total_amount, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :payment_method, presence: true, if: :paid?
   validates :payment_method, absence: true, unless: :paid?
+  validate :prevent_update_when_paid, on: :update
 
   scope :kept,       -> { where(discarded_at: nil) }
   scope :discarded,  -> { where.not(discarded_at: nil) }
@@ -69,6 +70,10 @@ class Invoice < ApplicationRecord
   end
 
   def cancel!(by_user)
+    if paid?
+      raise ArgumentError, I18n.t("invoice.errors.cannot_cancel_paid", default: "Không thể hủy hóa đơn đã xác nhận thanh toán. Vui lòng hủy xác nhận thanh toán trước.")
+    end
+
     transaction do
       update!(
         status: :cancelled,
@@ -126,6 +131,19 @@ class Invoice < ApplicationRecord
       self.payment_method ||= "transfer"
     else
       self.payment_method = nil
+    end
+  end
+
+  def prevent_update_when_paid
+    if status_was == "paid"
+      if status == "cancelled"
+        errors.add(:base, I18n.t("invoice.errors.cannot_cancel_paid", default: "Không thể hủy hóa đơn đã xác nhận thanh toán. Vui lòng hủy xác nhận thanh toán trước."))
+      elsif status == "paid"
+        ignored_keys = %w[updated_at]
+        if (changes.keys - ignored_keys).any?
+          errors.add(:base, I18n.t("invoice.errors.cannot_update_paid", default: "Không thể chỉnh sửa hóa đơn đã xác nhận thanh toán. Vui lòng hủy xác nhận thanh toán trước nếu cần thay đổi."))
+        end
+      end
     end
   end
 end

@@ -32,8 +32,17 @@
       <p class="text-secondary mb-0"><%= t("service_usage_logs.room_logs_subtitle") %></p>
     </div>
 
-    <!-- 2 Tabs at the right end of the header row -->
-    <div class="d-inline-flex bg-light p-1 rounded-pill border gap-1">
+    <div class="d-flex align-items-center gap-2">
+      <!-- Guide Modal Button -->
+      <button type="button"
+              class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1 shadow-sm px-3"
+              data-bs-toggle="modal" data-bs-target="#serviceGuideModal">
+        <span class="material-symbols-outlined fs-6">help_outline</span>
+        <span><%= t("service.guide.btn_title") %></span>
+      </button>
+
+      <!-- 2 Tabs at the right end of the header row -->
+      <div class="d-inline-flex bg-light p-1 rounded-pill border gap-1">
       <%= link_to landlord_house_room_service_usage_logs_path(@house, @room, tab: "real_time"),
                   class: "log-tab d-flex align-items-center gap-1 px-3 py-1 rounded-pill small text-decoration-none fw-semibold transition #{@current_tab == 'real_time' ? 'active shadow-sm' : 'text-secondary'}",
                   data: { turbo_action: "advance" } do %>
@@ -53,6 +62,7 @@
           <span class="fixed badge bg-secondary bg-opacity-25 text-dark rounded-pill ms-1"><%= @fixed_services_count %></span>
         <% end %>
       <% end %>
+      </div>
     </div>
   </div>
 
@@ -146,3 +156,4 @@
 <%= turbo_frame_tag "usage_log_detail_modal" %>
 <%= turbo_frame_tag "service_variant_modal" %>
 <%= turbo_frame_tag "edit_room_modal" %>
+<%= render "landlord_portal/services/guide_modal" %>

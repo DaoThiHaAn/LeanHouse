@@ -13,6 +13,11 @@ module Invoices
     end
 
     def call
+      if invoice.paid?
+        invoice.errors.add(:base, I18n.t("invoice.errors.cannot_update_paid", default: "Không thể chỉnh sửa hóa đơn đã xác nhận thanh toán. Vui lòng hủy xác nhận thanh toán trước nếu cần thay đổi."))
+        return false
+      end
+
       return false unless invoice.update(params)
 
       sync_item_dates_if_needed

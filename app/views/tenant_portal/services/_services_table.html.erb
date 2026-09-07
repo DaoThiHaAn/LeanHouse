@@ -23,6 +23,8 @@
           <th><%= t("service.price") %></th>
           <th><%= t("service.unit") %></th>
           <th class="text-center"><%= t("service.real_time_short") %></th>
+          <th><%= t("service.applied_date") %></th>
+          <th><%= t("last_updated") %></th>
         </tr>
       </thead>
 
@@ -44,13 +46,15 @@
           </tr>
 
           <tr>
-            <td><%= number_with_delimiter(variant.fee, delimiter: ",") %></td>
+            <td><%= format_money(variant.fee) %></td>
             <td><%= t("enums.room_service.unit.#{variant.unit}") %></td>
             <td class="text-center align-middle">
               <% if variant.is_real_time %>
                 <span class="material-symbols-outlined d-inline-flex text-success">check_circle</span>
               <% end %>
             </td>
+            <td><%= variant.created_at.strftime("%d/%m/%Y") %></td>
+            <td><%= variant.updated_at.strftime("%d/%m/%Y") %></td>
           </tr>
         <% end %>
       </tbody>

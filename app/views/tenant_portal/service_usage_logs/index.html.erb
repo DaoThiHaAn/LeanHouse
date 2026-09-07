@@ -3,10 +3,9 @@
 <div class="container py-4 usage-log-wrapper">
   <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
     <div>
-      <h2 class="fw-bold mb-1 d-flex align-items-center gap-2">
-        <span class="material-symbols-outlined text-primary">electric_meter</span>
-        <%= t("invoice.service_usage_details", default: "Chi tiết sử dụng dịch vụ") %> (<%= @room.title_name %>, <%= @room.floor&.title_name %>)
-      </h2>
+      <h1 class="mb-1 d-flex align-items-center gap-2">
+        <%= t("invoice.service_usage_details") %> - <%= @room.title_name %>, <%= @room.floor&.title_name %>
+      </h1>
       <p class="text-secondary mb-0"><%= t("invoice.meter_logs_tenant_subtitle") %></p>
     </div>
   </div>

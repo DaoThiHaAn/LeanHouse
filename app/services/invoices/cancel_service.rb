@@ -1,6 +1,10 @@
 module Invoices
   class CancelService
     def self.call(invoice:, cancelled_by:)
+      if invoice.paid?
+        raise ArgumentError, I18n.t("invoice.errors.cannot_cancel_paid", default: "Không thể hủy hóa đơn đã xác nhận thanh toán. Vui lòng hủy xác nhận thanh toán trước.")
+      end
+
       ActiveRecord::Base.transaction do
         invoice.update!(
           status: :cancelled,

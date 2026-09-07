@@ -360,3 +360,8 @@ vi:
     upload_meter_photo_label: "Chụp hoặc Tải ảnh chụp mặt đồng hồ"
     previously_uploaded_photo: "Ảnh đã tải lên trước đó:"
     submit_reading_btn_text: "Gửi Chỉ Số & Ảnh Minh Chứng"
+
+    errors:
+      cannot_update_paid: "Không thể chỉnh sửa hóa đơn đã xác nhận thanh toán. Vui lòng hủy xác nhận thanh toán trước nếu cần thay đổi."
+      cannot_cancel_paid: "Không thể hủy hóa đơn đã xác nhận thanh toán. Vui lòng hủy xác nhận thanh toán trước."
+      explanation_required: "Vui lòng nhập lý do hủy xác nhận thanh toán."

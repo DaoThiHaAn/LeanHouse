@@ -227,6 +227,29 @@ class LandlordPortal::ServiceUsageLogsControllerTest < ActionDispatch::Integrati
     assert_redirected_to landlord_house_service_usage_logs_path(@house, month: @billing_month.strftime("%Y-%m"))
   end
 
+  test "should not destroy billed log and show error alert" do
+    invoice = Invoice.create!(
+      code: "INV-TEST-BILLED",
+      title: "HĐ test",
+      house: @house,
+      room: @room,
+      created_by: @landlord_user,
+      invoice_type: "room",
+      billing_month: @billing_month,
+      due_date: @billing_month + 10.days,
+      subtotal: 100_000,
+      total_amount: 100_000,
+      status: :pending
+    )
+    @log.update!(invoice: invoice)
+
+    assert_no_difference("ServiceUsageLog.count") do
+      delete landlord_house_service_usage_log_path(@house, @log)
+    end
+    assert_redirected_to landlord_house_service_usage_logs_path(@house)
+    assert_equal I18n.t("service_usage_logs.cannot_delete_billed", default: "Chỉ số này đã được xuất hóa đơn, không thể xóa!"), flash[:alert]
+  end
+
   test "should get room index with real_time tab by default when real_time service exists" do
     get landlord_house_room_service_usage_logs_path(@house, @room)
     assert_response :success

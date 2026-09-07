@@ -99,13 +99,24 @@ class TenantPortal::ContractsControllerTest < ActionDispatch::IntegrationTest
     }
   end
 
-  test "show displays the latest active contract and profile dropdown contains all contracts link" do
+  test "show displays the latest active contract by default and always displays all contracts link" do
     sign_in_as(@tenant_user)
 
     get tenant_contract_path
     assert_response :success
     assert_includes response.body, "Current Active Contract"
     assert_includes response.body, tenant_all_contracts_path
+    assert_includes response.body, I18n.t("form.contract.all_contracts")
+  end
+
+  test "top-level /contract redirects to tenant contract path" do
+    get "/contract"
+    assert_redirected_to tenant_contract_path
+  end
+
+  test "top-level /all-contracts redirects to tenant all contracts path" do
+    get "/all-contracts"
+    assert_redirected_to tenant_all_contracts_path
   end
 
   test "show displays no_contract view when tenant has no active contract" do
@@ -118,15 +129,17 @@ class TenantPortal::ContractsControllerTest < ActionDispatch::IntegrationTest
     get tenant_contract_path
     assert_response :success
     assert_includes response.body, I18n.t("form.contract.none")
+    assert_includes response.body, tenant_all_contracts_path
   end
 
-  test "show can display specific contract when id is provided" do
+  test "show can display specific contract when id is provided and retains all contracts link and current contract link" do
     sign_in_as(@tenant_user)
 
     get tenant_contract_path(id: @old_contract.id)
     assert_response :success
     assert_includes response.body, "Old Finished Contract"
     assert_includes response.body, tenant_all_contracts_path
+    assert_includes response.body, tenant_contract_path
   end
 
   test "tenant not linked to any house can access all contracts and inspect past contract" do

@@ -653,4 +653,86 @@ class LandlordPortal::InvoicesControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
     assert_includes flash[:alert], I18n.t("invoice.select_room_prompt")
   end
+
+  test "landlord visiting edit on a paid invoice is redirected with alert" do
+    sign_in_as(@landlord_user)
+
+    assert_predicate @invoice2, :paid?
+
+    get edit_landlord_house_invoice_path(@house, @invoice2)
+    assert_redirected_to landlord_house_invoice_path(@house, @invoice2)
+    follow_redirect!
+    assert_includes response.body, I18n.t("invoice.errors.cannot_update_paid")
+  end
+
+  test "landlord updating a paid invoice via turbo_stream is rejected with alert" do
+    sign_in_as(@landlord_user)
+
+    assert_predicate @invoice2, :paid?
+
+    patch landlord_house_invoice_path(@house, @invoice2),
+          params: {
+            invoice: {
+              title: "Cố tình sửa khi đã thanh toán"
+            }
+          },
+          as: :turbo_stream
+
+    assert_response :unprocessable_entity
+    assert_includes response.body, I18n.t("invoice.errors.cannot_update_paid")
+
+    @invoice2.reload
+    assert_not_equal "Cố tình sửa khi đã thanh toán", @invoice2.title
+  end
+
+  test "landlord updating a paid invoice via html is redirected with alert" do
+    sign_in_as(@landlord_user)
+
+    assert_predicate @invoice2, :paid?
+
+    patch landlord_house_invoice_path(@house, @invoice2),
+          params: {
+            invoice: {
+              title: "Cố tình sửa khi đã thanh toán"
+            }
+          }
+
+    assert_redirected_to landlord_house_invoice_path(@house, @invoice2)
+    follow_redirect!
+    assert_includes response.body, I18n.t("invoice.errors.cannot_update_paid")
+
+    @invoice2.reload
+    assert_not_equal "Cố tình sửa khi đã thanh toán", @invoice2.title
+  end
+
+  test "landlord cannot cancel a paid invoice and is redirected with alert" do
+    sign_in_as(@landlord_user)
+
+    assert_predicate @invoice2, :paid?
+
+    patch cancel_landlord_house_invoice_path(@house, @invoice2)
+    assert_redirected_to landlord_house_invoice_path(@house, @invoice2)
+    follow_redirect!
+    assert_includes response.body, I18n.t("invoice.errors.cannot_cancel_paid")
+
+    @invoice2.reload
+    assert_predicate @invoice2, :paid?
+  end
+
+  test "paid invoice show page does not render edit button or edit modal, but renders undo paid button" do
+    sign_in_as(@landlord_user)
+
+    assert_predicate @invoice2, :paid?
+
+    get landlord_house_invoice_path(@house, @invoice2)
+    assert_response :success
+
+    # Edit button and edit modal are NOT present
+    assert_select "button[data-bs-target='#editInvoiceDatesModal']", 0
+    assert_select "#editInvoiceDatesModal", 0
+
+    # Undo payment button and modal ARE present
+    assert_select "button[data-bs-target='#undoPaidModal']"
+    assert_select "#undoPaidModal"
+  end
 end

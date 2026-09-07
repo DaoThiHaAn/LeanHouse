@@ -3,17 +3,18 @@
 <% content_for :title, t("page_titles.my_contract") %>
 
 <div class="contract-detail-wrapper main-container px-0 border rounded-2">
-  <div class="position-relative d-flex align-items-center justify-content-center px-4 pt-4 pb-2">
-    <% if params[:id].present? %>
-      <div class="position-absolute start-0 ms-4">
-        <%= link_to tenant_all_contracts_path, class: "text-secondary d-inline-flex align-items-center gap-1 text-decoration-none" do %>
-          <span class="material-symbols-outlined fs-5">arrow_back</span>
-          <span class="small"><%= t("turn_back") %></span>
-        <% end %>
-      </div>
+  <div class="px-4 pt-3 pb-2 mb-4">
+    <h1 class="text-center mb-3">
+      <%= t("page_titles.my_contract") %>
+      <span class="material-symbols-outlined fs-5"
+             <%= tooltip("top", :"form.contract.my_contract_note_html", html:true)%>>
+        help
+      </span>
+    </h1>
+    <%= link_to tenant_all_contracts_path, class: "text-secondary d-flex align-items-center justify-content-center gap-1 text-decoration-none" do %>
+      <span class="material-symbols-outlined fs-4">history</span>
+      <span><%= t("form.contract.all_contracts") %></span>
     <% end %>
-
-    <h1 class="text-center mb-0"><%= t("page_titles.my_contract") %></h1>
   </div>
 
   <%= render 'landlord_portal/contracts/detail',

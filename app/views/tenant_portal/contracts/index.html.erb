@@ -1,4 +1,4 @@
-<% content_for :title, t("page_titles.all_contracts") %>
+<% content_for :title, t("form.contract.all_contracts") %>
 
 <div class="contract main-container">
   <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3 flex-wrap gap-2">
@@ -40,7 +40,7 @@
           <tr>
             <th class="ps-3"><%= t("form.contract.id") %></th>
             <th><%= t("form.contract.name") %></th>
-            <th><%= t("page_titles.house_mng") %></th>
+            <th><%= t("form.house.self") %></th>
             <th><%= t("role.landlord") %></th>
             <th><%= t("form.contract.period") %></th>
             <th><%= t("form.contract.contract_state") %></th>
@@ -53,9 +53,11 @@
             <tr>
               <td class="ps-3 fw-medium text-secondary">#<%= contract.id %></td>
               <td>
-                <%= link_to contract.title_name, tenant_contract_path(id: contract.id), class: "fw-bold link text-dark" %>
+                <%= contract.title_name %>
               </td>
-              <td><%= contract.house&.name || t("none") %></td>
+
+              <td class="custom-text-primary fw-medium"><%= contract.house&.name || t("none") %></td>
+
               <td>
                 <div class="fw-semibold"><%= vn_name(contract.landlord.user.fullname) %></div>
                 <div class="small text-secondary">
@@ -65,7 +67,9 @@
                   </a>
                 </div>
               </td>
+
               <td><%= contract.formatted_period %></td>
+
               <td>
                 <% if contract.end_date.present? %>
                   <span class="badge bg-secondary"><%= t("form.contract.contract_ended") %></span>
@@ -73,7 +77,9 @@
                   <%= contract_state_tag(contract.due_status) %>
                 <% end %>
               </td>
+
               <td><%= contract.formatted_end_date %></td>
+
               <td class="text-center pe-3">
                 <%= link_to tenant_contract_path(id: contract.id),
                             class: "table-action",

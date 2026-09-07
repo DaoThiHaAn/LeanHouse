@@ -42,6 +42,8 @@ vi:
     request_handle: "Xử lý yêu cầu"
     my_room: "Phòng của tôi"
     my_contract: "Hợp đồng của tôi"
+    all_contracts: "Tất cả hợp đồng"
+    old_contracts: "Hợp đồng cũ"
     applied_services: "Dịch vụ sử dụng"
     my_requests: "Yêu cầu của tôi"
     my_invoices: "Hóa đơn của tôi"
@@ -257,6 +259,7 @@ vi:
     admin_house_invoices: "Hóa đơn: %{house_name}"
     admin_requests: "Quản lý Yêu cầu"
     all_contracts: "Tất cả hợp đồng"
+    old_contracts: "Hợp đồng cũ"
 
 
   pagination:

@@ -6,9 +6,9 @@
       <h1 class="mb-2"><%= t("page_titles.used_sv") %></h1>
       <p class="text-secondary fw-medium mb-0 ms-1"><%= t("service.my_note") %></p>
     </div>
-    <%= link_to tenant_service_usage_logs_path, class: "btn btn-outline-primary d-inline-flex align-items-center gap-1 shadow-sm" do %>
-      <span class="material-symbols-outlined fs-6">electric_meter</span>
-      <span><%= t("service.meter_logs_action", default: "Lịch sử & Nộp Chỉ số thực tế") %></span>
+    <%= link_to tenant_service_usage_logs_path, class: "main-btn shadow-sm gap-2" do %>
+      <span class="material-symbols-outlined fs-4">electric_meter</span>
+      <span class="fs-5"><%= t("service.meter_logs_action") %></span>
     <% end %>
   </div>
 

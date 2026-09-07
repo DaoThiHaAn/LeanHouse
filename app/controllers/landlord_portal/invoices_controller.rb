@@ -3,6 +3,8 @@ class LandlordPortal::InvoicesController < LandlordPortal::BaseController
 
   before_action :set_billing_month, only: %i[index filtered new preview]
   before_action :set_invoice, only: %i[show edit update mark_paid undo_paid cancel]
+  before_action :ensure_invoice_editable, only: %i[edit update]
+  before_action :ensure_invoice_cancellable, only: %i[cancel]
 
   def index
     load_invoices_and_stats
@@ -190,9 +192,33 @@ class LandlordPortal::InvoicesController < LandlordPortal::BaseController
   def cancel
     Invoices::CancelService.call(invoice: @invoice, cancelled_by: current_user)
     redirect_to landlord_house_invoices_path(@house, month: @invoice.billing_month.strftime("%Y-%m")), notice: "Đã hủy hóa đơn #{@invoice.code}!"
+  rescue ArgumentError => e
+    redirect_to landlord_house_invoice_path(@house, @invoice), alert: e.message
   end
 
   private
+
+  def ensure_invoice_editable
+    return unless @invoice.paid?
+
+    respond_to do |format|
+      format.turbo_stream do
+        flash.now[:alert] = t("invoice.errors.cannot_update_paid", default: "Không thể chỉnh sửa hóa đơn đã xác nhận thanh toán. Vui lòng hủy xác nhận thanh toán trước nếu cần thay đổi.")
+        render :update, status: :unprocessable_entity
+      end
+      format.html do
+        redirect_to landlord_house_invoice_path(@house, @invoice),
+                    alert: t("invoice.errors.cannot_update_paid", default: "Không thể chỉnh sửa hóa đơn đã xác nhận thanh toán. Vui lòng hủy xác nhận thanh toán trước nếu cần thay đổi.")
+      end
+    end
+  end
+
+  def ensure_invoice_cancellable
+    return unless @invoice.paid?
+
+    redirect_to landlord_house_invoice_path(@house, @invoice),
+                alert: t("invoice.errors.cannot_cancel_paid", default: "Không thể hủy hóa đơn đã xác nhận thanh toán. Vui lòng hủy xác nhận thanh toán trước.")
+  end
 
   def payment_params
     params.fetch(:invoice, params).permit(:payment_method, :payment_proof, :note)

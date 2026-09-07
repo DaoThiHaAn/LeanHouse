@@ -14,6 +14,7 @@ class ServiceUsageLog < ApplicationRecord
   validate :prevent_modification_when_confirmed, on: :update
 
   before_save :compute_usage
+  before_destroy :prevent_destroy_if_billed
 
   scope :confirmed,   -> { where(is_confirmed: true) }
   scope :unconfirmed, -> { where(is_confirmed: false) }
@@ -69,6 +70,13 @@ class ServiceUsageLog < ApplicationRecord
       if latest_reading_changed? || prev_reading_changed? || start_date_changed? || end_date_changed?
         errors.add(:base, I18n.t("errors.service_usage_log_locked", default: "Chỉ số đã được xác nhận, không thể chỉnh sửa."))
       end
+    end
+  end
+
+  def prevent_destroy_if_billed
+    if billed?
+      errors.add(:base, I18n.t("service_usage_logs.cannot_delete_billed", default: "Chỉ số này đã được xuất hóa đơn, không thể xóa!"))
+      throw :abort
     end
   end
 end

@@ -346,3 +346,8 @@ en:
     upload_meter_photo_label: "Capture or upload meter photo"
     previously_uploaded_photo: "Previously uploaded photo:"
     submit_reading_btn_text: "Submit Reading & Proof Photo"
+
+    errors:
+      cannot_update_paid: "Cannot update an invoice after payment confirmation. Please undo payment confirmation first to make changes."
+      cannot_cancel_paid: "Cannot cancel an invoice after payment confirmation. Please undo payment confirmation first."
+      explanation_required: "Please provide a reason to undo payment confirmation."

@@ -96,4 +96,40 @@ class InvoiceTest < ActiveSupport::TestCase
       @invoice.undo_paid!(by_user: @user, explanation: "")
     end
   end
+
+  test "paid invoice cannot be updated with new attributes" do
+    @invoice.mark_as_paid!(by_user: @user, method: "transfer")
+    assert_predicate @invoice, :paid?
+
+    @invoice.title = "Tiêu đề mới sau khi đã thanh toán"
+    assert_not @invoice.valid?
+    assert_includes @invoice.errors[:base], I18n.t("invoice.errors.cannot_update_paid")
+
+    assert_raises(ActiveRecord::RecordInvalid) do
+      @invoice.save!
+    end
+  end
+
+  test "paid invoice cannot be cancelled directly" do
+    @invoice.mark_as_paid!(by_user: @user, method: "transfer")
+    assert_predicate @invoice, :paid?
+
+    assert_raises(ArgumentError) do
+      @invoice.cancel!(@user)
+    end
+
+    @invoice.reload
+    assert_predicate @invoice, :paid?
+  end
+
+  test "paid invoice can be updated after payment confirmation is undone" do
+    @invoice.mark_as_paid!(by_user: @user, method: "transfer")
+    assert_predicate @invoice, :paid?
+
+    @invoice.undo_paid!(by_user: @user, explanation: "Cần chỉnh sửa lại tiền")
+    assert_predicate @invoice, :pending?
+
+    @invoice.update!(title: "Tiêu đề đã sửa sau khi hoàn tác")
+    assert_equal "Tiêu đề đã sửa sau khi hoàn tác", @invoice.reload.title
+  end
 end

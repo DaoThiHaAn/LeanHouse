@@ -116,6 +116,11 @@ body {
   width: fit-content;
 }
 
+.custom-text-primary {
+  /* Override the bootstrap */
+  color: var(--custom-primary-text)!important;
+}
+
 main {
   overflow-x: auto;
 }

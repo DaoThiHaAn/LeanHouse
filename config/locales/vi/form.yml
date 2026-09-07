@@ -52,6 +52,7 @@ vi:
       staff_name_placeholder: "Nhập họ và tên nhân viên"
 
     house:
+      self: "Nhà"
       add: "Tạo nhà mới"
       mode: "Loại hình"
       room: "Phòng trọ"
@@ -226,7 +227,7 @@ vi:
       edit_info_1: "Chỉnh sửa thông tin tên giường, tiền thuê và tiền cọc của giường này."
       unfound: "Không tìm thấy giường nào!"
       mng: "Quản lý Giường"
-      confirm_delete: "Bạn có chắc chắn muốn xóa giường %{name} không?"
+      confirm_delete: "Bạn có chắc chắn muốn xóa Giường %{name} không?"
       cannot_delete_has_tenants: "Không thể xóa giường vì hiện đang có khách thuê đang ở."
 
     file:
@@ -300,7 +301,7 @@ vi:
       note: "Dữ liệu hợp đồng được thu thập / hiển thị chỉ phục vụ mục đích quản lý trên hệ thống, không thay thế cho hợp đồng giấy / điện tử và không có giá trị pháp lý."
       sign: "Ký hợp đồng"
       sign_new: "Ký hợp đồng mới"
-      sign_new_note: "Lưu ý: Ký hợp đồng mới sẽ tự động kết thúc hợp đồng hiện tại (mã số: %{id})."
+      sign_new_note: "Lưu ý: Việc ký hợp đồng mới sẽ tự động kết thúc hợp đồng hiện tại (mã số: %{id})."
       extend: "Gia hạn"
       close: "Kết thúc"
       resid_register: "Đăng ký tạm trú"
@@ -345,6 +346,7 @@ vi:
       all_contracts: "Tất cả hợp đồng"
       all_contracts_sub: "Danh sách tất cả hợp đồng đã từng liên kết với tài khoản của bạn"
       current_contract: "Hợp đồng hiện tại"
+      old_contracts: "Hợp đồng cũ"
       view_all: "Xem tất cả hợp đồng"
       empty_desc: "Bạn chưa có hợp đồng nào được ghi nhận trên hệ thống."
       landlord_info_tooltip: "Tên nhà, tên chủ nhà và số điện thoại hiển thị theo thông tin tài khoản hiện tại và có thể thay đổi nếu chủ nhà cập nhật thông tin cá nhân."
@@ -353,3 +355,4 @@ vi:
       extend_finished_title: "Gia hạn hợp đồng đã kết thúc"
       extend_period_note: "Nhập ngày hết hạn mới để gia hạn hợp đồng (ngày mới phải sau ngày hết hạn hiện tại)."
       cannot_edit_finished: "Hợp đồng đã kết thúc không thể chỉnh sửa thông tin."
+      my_contract_note_html: "Trang hiển thị hợp đồng đang có hiệu lực giữa chủ nhà với bạn. Nếu muốn xem tất cả hợp đồng (bao gồm cả hợp đồng đã hết hạn, hãy nhấn vào <strong>Tất cả hợp đồng</strong> bên dưới)"
