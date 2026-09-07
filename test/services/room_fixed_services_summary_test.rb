@@ -179,4 +179,88 @@ class RoomFixedServicesSummaryTest < ActiveSupport::TestCase
     assert_equal 1, summary.items.size
     assert_equal "Dịch vụ cũ", summary.items.first.name
   end
+
+  test "tenant parameter scopes vehicle count to only tenant's vehicles" do
+    svc_vehicle = @house.services.create!(name: "Gửi xe")
+    v_vehicle = svc_vehicle.service_variants.create!(unit: "per_item", fee: 50_000, is_real_time: false)
+    RoomService.create!(room: @room, service_variant: v_vehicle, service: svc_vehicle)
+
+    # Tenant 1 with 2 vehicles
+    t1_user = User.create!(tel: "0981111111", password: "Password123", password_confirmation: "Password123", fullname: "Tenant Mot", role: :tenant, sex: "male", bday: 20.years.ago.to_date, address: "123 Test", tel_verified_at: Time.current)
+    tenant1 = Tenant.find_or_create_by!(id: t1_user.id)
+    rental_unit = @room.rental_unit || @room.create_rental_unit!(rent: 1_000_000, deposit: 1_000_000)
+    rental_unit.tenant_stays.create!(tenant: tenant1, checkin_at: 1.month.ago)
+    Vehicle.create!(house: @house, tenant: tenant1, vehicle_type: :motorbike, license_plate: "29A-11111")
+    Vehicle.create!(house: @house, tenant: tenant1, vehicle_type: :motorbike, license_plate: "29A-22222")
+
+    # Tenant 2 with 1 vehicle
+    t2_user = User.create!(tel: "0982222222", password: "Password123", password_confirmation: "Password123", fullname: "Tenant Hai", role: :tenant, sex: "female", bday: 21.years.ago.to_date, address: "456 Test", tel_verified_at: Time.current)
+    tenant2 = Tenant.find_or_create_by!(id: t2_user.id)
+    rental_unit.tenant_stays.create!(tenant: tenant2, checkin_at: 3.months.ago, checkout_at: 1.month.ago)
+    Vehicle.create!(house: @house, tenant: tenant2, vehicle_type: :motorbike, license_plate: "29B-33333")
+
+    summary_t1 = RoomFixedServicesSummary.call(room: @room, billing_month: Date.current, tenant: tenant1)
+    summary_t2 = RoomFixedServicesSummary.call(room: @room, billing_month: Date.current, tenant: tenant2)
+    summary_all = RoomFixedServicesSummary.call(room: @room, billing_month: Date.current)
+
+    item_t1 = summary_t1.items.find { |i| i.variant.id == v_vehicle.id }
+    item_t2 = summary_t2.items.find { |i| i.variant.id == v_vehicle.id }
+    item_all = summary_all.items.find { |i| i.variant.id == v_vehicle.id }
+
+    assert_equal "2", item_t1.quantity
+    assert_equal 100_000, item_t1.amount
+
+    assert_equal "1", item_t2.quantity
+    assert_equal 50_000, item_t2.amount
+
+    assert_equal "3", item_all.quantity
+    assert_equal 150_000, item_all.amount
+  end
+
+  test "tenant parameter finds tenant's individual active invoice" do
+    svc = @house.services.create!(name: "Dịch vụ phòng")
+    v = svc.service_variants.create!(unit: "per_room", fee: 100_000, is_real_time: false)
+    RoomService.create!(room: @room, service_variant: v, service: svc)
+
+    t1_user = User.create!(tel: "0983333333", password: "Password123", password_confirmation: "Password123", fullname: "Tenant Indiv Mot", role: :tenant, sex: "male", bday: 20.years.ago.to_date, address: "123 Test", tel_verified_at: Time.current)
+    tenant1 = Tenant.find_or_create_by!(id: t1_user.id)
+    t2_user = User.create!(tel: "0984444444", password: "Password123", password_confirmation: "Password123", fullname: "Tenant Indiv Hai", role: :tenant, sex: "female", bday: 20.years.ago.to_date, address: "123 Test", tel_verified_at: Time.current)
+    tenant2 = Tenant.find_or_create_by!(id: t2_user.id)
+
+    billing_month = Date.current.beginning_of_month
+    invoice_t1 = Invoice.create!(
+      code: "INV-T1-01",
+      title: "HĐ cá nhân T1",
+      house: @house,
+      room: @room,
+      created_by: @landlord_user,
+      invoice_type: "individual",
+      tenant: tenant1,
+      billing_month: billing_month,
+      due_date: billing_month + 10.days,
+      subtotal: 100_000,
+      total_amount: 100_000,
+      status: :pending
+    )
+    invoice_t1.invoice_items.create!(
+      service_variant: v,
+      item_type: "fixed_service",
+      name: "Dịch vụ phòng",
+      unit: "phòng",
+      unit_price: 100_000,
+      quantity: 1.0,
+      amount: 100_000
+    )
+
+    summary_t1 = RoomFixedServicesSummary.call(room: @room, billing_month: billing_month, tenant: tenant1)
+    summary_t2 = RoomFixedServicesSummary.call(room: @room, billing_month: billing_month, tenant: tenant2)
+
+    assert_equal invoice_t1, summary_t1.active_invoice
+    assert_equal true, summary_t1.has_active_invoice?
+    assert summary_t1.items.first.billed?
+
+    assert_nil summary_t2.active_invoice
+    assert_equal false, summary_t2.has_active_invoice?
+    assert summary_t2.items.first.draft?
+  end
 end

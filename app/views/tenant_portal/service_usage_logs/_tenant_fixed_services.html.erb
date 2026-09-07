@@ -1,0 +1,190 @@
+<%# locals: (summary:, min_billing_month:) %>
+<span hidden data-pagination-total-pages="<%= summary.paginated_items.respond_to?(:total_pages) ? summary.paginated_items.total_pages : 1 %>"></span>
+
+<!-- Filter Toolbar by Billing Month & Actions -->
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+  <%= form_with url: tenant_service_usage_logs_path,
+                method: :get,
+                class: "d-flex gap-3 align-items-center flex-wrap",
+                data: { turbo_frame: "tenant_service_logs_section", turbo_action: "advance" } do |f| %>
+    <%= f.hidden_field :tab, value: "fixed" %>
+
+    <div class="d-flex align-items-center gap-2">
+      <%= f.label :month, "#{t('service_usage_logs.billing_cycle')}:", class: "fw-bold text-nowrap" %>
+      <%= f.month_field :month,
+                        value: summary.billing_month_str,
+                        min: min_billing_month,
+                        class: "form-control shadow-sm w-auto",
+                        onchange: "this.form.requestSubmit()" %>
+    </div>
+
+    <% if params[:month].present? && params[:month] != Date.current.strftime("%Y-%m") %>
+      <div>
+        <%= link_to tenant_service_usage_logs_path(tab: "fixed"),
+                    class: "btn btn-outline-secondary btn-sm d-flex align-items-center gap-1",
+                    data: { turbo_action: "advance" } do %>
+          <span class="material-symbols-outlined fs-6">restart_alt</span>
+          <span><%= t("service_usage_logs.reset_to_current_month") %></span>
+        <% end %>
+      </div>
+    <% end %>
+  <% end %>
+</div>
+
+<!-- Cancelled Invoice Warning Notice (if applicable) -->
+<% if summary.has_cancelled_invoices? && !summary.has_active_invoice? %>
+  <div class="alert alert-warning py-2 px-3 mb-4 d-flex align-items-center gap-2 small rounded-3">
+    <span class="material-symbols-outlined fs-5 text-warning-emphasis">warning</span>
+    <span>
+      <% if summary.single_cancelled_invoice? %>
+        <%= t("service_usage_logs.cancelled_invoice_notice", code: summary.cancelled_invoices.first.code) %>
+      <% else %>
+        <%= t("service_usage_logs.cancelled_invoices_notice", count: summary.cancelled_invoices_count, codes: summary.cancelled_invoice_codes) %>
+      <% end %>
+    </span>
+  </div>
+<% end %>
+
+<% if summary.items.empty? %>
+  <!-- Empty State -->
+  <div class="card border-0 shadow-sm rounded-4 p-5 text-center bg-light">
+    <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-white shadow-sm p-3 mb-3 mx-auto">
+      <span class="material-symbols-outlined fs-1 text-secondary">lock_open</span>
+    </div>
+    <h5 class="fw-bold text-dark mb-2"><%= t("service_usage_logs.no_fixed_services_in_cycle") %></h5>
+    <p class="text-secondary mx-auto mb-0 col-md-8 col-lg-6">
+      <%= t("service_usage_logs.no_fixed_services_tenant_hint", default: "Phòng chưa có dịch vụ tính phí cố định nào trong kỳ tính toán này.") %>
+    </p>
+  </div>
+<% else %>
+  <!-- Table -->
+  <div class="table-responsive bg-white rounded-2 shadow-sm border mb-4">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th class="ps-4 py-3"><%= t("service_usage_logs.service_and_note") %></th>
+          <th class="py-3"><%= t("service_usage_logs.unit_and_price") %></th>
+          <th class="py-3 text-center"><%= t("service_usage_logs.applied_quantity") %></th>
+          <th class="text-end py-3"><%= t("service_usage_logs.monthly_estimate") %></th>
+          <th class="text-center pe-4 py-3"><%= t("status") %></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% summary.paginated_items.group_by(&:invoice).each do |invoice, items| %>
+          <% if invoice.present? %>
+            <tr class="table-light border-top border-bottom">
+              <td colspan="5" class="ps-4 py-2 bg-light bg-opacity-75">
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                  <div class="d-flex align-items-center gap-2">
+                    <span class="material-symbols-outlined fs-5 text-primary">receipt_long</span>
+                    <span class="fw-bold text-dark"><%= t("invoice.self") %>:</span>
+                    <%= link_to tenant_invoice_path(invoice),
+                                target: "_blank",
+                                rel: "noopener noreferrer",
+                                class: "font-monospace fw-bold text-primary text-decoration-none d-inline-flex align-items-center gap-1",
+                                title: t("common.open_in_new_tab", default: "Mở trong tab mới") do %>
+                      <span><%= invoice.code %></span>
+                      <span class="material-symbols-outlined fs-6">open_in_new</span>
+                    <% end %>
+                    <% if invoice.title.present? %>
+                      <span class="text-secondary small fst-italic">(<%= invoice.title %>)</span>
+                    <% end %>
+                  </div>
+                  <div class="pe-3">
+                    <%= invoice_status_badge(invoice) %>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          <% else %>
+            <tr class="table-light border-top border-bottom">
+              <td colspan="5" class="ps-4 py-2 bg-light bg-opacity-75">
+                <div class="d-flex align-items-center gap-2 text-secondary">
+                  <% if summary.has_active_invoice? %>
+                    <span class="material-symbols-outlined fs-5">do_not_disturb_on</span>
+                    <span class="fw-semibold"><%= t("service_usage_logs.unbilled_or_waived_in_cycle") %></span>
+                  <% else %>
+                    <span class="material-symbols-outlined fs-5">pending_actions</span>
+                    <span class="fw-semibold"><%= t("service_usage_logs.draft_estimate_title") %></span>
+                  <% end %>
+                </div>
+              </td>
+            </tr>
+          <% end %>
+
+          <% items.each do |item| %>
+            <tr>
+              <td class="ps-4 py-3">
+                <div class="fw-bold text-dark"><%= item.name %></div>
+                <% if item.service&.note.present? %>
+                  <p class="text-secondary small fst-italic mt-1 mb-0">
+                    <%= item.service.note %>
+                  </p>
+                <% end %>
+              </td>
+
+              <td class="py-3">
+                <div class="fw-semibold text-primary">
+                  <%= format_money(item.unit_price) %>
+                  <span class="text-secondary fw-normal">/ <%= item.unit %></span>
+                </div>
+                <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle rounded-pill small mt-1">
+                  <%= t("service_usage_logs.fixed_badge") %>
+                </span>
+              </td>
+
+              <td class="py-3 text-center">
+                <span class="fw-semibold text-dark"><%= item.quantity %></span>
+              </td>
+
+              <td class="text-end py-3">
+                <span class="fw-bold text-dark fs-6">
+                  <%= number_with_delimiter(item.amount) %> đ
+                </span>
+              </td>
+
+              <td class="text-center pe-4 py-3">
+                <% if item.billed? %>
+                  <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-1">
+                    <%= t("service_usage_logs.billed_in_invoice_badge") %>
+                  </span>
+                <% elsif item.waived? %>
+                  <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle rounded-pill px-2 py-1">
+                    <%= t("service_usage_logs.not_billed_in_invoice_badge") %>
+                  </span>
+                <% else %>
+                  <span class="badge bg-info-subtle text-info border border-info-subtle rounded-pill px-2 py-1">
+                    <%= t("service_usage_logs.estimated_badge") %>
+                  </span>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        <% end %>
+      </tbody>
+
+      <tfoot class="table-light">
+        <tr>
+          <td colspan="3" class="ps-4 py-3 fw-bold text-dark">
+            <%= t("service_usage_logs.total_in_cycle") %>
+          </td>
+          <td class="text-end py-3 fw-bold text-primary fs-5">
+            <%= number_with_delimiter(summary.total_amount) %> đ
+          </td>
+          <td class="pe-4"></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <% if summary.paginated_items.respond_to?(:total_pages) && summary.paginated_items.total_pages > 1 %>
+    <div class="mt-4 d-flex justify-content-center">
+      <%= paginate summary.paginated_items,
+                   params: {
+                     tab: "fixed",
+                     month: summary.billing_month_str
+                   } %>
+    </div>
+  <% end %>
+<% end %>

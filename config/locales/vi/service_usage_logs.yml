@@ -84,3 +84,6 @@ vi:
     estimated_badge: "Dự kiến"
     total_in_cycle: "Tổng chi phí dịch vụ cố định trong kỳ"
     no_fixed_services_in_cycle: "Phòng này không áp dụng dịch vụ cố định nào trong kỳ này"
+    no_fixed_services_tenant_hint: "Các dịch vụ tính phí cố định (Wifi, rác, gửi xe...) sẽ xuất hiện khi chủ trọ thiết lập cho phòng."
+    unbilled_or_waived_in_cycle: "Dịch vụ không tính trong hóa đơn kỳ này"
+    draft_estimate_title: "Dự kiến định mức áp dụng (chưa xuất hóa đơn)"

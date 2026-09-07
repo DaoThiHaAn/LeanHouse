@@ -1,73 +1,113 @@
 <% content_for :title, t("invoice.meter_logs_tenant_title", room: "#{@room.title_name}, #{@room.floor&.title_name}") %>
 
 <div class="container py-4 usage-log-wrapper">
-  <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
-    <div>
-      <h1 class="mb-1 d-flex align-items-center gap-2">
-        <%= t("invoice.service_usage_details") %> - <%= @room.title_name %>, <%= @room.floor&.title_name %>
-      </h1>
-      <p class="text-secondary mb-0"><%= t("invoice.meter_logs_tenant_subtitle") %></p>
-    </div>
-  </div>
+  <%= turbo_frame_tag "tenant_service_logs_section",
+        data: {
+          controller: "pagination-sync",
+          pagination_sync_canonical_url_value: tenant_service_usage_logs_path,
+          pagination_sync_default_params_value: { tab: @current_tab }.to_json,
+          pagination_sync_query_params_value: ["tab", "month"].to_json,
+          pagination_sync_total_pages_selector_value: "[data-pagination-total-pages]",
+          action: "turbo:frame-load->pagination-sync#updateUrl"
+        } do %>
 
-  <% if @stay_start_month.present? %>
-    <div class="tenant-stay-scope-notice mb-4 d-flex align-items-center gap-2 shadow-sm">
-      <span class="material-symbols-outlined fs-5">info</span>
-      <span class="small fw-medium">
-        <%= t("invoice.tenant_history_scope_notice", month: @stay_start_month.strftime("%m/%Y")) %>
-      </span>
-    </div>
-  <% end %>
-
-  <!-- Filter Toolbar -->
-  <div class="tenant-usage-log-filter-bar mb-4 shadow-sm">
-    <%= form_with url: tenant_service_usage_logs_path,
-                  method: :get,
-                  class: "d-flex align-items-center justify-content-between flex-wrap gap-2",
-                  data: {
-                    turbo_frame: "tenant_usage_logs_table",
-                    turbo_action: "advance"
-                  } do |f| %>
-      <div class="d-flex align-items-center gap-2">
-        <%= f.label :month, "#{t('common.month', default: 'Tháng')}:", class: "fw-bold text-nowrap" %>
-        <%= f.month_field :month,
-                          value: params[:month],
-                          min: @stay_start_month,
-                          class: "form-control shadow-sm w-auto",
-                          onchange: "this.form.requestSubmit()" %>
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4 pb-2 border-bottom">
+      <div>
+        <h1 class="mb-1 d-flex align-items-center gap-2">
+          <%= t("invoice.service_usage_details") %> - <%= @room.title_name %>, <%= @room.floor&.title_name %>
+        </h1>
+        <p class="text-secondary mb-0"><%= t("invoice.meter_logs_tenant_subtitle") %></p>
       </div>
 
-      <% if params[:month].present? %>
-        <div>
-          <%= link_to tenant_service_usage_logs_path,
-                      class: "btn btn-outline-secondary btn-sm d-flex align-items-center gap-1 shadow-sm",
-                      data: { turbo_action: "advance" } do %>
-            <span class="material-symbols-outlined fs-6">filter_alt_off</span>
-            <span><%= t("clear_filter", default: "Xóa bộ lọc") %></span>
+      <!-- 2 Tabs at the right end of the header row -->
+      <div class="d-inline-flex bg-light p-1 rounded-pill border gap-1">
+        <%= link_to tenant_service_usage_logs_path(tab: "real_time"),
+                    class: "log-tab d-flex align-items-center gap-1 px-3 py-1 rounded-pill small text-decoration-none fw-semibold transition #{@current_tab == 'real_time' ? 'active shadow-sm' : 'text-secondary'}",
+                    data: { turbo_action: "advance" } do %>
+          <span class="material-symbols-outlined fs-6">speed</span>
+          <span><%= t("service_usage_logs.tab_real_time") %></span>
+          <% if @unconfirmed_count.to_i > 0 %>
+            <span class="badge bg-danger rounded-pill ms-1"><%= @unconfirmed_count %></span>
           <% end %>
-        </div>
-      <% end %>
-    <% end %>
-  </div>
+        <% end %>
 
-  <%= turbo_frame_tag "tenant_usage_logs_table" do %>
-    <% if @logs.empty? %>
-      <div class="card bg-light border-0 text-center py-5 rounded-4">
-        <span class="material-symbols-outlined text-secondary fs-1 mb-2">fact_check</span>
-        <% if params[:month].present? %>
-          <p class="fs-5 fw-bold mb-1"><%= t("invoice.no_logs_for_month") %></p>
-          <p class="text-secondary small mb-3"><%= t("invoice.no_logs_for_month_hint") %></p>
-          <div>
-            <%= link_to tenant_service_usage_logs_path, class: "btn btn-outline-primary btn-sm d-inline-flex align-items-center gap-1 shadow-sm", data: { turbo_frame: "_top" } do %>
-              <span class="material-symbols-outlined fs-6">filter_alt_off</span>
-              <span><%= t("clear_filter", default: "Xóa bộ lọc") %></span>
-            <% end %>
-          </div>
-        <% else %>
-          <p class="fs-5 fw-bold mb-1"><%= t("invoice.no_logs_tenant") %></p>
-          <p class="text-secondary small"><%= t("invoice.no_logs_tenant_hint") %></p>
+        <%= link_to tenant_service_usage_logs_path(tab: "fixed"),
+                    class: "log-tab d-flex align-items-center gap-1 px-3 py-1 rounded-pill small text-decoration-none fw-semibold transition #{@current_tab == 'fixed' ? 'active shadow-sm' : 'text-secondary'}",
+                    data: { turbo_action: "advance" } do %>
+          <span class="material-symbols-outlined fs-6">lock</span>
+          <span><%= t("service_usage_logs.tab_fixed") %></span>
+          <% if @fixed_services_count.to_i > 0 %>
+            <span class="fixed badge bg-secondary bg-opacity-25 text-dark rounded-pill ms-1"><%= @fixed_services_count %></span>
+          <% end %>
         <% end %>
       </div>
+    </div>
+
+    <% if @stay_start_month.present? %>
+      <div class="tenant-stay-scope-notice mb-4 d-flex align-items-center gap-2 shadow-sm">
+        <span class="material-symbols-outlined fs-5">info</span>
+        <span class="small fw-medium">
+          <%= t("invoice.tenant_history_scope_notice", month: @stay_start_month.strftime("%m/%Y")) %>
+        </span>
+      </div>
+    <% end %>
+
+    <% if @current_tab == "fixed" %>
+      <%= render "tenant_fixed_services",
+                 summary: @fixed_services_summary,
+                 min_billing_month: @min_billing_month %>
+    <% else %>
+      <!-- Real-time Tab Content -->
+      <!-- Filter Toolbar -->
+      <div class="tenant-usage-log-filter-bar mb-4 shadow-sm">
+        <%= form_with url: tenant_service_usage_logs_path,
+                      method: :get,
+                      class: "d-flex align-items-center justify-content-between flex-wrap gap-2",
+                      data: {
+                        turbo_frame: "tenant_service_logs_section",
+                        turbo_action: "advance"
+                      } do |f| %>
+          <%= f.hidden_field :tab, value: "real_time" %>
+
+          <div class="d-flex align-items-center gap-2">
+            <%= f.label :month, "#{t('common.month', default: 'Tháng')}:", class: "fw-bold text-nowrap" %>
+            <%= f.month_field :month,
+                              value: params[:month],
+                              min: @stay_start_month,
+                              class: "form-control shadow-sm w-auto",
+                              onchange: "this.form.requestSubmit()" %>
+          </div>
+
+          <% if params[:month].present? %>
+            <div>
+              <%= link_to tenant_service_usage_logs_path,
+                          class: "btn btn-outline-secondary btn-sm d-flex align-items-center gap-1 shadow-sm",
+                          data: { turbo_action: "advance" } do %>
+                <span class="material-symbols-outlined fs-6">filter_alt_off</span>
+                <span><%= t("clear_filter", default: "Xóa bộ lọc") %></span>
+              <% end %>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+
+      <% if @logs.empty? %>
+        <div class="card bg-light border-0 text-center py-5 rounded-4">
+          <span class="material-symbols-outlined text-secondary fs-1 mb-2">fact_check</span>
+          <% if params[:month].present? %>
+            <p class="fs-5 fw-bold mb-1"><%= t("invoice.no_logs_for_month") %></p>
+            <p class="text-secondary small mb-3"><%= t("invoice.no_logs_for_month_hint") %></p>
+            <div>
+              <%= link_to tenant_service_usage_logs_path, class: "btn btn-outline-primary btn-sm d-inline-flex align-items-center gap-1 shadow-sm", data: { turbo_action: "advance" } do %>
+                <span class="material-symbols-outlined fs-6">filter_alt_off</span>
+                <span><%= t("clear_filter", default: "Xóa bộ lọc") %></span>
+              <% end %>
+            </div>
+          <% else %>
+            <p class="fs-5 fw-bold mb-1"><%= t("invoice.no_logs_tenant") %></p>
+            <p class="text-secondary small"><%= t("invoice.no_logs_tenant_hint") %></p>
+          <% end %>
+        </div>
 
     <% else %>
       <div class="table-responsive bg-white rounded-3 shadow-sm border">
@@ -141,4 +181,5 @@
       </div>
     <% end %>
   <% end %>
+<% end %>
 </div>

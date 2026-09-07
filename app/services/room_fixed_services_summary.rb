@@ -3,7 +3,21 @@
 class RoomFixedServicesSummary
   DEFAULT_PER_PAGE = 10
 
-  Item = Data.define(:service, :variant, :name, :unit, :unit_price, :quantity, :amount, :status) do
+  Item = Data.define(:service, :variant, :name, :unit, :unit_price, :quantity, :amount, :status, :invoice) do
+    def initialize(service:, variant:, name:, unit:, unit_price:, quantity:, amount:, status:, invoice: nil)
+      super(
+        service: service,
+        variant: variant,
+        name: name,
+        unit: unit,
+        unit_price: unit_price,
+        quantity: quantity,
+        amount: amount,
+        status: status,
+        invoice: invoice
+      )
+    end
+
     def billed?
       status == :billed
     end
@@ -21,19 +35,20 @@ class RoomFixedServicesSummary
     end
   end
 
-  attr_reader :room, :house, :billing_month, :page, :per_page,
-              :items, :paginated_items, :active_invoice, :cancelled_invoices
+  attr_reader :room, :house, :billing_month, :page, :per_page, :tenant,
+              :items, :paginated_items, :active_invoice, :active_invoices, :cancelled_invoices
 
   def self.call(...)
     new(...).call
   end
 
-  def initialize(room:, billing_month: nil, page: nil, per_page: nil)
+  def initialize(room:, billing_month: nil, page: nil, per_page: nil, tenant: nil)
     @room = room
     @house = room.house
     @billing_month = (billing_month || Date.current).beginning_of_month
     @page = page.presence || 1
     @per_page = per_page.presence || DEFAULT_PER_PAGE
+    @tenant = tenant
     @items = []
   end
 
@@ -54,7 +69,7 @@ class RoomFixedServicesSummary
   end
 
   def has_active_invoice?
-    active_invoice.present?
+    active_invoices.present?
   end
 
   def has_cancelled_invoices?
@@ -78,17 +93,22 @@ class RoomFixedServicesSummary
   attr_reader :fixed_room_services
 
   def load_invoices
-    @active_invoice = room.invoices
-                          .kept
-                          .where(status: %w[pending paid overdue])
-                          .for_month(billing_month)
-                          .includes(invoice_items: { service_variant: :service })
-                          .first
+    scope = room.invoices.for_month(billing_month)
+    if tenant.present?
+      scope = scope.where(
+        "(invoices.invoice_type = 'room') OR (invoices.invoice_type = 'individual' AND invoices.tenant_id = :tenant_id)",
+        tenant_id: tenant.id
+      )
+    end
 
-    @cancelled_invoices = room.invoices
-                              .where(status: :cancelled)
-                              .for_month(billing_month)
-                              .order(updated_at: :desc)
+    @active_invoices = scope.kept
+                            .where(status: %w[pending paid overdue])
+                            .includes(invoice_items: { service_variant: :service })
+                            .order(created_at: :desc)
+    @active_invoice = @active_invoices.first
+
+    @cancelled_invoices = scope.where(status: :cancelled)
+                               .order(updated_at: :desc)
   end
 
   def load_fixed_room_services
@@ -100,32 +120,38 @@ class RoomFixedServicesSummary
   end
 
   def build_items
-    @items = if active_invoice.present?
+    @items = if active_invoices.present?
                build_billed_items
-             else
+    else
                build_draft_items
-             end
+    end
   end
 
   def build_billed_items
-    invoice_fixed_items = active_invoice.invoice_items.select(&:fixed_service?)
+    all_invoice_fixed_items = @active_invoices.flat_map do |inv|
+      inv.invoice_items.select(&:fixed_service?).map { |it| [ it, inv ] }
+    end
+
     result = []
 
     fixed_room_services.each do |rs|
       variant = rs.service_variant
-      inv_item = invoice_fixed_items.find { |it| it.service_variant_id == variant.id }
+      matching_pairs = all_invoice_fixed_items.select { |(it, _inv)| it.service_variant_id == variant.id }
 
-      if inv_item.present?
-        result << Item.new(
-          service: variant.service,
-          variant: variant,
-          name: inv_item.name,
-          unit: inv_item.unit,
-          unit_price: inv_item.unit_price,
-          quantity: inv_item.quantity.to_s.sub(/\.0$/, ""),
-          amount: inv_item.amount,
-          status: :billed
-        )
+      if matching_pairs.any?
+        matching_pairs.each do |it, inv|
+          result << Item.new(
+            service: variant.service,
+            variant: variant,
+            name: it.name,
+            unit: it.unit,
+            unit_price: it.unit_price,
+            quantity: it.quantity.to_s.sub(/\.0$/, ""),
+            amount: it.amount,
+            status: :billed,
+            invoice: inv
+          )
+        end
       else
         result << Item.new(
           service: variant.service,
@@ -135,16 +161,17 @@ class RoomFixedServicesSummary
           unit_price: variant.fee,
           quantity: "0",
           amount: 0,
-          status: :waived
+          status: :waived,
+          invoice: nil
         )
       end
     end
 
-    extra_items = invoice_fixed_items.reject do |it|
+    extra_pairs = all_invoice_fixed_items.reject do |(it, _inv)|
       fixed_room_services.any? { |rs| rs.service_variant_id == it.service_variant_id }
     end
 
-    extra_items.each do |it|
+    extra_pairs.each do |it, inv|
       result << Item.new(
         service: it.service_variant&.service,
         variant: it.service_variant,
@@ -153,7 +180,8 @@ class RoomFixedServicesSummary
         unit_price: it.unit_price,
         quantity: it.quantity.to_s.sub(/\.0$/, ""),
         amount: it.amount,
-        status: :billed
+        status: :billed,
+        invoice: inv
       )
     end
 
@@ -182,9 +210,18 @@ class RoomFixedServicesSummary
   def calculate_draft_quantity(variant)
     case variant.unit.to_sym
     when :per_room, :per_month
-      1.0
+      if tenant.present? && house.mode != "bed" && room.invoices.where(invoice_type: "individual").exists?
+        active_count = [ room.tenants_count, 1 ].max
+        (1.0 / active_count).round(2)
+      else
+        1.0
+      end
     when :per_person
-      room.tenants_count.to_f
+      if tenant.present?
+        1.0
+      else
+        room.tenants_count.to_f
+      end
     when :per_item
       tenant_vehicle_count.to_f
     else
@@ -193,7 +230,11 @@ class RoomFixedServicesSummary
   end
 
   def tenant_vehicle_count
-    @tenant_vehicle_count ||= house.vehicles.where(tenant_id: room.tenants.pluck(:id)).count
+    if tenant.present?
+      house.vehicles.where(tenant_id: tenant.id).count
+    else
+      @tenant_vehicle_count ||= house.vehicles.where(tenant_id: room.tenants.pluck(:id)).count
+    end
   end
 
   def paginate_items

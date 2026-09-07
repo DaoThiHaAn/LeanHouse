@@ -193,4 +193,170 @@ class TenantPortal::ServiceUsageLogsControllerTest < ActionDispatch::Integration
       assert_select "span.badge", text: /#{ActiveSupport::NumberHelper.number_to_delimited(@during_stay_log.unit_price)} đ \/ #{@during_stay_log.unit}/
     end
   end
+
+  test "GET index with tab=fixed renders fixed services view and NO stat cards" do
+    svc_wifi = @house.services.create!(name: "Wifi Cáp Quang")
+    var_wifi = svc_wifi.service_variants.create!(fee: 100_000, unit: "per_room", is_real_time: false)
+    @room.room_services.create!(service_variant: var_wifi, service: svc_wifi)
+
+    sign_in_as(@tenant_user)
+    get tenant_service_usage_logs_path(tab: "fixed")
+    assert_response :success
+
+    # Check tab navigation
+    assert_select ".log-tab.active", text: /#{I18n.t("service_usage_logs.tab_fixed")}/
+    assert_select ".log-tab", text: /#{I18n.t("service_usage_logs.tab_real_time")}/
+
+    # Critical requirement: Tenants do NOT need stat cards
+    assert_select ".stat-card", 0
+
+    # Filter and usage table
+    assert_select "input[type='month'][name='month']"
+    assert_select "table.table"
+    assert_includes response.body, "Wifi Cáp Quang"
+    assert_includes response.body, I18n.t("service_usage_logs.estimated_badge")
+  end
+
+  test "GET index with tab=fixed displays billed badge and invoice link when active invoice exists" do
+    svc_wifi = @house.services.create!(name: "Wifi Cáp Quang")
+    var_wifi = svc_wifi.service_variants.create!(fee: 100_000, unit: "per_room", is_real_time: false)
+    @room.room_services.create!(service_variant: var_wifi, service: svc_wifi)
+
+    invoice = Invoice.create!(
+      code: "INV-TENANT-FIXED",
+      title: "Hóa đơn tháng",
+      house: @house,
+      room: @room,
+      created_by: @landlord_user,
+      invoice_type: "room",
+      billing_month: @current_month,
+      due_date: @current_month + 10.days,
+      subtotal: 100_000,
+      total_amount: 100_000,
+      status: :pending
+    )
+    invoice.invoice_items.create!(
+      service_variant: var_wifi,
+      item_type: "fixed_service",
+      name: "Wifi Cáp Quang",
+      unit: "phòng",
+      unit_price: 100_000,
+      quantity: 1.0,
+      amount: 100_000
+    )
+
+    sign_in_as(@tenant_user)
+    get tenant_service_usage_logs_path(tab: "fixed")
+    assert_includes response.body, I18n.t("service_usage_logs.billed_in_invoice_badge")
+    assert_select "thead tr th", count: 5
+    assert_select "td[colspan='5'] a[href='#{tenant_invoice_path(invoice)}'][target='_blank']", text: /#{invoice.code}/
+  end
+
+  test "GET index with tab=fixed maps multiple invoices to corresponding service rows in that month" do
+    svc_wifi = @house.services.create!(name: "Wifi Cáp Quang")
+    var_wifi = svc_wifi.service_variants.create!(fee: 100_000, unit: "per_room", is_real_time: false)
+    @room.room_services.create!(service_variant: var_wifi, service: svc_wifi)
+
+    svc_trash = @house.services.create!(name: "Thu gom rác")
+    var_trash = svc_trash.service_variants.create!(fee: 30_000, unit: "per_room", is_real_time: false)
+    @room.room_services.create!(service_variant: var_trash, service: svc_trash)
+
+    # Invoice 1 bills Wifi
+    inv1 = Invoice.create!(
+      code: "INV-MULTI-01",
+      title: "Hóa đơn đợt 1",
+      house: @house,
+      room: @room,
+      created_by: @landlord_user,
+      invoice_type: "room",
+      billing_month: @current_month,
+      due_date: @current_month + 10.days,
+      subtotal: 100_000,
+      total_amount: 100_000,
+      status: :pending
+    )
+    inv1.invoice_items.create!(
+      service_variant: var_wifi,
+      item_type: "fixed_service",
+      name: "Wifi Cáp Quang",
+      unit: "phòng",
+      unit_price: 100_000,
+      quantity: 1.0,
+      amount: 100_000
+    )
+
+    # Invoice 2 bills Trash
+    inv2 = Invoice.create!(
+      code: "INV-MULTI-02",
+      title: "Hóa đơn đợt 2",
+      house: @house,
+      room: @room,
+      created_by: @landlord_user,
+      invoice_type: "room",
+      billing_month: @current_month,
+      due_date: @current_month + 10.days,
+      subtotal: 30_000,
+      total_amount: 30_000,
+      status: :pending
+    )
+    inv2.invoice_items.create!(
+      service_variant: var_trash,
+      item_type: "fixed_service",
+      name: "Thu gom rác",
+      unit: "phòng",
+      unit_price: 30_000,
+      quantity: 1.0,
+      amount: 30_000
+    )
+
+    sign_in_as(@tenant_user)
+    get tenant_service_usage_logs_path(tab: "fixed")
+    assert_response :success
+
+    # Table contains spanning header rows for BOTH invoices with target='_blank'
+    assert_select "td[colspan='5'] a[href='#{tenant_invoice_path(inv1)}'][target='_blank']", text: /#{inv1.code}/
+    assert_select "td[colspan='5'] a[href='#{tenant_invoice_path(inv2)}'][target='_blank']", text: /#{inv2.code}/
+
+    # Both show as billed
+    assert_select "span.badge", text: I18n.t("service_usage_logs.billed_in_invoice_badge"), count: 2
+  end
+
+  test "GET index with tab=fixed displays cancelled invoice notice when invoice was cancelled" do
+    svc_wifi = @house.services.create!(name: "Wifi Cáp Quang")
+    var_wifi = svc_wifi.service_variants.create!(fee: 100_000, unit: "per_room", is_real_time: false)
+    @room.room_services.create!(service_variant: var_wifi, service: svc_wifi)
+
+    cancelled_inv = Invoice.create!(
+      code: "INV-CANCELLED",
+      title: "Hóa đơn hủy",
+      house: @house,
+      room: @room,
+      created_by: @landlord_user,
+      invoice_type: "room",
+      billing_month: @current_month,
+      due_date: @current_month + 10.days,
+      subtotal: 100_000,
+      total_amount: 100_000,
+      status: :cancelled
+    )
+
+    sign_in_as(@tenant_user)
+    get tenant_service_usage_logs_path(tab: "fixed")
+    assert_response :success
+
+    assert_includes response.body, I18n.t("service_usage_logs.cancelled_invoice_notice", code: cancelled_inv.code)
+  end
+
+  test "defaults to tab=fixed if room only has fixed services" do
+    @room.room_services.destroy_all
+    svc_wifi = @house.services.create!(name: "Wifi Cáp Quang")
+    var_wifi = svc_wifi.service_variants.create!(fee: 100_000, unit: "per_room", is_real_time: false)
+    @room.room_services.create!(service_variant: var_wifi, service: svc_wifi)
+
+    sign_in_as(@tenant_user)
+    get tenant_service_usage_logs_path
+    assert_response :success
+
+    assert_select ".log-tab.active", text: /#{I18n.t("service_usage_logs.tab_fixed")}/
+  end
 end

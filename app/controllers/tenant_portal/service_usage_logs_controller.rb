@@ -4,24 +4,48 @@ class TenantPortal::ServiceUsageLogsController < TenantPortal::BaseController
   before_action :set_service_usage_log, only: %i[edit update]
 
   def index
-    scope = tenant_visible_logs
-                 .includes(:service, :service_variant, reading_photo_attachment: :blob)
-                 .sorted
+    @unconfirmed_count = tenant_visible_logs.unconfirmed.count
+    @fixed_services_count = @room.room_services.joins(:service_variant).where(service_variants: { is_real_time: false }).count
 
-    if params[:month].present? && params[:month].to_s.match?(/\A\d{4}-\d{2}\z/)
-      begin
-        filter_month = Date.parse("#{params[:month]}-01").beginning_of_month
-        if @stay_start_month.nil? || filter_month >= @stay_start_month
-          scope = scope.where(billing_month: filter_month)
-        else
-          scope = scope.none
-        end
-      rescue ArgumentError
-        # Ignore invalid date
-      end
+    @current_tab = if params[:tab].present?
+      params[:tab] == "fixed" ? "fixed" : "real_time"
+    elsif @room.service_variants.any?(&:is_real_time?)
+      "real_time"
+    elsif @fixed_services_count.positive?
+      "fixed"
+    else
+      "real_time"
     end
 
-    @logs = scope
+    if @current_tab == "fixed"
+      @billing_month = parse_billing_month(params[:month])
+      @fixed_services_summary = RoomFixedServicesSummary.call(
+        room: @room,
+        billing_month: @billing_month,
+        page: params[:page],
+        per_page: params[:per_page],
+        tenant: @tenant
+      )
+    else
+      scope = tenant_visible_logs
+                   .includes(:service, :service_variant, reading_photo_attachment: :blob)
+                   .sorted
+
+      if params[:month].present? && params[:month].to_s.match?(/\A\d{4}-\d{2}\z/)
+        begin
+          filter_month = Date.parse("#{params[:month]}-01").beginning_of_month
+          if @stay_start_month.nil? || filter_month >= @stay_start_month
+            scope = scope.where(billing_month: filter_month)
+          else
+            scope = scope.none
+          end
+        rescue ArgumentError
+          # Ignore invalid date
+        end
+      end
+
+      @logs = scope
+    end
   end
 
   def edit
@@ -71,5 +95,23 @@ class TenantPortal::ServiceUsageLogsController < TenantPortal::BaseController
 
   def tenant_log_params
     params.require(:service_usage_log).permit(:latest_reading, :reading_photo)
+  end
+
+  def parse_billing_month(str)
+    month = if str.present? && str.to_s.match?(/\A\d{4}-\d{2}\z/)
+      begin
+        Date.parse("#{str}-01").beginning_of_month
+      rescue ArgumentError
+        Date.current.beginning_of_month
+      end
+    else
+      Date.current.beginning_of_month
+    end
+
+    if @stay_start_month.present? && month < @stay_start_month
+      @stay_start_month
+    else
+      month
+    end
   end
 end
