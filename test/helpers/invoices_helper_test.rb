@@ -133,4 +133,54 @@ class InvoicesHelperTest < ActionView::TestCase
     assert_includes badge, "invoice-badge-individual"
     assert_includes badge, @tenant_user.fullname
   end
+
+  test "invoice_term_badge renders in_term or overdue correctly" do
+    in_term_inv = @house.invoices.build(
+      status: :pending,
+      due_date: Date.current + 5.days
+    )
+    badge = invoice_term_badge(in_term_inv)
+    assert_includes badge, "invoice-badge-paid"
+    assert_includes badge, I18n.t("invoice.status.in_term")
+
+    overdue_inv = @house.invoices.build(
+      status: :pending,
+      due_date: Date.current - 1.day
+    )
+    badge = invoice_term_badge(overdue_inv)
+    assert_includes badge, "invoice-badge-overdue"
+    assert_includes badge, I18n.t("invoice.status.overdue")
+  end
+
+  test "invoice_payment_status_badge renders pure payment status without overdue override" do
+    overdue_pending_inv = @house.invoices.build(
+      status: :pending,
+      due_date: Date.current - 1.day
+    )
+    badge = invoice_payment_status_badge(overdue_pending_inv)
+    assert_includes badge, "invoice-badge-pending"
+    assert_includes badge, "hourglass_top"
+    assert_includes badge, I18n.t("invoice.status.pending")
+    refute_includes badge, "invoice-badge-overdue"
+
+    paid_inv = @house.invoices.build(status: :paid)
+    badge = invoice_payment_status_badge(paid_inv)
+    assert_includes badge, "invoice-badge-paid"
+    assert_includes badge, I18n.t("invoice.status.paid")
+
+    cancelled_inv = @house.invoices.build(status: :cancelled)
+    badge = invoice_payment_status_badge(cancelled_inv)
+    assert_includes badge, "invoice-badge-cancelled"
+    assert_includes badge, I18n.t("invoice.status.cancelled")
+  end
+
+  test "invoice_header_badges renders both term badge and payment status badge" do
+    inv = @house.invoices.build(
+      status: :pending,
+      due_date: Date.current + 5.days
+    )
+    badges = invoice_header_badges(inv)
+    assert_includes badges, I18n.t("invoice.status.in_term")
+    assert_includes badges, I18n.t("invoice.status.pending")
+  end
 end

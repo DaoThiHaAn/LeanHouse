@@ -27,26 +27,31 @@ class LandlordPortal::InvoicesController < LandlordPortal::BaseController
   end
 
   def new
-    load_new_invoice_form_data
-    @room = if params[:room_id].present?
-              @occupied_rooms.find { |r| r.id.to_s == params[:room_id].to_s }
-    end
-    @invoice_type = params[:invoice_type].presence || "room"
-    @tenant = @room&.tenants&.find_by(id: params[:tenant_id])
-    if @tenant.nil? && @invoice_type == "individual" && @room.present?
-      @tenant = @room.tenants.first
-    end
-
-    if @room
-      calculator = Invoices::DraftCalculator.new(
-        room: @room,
-        billing_month: @billing_month,
-        invoice_type: @invoice_type,
-        tenant: @tenant
-      )
-      @draft_items = calculator.build_items
+    @mode = params[:mode].presence || "standard"
+    if @mode == "custom"
+      load_new_custom_invoice_form_data
     else
-      @draft_items = []
+      load_new_invoice_form_data
+      @room = if params[:room_id].present?
+                @occupied_rooms.find { |r| r.id.to_s == params[:room_id].to_s }
+      end
+      @invoice_type = params[:invoice_type].presence || "room"
+      @tenant = @room&.tenants&.find_by(id: params[:tenant_id])
+      if @tenant.nil? && @invoice_type == "individual" && @room.present?
+        @tenant = @room.tenants.first
+      end
+
+      if @room
+        calculator = Invoices::DraftCalculator.new(
+          room: @room,
+          billing_month: @billing_month,
+          invoice_type: @invoice_type,
+          tenant: @tenant
+        )
+        @draft_items = calculator.build_items
+      else
+        @draft_items = []
+      end
     end
   end
 
@@ -88,6 +93,31 @@ class LandlordPortal::InvoicesController < LandlordPortal::BaseController
   end
 
   def create
+    @mode = params[:mode].presence || params.dig(:invoice, :mode).presence || "standard"
+    if @mode == "custom"
+      result = Invoices::CreateCustomService.call(
+        house: @house,
+        landlord: current_user,
+        params: custom_invoice_params
+      )
+
+      if result.success?
+        if result.invoices.size == 1
+          redirect_to landlord_house_invoice_path(@house, result.invoices.first),
+                      notice: I18n.t("invoice.custom_create_success_single", code: result.invoices.first.code, default: "Đã xuất hóa đơn #{result.invoices.first.code} thành công!")
+        else
+          redirect_to landlord_house_invoices_path(@house, month: parse_month(params.dig(:invoice, :billing_month)).strftime("%Y-%m")),
+                      notice: I18n.t("invoice.custom_create_success_multiple", count: result.invoices.size, default: "Đã xuất thành công #{result.invoices.size} hóa đơn cho các người thuê được chọn!")
+        end
+      else
+        flash.now[:alert] = result.error_message
+        @billing_month = parse_month(params.dig(:invoice, :billing_month))
+        load_new_custom_invoice_form_data
+        render :new, status: :unprocessable_entity
+      end
+      return
+    end
+
     @billing_month = parse_month(params.dig(:invoice, :billing_month))
     @room = @house.rooms.find_by(id: params.dig(:invoice, :room_id))
     unless @room
@@ -283,5 +313,20 @@ class LandlordPortal::InvoicesController < LandlordPortal::BaseController
     @floors = rooms_query[:floors]
     @rooms_json_data = rooms_query[:rooms_data]
     @bank_accounts = @landlord.bank_accounts.includes(:bank).default_first
+  end
+
+  def load_new_custom_invoice_form_data
+    @staying_tenants = @house.all_staying_tenants_list
+    @bank_accounts = @landlord.bank_accounts.includes(:bank).default_first
+  end
+
+  def custom_invoice_params
+    params.require(:invoice).permit(
+      :billing_month, :due_date, :start_date, :end_date, :title, :note, :bank_account_id,
+      tenant_ids: [],
+      items: [
+        :selected, :item_type, :name, :unit, :unit_price, :quantity, :amount, :note
+      ]
+    )
   end
 end

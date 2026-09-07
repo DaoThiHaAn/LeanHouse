@@ -10,8 +10,15 @@
     <%= f.hidden_field :tab, value: "fixed" %>
 
     <div class="d-flex align-items-center gap-2">
-      <%= f.label :month, "#{t('service_usage_logs.billing_cycle')}:", class: "fw-bold text-nowrap" %>
+      <label for="fixed_month_filter" class="fw-bold text-nowrap d-flex align-items-center gap-1 mb-0">
+        <span><%= t('service_usage_logs.billing_cycle') %>:</span>
+        <span class="material-symbols-outlined fs-6 text-primary cursor-pointer"
+              <%= tooltip("top", :"service_usage_logs.billing_month_explanation_tooltip", html: true) %>>
+          help
+        </span>
+      </label>
       <%= f.month_field :month,
+                        id: "fixed_month_filter",
                         value: summary.billing_month_str,
                         min: min_billing_month,
                         class: "form-control shadow-sm w-auto",
@@ -72,8 +79,9 @@
 
       <tbody>
         <% summary.paginated_items.group_by(&:invoice).each do |invoice, items| %>
-          <% if invoice.present? %>
-            <tr class="table-light border-top border-bottom">
+          <tr class="table-light border-top border-bottom">
+            <% if invoice.present? %>
+
               <td colspan="5" class="ps-4 py-2 bg-light bg-opacity-75">
                 <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
                   <div class="d-flex align-items-center gap-2">
@@ -96,9 +104,9 @@
                   </div>
                 </div>
               </td>
-            </tr>
-          <% else %>
-            <tr class="table-light border-top border-bottom">
+
+            <% else %>
+
               <td colspan="5" class="ps-4 py-2 bg-light bg-opacity-75">
                 <div class="d-flex align-items-center gap-2 text-secondary">
                   <% if summary.has_active_invoice? %>
@@ -110,8 +118,9 @@
                   <% end %>
                 </div>
               </td>
-            </tr>
-          <% end %>
+
+            <% end %>
+          </tr>
 
           <% items.each do |item| %>
             <tr>

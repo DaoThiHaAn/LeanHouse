@@ -27,7 +27,7 @@ class ContractClosedNotifier < ApplicationNotifier
       if recipient.landlord?
         landlord_house_contracts_path(params[:house_id])
       else
-        tenant_old_contracts_path
+        tenant_all_contracts_path
       end
     end
   end

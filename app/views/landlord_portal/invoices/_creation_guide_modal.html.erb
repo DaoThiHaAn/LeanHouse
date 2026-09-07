@@ -205,23 +205,33 @@
               </h6>
 
               <div class="row g-3">
-                <div class="col-md-6">
+                <div class="col-md-4">
                   <div class="p-3 bg-white rounded-3 shadow-sm border border-info-subtle h-100">
                     <div class="fw-bold text-info-emphasis d-flex align-items-center gap-1 mb-2">
                       <span class="material-symbols-filled fs-5">meeting_room</span>
-                      <span><%= t('invoice.mode_room') %> (<%= t('invoice.mode_room_desc') %>)</span>
+                      <span><%= t('invoice.mode_room') %></span>
                     </div>
                     <p class="small text-secondary mb-0"><%= t('invoice.guide.mode_room_point') %></p>
                   </div>
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-md-4">
                   <div class="p-3 bg-white rounded-3 shadow-sm border border-success-subtle h-100">
                     <div class="fw-bold text-success d-flex align-items-center gap-1 mb-2">
                       <span class="material-symbols-filled fs-5">person</span>
-                      <span><%= t('invoice.mode_individual') %> (<%= t('invoice.mode_individual_desc') %>)</span>
+                      <span><%= t('invoice.mode_individual') %></span>
                     </div>
                     <p class="small text-secondary mb-0"><%= t('invoice.guide.mode_individual_point') %></p>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="p-3 bg-white rounded-3 shadow-sm border border-primary-subtle h-100">
+                    <div class="fw-bold text-primary d-flex align-items-center gap-1 mb-2">
+                      <span class="material-symbols-filled fs-5">tune</span>
+                      <span><%= t('invoice.guide.mode_custom') %></span>
+                    </div>
+                    <p class="small text-secondary mb-0"><%= t('invoice.guide.mode_custom_point') %></p>
                   </div>
                 </div>
               </div>

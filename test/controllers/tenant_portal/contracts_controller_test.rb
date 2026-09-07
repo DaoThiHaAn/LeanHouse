@@ -109,15 +109,6 @@ class TenantPortal::ContractsControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, I18n.t("form.contract.all_contracts")
   end
 
-  test "top-level /contract redirects to tenant contract path" do
-    get "/contract"
-    assert_redirected_to tenant_contract_path
-  end
-
-  test "top-level /all-contracts redirects to tenant all contracts path" do
-    get "/all-contracts"
-    assert_redirected_to tenant_all_contracts_path
-  end
 
   test "show displays no_contract view when tenant has no active contract" do
     # End the active contract

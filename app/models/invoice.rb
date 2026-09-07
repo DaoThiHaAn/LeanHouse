@@ -102,6 +102,64 @@ class Invoice < ApplicationRecord
     "#{total_amount.to_s.reverse.gsub(/(\d{3})(?=\d)/, '\\1.').reverse}đ"
   end
 
+  def rent_items
+    invoice_items.select(&:rent?)
+  end
+
+  def service_items
+    invoice_items.select(&:service?)
+  end
+
+  def discount_items
+    invoice_items.select(&:discount?)
+  end
+
+  def addition_items
+    invoice_items.select(&:addition?)
+  end
+
+  def rent_total
+    rent_items.sum(&:amount)
+  end
+
+  def services_total
+    service_items.sum(&:amount)
+  end
+
+  def discounts_total
+    discount_items.sum { |i| i.amount.abs }
+  end
+
+  def additions_total
+    addition_items.sum(&:amount)
+  end
+
+  def effective_start_date
+    start_date || billing_month.beginning_of_month
+  end
+
+  def effective_end_date
+    end_date || billing_month.end_of_month
+  end
+
+  def payment_period_text
+    "#{effective_start_date.strftime('%d/%m/%Y')} - #{due_date.strftime('%d/%m/%Y')}"
+  end
+
+  def rent_period_text
+    "#{effective_start_date.strftime('%d/%m/%Y')} - #{effective_end_date.strftime('%d/%m/%Y')}"
+  end
+
+  def vietqr_url(account = bank_account)
+    return unless account
+
+    VietqrService.generate_url(
+      bank_account: account,
+      amount: total_amount,
+      description: transfer_note
+    )
+  end
+
   def self.generate_code(room, month)
     prefix = "HD#{month.strftime('%y%m')}"
     clean_room = room.name.gsub(/[^0-9A-Za-z]/, "").upcase[0..5]

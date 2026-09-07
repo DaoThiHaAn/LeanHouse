@@ -1,3 +1,6 @@
+<% if @mode == "custom" %>
+  <%= render "new_custom_form" %>
+<% else %>
 <% content_for :title, "#{t('invoice.new_invoice')} - #{@house.name}" %>
 <% provide :container_width, "h-100" %>
 
@@ -250,3 +253,4 @@
 
 <!-- Modal Hướng dẫn Toàn diện (Được tách thành partial riêng) -->
 <%= render "creation_guide_modal" %>
+<% end %>

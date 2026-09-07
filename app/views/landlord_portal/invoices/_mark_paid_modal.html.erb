@@ -1,0 +1,75 @@
+<%
+  inv = local_assigns[:invoice] || @invoice
+  hse = local_assigns[:house] || @house
+%>
+
+<!-- Modal Xác nhận thanh toán hóa đơn (Chủ trọ) -->
+<div class="modal fade" id="markPaidModal" tabindex="-1" aria-labelledby="markPaidModalLabel" aria-hidden="true" data-controller="file-preview">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-4 shadow">
+      <%= form_with url: mark_paid_landlord_house_invoice_path(hse, inv), method: :patch, multipart: true, local: true do |f| %>
+        <div class="modal-header border-bottom">
+          <h5 class="modal-title fw-bold" id="markPaidModalLabel">
+            <span class="material-symbols-outlined text-success align-middle">check_circle</span>
+            <%= t('invoice.confirm_paid_title', code: inv.code) %>
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p class="text-secondary small mb-3"><%= t('invoice.confirm_paid_desc') %></p>
+
+          <div class="bg-light p-3 rounded-3 mb-3 border">
+            <div class="d-flex justify-content-between mb-1">
+              <span class="text-secondary small"><%= t('invoice.room') %>:</span>
+              <span class="fw-semibold text-dark"><%= inv.room.title_name %></span>
+            </div>
+            <div class="d-flex justify-content-between mb-1">
+              <span class="text-secondary small"><%= t('invoice.payment_term') %>:</span>
+              <span class="fw-semibold text-dark"><%= inv.billing_month.strftime("%m/%Y") %></span>
+            </div>
+            <div class="d-flex justify-content-between">
+              <span class="text-secondary small"><%= t('invoice.total') %>:</span>
+              <span class="fw-bold fs-6 text-primary font-monospace"><%= inv.formatted_total_amount %></span>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold"><%= t('invoice.payment_method_label') %></label>
+            <div class="d-flex gap-4">
+              <div class="form-check">
+                <%= f.radio_button :payment_method, "transfer", checked: true, class: "form-check-input", id: "landlord_pm_transfer" %>
+                <%= f.label :payment_method_transfer, t('invoice.payment_methods.transfer'), for: "landlord_pm_transfer", class: "form-check-label" %>
+              </div>
+              <div class="form-check">
+                <%= f.radio_button :payment_method, "cash", class: "form-check-input", id: "landlord_pm_cash" %>
+                <%= f.label :payment_method_cash, t('invoice.payment_methods.cash'), for: "landlord_pm_cash", class: "form-check-label" %>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold"><%= t('invoice.payment_proof') %></label>
+            <span class="text-secondary small d-block mb-1"><%= t('invoice.payment_proof_hint') %></span>
+            <%= f.file_field :payment_proof, accept: "image/*", class: "form-control shadow-sm", data: { file_preview_target: "input", action: "change->file-preview#preview" } %>
+
+            <div class="payment-proof-preview-wrapper mt-2 d-none" data-file-preview-target="container">
+              <img src="" alt="Proof Preview" class="payment-proof-preview-img" data-file-preview-target="preview">
+              <button type="button" class="btn btn-danger btn-sm payment-proof-clear-btn" data-action="click->file-preview#clear" title="Xóa ảnh">
+                <span class="material-symbols-outlined fs-6">close</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="mb-0">
+            <%= f.label :note, t('invoice.payment_note'), class: "form-label fw-semibold" %>
+            <%= f.text_area :note, rows: 2, class: "form-control shadow-sm", placeholder: t('invoice.payment_note_placeholder') %>
+          </div>
+        </div>
+        <div class="modal-footer border-top">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal"><%= t('invoice.actions.close') %></button>
+          <%= f.submit t('invoice.submit_payment_confirmation'), class: "btn btn-success btn-sm fw-semibold px-3" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

@@ -231,6 +231,41 @@ class House < ApplicationRecord
       })
       .distinct
   end
+
+  # Returns an array of hashes representing active staying tenants in the house
+  # Each entry contains:
+  #   tenant: Tenant
+  #   user: User
+  #   stay: TenantStay
+  #   rental_unit: RentalUnit
+  #   room: Room
+  #   bed: Bed (if in bed mode)
+  #   location: String (e.g., "Phòng 101, Tầng 1" or "Giường 1, Phòng 101, Tầng 1")
+  def all_staying_tenants_list
+    rentable_records = room? ? rooms : beds
+    rental_units = RentalUnit.where(rentable: rentable_records)
+
+    stays = TenantStay
+      .staying
+      .where(rental_unit_id: rental_units)
+      .includes(tenant: :user, rental_unit: [ :rentable ])
+
+    stays.map do |stay|
+      rental_unit = stay.rental_unit
+      room = rental_unit.room
+      bed = rental_unit.bed
+      {
+        tenant: stay.tenant,
+        user: stay.tenant&.user,
+        stay: stay,
+        rental_unit: rental_unit,
+        room: room,
+        bed: bed,
+        location: rental_unit.location_info
+      }
+    end.compact.uniq { |item| item[:tenant]&.id }.sort_by { |item| [ item[:room]&.name || "", item[:user]&.fullname || "" ] }
+  end
+
   private
 
   def validate_regulation_file

@@ -1,0 +1,113 @@
+<!-- Modal Hướng dẫn & Giải thích Kỳ tính toán / Billing Month cho Khách thuê -->
+<div class="modal fade" id="billingMonthGuideModal" tabindex="-1" aria-labelledby="billingMonthGuideModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+    <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+      <!-- Header -->
+      <div class="modal-header bg-primary py-3 px-4 border-0 d-flex justify-content-between align-items-center">
+        <div>
+          <h2 class="modal-title text-white d-flex align-items-center gap-2 mb-1 fs-5" id="billingMonthGuideModalLabel">
+            <span class="material-symbols-outlined fs-4">help_outline</span>
+            <%= t("service_usage_logs.billing_month_modal_title") %>
+          </h2>
+          <p class="text-white-50 small mb-0">
+            <%= t("service_usage_logs.billing_month_modal_subtitle") %>
+          </p>
+        </div>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body p-4">
+        <!-- Overview explanation -->
+        <div class="card border-0 bg-light-subtle rounded-3 p-3 mb-3 border-start border-4 border-primary">
+          <div class="d-flex align-items-start gap-3">
+            <span class="material-symbols-outlined text-primary fs-4 mt-1 flex-shrink-0">info</span>
+            <div>
+              <h6 class="fw-bold text-dark mb-1">
+                <%= t("service_usage_logs.billing_month_expl_title") %>
+              </h6>
+              <p class="text-secondary small mb-0">
+                <%= t("service_usage_logs.billing_month_expl_desc") %>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Two Rule Cards (Formula & Billing Rule) -->
+        <div class="row g-3 mb-4">
+          <div class="col-md-6">
+            <div class="card h-100 border rounded-3 p-3 shadow-sm bg-white">
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <span class="material-symbols-outlined text-success fs-5">calculate</span>
+                <h6 class="fw-bold text-success mb-0"><%= t("service_usage_logs.formula_label") %></h6>
+              </div>
+              <div class="small text-secondary mb-2">
+                <%= t("service_usage_logs.formula_desc") %>
+              </div>
+              <div class="bg-light p-2 rounded text-center font-monospace fw-bold small text-dark border">
+                <%= t("invoice.usage_quantity") %> = <%= t("invoice.latest_reading") %> − <%= t("invoice.prev_reading") %>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="card h-100 border rounded-3 p-3 shadow-sm bg-white">
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <span class="material-symbols-outlined text-primary fs-5">receipt_long</span>
+                <h6 class="fw-bold text-primary mb-0"><%= t("service_usage_logs.billing_rule_label") %></h6>
+              </div>
+              <div class="small text-secondary mb-2">
+                <%= t("service_usage_logs.billing_rule_desc") %>
+              </div>
+              <div class="small text-secondary">
+                <ul class="ps-3 mb-0">
+                  <li><strong><%= t("service_usage_logs.rule_postpaid_title") %></strong> <%= t("service_usage_logs.rule_postpaid_desc") %></li>
+                  <li><strong><%= t("service_usage_logs.rule_lock_title") %></strong> <%= t("service_usage_logs.rule_lock_desc") %></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Real-time vs Fixed services distinction -->
+        <div class="card border rounded-3 p-3 bg-light mb-3">
+          <h6 class="fw-bold text-dark d-flex align-items-center gap-2 mb-2">
+            <span class="material-symbols-outlined text-secondary fs-5">swap_horiz</span>
+            <%= t("service_usage_logs.two_service_types_title") %>
+          </h6>
+          <div class="row g-2 small">
+            <div class="col-md-6">
+              <div class="p-2 bg-white rounded border">
+                <span class="badge bg-primary me-1"><%= t("service_usage_logs.tab_real_time") %></span>
+                <span class="fw-semibold text-dark"><%= t("service_usage_logs.type_realtime_name") %></span>
+                <p class="text-secondary mb-0 mt-1"><%= t("service_usage_logs.type_realtime_desc") %></p>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="p-2 bg-white rounded border">
+                <span class="badge bg-secondary me-1"><%= t("service_usage_logs.tab_fixed") %></span>
+                <span class="fw-semibold text-dark"><%= t("service_usage_logs.type_fixed_name") %></span>
+                <p class="text-secondary mb-0 mt-1"><%= t("service_usage_logs.type_fixed_desc") %></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Default month filter tip -->
+        <div class="alert alert-info border-0 rounded-3 mb-0 d-flex align-items-start gap-2 py-2 px-3">
+          <span class="material-symbols-outlined text-info-emphasis fs-5 mt-1 flex-shrink-0">lightbulb</span>
+          <div class="small">
+            <strong class="text-info-emphasis"><%= t("service_usage_logs.default_all_months") %>:</strong>
+            <span class="text-secondary"><%= t("service_usage_logs.month_field_default_hint") %></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer bg-light border-top py-2 px-4 d-flex justify-content-end">
+        <button type="button" class="btn btn-primary px-4 rounded-pill shadow-sm" data-bs-dismiss="modal">
+          <%= t("common.understood", default: "Đã hiểu") %>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -11,10 +11,34 @@
     <%= link_to landlord_house_service_usage_logs_path(@house, month: @billing_month.strftime("%Y-%m")), class: "btn btn-outline-secondary d-flex align-items-center gap-1 shadow-sm" do %>
       <span class="material-symbols-outlined fs-6">electric_meter</span> <%= t('invoice.meter_logs') %>
     <% end %>
-    <%= link_to new_landlord_house_invoice_path(@house, month: @billing_month.strftime("%Y-%m")),
-        class: "main-btn d-flex align-items-center gap-2 shadow-sm" do %>
-      <span class="material-symbols-outlined">add_notes</span> <%= t('invoice.new_invoice') %>
-    <% end %>
+    <div class="dropdown">
+      <button class="main-btn shadow-sm px-3 py-2 dropdown-toggle d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <span class="material-symbols-outlined">add_notes</span> <%= t('invoice.new_invoice') %>
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end shadow-sm custom-invoice-dropdown-menu">
+        <li>
+          <%= link_to new_landlord_house_invoice_path(@house, month: @billing_month.strftime("%Y-%m")),
+              class: "dropdown-item d-flex align-items-center gap-2" do %>
+            <span class="material-symbols-outlined text-primary fs-5">receipt_long</span>
+            <div>
+              <div class="fw-semibold"><%= t('invoice.types.room_service_title') %></div>
+              <small class="text-secondary"><%= t('invoice.types.room_service_desc') %></small>
+            </div>
+          <% end %>
+        </li>
+        <li><hr class="dropdown-divider my-1"></li>
+        <li>
+          <%= link_to new_landlord_house_invoice_path(@house, month: @billing_month.strftime("%Y-%m"), mode: "custom"),
+              class: "dropdown-item d-flex align-items-center gap-2" do %>
+            <span class="material-symbols-outlined text-success fs-5">tune</span>
+            <div>
+              <div class="fw-semibold"><%= t('invoice.types.custom_title') %></div>
+              <small class="text-secondary"><%= t('invoice.types.custom_desc') %></small>
+            </div>
+          <% end %>
+        </li>
+      </ul>
+    </div>
   </div>
 </div>
 

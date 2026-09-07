@@ -26,4 +26,12 @@ class InvoiceItem < ApplicationRecord
   def formatted_amount
     discount? ? "-#{amount.abs}" : amount.to_s
   end
+
+  def effective_start_date(inv = invoice)
+    start_date || inv&.effective_start_date
+  end
+
+  def effective_end_date(inv = invoice)
+    end_date || inv&.effective_end_date
+  end
 end

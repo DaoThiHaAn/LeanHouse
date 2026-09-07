@@ -735,4 +735,100 @@ class LandlordPortal::InvoicesControllerTest < ActionDispatch::IntegrationTest
     assert_select "button[data-bs-target='#undoPaidModal']"
     assert_select "#undoPaidModal"
   end
+
+  test "invoices index renders new invoice dropdown with standard and custom fee options" do
+    sign_in_as(@landlord_user)
+
+    get landlord_house_invoices_path(@house)
+    assert_response :success
+
+    assert_select ".dropdown .dropdown-toggle", text: /#{I18n.t('invoice.new_invoice')}/
+    assert_select "a[href*='mode=custom']"
+  end
+
+  test "GET new with mode: custom renders custom invoice form and lists staying tenants" do
+    sign_in_as(@landlord_user)
+
+    get new_landlord_house_invoice_path(@house, mode: "custom")
+    assert_response :success
+
+    assert_select "input[name='mode'][value='custom']"
+    assert_select "input[name='invoice[tenant_ids][]'][value='#{@tenant.id}']"
+    assert_select "table#custom_invoice_items_table"
+  end
+
+  test "POST create with mode: custom successfully creates invoices for multiple selected tenants" do
+    sign_in_as(@landlord_user)
+
+    # Create a second staying tenant in Room 201
+    tenant_user2 = User.create!(
+      fullname: "Second Staying Tenant",
+      tel: "0907778899",
+      password: "Password123",
+      password_confirmation: "Password123",
+      role: "tenant",
+      sex: "male",
+      bday: 25.years.ago.to_date,
+      address: "222 Tenant St",
+      tel_verified_at: Time.current
+    )
+    tenant2 = Tenant.find_or_create_by!(id: tenant_user2.id)
+    unit2 = @room2.rental_unit || @room2.create_rental_unit!(rent: 3_500_000, deposit: 3_500_000)
+    unit2.tenant_stays.create!(tenant: tenant2, checkin_at: 2.months.ago, checkout_at: nil)
+
+    assert_difference -> { Invoice.count } => 2, -> { InvoiceItem.count } => 2 do
+      post landlord_house_invoices_path(@house), params: {
+        mode: "custom",
+        invoice: {
+          billing_month: @billing_month.strftime("%Y-%m"),
+          title: "Phí vệ sinh hành lang",
+          due_date: (Date.current + 5.days).to_s,
+          tenant_ids: [ @tenant.id, tenant2.id ],
+          items: {
+            "0" => {
+              selected: "1",
+              item_type: "addition",
+              name: "Phụ phí vệ sinh",
+              unit: "lần",
+              unit_price: "50000",
+              quantity: "1",
+              amount: "50000"
+            }
+          }
+        }
+      }
+    end
+
+    assert_redirected_to landlord_house_invoices_path(@house, month: @billing_month.strftime("%Y-%m"))
+    follow_redirect!
+    assert_includes response.body, "Đã xuất thành công 2 hóa đơn"
+  end
+
+  test "POST create with mode: custom fails and re-renders new with 422 when no tenants selected" do
+    sign_in_as(@landlord_user)
+
+    assert_no_difference "Invoice.count" do
+      post landlord_house_invoices_path(@house), params: {
+        mode: "custom",
+        invoice: {
+          billing_month: @billing_month.strftime("%Y-%m"),
+          title: "Phí vệ sinh",
+          tenant_ids: [],
+          items: {
+            "0" => {
+              selected: "1",
+              item_type: "addition",
+              name: "Phụ phí",
+              unit_price: "50000",
+              quantity: "1",
+              amount: "50000"
+            }
+          }
+        }
+      }
+    end
+
+    assert_response :unprocessable_entity
+    assert_includes response.body, I18n.t("invoice.errors.no_tenants_selected")
+  end
 end

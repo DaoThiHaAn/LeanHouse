@@ -1,0 +1,35 @@
+<!-- Modal Hướng dẫn Dịch vụ Real-time / Đo đạc -->
+<div class="modal fade" id="serviceInstructionsModal" tabindex="-1" aria-labelledby="serviceInstructionsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-4 shadow">
+      <div class="modal-header border-bottom">
+        <h5 class="modal-title fw-bold" id="serviceInstructionsModalLabel">
+          <span class="material-symbols-outlined text-primary align-middle">info</span>
+          <%= t('invoice.service_instructions_title') %>
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <h6 class="fw-bold text-dark"><%= t('invoice.realtime_usage_title') %></h6>
+        <p class="text-secondary small mb-3">
+          <%= t('invoice.realtime_usage_desc') %>
+          <br>
+          <code class="text-primary font-monospace fw-bold"><%= t('invoice.usage_quantity') %> = <%= t('invoice.latest_reading') %> - <%= t('invoice.prev_reading') %></code>
+        </p>
+
+        <h6 class="fw-bold text-dark"><%= t('invoice.fixed_usage_title') %></h6>
+        <p class="text-secondary small mb-3">
+          <%= simple_format(t('invoice.fixed_usage_desc')) %>
+        </p>
+
+        <h6 class="fw-bold text-dark"><%= t('invoice.individual_split_title') %></h6>
+        <p class="text-secondary small mb-0">
+          <%= t('invoice.individual_split_desc') %>
+        </p>
+      </div>
+      <div class="modal-footer border-top">
+        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal"><%= t('invoice.understood') %></button>
+      </div>
+    </div>
+  </div>
+</div>

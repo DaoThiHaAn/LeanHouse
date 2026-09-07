@@ -359,4 +359,42 @@ class TenantPortal::ServiceUsageLogsControllerTest < ActionDispatch::Integration
 
     assert_select ".log-tab.active", text: /#{I18n.t("service_usage_logs.tab_fixed")}/
   end
+
+  test "GET index in realtime tab renders billing month explanation modal, trigger button, and tooltips" do
+    sign_in_as(@tenant_user)
+    get tenant_service_usage_logs_path(tab: "real_time")
+    assert_response :success
+
+    # Guide modal trigger button and modal dialog are rendered
+    assert_select "button[data-bs-target='#billingMonthGuideModal']", text: /#{I18n.t("service_usage_logs.billing_month_guide_btn")}/
+    assert_select "#billingMonthGuideModal"
+
+    # Explanation content inside modal is rendered
+    assert_includes response.body, I18n.t("service_usage_logs.billing_month_expl_title")
+    assert_includes response.body, I18n.t("service_usage_logs.formula_label")
+    assert_includes response.body, I18n.t("service_usage_logs.billing_rule_label")
+
+    # Tooltip on table header and label
+    assert_includes response.body, ERB::Util.html_escape(I18n.t("service_usage_logs.billing_month_explanation_tooltip"))
+  end
+
+  test "GET index in realtime tab makes clear the default value for the month field when unfiltered and filtered" do
+    sign_in_as(@tenant_user)
+
+    # 1. When unfiltered: shows default indicator "All months" and default hint
+    get tenant_service_usage_logs_path(tab: "real_time")
+    assert_response :success
+
+    assert_includes response.body, I18n.t("service_usage_logs.default_all_months")
+    assert_includes response.body, I18n.t("service_usage_logs.month_field_default_hint")
+    assert_includes response.body, I18n.t("service_usage_logs.filter_current_month", month: Date.current.strftime("%m/%Y"))
+
+    # 2. When filtered by specific month: shows active filter badge and reset to all months button
+    get tenant_service_usage_logs_path(tab: "real_time", month: @current_month.strftime("%Y-%m"))
+    assert_response :success
+
+    assert_includes response.body, I18n.t("service_usage_logs.filtering_month", month: @current_month.strftime("%m/%Y"))
+    assert_includes response.body, I18n.t("service_usage_logs.filtered_hint", month: @current_month.strftime("%m/%Y"))
+    assert_includes response.body, I18n.t("service_usage_logs.view_all_months")
+  end
 end

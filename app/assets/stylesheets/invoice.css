@@ -394,13 +394,16 @@
     size: A4 portrait;
     margin: 10mm 15mm;
   }
+
   body * {
     visibility: hidden !important;
   }
+
   #invoice-printable,
   #invoice-printable * {
     visibility: visible !important;
   }
+
   #invoice-printable {
     position: absolute !important;
     left: 0 !important;
@@ -412,20 +415,30 @@
     border: none !important;
     box-shadow: none !important;
     background-color: #ffffff !important;
+    page-break-inside: avoid;
   }
+
   #invoice-printable .collapse {
     display: block !important;
     visibility: visible !important;
     height: auto !important;
   }
+
   .d-print-none,
   #invoice-printable .d-print-none {
     display: none !important;
+    visibility: hidden !important;
   }
+
+  #invoice-printable .table-responsive {
+    overflow: visible !important;
+  }
+
   #invoice-printable .table {
     border-collapse: collapse !important;
     width: 100% !important;
   }
+
   #invoice-printable .table td,
   #invoice-printable .table th {
     border: 1px solid #cbd5e1 !important;
@@ -433,17 +446,23 @@
     color: #0f172a !important;
     background-color: transparent !important;
   }
+
   #invoice-printable .table thead th {
     background-color: #f1f5f9 !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
+
   #invoice-printable .badge {
     border: 1px solid #94a3b8 !important;
     color: #0f172a !important;
     background-color: transparent !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
+  }
+
+  a[href]::after {
+    content: none !important;
   }
 }
 
@@ -638,4 +657,64 @@
   .invoice-card {
     max-width: 100%;
   }
+}
+
+/* --- Custom Fee Invoices Styling (No Inline CSS) --- */
+.custom-tenant-list-container {
+  max-height: 380px;
+  overflow-y: auto;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  background-color: #fafbfc;
+}
+
+.custom-tenant-item {
+  background-color: #ffffff;
+  border: 1px solid #edf2f7;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  transition: all 0.15s ease-in-out;
+  cursor: pointer;
+}
+
+.custom-tenant-item:hover {
+  border-color: #cbd5e1;
+  background-color: #f8fafc;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+}
+
+.custom-tenant-item .tenant-checkbox {
+  width: 1.2rem;
+  height: 1.2rem;
+  cursor: pointer;
+}
+
+.tenant-room-badge {
+  background-color: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #dbeafe;
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
+}
+
+.tenant-phone-text {
+  font-size: 0.8125rem;
+  color: #64748b;
+}
+
+.custom-invoice-dropdown-menu {
+  min-width: 280px;
+  border-radius: 0.75rem;
+  padding: 0.5rem;
+}
+
+.custom-invoice-dropdown-menu .dropdown-item {
+  border-radius: 0.5rem;
+  padding: 0.6rem 0.8rem;
+}
+
+.custom-invoice-dropdown-menu .dropdown-item:hover {
+  background-color: #f1f5f9;
 }

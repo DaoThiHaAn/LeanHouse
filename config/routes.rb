@@ -28,11 +28,6 @@ Rails.application.routes.draw do
   post "/verify-otp",  to: "otp#verify", as: :verify_otp
   post "/resend-otp",  to: "otp#resend"
   get  "/resend-otp",  to: redirect("/otp-verification")
-  # get "/otp", to: "otp#new"
-
-  get "/contract", to: redirect("/tenant/contract")
-  get "/old-contracts", to: redirect("/tenant/old-contracts")
-
 
   resources :posts, only: [ :index, :show ]
   resources :users, only: %i[create update]

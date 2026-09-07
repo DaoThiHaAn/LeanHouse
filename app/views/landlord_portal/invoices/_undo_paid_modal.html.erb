@@ -1,0 +1,36 @@
+<%
+  inv = local_assigns[:invoice] || @invoice
+  hse = local_assigns[:house] || @house
+%>
+
+<!-- Modal Hủy xác nhận thanh toán (Chủ trọ) -->
+<div class="modal fade" id="undoPaidModal" tabindex="-1" aria-labelledby="undoPaidModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-4 shadow">
+      <%= form_with url: undo_paid_landlord_house_invoice_path(hse, inv), method: :patch, local: true do |f| %>
+        <div class="modal-header border-bottom">
+          <h5 class="modal-title fw-bold text-danger" id="undoPaidModalLabel">
+            <span class="material-symbols-outlined text-danger align-middle">undo</span>
+            <%= t('invoice.undo_paid_title', code: inv.code) %>
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p class="text-secondary small mb-3"><%= t('invoice.undo_paid_desc') %></p>
+
+          <div class="mb-3">
+            <label for="undo_explanation" class="form-label fw-semibold text-dark">
+              <%= t('invoice.undo_reason_label') %> <span class="text-danger">*</span>
+            </label>
+            <%= f.text_area :explanation, id: "undo_explanation", rows: 3, class: "form-control shadow-sm", placeholder: t('invoice.undo_reason_placeholder'), required: true %>
+            <div class="form-text text-muted small"><%= t('invoice.undo_reason_warning') %></div>
+          </div>
+        </div>
+        <div class="modal-footer border-top">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal"><%= t('invoice.actions.close') %></button>
+          <%= f.submit t('invoice.undo_paid_btn'), class: "btn btn-danger btn-sm fw-semibold px-3" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

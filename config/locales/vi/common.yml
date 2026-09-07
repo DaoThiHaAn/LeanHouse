@@ -260,6 +260,7 @@ vi:
     admin_requests: "Quản lý Yêu cầu"
     all_contracts: "Tất cả hợp đồng"
     old_contracts: "Hợp đồng cũ"
+    contract_detail: "Chi tiết Hóa đơn"
 
 
   pagination:

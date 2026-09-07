@@ -1,0 +1,43 @@
+<%# locals: (invoice:) %>
+<div class="d-flex gap-2 flex-wrap align-items-center d-print-none">
+  <% if invoice.paid? %>
+    <span class="badge bg-success px-3 py-2 fs-6"><%= t('invoice.paid_completed') %></span>
+    <span class="badge bg-light text-dark border px-3 py-2 fs-6">
+      <%= t('invoice.payment_method_label') %>: <%= invoice.cash? ? t('invoice.payment_methods.cash') : t('invoice.payment_methods.transfer') %>
+    </span>
+    <% if invoice.paid_at.present? %>
+      <span class="text-secondary small"><%= invoice.paid_at.strftime("%H:%M %d/%m/%Y") %></span>
+    <% end %>
+    <% if invoice.paid_by.present? %>
+      <span class="badge bg-light text-primary border px-2 py-1 small">
+        <%= t('invoice.paid_by_label') %>: <%= invoice.paid_by.fullname %> (<%= invoice.paid_by_role == 'landlord' ? t('invoice.paid_by_landlord') : t('invoice.paid_by_tenant') %>)
+      </span>
+    <% end %>
+
+    <button type="button" class="btn btn-outline-danger btn-sm d-inline-flex align-items-center gap-1 shadow-sm px-3 py-2 fw-semibold ms-auto" data-bs-toggle="modal" data-bs-target="#undoPaidModal" title="<%= t('invoice.undo_paid_tooltip') %>">
+      <span class="material-symbols-outlined fs-5">undo</span>
+      <%= t('invoice.undo_paid_action') %>
+    </button>
+  <% else %>
+    <button type="button" class="btn btn-mark-paid-primary px-4 py-2 fw-semibold d-inline-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#markPaidModal">
+      <span class="material-symbols-outlined fs-5">check_circle</span>
+      <%= t('invoice.mark_as_paid') %>
+    </button>
+  <% end %>
+</div>
+
+<% if invoice.paid? %>
+  <div class="mt-3 pt-3 border-top">
+    <label class="form-label fw-bold text-dark mb-1 d-block"><%= t('invoice.payment_proof') %>:</label>
+    <% if invoice.payment_proof.attached? %>
+      <div class="payment-proof-thumb-wrapper" data-bs-toggle="modal" data-bs-target="#viewPaymentProofModal" title="<%= t('invoice.payment_proof_zoom') %>">
+        <%= image_tag invoice.payment_proof, class: "payment-proof-thumb", alt: t('invoice.payment_proof') %>
+        <div class="payment-proof-zoom-icon">
+          <span class="material-symbols-outlined fs-6">zoom_in</span>
+        </div>
+      </div>
+    <% else %>
+      <span class="text-secondary small fst-italic"><%= t('invoice.no_payment_proof') %></span>
+    <% end %>
+  </div>
+<% end %>
