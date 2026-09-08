@@ -43,6 +43,20 @@
                           onchange: "this.form.requestSubmit()" %>
       </div>
 
+      <!-- Invoice Type Filter -->
+      <div class="d-flex align-items-center gap-2">
+        <%= f.label :invoice_type, "#{t('invoice.invoice_type')}:", class: "fw-bold text-nowrap" %>
+        <%= f.select :invoice_type,
+                     options_for_select([
+                       [t('invoice.all_types'), ""],
+                       [t('invoice.type_room'), "room"],
+                       [t('invoice.type_individual'), "individual"]
+                     ], params[:invoice_type]),
+                     {},
+                     class: "form-select shadow-sm w-auto",
+                     onchange: "this.form.requestSubmit()" %>
+      </div>
+
       <!-- Status Filter -->
       <div class="d-flex align-items-center gap-2">
         <%= f.label :status, "#{t('invoice.status_label')}:", class: "fw-bold text-nowrap" %>
@@ -60,7 +74,7 @@
       </div>
 
       <!-- Clear Filter -->
-      <% has_filter = params[:query].present? || params[:month].present? || params[:status].present? || (params[:page].present? && params[:page] != "1") %>
+      <% has_filter = params[:query].present? || params[:month].present? || params[:invoice_type].present? || params[:status].present? || (params[:page].present? && params[:page] != "1") %>
       <% if has_filter %>
         <div>
           <%= link_to tenant_invoices_path,
@@ -81,7 +95,7 @@
           controller: "pagination-sync",
           pagination_sync_canonical_url_value: tenant_invoices_path,
           pagination_sync_default_params_value: {}.to_json,
-          pagination_sync_query_params_value: ["query", "month", "status"].to_json,
+          pagination_sync_query_params_value: ["query", "month", "invoice_type", "status"].to_json,
           pagination_sync_total_pages_selector_value: "[data-pagination-total-pages]",
           action: "turbo:frame-load->pagination-sync#updateUrl"
         } do %>

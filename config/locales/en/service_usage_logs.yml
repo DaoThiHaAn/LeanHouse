@@ -109,6 +109,8 @@ en:
     default_all_months: "Default: All months"
     default_all_months_tooltip: "When left blank, all meter reading history since your move-in date is displayed."
     month_field_default_hint: "Leave blank by default to view full history across all months. Select a specific month to filter."
+    default_current_month_title: "Default: Current month"
+    default_current_month_hint: "The system defaults to the current billing cycle. You can select another month in the filter to review previous cycles."
     filtering_month: "Filtering: Month %{month}"
     filtered_hint: "Showing meter reading logs for billing month %{month}."
     view_all_months: "View All Months"

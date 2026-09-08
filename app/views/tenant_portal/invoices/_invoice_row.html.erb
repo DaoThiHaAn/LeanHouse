@@ -7,6 +7,7 @@
     <% if inv.title.present? %>
       <div class="fw-semibold text-dark small mt-1"><%= inv.title %></div>
     <% end %>
+    <div class="mt-1"><%= invoice_type_badge(inv) %></div>
   </td>
   <td class="fw-semibold"><%= t('month') %> <%= format_month(inv.billing_month) %></td>
   <td>

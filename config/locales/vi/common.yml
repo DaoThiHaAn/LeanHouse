@@ -136,6 +136,7 @@ vi:
   you: "Bạn"
   clear_search: "Xóa từ khóa"
   status: "Trạng thái"
+  guide: "Hướng dẫn"
 
   errors:
     session_expired: |
@@ -170,6 +171,7 @@ vi:
     cannot_delete_bed_occupied: "Không thể xóa giường vì hiện đang có khách thuê đang ở."
     vehicle_delete_reason_required: "Vui lòng nhập lý do xóa phương tiện!"
     vehicle_delete_failed: "Không thể xóa phương tiện!"
+    landlord_confirm: "Chỉ số này đã được chủ trọ xác nhận, không thể chỉnh sửa."
 
   success_messages:
     tenant_linked: "Đã liên kết khách thuê thành công"

@@ -5,7 +5,7 @@
         data: {
           controller: "pagination-sync",
           pagination_sync_canonical_url_value: tenant_service_usage_logs_path,
-          pagination_sync_default_params_value: { tab: @current_tab }.to_json,
+          pagination_sync_default_params_value: { tab: @current_tab, month: @billing_month.strftime("%Y-%m") }.to_json,
           pagination_sync_query_params_value: ["tab", "month"].to_json,
           pagination_sync_total_pages_selector_value: "[data-pagination-total-pages]",
           action: "turbo:frame-load->pagination-sync#updateUrl"
@@ -20,16 +20,9 @@
       </div>
 
       <!-- 2 Tabs and Guide Button at the right end of the header row -->
-      <div class="d-flex align-items-center gap-2 flex-wrap">
-        <button type="button"
-                class="btn btn-outline-primary d-inline-flex align-items-center gap-1 shadow-sm rounded-pill px-3 py-1 small"
-                data-bs-toggle="modal" data-bs-target="#billingMonthGuideModal">
-          <span class="material-symbols-outlined fs-6">help_outline</span>
-          <span><%= t("service_usage_logs.billing_month_guide_btn") %></span>
-        </button>
-
+      <div class="d-flex align-items-center gap-2 flex-wrap justify-content-between w-100">
         <div class="d-inline-flex bg-light p-1 rounded-pill border gap-1">
-          <%= link_to tenant_service_usage_logs_path(tab: "real_time"),
+          <%= link_to tenant_service_usage_logs_path(tab: "real_time", month: @billing_month.strftime("%Y-%m")),
                       class: "log-tab d-flex align-items-center gap-1 px-3 py-1 rounded-pill small text-decoration-none fw-semibold transition #{@current_tab == 'real_time' ? 'active shadow-sm' : 'text-secondary'}",
                       data: { turbo_action: "advance" } do %>
             <span class="material-symbols-outlined fs-6">speed</span>
@@ -39,7 +32,7 @@
             <% end %>
           <% end %>
 
-          <%= link_to tenant_service_usage_logs_path(tab: "fixed"),
+          <%= link_to tenant_service_usage_logs_path(tab: "fixed", month: @billing_month.strftime("%Y-%m")),
                       class: "log-tab d-flex align-items-center gap-1 px-3 py-1 rounded-pill small text-decoration-none fw-semibold transition #{@current_tab == 'fixed' ? 'active shadow-sm' : 'text-secondary'}",
                       data: { turbo_action: "advance" } do %>
             <span class="material-symbols-outlined fs-6">lock</span>
@@ -49,6 +42,13 @@
             <% end %>
           <% end %>
         </div>
+
+        <button type="button"
+                class="btn btn-outline-primary d-inline-flex align-items-center gap-1 px-3 py-1 small"
+                data-bs-toggle="modal" data-bs-target="#billingMonthGuideModal">
+          <span class="material-symbols-outlined fs-6">help_outline</span>
+          <span><%= t("guide") %></span>
+        </button>
       </div>
     </div>
 
@@ -64,7 +64,7 @@
     <% if @current_tab == "fixed" %>
       <%= render "tenant_fixed_services",
                  summary: @fixed_services_summary,
-                 min_billing_month: @min_billing_month %>
+                 min_billing_month: @stay_start_month %>
     <% else %>
       <!-- Real-time Tab Content -->
       <!-- Filter Toolbar -->
@@ -80,75 +80,32 @@
 
           <div class="d-flex flex-column gap-1">
             <div class="d-flex align-items-center flex-wrap gap-2">
-              <label for="realtime_month_filter" class="fw-bold text-nowrap d-flex align-items-center gap-1 mb-0">
-                <span><%= t("invoice.billing_month") %>:</span>
-                <span class="material-symbols-outlined fs-6 text-primary cursor-pointer"
-                      <%= tooltip("top", :"service_usage_logs.billing_month_explanation_tooltip", html: true) %>
-                      data-bs-toggle="modal"
-                      data-bs-target="#billingMonthGuideModal">
-                  help
-                </span>
+              <label for="realtime_month_filter" class="fw-bold text-nowrap mb-0">
+                <%= t("invoice.billing_month") %>:
               </label>
 
               <div class="d-flex align-items-center flex-wrap gap-2">
                 <%= f.month_field :month,
                                   id: "realtime_month_filter",
-                                  value: params[:month],
-                                  min: @stay_start_month,
+                                  value: @billing_month.strftime("%Y-%m"),
+                                  min: @stay_start_month, placeholder: "yyyy-mm",
                                   class: "form-control shadow-sm w-auto",
                                   onchange: "this.form.requestSubmit()" %>
 
-                <%
-                  filter_date = (Date.parse("#{params[:month]}-01") rescue nil) if params[:month].present?
-                  valid_filter = filter_date.present? && (@stay_start_month.nil? || filter_date >= @stay_start_month)
-                %>
-                <% if params[:month].present? %>
-                  <% if valid_filter %>
-                    <span class="badge bg-info-subtle text-info-emphasis border border-info-subtle d-inline-flex align-items-center gap-1 py-1 px-2">
-                      <span class="material-symbols-outlined fs-6">filter_alt</span>
-                      <span><%= t("service_usage_logs.filtering_month", month: filter_date.strftime("%m/%Y")) %></span>
-                    </span>
-                  <% else %>
-                    <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle d-inline-flex align-items-center gap-1 py-1 px-2">
-                      <span class="material-symbols-outlined fs-6">warning</span>
-                      <span><%= t("service_usage_logs.outside_stay_period") %></span>
-                    </span>
-                  <% end %>
-                <% else %>
-                  <span class="badge bg-secondary-subtle text-secondary border d-inline-flex align-items-center gap-1 py-1 px-2"
-                        <%= tooltip("top", :"service_usage_logs.default_all_months_tooltip", html: true) %>>
+                <% valid_filter = @stay_start_month.nil? || @billing_month >= @stay_start_month %>
+                <% if valid_filter %>
+                  <span class="badge bg-info-subtle text-info-emphasis border border-info-subtle d-inline-flex align-items-center gap-1 py-1 px-2">
                     <span class="material-symbols-outlined fs-6">calendar_month</span>
-                    <span><%= t("service_usage_logs.default_all_months") %></span>
+                    <span><%= t("service_usage_logs.filtering_month", month: @billing_month.strftime("%m/%Y")) %></span>
+                  </span>
+                <% else %>
+                  <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle d-inline-flex align-items-center gap-1 py-1 px-2">
+                    <span class="material-symbols-outlined fs-6">warning</span>
+                    <span><%= t("service_usage_logs.outside_stay_period") %></span>
                   </span>
                 <% end %>
               </div>
             </div>
-
-            <div class="small text-secondary mt-1">
-              <% if params[:month].present? && valid_filter %>
-                <%= t("service_usage_logs.filtered_hint", month: filter_date.strftime("%m/%Y")) %>
-              <% else %>
-                <%= t("service_usage_logs.month_field_default_hint") %>
-              <% end %>
-            </div>
-          </div>
-
-          <div class="d-flex align-items-center gap-2">
-            <% if params[:month].present? %>
-              <%= link_to tenant_service_usage_logs_path,
-                          class: "btn btn-outline-secondary btn-sm d-flex align-items-center gap-1 shadow-sm",
-                          data: { turbo_action: "advance" } do %>
-                <span class="material-symbols-outlined fs-6">filter_alt_off</span>
-                <span><%= t("clear_filter", default: "Xóa bộ lọc") %> (<%= t("service_usage_logs.view_all_months") %>)</span>
-              <% end %>
-            <% else %>
-              <%= link_to tenant_service_usage_logs_path(month: Date.current.strftime("%Y-%m")),
-                          class: "btn btn-outline-primary btn-sm d-flex align-items-center gap-1 shadow-sm",
-                          data: { turbo_action: "advance" } do %>
-                <span class="material-symbols-outlined fs-6">today</span>
-                <span><%= t("service_usage_logs.filter_current_month", month: Date.current.strftime("%m/%Y")) %></span>
-              <% end %>
-            <% end %>
           </div>
         <% end %>
       </div>
@@ -156,22 +113,10 @@
       <% if @logs.empty? %>
         <div class="card bg-light border-0 text-center py-5 rounded-4">
           <span class="material-symbols-outlined text-secondary fs-1 mb-2">fact_check</span>
-          <% if params[:month].present? %>
-            <p class="fs-5 fw-bold mb-1"><%= t("invoice.no_logs_for_month") %></p>
-            <p class="text-secondary small mb-3"><%= t("invoice.no_logs_for_month_hint") %></p>
-            <div>
-              <%= link_to tenant_service_usage_logs_path, class: "btn btn-outline-primary btn-sm d-inline-flex align-items-center gap-1 shadow-sm", data: { turbo_action: "advance" } do %>
-                <span class="material-symbols-outlined fs-6">filter_alt_off</span>
-                <span><%= t("clear_filter", default: "Xóa bộ lọc") %></span>
-              <% end %>
-            </div>
-          <% else %>
-            <p class="fs-5 fw-bold mb-1"><%= t("invoice.no_logs_tenant") %></p>
-            <p class="text-secondary small"><%= t("invoice.no_logs_tenant_hint") %></p>
-          <% end %>
+          <p class="fs-5 fw-bold mb-1"><%= t("invoice.no_logs_for_month") %></p>
+          <p class="text-secondary small mb-0"><%= t("invoice.no_logs_for_month_hint") %></p>
         </div>
-
-    <% else %>
+      <% else %>
       <div class="table-responsive bg-white rounded-3 shadow-sm border">
         <table class="table table-hover align-middle mb-0">
           <thead class="table-light">

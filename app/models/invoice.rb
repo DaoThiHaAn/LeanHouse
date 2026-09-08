@@ -1,5 +1,5 @@
 class Invoice < ApplicationRecord
-  enum :invoice_type, { room: "room", individual: "individual" }
+  enum :invoice_type, { room: "room", individual: "individual", custom: "custom" }
   enum :status, { pending: "pending", paid: "paid", overdue: "overdue", cancelled: "cancelled" }
   enum :payment_method, { cash: "cash", transfer: "transfer" }
 
@@ -89,7 +89,7 @@ class Invoice < ApplicationRecord
   end
 
   def target_users
-    if individual? && tenant.present?
+    if (individual? || custom?) && tenant.present?
       Array(tenant.user)
     elsif house.bed?
       room.all_staying_bed_tenants.map { |i| i[:tenant].user }.compact.uniq

@@ -9,7 +9,7 @@
             <span class="material-symbols-outlined fs-4">help_outline</span>
             <%= t("service_usage_logs.billing_month_modal_title") %>
           </h2>
-          <p class="text-white-50 small mb-0">
+          <p class="text-light small">
             <%= t("service_usage_logs.billing_month_modal_subtitle") %>
           </p>
         </div>
@@ -94,10 +94,10 @@
 
         <!-- Default month filter tip -->
         <div class="alert alert-info border-0 rounded-3 mb-0 d-flex align-items-start gap-2 py-2 px-3">
-          <span class="material-symbols-outlined text-info-emphasis fs-5 mt-1 flex-shrink-0">lightbulb</span>
+          <span class="material-symbols-outlined text-info-emphasis fs-5 mt-1">lightbulb</span>
           <div class="small">
-            <strong class="text-info-emphasis"><%= t("service_usage_logs.default_all_months") %>:</strong>
-            <span class="text-secondary"><%= t("service_usage_logs.month_field_default_hint") %></span>
+            <strong class="text-info-emphasis"><%= t("service_usage_logs.default_current_month_title") %>:</strong>
+            <span class="text-secondary"><%= t("service_usage_logs.default_current_month_hint") %></span>
           </div>
         </div>
       </div>
@@ -105,7 +105,7 @@
       <!-- Footer -->
       <div class="modal-footer bg-light border-top py-2 px-4 d-flex justify-content-end">
         <button type="button" class="btn btn-primary px-4 rounded-pill shadow-sm" data-bs-dismiss="modal">
-          <%= t("common.understood", default: "Đã hiểu") %>
+          <%= t("invoice.understood") %>
         </button>
       </div>
     </div>

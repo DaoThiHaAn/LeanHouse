@@ -9,6 +9,7 @@ class InvoiceFilter
     @house = house
     @query = (params[:q] || params[:query])&.strip
     @state = params[:state]
+    @invoice_type = params[:invoice_type]
     @page = params[:page]
   end
 
@@ -16,6 +17,7 @@ class InvoiceFilter
     scope = base_scope
     scope = apply_search(scope)
     scope = apply_state(scope)
+    scope = apply_invoice_type(scope)
 
     scope
       .preload(:room, :paid_by, tenant: :user)
@@ -26,7 +28,7 @@ class InvoiceFilter
 
   private
 
-  attr_reader :house, :query, :state, :page
+  attr_reader :house, :query, :state, :invoice_type, :page
 
   def base_scope
     house.invoices
@@ -57,5 +59,12 @@ class InvoiceFilter
     else
       scope
     end
+  end
+
+  # Lọc theo hình thức thu (room hoặc individual)
+  def apply_invoice_type(scope)
+    return scope if invoice_type.blank? || !Invoice.invoice_types.key?(invoice_type)
+
+    scope.where(invoice_type: invoice_type)
   end
 end

@@ -17,8 +17,9 @@ class TenantPortal::ServiceUsageLogsController < TenantPortal::BaseController
       "real_time"
     end
 
+    @billing_month = parse_billing_month(params[:month])
+
     if @current_tab == "fixed"
-      @billing_month = parse_billing_month(params[:month])
       @fixed_services_summary = RoomFixedServicesSummary.call(
         room: @room,
         billing_month: @billing_month,
@@ -31,17 +32,10 @@ class TenantPortal::ServiceUsageLogsController < TenantPortal::BaseController
                    .includes(:service, :service_variant, reading_photo_attachment: :blob)
                    .sorted
 
-      if params[:month].present? && params[:month].to_s.match?(/\A\d{4}-\d{2}\z/)
-        begin
-          filter_month = Date.parse("#{params[:month]}-01").beginning_of_month
-          if @stay_start_month.nil? || filter_month >= @stay_start_month
-            scope = scope.where(billing_month: filter_month)
-          else
-            scope = scope.none
-          end
-        rescue ArgumentError
-          # Ignore invalid date
-        end
+      if @stay_start_month.nil? || @billing_month >= @stay_start_month
+        scope = scope.where(billing_month: @billing_month)
+      else
+        scope = scope.none
       end
 
       @logs = scope
@@ -50,13 +44,13 @@ class TenantPortal::ServiceUsageLogsController < TenantPortal::BaseController
 
   def edit
     unless @log.can_be_edited_by_tenant?
-      redirect_to tenant_service_usage_logs_path, alert: "Chỉ số này đã được chủ trọ xác nhận, không thể chỉnh sửa."
+      redirect_to tenant_service_usage_logs_path, alert: t("errors.landlord_confirm")
     end
   end
 
   def update
     unless @log.can_be_edited_by_tenant?
-      redirect_to tenant_service_usage_logs_path, alert: "Chỉ số này đã được chủ trọ xác nhận, không thể chỉnh sửa."
+      redirect_to tenant_service_usage_logs_path, alert: t("errors.landlord_confirm")
       return
     end
 
@@ -98,20 +92,19 @@ class TenantPortal::ServiceUsageLogsController < TenantPortal::BaseController
   end
 
   def parse_billing_month(str)
-    month = if str.present? && str.to_s.match?(/\A\d{4}-\d{2}\z/)
-      begin
-        Date.parse("#{str}-01").beginning_of_month
-      rescue ArgumentError
-        Date.current.beginning_of_month
-      end
-    else
-      Date.current.beginning_of_month
+    return Date.current.beginning_of_month if str.blank?
+
+    str_val = str.to_s.strip
+    if (m = str_val.match(/\A(\d{4})[-.\/](\d{1,2})\z/))
+      year = m[1].to_i
+      month = m[2].to_i
+      return Date.new(year, month, 1) if month.between?(1, 12) && year.between?(2000, 2100)
     end
 
-    if @stay_start_month.present? && month < @stay_start_month
-      @stay_start_month
-    else
-      month
+    begin
+      Date.parse("#{str_val}-01").beginning_of_month
+    rescue StandardError
+      Date.current.beginning_of_month
     end
   end
 end

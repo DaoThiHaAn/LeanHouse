@@ -69,7 +69,7 @@ module Invoices
             tenant: tenant,
             bank_account_id: bank_account_id,
             created_by: @landlord,
-            invoice_type: "individual",
+            invoice_type: "custom",
             billing_month: month,
             start_date: start_date,
             end_date: end_date,

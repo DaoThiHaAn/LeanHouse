@@ -17,7 +17,8 @@ class LandlordPortal::InvoicesController < LandlordPortal::BaseController
       invoices: @invoices,
       stats: @stats,
       billing_month: @billing_month,
-      current_tenants_only: @current_tenants_only
+      current_tenants_only: @current_tenants_only,
+      current_tab: @current_tab
     }
   end
 
@@ -106,7 +107,7 @@ class LandlordPortal::InvoicesController < LandlordPortal::BaseController
           redirect_to landlord_house_invoice_path(@house, result.invoices.first),
                       notice: I18n.t("invoice.custom_create_success_single", code: result.invoices.first.code, default: "Đã xuất hóa đơn #{result.invoices.first.code} thành công!")
         else
-          redirect_to landlord_house_invoices_path(@house, month: parse_month(params.dig(:invoice, :billing_month)).strftime("%Y-%m")),
+          redirect_to landlord_house_invoices_path(@house, month: parse_month(params.dig(:invoice, :billing_month)).strftime("%Y-%m"), tab: "individual"),
                       notice: I18n.t("invoice.custom_create_success_multiple", count: result.invoices.size, default: "Đã xuất thành công #{result.invoices.size} hóa đơn cho các người thuê được chọn!")
         end
       else
@@ -221,7 +222,7 @@ class LandlordPortal::InvoicesController < LandlordPortal::BaseController
 
   def cancel
     Invoices::CancelService.call(invoice: @invoice, cancelled_by: current_user)
-    redirect_to landlord_house_invoices_path(@house, month: @invoice.billing_month.strftime("%Y-%m")), notice: "Đã hủy hóa đơn #{@invoice.code}!"
+    redirect_to landlord_house_invoices_path(@house, month: @invoice.billing_month.strftime("%Y-%m"), tab: (@invoice.custom? ? "individual" : "room")), notice: "Đã hủy hóa đơn #{@invoice.code}!"
   rescue ArgumentError => e
     redirect_to landlord_house_invoice_path(@house, @invoice), alert: e.message
   end
@@ -262,26 +263,45 @@ class LandlordPortal::InvoicesController < LandlordPortal::BaseController
     return Date.current.beginning_of_month if str.blank?
 
     str_val = str.to_s.strip
-    if str_val.match?(/\A\d{4}-\d{2}\z/)
-      Date.parse("#{str_val}-01").beginning_of_month
-    else
-      Date.parse(str_val).beginning_of_month
+    if (m = str_val.match(/\A(\d{4})[-.\/](\d{1,2})\z/))
+      year = m[1].to_i
+      month = m[2].to_i
+      return Date.new(year, month, 1) if month.between?(1, 12) && year.between?(2000, 2100)
     end
-  rescue StandardError
-    Date.current.beginning_of_month
+
+    begin
+      Date.parse("#{str_val}-01").beginning_of_month
+    rescue StandardError
+      Date.current.beginning_of_month
+    end
   end
 
   INVOICES_PER_PAGE = 15
 
   def load_invoices_and_stats
+    @current_tab = params[:tab].presence || "room"
     @current_tenants_only = params[:current_tenants_only].nil? || params[:current_tenants_only] == "1"
+
+    # 1. Base monthly scope for tab badge counts (complete monthly overview)
+    all_month_invoices = @house.invoices.kept.for_month(@billing_month)
+    @room_count = all_month_invoices.where(invoice_type: %w[room individual]).count
+    @individual_count = all_month_invoices.where(invoice_type: "custom").count
+
+    # 2. Dashboard stats: stable monthly overview for the active tab (INDEPENDENT of toolbar filters and current_tenants_only)
+    tab_overview_scope = if @current_tab == "individual"
+                           all_month_invoices.where(invoice_type: "custom")
+    else
+                           all_month_invoices.where(invoice_type: %w[room individual])
+    end
+    @stats = Invoices::StatsService.call(invoices: tab_overview_scope)
+
+    # 3. Invoices table: filtered by active tab + all toolbar filters (floor, room, payment_mode/invoice_type, status, q, current_tenants_only, page)
     filtered_scope = Invoices::FilterService.call(
       house: @house,
-      params: params,
+      params: params.merge(tab: @current_tab),
       billing_month: @billing_month,
       current_tenants_only: @current_tenants_only
     )
-    @stats = Invoices::StatsService.call(invoices: filtered_scope)
     @invoices = filtered_scope.page(params[:page]).per(INVOICES_PER_PAGE)
   end
 

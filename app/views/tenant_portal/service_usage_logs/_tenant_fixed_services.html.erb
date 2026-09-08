@@ -2,39 +2,44 @@
 <span hidden data-pagination-total-pages="<%= summary.paginated_items.respond_to?(:total_pages) ? summary.paginated_items.total_pages : 1 %>"></span>
 
 <!-- Filter Toolbar by Billing Month & Actions -->
-<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+<div class="card bg-light border-0 rounded-3 p-3 mb-4">
   <%= form_with url: tenant_service_usage_logs_path,
                 method: :get,
-                class: "d-flex gap-3 align-items-center flex-wrap",
+                class: "d-flex align-items-center justify-content-between flex-wrap gap-3",
                 data: { turbo_frame: "tenant_service_logs_section", turbo_action: "advance" } do |f| %>
     <%= f.hidden_field :tab, value: "fixed" %>
 
-    <div class="d-flex align-items-center gap-2">
-      <label for="fixed_month_filter" class="fw-bold text-nowrap d-flex align-items-center gap-1 mb-0">
-        <span><%= t('service_usage_logs.billing_cycle') %>:</span>
-        <span class="material-symbols-outlined fs-6 text-primary cursor-pointer"
-              <%= tooltip("top", :"service_usage_logs.billing_month_explanation_tooltip", html: true) %>>
-          help
-        </span>
-      </label>
-      <%= f.month_field :month,
-                        id: "fixed_month_filter",
-                        value: summary.billing_month_str,
-                        min: min_billing_month,
-                        class: "form-control shadow-sm w-auto",
-                        onchange: "this.form.requestSubmit()" %>
-    </div>
+    <div class="d-flex flex-column gap-1">
+      <div class="d-flex align-items-center flex-wrap gap-2">
+        <label for="fixed_month_filter" class="fw-bold text-nowrap mb-0">
+          <%= t('service_usage_logs.billing_cycle') %>:
+        </label>
 
-    <% if params[:month].present? && params[:month] != Date.current.strftime("%Y-%m") %>
-      <div>
-        <%= link_to tenant_service_usage_logs_path(tab: "fixed"),
-                    class: "btn btn-outline-secondary btn-sm d-flex align-items-center gap-1",
-                    data: { turbo_action: "advance" } do %>
-          <span class="material-symbols-outlined fs-6">restart_alt</span>
-          <span><%= t("service_usage_logs.reset_to_current_month") %></span>
-        <% end %>
+        <div class="d-flex align-items-center flex-wrap gap-2">
+          <% min_date = min_billing_month.is_a?(Date) ? min_billing_month : (min_billing_month.present? ? (Date.parse("#{min_billing_month}-01") rescue nil) : nil) %>
+          <% min_str = min_date ? min_date.strftime("%Y-%m") : min_billing_month.to_s %>
+          <%= f.month_field :month,
+                            id: "fixed_month_filter",
+                            value: summary.billing_month_str,
+                            min: min_date, placeholder: "yyyy-mm",
+                            class: "form-control shadow-sm w-auto",
+                            onchange: "this.form.requestSubmit()" %>
+
+          <% valid_filter = min_str.blank? || summary.billing_month_str >= min_str %>
+          <% if valid_filter %>
+            <span class="badge bg-info-subtle text-info-emphasis border border-info-subtle d-inline-flex align-items-center gap-1 py-1 px-2">
+              <span class="material-symbols-outlined fs-6">calendar_month</span>
+              <span><%= t("service_usage_logs.filtering_month", month: summary.billing_month.strftime("%m/%Y")) %></span>
+            </span>
+          <% else %>
+            <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle d-inline-flex align-items-center gap-1 py-1 px-2">
+              <span class="material-symbols-outlined fs-6">warning</span>
+              <span><%= t("service_usage_logs.outside_stay_period") %></span>
+            </span>
+          <% end %>
+        </div>
       </div>
-    <% end %>
+    </div>
   <% end %>
 </div>
 

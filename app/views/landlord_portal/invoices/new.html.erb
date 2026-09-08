@@ -189,10 +189,10 @@
               </select>
             </div>
 
-            <!-- Chế độ lập hóa đơn -->
+            <!-- Kiểu thanh toán -->
             <div class="col-12 col-md-3">
               <%= f.label "invoice[invoice_type]", class: "form-label fw-semibold mb-1" do %>
-                <%= t('invoice.target_mode') %> <span class="text-danger">*</span>
+                <%= t('invoice.payment_mode') %> <span class="text-danger">*</span>
               <% end %>
               <select name="invoice[invoice_type]" id="invoice_type_select" class="form-select shadow-sm" required
                       data-invoice-form-target="invoiceTypeSelect"

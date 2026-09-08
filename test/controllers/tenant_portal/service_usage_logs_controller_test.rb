@@ -162,7 +162,7 @@ class TenantPortal::ServiceUsageLogsControllerTest < ActionDispatch::Integration
     assert_response :success
 
     assert_includes response.body, @during_stay_log.billing_month.strftime("%m/%Y")
-    assert_select "a[href='#{tenant_service_usage_logs_path}']", text: /#{I18n.t("clear_filter", default: "Xóa bộ lọc")}/
+    assert_select "input[type='month'][name='month'][value='#{@current_month.strftime("%Y-%m")}']"
   end
 
   test "GET index prevents access to pre-stay months and renders empty state" do
@@ -378,23 +378,138 @@ class TenantPortal::ServiceUsageLogsControllerTest < ActionDispatch::Integration
     assert_includes response.body, ERB::Util.html_escape(I18n.t("service_usage_logs.billing_month_explanation_tooltip"))
   end
 
-  test "GET index in realtime tab makes clear the default value for the month field when unfiltered and filtered" do
+  test "GET index in realtime tab defaults to current month and filters by month only without current month select button" do
     sign_in_as(@tenant_user)
 
-    # 1. When unfiltered: shows default indicator "All months" and default hint
+    # Create a previous month log during stay
+    last_month = 1.month.ago.beginning_of_month
+    @room.service_usage_logs.create!(
+      service: @service_elec,
+      service_variant: @variant_elec,
+      service_name: "Điện",
+      unit: "kWh",
+      unit_price: 4000,
+      billing_month: last_month,
+      start_date: last_month,
+      end_date: last_month.end_of_month,
+      prev_reading: 150,
+      latest_reading: 200,
+      is_confirmed: true
+    )
+
+    # 1. When unfiltered: defaults to current month, only shows current month log
     get tenant_service_usage_logs_path(tab: "real_time")
     assert_response :success
 
-    assert_includes response.body, I18n.t("service_usage_logs.default_all_months")
-    assert_includes response.body, I18n.t("service_usage_logs.month_field_default_hint")
-    assert_includes response.body, I18n.t("service_usage_logs.filter_current_month", month: Date.current.strftime("%m/%Y"))
+    # Month input value is current month
+    assert_select "input[type='month'][name='month'][value='#{@current_month.strftime("%Y-%m")}']"
 
-    # 2. When filtered by specific month: shows active filter badge and reset to all months button
-    get tenant_service_usage_logs_path(tab: "real_time", month: @current_month.strftime("%Y-%m"))
+    # Shows current month log, does NOT show last month log
+    assert_includes response.body, @during_stay_log.billing_month.strftime("%m/%Y")
+    assert_not_includes response.body, "150" # last_month_log prev reading
+
+    # Button to select current month and all months elements are NOT present
+    assert_not_includes response.body, I18n.t("service_usage_logs.filter_current_month", month: Date.current.strftime("%m/%Y"))
+    assert_not_includes response.body, I18n.t("service_usage_logs.default_all_months")
+    assert_not_includes response.body, I18n.t("service_usage_logs.view_all_months")
+
+    # 2. When filtered by specific month (e.g. last month): shows that month's log only
+    get tenant_service_usage_logs_path(tab: "real_time", month: last_month.strftime("%Y-%m"))
     assert_response :success
 
+    assert_select "input[type='month'][name='month'][value='#{last_month.strftime("%Y-%m")}']"
+    assert_includes response.body, "150"
+  end
+
+  test "GET index in fixed tab defaults to current month, filters by month, and displays current month without reset button" do
+    svc_wifi = @house.services.create!(name: "Wifi Cáp Quang")
+    var_wifi = svc_wifi.service_variants.create!(fee: 100_000, unit: "per_room", is_real_time: false)
+    @room.room_services.create!(service_variant: var_wifi, service: svc_wifi)
+
+    sign_in_as(@tenant_user)
+
+    # 1. Unfiltered request in fixed tab defaults to current month
+    get tenant_service_usage_logs_path(tab: "fixed")
+    assert_response :success
+
+    assert_select "input#fixed_month_filter[type='month'][name='month'][value='#{@current_month.strftime("%Y-%m")}']"
+    assert_includes response.body, "Wifi Cáp Quang"
     assert_includes response.body, I18n.t("service_usage_logs.filtering_month", month: @current_month.strftime("%m/%Y"))
-    assert_includes response.body, I18n.t("service_usage_logs.filtered_hint", month: @current_month.strftime("%m/%Y"))
-    assert_includes response.body, I18n.t("service_usage_logs.view_all_months")
+
+    # Reset button is not present
+    assert_not_includes response.body, I18n.t("service_usage_logs.reset_to_current_month")
+
+    # 2. Filtered by specific month (e.g. 1 month ago)
+    last_month = 1.month.ago.beginning_of_month
+    get tenant_service_usage_logs_path(tab: "fixed", month: last_month.strftime("%Y-%m"))
+    assert_response :success
+
+    assert_select "input#fixed_month_filter[type='month'][name='month'][value='#{last_month.strftime("%Y-%m")}']"
+    assert_includes response.body, I18n.t("service_usage_logs.filtering_month", month: last_month.strftime("%m/%Y"))
+    assert_not_includes response.body, I18n.t("service_usage_logs.reset_to_current_month")
+  end
+
+  test "GET index includes month parameter in tab links and default params for both tabs" do
+    sign_in_as(@tenant_user)
+
+    target_month = 1.month.ago.beginning_of_month
+    month_str = target_month.strftime("%Y-%m")
+
+    # In real_time tab
+    get tenant_service_usage_logs_path(tab: "real_time", month: month_str)
+    assert_response :success
+
+    # Tab links preserve month
+    assert_select "a[href*='tab=real_time'][href*='month=#{month_str}']"
+    assert_select "a[href*='tab=fixed'][href*='month=#{month_str}']"
+
+    # Frame default params value contains both tab and month
+    assert_select "turbo-frame#tenant_service_logs_section" do |elements|
+      default_params_json = elements.first["data-pagination-sync-default-params-value"]
+      parsed_params = JSON.parse(default_params_json)
+      assert_equal "real_time", parsed_params["tab"]
+      assert_equal month_str, parsed_params["month"]
+    end
+
+    # In fixed tab
+    get tenant_service_usage_logs_path(tab: "fixed", month: month_str)
+    assert_response :success
+
+    assert_select "a[href*='tab=real_time'][href*='month=#{month_str}']"
+    assert_select "a[href*='tab=fixed'][href*='month=#{month_str}']"
+
+    assert_select "turbo-frame#tenant_service_logs_section" do |elements|
+      default_params_json = elements.first["data-pagination-sync-default-params-value"]
+      parsed_params = JSON.parse(default_params_json)
+      assert_equal "fixed", parsed_params["tab"]
+      assert_equal month_str, parsed_params["month"]
+    end
+  end
+
+  test "GET index accepts single digit month format like 2026-1 and parses to 2026-01 without falling back to current month" do
+    sign_in_as(@tenant_user)
+
+    # 1. Real time tab with single digit month 2026-1
+    get tenant_service_usage_logs_path(tab: "real_time", month: "2026-1")
+    assert_response :success
+
+    # Input value should be 2026-01
+    assert_select "input#realtime_month_filter[type='month'][value='2026-01']"
+
+    # Tab links should have month=2026-01
+    assert_select "a[href*='month=2026-01']"
+
+    # Default params should have month: 2026-01
+    assert_select "turbo-frame#tenant_service_logs_section" do |elements|
+      parsed_params = JSON.parse(elements.first["data-pagination-sync-default-params-value"])
+      assert_equal "2026-01", parsed_params["month"]
+    end
+
+    # 2. Fixed tab with single digit month 2026-1
+    get tenant_service_usage_logs_path(tab: "fixed", month: "2026-1")
+    assert_response :success
+
+    assert_select "input#fixed_month_filter[type='month'][value='2026-01']"
+    assert_select "a[href*='month=2026-01']"
   end
 end

@@ -157,6 +157,22 @@ class AdminPortal::InvoicesControllerTest < ActionDispatch::IntegrationTest
     assert_not_includes response.body, "INV-ADMIN-001"
   end
 
+  test "admin can filter invoices by invoice_type" do
+    login_as(@admin)
+
+    # Filter room invoices
+    get admin_house_invoices_url(@house, invoice_type: "room")
+    assert_response :success
+    assert_includes response.body, "INV-ADMIN-001"
+    assert_not_includes response.body, "INV-ADMIN-002"
+
+    # Filter individual invoices
+    get admin_house_invoices_url(@house, invoice_type: "individual")
+    assert_response :success
+    assert_not_includes response.body, "INV-ADMIN-001"
+    assert_includes response.body, "INV-ADMIN-002"
+  end
+
   test "admin can view invoice detail modal in read-only mode" do
     login_as(@admin)
     get admin_invoice_url(@invoice1)

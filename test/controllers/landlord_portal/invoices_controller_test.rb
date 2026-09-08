@@ -192,16 +192,16 @@ class LandlordPortal::InvoicesControllerTest < ActionDispatch::IntegrationTest
       assert_select "option", text: @floor2.title_name
     end
 
-    # Optgroup rooms
+    # Cascading rooms select
     assert_select "select#room_id" do
-      assert_select "optgroup[label='#{@floor1.title_name}']"
-      assert_select "optgroup[label='#{@floor2.title_name}']"
+      assert_select "option", text: @room1.title_name
+      assert_select "option", text: @room2.title_name
     end
 
-    # Invoice type filter
+    # Invoice type / payment mode filter
     assert_select "select#invoice_type" do
-      assert_select "option[value='room']", text: I18n.t("invoice.type_room")
-      assert_select "option[value='individual']", text: I18n.t("invoice.type_individual")
+      assert_select "option[value='room']", text: I18n.t("invoice.mode_representative")
+      assert_select "option[value='individual']", text: I18n.t("invoice.mode_self_pay")
     end
 
     # By default, active tenant invoices are shown, past checked-out tenant is excluded
@@ -334,9 +334,9 @@ class LandlordPortal::InvoicesControllerTest < ActionDispatch::IntegrationTest
     get landlord_house_invoices_path(@house)
     assert_response :success
 
-    # Check stats cards calculate for all 18 invoices (not just the 15 on page 1)
+    # Check stats cards calculate for all 19 invoices in monthly overview (not just the 15 on page 1)
     assert_select "div.stat-card-teal" do
-      assert_select ".stat-card-value", text: "18"
+      assert_select ".stat-card-value", text: "19"
     end
 
     # Page 1 displays 15 invoices
@@ -351,9 +351,9 @@ class LandlordPortal::InvoicesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "table.invoice-table tbody tr", 4
 
-    # On page 2, stats still calculate for all 18 invoices
+    # On page 2, stats still calculate for all 19 invoices in monthly overview
     assert_select "div.stat-card-teal" do
-      assert_select ".stat-card-value", text: "18"
+      assert_select ".stat-card-value", text: "19"
     end
   end
 
@@ -799,7 +799,7 @@ class LandlordPortal::InvoicesControllerTest < ActionDispatch::IntegrationTest
       }
     end
 
-    assert_redirected_to landlord_house_invoices_path(@house, month: @billing_month.strftime("%Y-%m"))
+    assert_redirected_to landlord_house_invoices_path(@house, month: @billing_month.strftime("%Y-%m"), tab: "individual")
     follow_redirect!
     assert_includes response.body, "Đã xuất thành công 2 hóa đơn"
   end
@@ -830,5 +830,132 @@ class LandlordPortal::InvoicesControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :unprocessable_entity
     assert_includes response.body, I18n.t("invoice.errors.no_tenants_selected")
+  end
+
+  test "tab switching between room invoices and custom individual invoices" do
+    sign_in_as(@landlord_user)
+
+    custom_inv = @house.invoices.create!(
+      code: "HD#{Date.current.strftime('%y%m')}-CUSTOM-001",
+      title: "Thu phí xe máy ngoài giờ",
+      room: @room1,
+      tenant: @tenant,
+      created_by: @landlord_user,
+      billing_month: @billing_month,
+      due_date: Date.current + 3.days,
+      invoice_type: :custom,
+      status: :pending,
+      subtotal: 150_000,
+      total_discount: 0,
+      total_addition: 0,
+      total_amount: 150_000
+    )
+
+    # 1. Room tab (default): shows @invoice1 and @invoice2, does NOT show custom_inv
+    get landlord_house_invoices_path(@house, tab: "room")
+    assert_response :success
+    assert_includes response.body, @invoice1.code
+    assert_not_includes response.body, custom_inv.code
+
+    # Tab count badges
+    assert_select "a.log-tab.active" do
+      assert_select "span.badge", text: "4" # @invoice1, @invoice2, @cancelled_invoice, @past_invoice
+    end
+    assert_select "a.log-tab:not(.active)" do
+      assert_select "span.badge", text: "1" # custom_inv
+    end
+
+    # 2. Individual / Custom tab: shows custom_inv, does NOT show @invoice1
+    get landlord_house_invoices_path(@house, tab: "individual")
+    assert_response :success
+    assert_includes response.body, custom_inv.code
+    assert_not_includes response.body, @invoice1.code
+    assert_select "a.log-tab.active" do
+      assert_select "span.badge", text: "1"
+    end
+  end
+
+  test "search by tenant fullname and tel in custom individual tab" do
+    sign_in_as(@landlord_user)
+
+    custom_inv1 = @house.invoices.create!(
+      code: "HD#{Date.current.strftime('%y%m')}-CUSTOM-AAA",
+      title: "Thu tiền giặt ủi",
+      room: @room1,
+      tenant: @tenant,
+      created_by: @landlord_user,
+      billing_month: @billing_month,
+      due_date: Date.current + 3.days,
+      invoice_type: :custom,
+      status: :pending,
+      subtotal: 100_000,
+      total_discount: 0,
+      total_addition: 0,
+      total_amount: 100_000
+    )
+
+    custom_inv2 = @house.invoices.create!(
+      code: "HD#{Date.current.strftime('%y%m')}-CUSTOM-BBB",
+      title: "Thu phí đỗ xe",
+      room: @room2,
+      tenant: @past_tenant,
+      created_by: @landlord_user,
+      billing_month: @billing_month,
+      due_date: Date.current + 3.days,
+      invoice_type: :custom,
+      status: :pending,
+      subtotal: 200_000,
+      total_discount: 0,
+      total_addition: 0,
+      total_amount: 200_000
+    )
+
+    # Search by tenant fullname
+    get filtered_landlord_house_invoices_path(@house, tab: "individual", q: "Tenant Invoice Target")
+    assert_response :success
+    assert_includes response.body, custom_inv1.code
+    assert_not_includes response.body, custom_inv2.code
+
+    # Search by tenant phone number
+    get filtered_landlord_house_invoices_path(@house, tab: "individual", q: "0901112233", current_tenants_only: "0")
+    assert_response :success
+    assert_includes response.body, custom_inv2.code
+    assert_not_includes response.body, custom_inv1.code
+  end
+
+  test "monthly overview stats remain stable and decoupled from table filters" do
+    sign_in_as(@landlord_user)
+
+    # Filter table by status=paid
+    get filtered_landlord_house_invoices_path(@house, tab: "room", status: "paid")
+    assert_response :success
+
+    # Invoices table only displays paid invoice (@invoice2)
+    assert_includes response.body, @invoice2.code
+    assert_not_includes response.body, @invoice1.code
+
+    # Stats cards still show total 3 invoices (monthly overview is decoupled from status filter)
+    assert_select "div.stat-card-teal" do
+      assert_select ".stat-card-value", text: "3"
+    end
+
+    # Overview badge and tooltip are displayed on the dashboard
+    assert_select "span[data-bs-title='#{I18n.t('invoice.stats.monthly_overview_hint')}']", text: /#{I18n.t('invoice.stats.monthly_overview_badge')}/
+  end
+
+  test "payment_mode filter in room tab separates room representative and individual self pay" do
+    sign_in_as(@landlord_user)
+
+    # Filter payment_mode: room
+    get filtered_landlord_house_invoices_path(@house, tab: "room", invoice_type: "room")
+    assert_response :success
+    assert_includes response.body, @invoice1.code
+    assert_not_includes response.body, @invoice2.code
+
+    # Filter payment_mode: individual
+    get filtered_landlord_house_invoices_path(@house, tab: "room", invoice_type: "individual")
+    assert_response :success
+    assert_includes response.body, @invoice2.code
+    assert_not_includes response.body, @invoice1.code
   end
 end

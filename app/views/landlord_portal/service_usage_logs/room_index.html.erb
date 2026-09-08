@@ -17,7 +17,7 @@
       data: {
         controller: "pagination-sync",
         pagination_sync_canonical_url_value: landlord_house_room_service_usage_logs_path(@house, @room),
-        pagination_sync_default_params_value: { tab: @current_tab }.to_json,
+        pagination_sync_default_params_value: { tab: @current_tab, month: @billing_month.strftime("%Y-%m") }.to_json,
         pagination_sync_query_params_value: ["tab", "month"].to_json,
         pagination_sync_total_pages_selector_value: "[data-pagination-total-pages]",
         action: "turbo:frame-load->pagination-sync#updateUrl"
@@ -43,7 +43,7 @@
 
       <!-- 2 Tabs at the right end of the header row -->
       <div class="d-inline-flex bg-light p-1 rounded-pill border gap-1">
-      <%= link_to landlord_house_room_service_usage_logs_path(@house, @room, tab: "real_time"),
+      <%= link_to landlord_house_room_service_usage_logs_path(@house, @room, tab: "real_time", month: @billing_month.strftime("%Y-%m")),
                   class: "log-tab d-flex align-items-center gap-1 px-3 py-1 rounded-pill small text-decoration-none fw-semibold transition #{@current_tab == 'real_time' ? 'active shadow-sm' : 'text-secondary'}",
                   data: { turbo_action: "advance" } do %>
         <span class="material-symbols-outlined fs-6">speed</span>
@@ -53,7 +53,7 @@
         <% end %>
       <% end %>
 
-      <%= link_to landlord_house_room_service_usage_logs_path(@house, @room, tab: "fixed"),
+      <%= link_to landlord_house_room_service_usage_logs_path(@house, @room, tab: "fixed", month: @billing_month.strftime("%Y-%m")),
                   class: "log-tab d-flex align-items-center gap-1 px-3 py-1 rounded-pill small text-decoration-none fw-semibold transition #{@current_tab == 'fixed' ? 'active shadow-sm' : 'text-secondary'}",
                   data: { turbo_action: "advance" } do %>
         <span class="material-symbols-outlined fs-6">lock</span>

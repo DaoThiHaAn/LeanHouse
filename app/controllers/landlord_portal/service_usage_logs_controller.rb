@@ -207,13 +207,17 @@ class LandlordPortal::ServiceUsageLogsController < LandlordPortal::BaseControlle
     return Date.current.beginning_of_month if str.blank?
 
     str_val = str.to_s.strip
-    if str_val.match?(/\A\d{4}-\d{2}\z/)
-      Date.parse("#{str_val}-01").beginning_of_month
-    else
-      Date.parse(str_val).beginning_of_month
+    if (m = str_val.match(/\A(\d{4})[-.\/](\d{1,2})\z/))
+      year = m[1].to_i
+      month = m[2].to_i
+      return Date.new(year, month, 1) if month.between?(1, 12) && year.between?(2000, 2100)
     end
-  rescue StandardError
-    Date.current.beginning_of_month
+
+    begin
+      Date.parse("#{str_val}-01").beginning_of_month
+    rescue StandardError
+      Date.current.beginning_of_month
+    end
   end
 
   def set_service_usage_log

@@ -1,9 +1,16 @@
 <%# Locals: stats, billing_month %>
 
-<p class="d-flex align-items-center gap-2 my-3 fw-medium">
-  <span class="material-symbols-outlined fs-5">calendar_month</span>
-  <%= t("invoice.stats.period_scope_banner", month: billing_month.strftime("%m/%Y")) %>
-</p>
+<div class="d-flex align-items-center justify-content-between flex-wrap gap-2 my-3">
+  <p class="d-flex align-items-center gap-2 mb-0 fw-medium">
+    <span class="material-symbols-outlined fs-5">calendar_month</span>
+    <span><%= t("invoice.stats.period_scope_banner", month: billing_month.strftime("%m/%Y")) %></span>
+    <span class="badge bg-primary-subtle text-primary border border-primary-subtle d-inline-flex align-items-center gap-1 py-1 px-2 cursor-pointer"
+          <%= tooltip("top", t("invoice.stats.monthly_overview_hint"), html: true) %>>
+      <span class="material-symbols-outlined fs-6">insights</span>
+      <span><%= t("invoice.stats.monthly_overview_badge") %></span>
+    </span>
+  </p>
+</div>
 
 <div id="invoice_stats_grid" class="d-flex flex-column flex-sm-row gap-3 justify-content-center mb-5">
   <div class="d-flex flex-column flex-lg-row gap-3">

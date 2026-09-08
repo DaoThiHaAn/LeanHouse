@@ -54,7 +54,7 @@ class TenantPortal::InvoicesController < TenantPortal::BaseController
     tenant_room_ids = tenant_current_house_room_ids
     @invoice = @house.invoices
                      .where(
-                       "(invoices.invoice_type = 'room' AND invoices.room_id IN (:room_ids)) OR (invoices.invoice_type = 'individual' AND invoices.tenant_id = :tenant_id)",
+                       "(invoices.invoice_type = 'room' AND invoices.room_id IN (:room_ids)) OR (invoices.invoice_type IN ('individual', 'custom') AND invoices.tenant_id = :tenant_id)",
                        room_ids: tenant_room_ids,
                        tenant_id: @tenant.id
                      )

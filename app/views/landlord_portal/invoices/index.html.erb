@@ -4,13 +4,11 @@
     <h1 class="mb-3"><%= t('invoice.management') %></h1>
     <p class="text-secondary"><%= t('invoice.management_subtitle') %></p>
   </div>
-  <div class="d-flex gap-2">
+  <div class="d-flex gap-3 align-items-center">
     <button type="button" class="manual-btn d-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#invoiceCreationGuideModal">
       <span class="material-symbols-outlined fs-6">menu_book</span> <%= t('invoice.guide.btn_title') %>
     </button>
-    <%= link_to landlord_house_service_usage_logs_path(@house, month: @billing_month.strftime("%Y-%m")), class: "btn btn-outline-secondary d-flex align-items-center gap-1 shadow-sm" do %>
-      <span class="material-symbols-outlined fs-6">electric_meter</span> <%= t('invoice.meter_logs') %>
-    <% end %>
+
     <div class="dropdown">
       <button class="main-btn shadow-sm px-3 py-2 dropdown-toggle d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
         <span class="material-symbols-outlined">add_notes</span> <%= t('invoice.new_invoice') %>
@@ -42,6 +40,6 @@
   </div>
 </div>
 
-<%= render "invoices_content", house: @house, invoices: @invoices, stats: @stats, billing_month: @billing_month, current_tenants_only: @current_tenants_only %>
+<%= render "invoices_content", house: @house, invoices: @invoices, stats: @stats, billing_month: @billing_month, current_tenants_only: @current_tenants_only, current_tab: @current_tab %>
 <%= render "creation_guide_modal" %>
 <%= turbo_frame_tag "edit_invoice_modal" %>

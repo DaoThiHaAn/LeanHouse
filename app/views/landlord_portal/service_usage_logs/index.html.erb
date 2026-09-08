@@ -3,10 +3,10 @@
 
 <% if @selected_service %>
   <!-- Breadcrumb back to Services -->
-  <nav aria-label="Breadcrumb navigation" class="mb-3">
+  <nav aria-label="Breadcrumb navigation" class="mb-4">
     <ol class="breadcrumb mb-0">
       <li class="breadcrumb-item">
-        <%= back_link_to landlord_house_services_path(@house), t("service_usage_logs.back_to_rooms") %>
+        <%= back_link_to landlord_house_services_path(@house), t("service_usage_logs.back_to_list") %>
       </li>
       <li class="breadcrumb-item active align-self-center" aria-current="page">
         <%= @selected_service.name %>
@@ -18,7 +18,7 @@
 <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3 pb-2 border-bottom">
   <div>
     <h1 class="mb-2 d-flex align-items-center gap-2">
-      <span class="material-symbols-outlined fs-3">electric_meter</span>
+      <span class="material-symbols-filled fs-3">electric_meter</span>
       <span><%= @selected_service ? t("service_usage_logs.service_title", service: @selected_service.name) : t("invoice.meter_logs_title") %></span>
     </h1>
     <p class="text-secondary mb-0">
@@ -26,23 +26,24 @@
     </p>
   </div>
 
-  <div class="d-flex align-items-center gap-2">
+  <div class="d-flex align-items-center gap-3">
     <button type="button"
-            class="btn btn-outline-primary d-flex align-items-center gap-1 shadow-sm rounded-pill px-3"
+            class="manual-btn d-flex align-items-center gap-1"
             data-bs-toggle="modal" data-bs-target="#serviceGuideModal">
       <span class="material-symbols-outlined fs-6">help_outline</span>
       <span><%= t("service.guide.btn_title") %></span>
     </button>
 
-    <%= link_to new_landlord_house_service_usage_log_path(@house, month: @billing_month.strftime("%Y-%m")), class: "btn btn-primary d-flex align-items-center gap-1 shadow-sm" do %>
-      <span class="material-symbols-outlined fs-6">add</span>
-      <span><%= t("invoice.new_meter_log") %></span>
+    <%= link_to new_landlord_house_service_usage_log_path(@house, month: @billing_month.strftime("%Y-%m")),
+        class: "main-btn shadow-sm gap-2" do %>
+      <span class="material-symbols-outlined fs-4">add</span>
+      <span class="fs-5"><%= t("invoice.new_meter_log") %></span>
     <% end %>
   </div>
 </div>
 
   <!-- Toolbar lọc tháng, tầng, phòng, biến thể và trạng thái -->
-  <div class="card bg-light border-0 rounded-3 p-3 mb-4">
+  <div class="card bg-light border-0 rounded-3 p-3 mb-5">
     <%
       active_rooms = @house.rooms.active.sorted
       available_rooms = if params[:floor_id].present?
@@ -126,6 +127,8 @@
       <% end %>
     <% end %>
   </div>
+
+  <h2 class="mb-3 ms-3"><%= t("service_usage_logs.list")%></h2>
 
   <%= render "logs_table", house: @house, logs: @logs, billing_month: @billing_month %>
   <%= turbo_frame_tag "usage_log_detail_modal" %>

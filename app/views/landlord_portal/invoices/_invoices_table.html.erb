@@ -2,9 +2,14 @@
 
 <% if invoices.empty? %>
   <div class="invoice-empty-state mx-auto">
-    <span class="material-symbols-outlined invoice-empty-icon">receipt</span>
-    <p class="fs-5 fw-bold mb-1"><%= t('invoice.no_invoices', month: billing_month.strftime("%m/%Y")) %></p>
-    <p class="text-secondary small mb-0"><%= t('invoice.no_invoices_hint') %></p>
+    <span class="material-symbols-outlined invoice-empty-icon"><%= local_assigns[:current_tab] == "individual" ? "person_search" : "receipt" %></span>
+    <% if local_assigns[:current_tab] == "individual" && params[:q].blank? && params[:status].blank? %>
+      <p class="fs-5 fw-bold mb-1"><%= t('invoice.no_custom_invoices', month: billing_month.strftime("%m/%Y")) %></p>
+      <p class="text-secondary small mb-0"><%= t('invoice.no_custom_invoices_hint') %></p>
+    <% else %>
+      <p class="fs-5 fw-bold mb-1"><%= t('invoice.no_invoices', month: billing_month.strftime("%m/%Y")) %></p>
+      <p class="text-secondary small mb-0"><%= t('invoice.no_invoices_hint') %></p>
+    <% end %>
   </div>
 <% else %>
   <div class="table-responsive bg-white rounded-3 shadow-sm border">
@@ -32,11 +37,13 @@
     <div class="mt-4 d-flex justify-content-center">
       <%= paginate invoices,
                    params: {
+                     tab: (params[:tab].presence || local_assigns[:current_tab].presence || "room"),
                      month: billing_month.strftime("%Y-%m"),
                      floor_id: params[:floor_id].presence,
                      room_id: params[:room_id].presence,
                      invoice_type: params[:invoice_type].presence,
                      status: params[:status].presence,
+                     q: params[:q].presence,
                      current_tenants_only: (local_assigns[:current_tenants_only] == false || params[:current_tenants_only] == "0" ? "0" : "1")
                    } %>
     </div>

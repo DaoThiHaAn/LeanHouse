@@ -10,7 +10,43 @@ export default class extends Controller {
   }
 
   connect() {
-    console.log("Pagination controller connected")
+    this.syncInitialUrl()
+  }
+
+  syncInitialUrl() {
+    if (!this.hasCanonicalUrlValue) return
+
+    const currentUrl = new URL(window.location.href)
+    const canonicalBaseUrl = new URL(this.canonicalUrlValue, window.location.origin)
+
+    if (currentUrl.pathname !== canonicalBaseUrl.pathname) return
+
+    let urlChanged = false
+
+    if (this.hasDefaultParamsValue) {
+      for (const [key, defaultValue] of Object.entries(this.defaultParamsValue)) {
+        if (!currentUrl.searchParams.has(key) && defaultValue) {
+          currentUrl.searchParams.set(key, defaultValue)
+          urlChanged = true
+        }
+      }
+    }
+
+    const monthVal = currentUrl.searchParams.get("month")
+    if (monthVal) {
+      const match = monthVal.match(/^(\d{4})[-./](\d{1,2})$/)
+      if (match) {
+        const normalized = `${match[1]}-${match[2].padStart(2, "0")}`
+        if (normalized !== monthVal) {
+          currentUrl.searchParams.set("month", normalized)
+          urlChanged = true
+        }
+      }
+    }
+
+    if (urlChanged) {
+      window.history.replaceState(window.history.state, "", currentUrl.href)
+    }
   }
 
   updateUrl(event) {
@@ -30,8 +66,15 @@ export default class extends Controller {
 
     parameterNames.forEach((name) => {
       const values = frameUrl.searchParams.getAll(name)
-      const value = values.length > 0 ? values[values.length - 1] : null
+      let value = values.length > 0 ? values[values.length - 1] : null
       const defaultValue = this.defaultParamsValue[name]
+
+      if (value && name === "month") {
+        const match = value.match(/^(\d{4})[-./](\d{1,2})$/)
+        if (match) {
+          value = `${match[1]}-${match[2].padStart(2, "0")}`
+        }
+      }
 
       if (value) {
         canonicalUrl.searchParams.set(name, value)

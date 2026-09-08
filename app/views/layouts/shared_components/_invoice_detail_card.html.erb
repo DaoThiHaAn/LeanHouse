@@ -26,15 +26,20 @@
   <!-- Meta Information Section -->
   <div class="mb-4">
     <div class="d-flex align-items-center gap-2 mb-3">
-      <% if invoice.room? %>
-        <span class="material-symbols-outlined text-secondary fs-5">apartment</span>
-        <span class="fw-bold text-dark"><%= t('invoice.mode_room') %>:</span>
-        <span class="text-primary fw-semibold"><%= invoice.room.title_name %> (<%= invoice.room.floor.name %>, <%= invoice.house.name %>)</span>
-      <% else %>
-        <span class="material-symbols-outlined text-secondary fs-5">person</span>
-        <span class="fw-bold text-dark"><%= t('invoice.mode_individual') %>:</span>
+      <% if invoice.custom? %>
+        <span class="material-symbols-outlined text-secondary fs-5">tune</span>
+        <span class="fw-bold text-dark"><%= t('invoice.badge_custom') %>:</span>
         <span class="text-primary fw-semibold"><%= invoice.tenant&.user&.fullname %> (<%= t('invoice.phone_abbr') %>: <%= invoice.tenant&.user&.tel %>)</span>
         <span class="text-secondary small">- <%= t('invoice.room') %>: <%= invoice.room.title_name %>, <%= invoice.room.floor.name %> (<%= invoice.house.name %>)</span>
+      <% elsif invoice.individual? %>
+        <span class="material-symbols-outlined text-secondary fs-5">person</span>
+        <span class="fw-bold text-dark"><%= t('invoice.mode_self_pay') %>:</span>
+        <span class="text-primary fw-semibold"><%= invoice.tenant&.user&.fullname %> (<%= t('invoice.phone_abbr') %>: <%= invoice.tenant&.user&.tel %>)</span>
+        <span class="text-secondary small">- <%= t('invoice.room') %>: <%= invoice.room.title_name %>, <%= invoice.room.floor.name %> (<%= invoice.house.name %>)</span>
+      <% else %>
+        <span class="material-symbols-outlined text-secondary fs-5">apartment</span>
+        <span class="fw-bold text-dark"><%= t('invoice.mode_representative') %>:</span>
+        <span class="text-primary fw-semibold"><%= invoice.room.title_name %> (<%= invoice.room.floor.name %>, <%= invoice.house.name %>)</span>
       <% end %>
     </div>
 

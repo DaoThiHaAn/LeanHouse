@@ -392,6 +392,31 @@ class TenantPortal::InvoicesControllerTest < ActionDispatch::IntegrationTest
     get tenant_invoices_path(status: "paid")
     assert_response :success
     assert_not_includes response.body, @invoice.code
+
+    # 4. Filter by invoice_type
+    individual_invoice = @house.invoices.create!(
+      code: "HD-IND-FILTER-01",
+      title: "Tiền dịch vụ cá nhân",
+      room: @room,
+      tenant: @tenant,
+      created_by: @landlord_user,
+      billing_month: @billing_month,
+      due_date: Date.current + 5.days,
+      invoice_type: :individual,
+      status: :pending,
+      subtotal: 1_200_000,
+      total_amount: 1_200_000
+    )
+
+    get tenant_invoices_path(invoice_type: "room")
+    assert_response :success
+    assert_includes response.body, @invoice.code
+    assert_not_includes response.body, individual_invoice.code
+
+    get tenant_invoices_path(invoice_type: "individual")
+    assert_response :success
+    assert_not_includes response.body, @invoice.code
+    assert_includes response.body, individual_invoice.code
   end
 
   test "GET index never includes invoices from other houses" do

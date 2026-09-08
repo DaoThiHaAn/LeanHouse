@@ -105,6 +105,12 @@
   border: 1px solid #bbf7d0;
 }
 
+.invoice-badge-custom {
+  background-color: #faf5ff;
+  color: #6b21a8;
+  border: 1px solid #e9d5ff;
+}
+
 /* --- Monetary Highlights --- */
 .invoice-amount-grand {
   font-size: 1.75rem;

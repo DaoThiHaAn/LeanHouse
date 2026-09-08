@@ -126,11 +126,18 @@ class InvoicesHelperTest < ActionView::TestCase
     room_inv = @house.invoices.build(invoice_type: :room)
     badge = invoice_type_badge(room_inv)
     assert_includes badge, "invoice-badge-room"
-    assert_includes badge, I18n.t("invoice.mode_room")
+    assert_includes badge, I18n.t("invoice.badge_representative")
 
     ind_inv = @house.invoices.build(invoice_type: :individual, tenant: @tenant)
     badge = invoice_type_badge(ind_inv)
     assert_includes badge, "invoice-badge-individual"
+    assert_includes badge, I18n.t("invoice.badge_self_pay")
+    assert_includes badge, @tenant_user.fullname
+
+    custom_inv = @house.invoices.build(invoice_type: :custom, tenant: @tenant)
+    badge = invoice_type_badge(custom_inv)
+    assert_includes badge, "invoice-badge-custom"
+    assert_includes badge, I18n.t("invoice.badge_custom")
     assert_includes badge, @tenant_user.fullname
   end
 

@@ -120,11 +120,27 @@ class RoomFixedServicesSummary
   end
 
   def build_items
+    if tenant_outside_stay?
+      @items = []
+      return
+    end
+
     @items = if active_invoices.present?
                build_billed_items
     else
                build_draft_items
     end
+  end
+
+  def tenant_outside_stay?
+    return false if tenant.blank?
+
+    stay = tenant.tenant_stays.where(rental_unit: room.rental_unit).first
+    return false if stay.blank?
+
+    start_date = [ stay.checkin_at&.to_date, stay.contract&.start_date ].compact.min
+    start_month = start_date&.beginning_of_month
+    start_month.present? && billing_month < start_month
   end
 
   def build_billed_items

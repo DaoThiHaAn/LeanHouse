@@ -56,7 +56,7 @@
                           turbo_action: "advance"
                         },
                         class: "row g-3 align-items-center px-3" do |f| %>
-            <div class="col-12 col-sm-6 col-md-5">
+            <div class="col-12 col-md-4">
               <div class="input-group rounded-3 overflow-hidden shadow-sm">
                 <span class="input-group-text bg-white border-end-0">
                   <span class="material-symbols-outlined text-secondary fs-5">search</span>
@@ -71,7 +71,25 @@
                                    } %>
               </div>
             </div>
-            <div class="col-12 col-sm-6 col-md-4">
+            <div class="col-12 col-sm-6 col-md-3">
+              <div class="input-group rounded-3 overflow-hidden shadow-sm">
+                <span class="input-group-text bg-white border-end-0">
+                  <span class="material-symbols-outlined text-secondary fs-5">receipt</span>
+                </span>
+                <%= f.select :invoice_type,
+                             [
+                               [t("admin.invoices.all_types"), ""],
+                               [t("admin.invoices.type_room"), "room"],
+                               [t("admin.invoices.type_individual"), "individual"]
+                             ],
+                             { selected: @invoice_type },
+                             {
+                               class: "form-select border-start-0 ps-0 shadow-none",
+                               data: { action: "change->search#changed" }
+                             } %>
+              </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-3">
               <div class="input-group rounded-3 overflow-hidden shadow-sm">
                 <span class="input-group-text bg-white border-end-0">
                   <span class="material-symbols-outlined text-secondary fs-5">filter_list</span>
@@ -91,8 +109,8 @@
                              } %>
               </div>
             </div>
-            <% if @query.present? || @state.present? %>
-              <div class="col-12 col-md-3 text-md-end">
+            <% if @query.present? || @state.present? || @invoice_type.present? %>
+              <div class="col-12 col-md-2 text-md-end">
                 <%= link_to admin_house_invoices_path(@house),
                             class: "btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-1",
                             data: { turbo_frame: "house_tab_content", turbo_action: "advance" } do %>
@@ -137,6 +155,7 @@
                             <div class="fw-semibold text-dark"><%= inv.room.title_name %></div>
                             <div class="small text-secondary"><%= inv.room.floor.name %></div>
                           <% end %>
+                          <div class="mt-1"><%= invoice_type_badge(inv) %></div>
                         </td>
                         <td>
                           <span class="fw-semibold"><%= format_month(inv.billing_month) %></span>
@@ -201,7 +220,7 @@
             </div>
             <% if @invoices.total_pages > 1 %>
               <div class="card-footer bg-white border-top py-3 d-flex justify-content-center">
-                <%= paginate @invoices %>
+                <%= paginate @invoices, params: { q: @query, state: @state, invoice_type: @invoice_type } %>
               </div>
             <% end %>
           </div>

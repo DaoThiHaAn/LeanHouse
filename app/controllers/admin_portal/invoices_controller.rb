@@ -6,8 +6,9 @@ module AdminPortal
     def index
       @query = params[:q].presence || params[:query].presence
       @state = params[:state].presence
+      @invoice_type = params[:invoice_type].presence
 
-      @invoices = InvoiceFilter.call(house: @house, params: { q: @query, state: @state, page: params[:page] })
+      @invoices = InvoiceFilter.call(house: @house, params: { q: @query, state: @state, invoice_type: @invoice_type, page: params[:page] })
       @total_invoices_count = @house.invoices.count
       @paid_invoices_count = @house.invoices.paid.count
       @pending_invoices_count = @house.invoices.pending.count
