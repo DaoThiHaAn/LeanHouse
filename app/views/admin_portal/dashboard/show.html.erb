@@ -107,12 +107,24 @@
   <!-- Recent Users Table -->
   <div class="col-12 col-lg-7">
     <div class="card admin-card h-100">
-      <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center border-bottom">
-        <h2 class="mb-1 d-flex align-items-center gap-2">
-          <span class="material-symbols-filled fs-3">user_attributes</span>
-          <%= t("admin.dashboard.recent_users") %>
-        </h2>
-        <%= link_to admin_users_path, class: "btn btn-sm btn-outline-secondary" do %>
+      <div class="card-header bg-white py-3 d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2 border-bottom">
+        <div>
+          <h2 class="mb-2 d-flex align-items-center gap-2 fs-5">
+            <span class="material-symbols-filled fs-3">user_attributes</span>
+            <span><%= t("admin.dashboard.recent_users") %></span>
+          </h2>
+
+          <div class="d-flex align-items-center gap-2">
+            <div class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill">
+              <%= t("admin.dashboard.this_month_badge", count: @new_users_this_month, month: Date.current.strftime("%m/%Y")) %>
+            </div>
+
+            <p class="small text-secondary">
+              <%= t("admin.dashboard.new_users_month_summary", count: @new_users_this_month, landlords: @new_landlords_this_month, tenants: @new_tenants_this_month, month: Date.current.strftime("%m/%Y")) %>
+            </p>
+          </div>
+        </div>
+        <%= link_to admin_users_path, class: "btn btn-sm btn-outline-secondary flex-shrink-0" do %>
           <%= t("view_all") %>
         <% end %>
       </div>
@@ -173,12 +185,22 @@
   <!-- Recent Houses Table -->
   <div class="col-12 col-lg-5">
     <div class="card admin-card h-100">
-      <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center border-bottom">
-        <h2 class="mb-1 d-flex align-items-center gap-2">
-          <span class="material-symbols-filled fs-3">house</span>
-          <%= t("admin.dashboard.recent_houses") %>
-        </h2>
-        <%= link_to admin_houses_path, class: "btn btn-sm btn-outline-secondary" do %>
+      <div class="card-header bg-white py-3 d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2 border-bottom">
+        <div>
+          <div class="d-flex align-items-center gap-2 flex-wrap">
+            <h2 class="mb-0 d-flex align-items-center gap-2 fs-5">
+              <span class="material-symbols-filled fs-3">house</span>
+              <span><%= t("admin.dashboard.recent_houses") %></span>
+            </h2>
+            <div class="badge bg-info-subtle text-info border border-info-subtle rounded-pill">
+              <%= t("admin.dashboard.this_month_badge", count: @new_houses_this_month, month: Date.current.strftime("%m/%Y")) %>
+            </div>
+          </div>
+          <div class="small text-secondary mt-1">
+            <%= t("admin.dashboard.new_houses_month_summary", count: @new_houses_this_month, room_houses: @new_room_houses_this_month, bed_houses: @new_bed_houses_this_month, month: Date.current.strftime("%m/%Y")) %>
+          </div>
+        </div>
+        <%= link_to admin_houses_path, class: "btn btn-sm btn-outline-secondary flex-shrink-0" do %>
           <%= t("view_all") %>
         <% end %>
       </div>
@@ -198,7 +220,11 @@
                   <tr>
                     <td class="ps-3">
                       <div class="fw-bold"><%= house.name %></div>
-                      <small class="text-secondary"><%= [house.address_l1, house.address_l2].compact_blank.join(", ") %></small>
+                      <small class="text-secondary">
+                        <%= [house.address_l1, house.address_l2].compact_blank.join(", ") %>
+                        <span class="mx-1">•</span>
+                        <%= l(house.created_at.to_date, format: :default) rescue house.created_at.strftime("%d/%m/%Y") %>
+                      </small>
                     </td>
                     <td>
                       <span class="badge <%= house.room? ? 'bg-primary-subtle text-primary border border-primary-subtle' : 'bg-info-subtle text-info border border-info-subtle' %>">

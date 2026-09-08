@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_09_04_020000) do
+ActiveRecord::Schema[8.0].define(version: 2026_09_08_180000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "unaccent"
@@ -213,6 +213,22 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_04_020000) do
     t.index ["status"], name: "index_invoices_on_status"
     t.index ["tenant_id"], name: "index_invoices_on_tenant_id"
     t.index ["undone_by_id"], name: "index_invoices_on_undone_by_id"
+  end
+
+  create_table "issue_reports", force: :cascade do |t|
+    t.string "email", null: false
+    t.string "title", null: false
+    t.text "description", null: false
+    t.string "status", default: "pending", null: false
+    t.text "admin_notes"
+    t.datetime "resolved_at"
+    t.bigint "resolved_by_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_at"], name: "index_issue_reports_on_created_at"
+    t.index ["email"], name: "index_issue_reports_on_email"
+    t.index ["resolved_by_id"], name: "index_issue_reports_on_resolved_by_id"
+    t.index ["status"], name: "index_issue_reports_on_status"
   end
 
   create_table "landlords", force: :cascade do |t|
@@ -447,6 +463,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_04_020000) do
   add_foreign_key "invoices", "rooms", on_delete: :cascade
   add_foreign_key "invoices", "tenants", on_delete: :nullify
   add_foreign_key "invoices", "users", column: "created_by_id"
+  add_foreign_key "issue_reports", "admins", column: "resolved_by_id"
   add_foreign_key "landlords", "users", column: "id", on_delete: :cascade
   add_foreign_key "maintenance_logs", "assets", on_delete: :cascade
   add_foreign_key "requests", "houses", on_delete: :cascade

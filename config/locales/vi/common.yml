@@ -60,6 +60,7 @@ vi:
     secondary_toggle_close: "Đóng thanh quản lý"
     back_house_index: "Quay về Danh sách Nhà"
     lang_switch: "Chuyển đổi ngôn ngữ"
+    toggle_nav: "Chuyển đổi điều hướng"
     backoffice: "Hệ thống quản trị nội bộ"
 
   sidebar:
@@ -260,6 +261,8 @@ vi:
     admin_house_contracts: "Hợp đồng: %{house_name}"
     admin_house_invoices: "Hóa đơn: %{house_name}"
     admin_requests: "Quản lý Yêu cầu"
+    admin_issue_reports: "Quản lý Báo cáo Sự cố"
+    admin_issue_report_detail: "Chi tiết Sự cố"
     all_contracts: "Tất cả hợp đồng"
     old_contracts: "Hợp đồng cũ"
     contract_detail: "Chi tiết Hóa đơn"
@@ -341,11 +344,13 @@ vi:
     content_7: "Bạn hãy liên hệ với Khách thuê và hướng dẫn họ thực hiện các bước đã nêu trên, hoặc đổi sang số điện thoại mới."
 
   incident_reports:
-    email: "Email"
-    email_placeholder: "email@gmail.com"
-
-    subject: "Tiêu đề"
-    subject_placeholder: "Tiêu đề ngắn gọn"
-
-    description: "Mô tả sự cố"
-    description_placeholder: "Nhập mô tả ở đây..."
+    title: "Báo cáo sự cố"
+    subtitle: "Nếu bạn gặp bất kỳ vấn đề kỹ thuật hoặc sự cố nào trong quá trình sử dụng hệ thống, vui lòng điền thông tin bên dưới để chúng tôi hỗ trợ."
+    email: "Email liên hệ"
+    email_placeholder: "example@domain.com"
+    subject: "Tiêu đề sự cố"
+    subject_placeholder: "Tóm tắt ngắn gọn vấn đề bạn gặp phải..."
+    description: "Mô tả chi tiết sự cố"
+    description_placeholder: "Vui lòng mô tả cụ thể sự cố, các bước tái hiện hoặc thông báo lỗi (tối thiểu 10 ký tự)..."
+    submit: "Gửi báo cáo sự cố"
+    created_success: "Cảm ơn bạn đã gửi báo cáo sự cố! Ban quản trị đã tiếp nhận thông tin và sẽ phản hồi sớm nhất qua email của bạn."

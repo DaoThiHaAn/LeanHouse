@@ -29,11 +29,14 @@ class AdminPortal::DashboardAndUsersControllerTest < ActionDispatch::Integration
     assert_redirected_to admin_login_url
   end
 
-  test "should access dashboard when authenticated" do
+  test "should access dashboard when authenticated and display monthly metrics" do
     post admin_handle_login_url, params: { email: @admin.email, password: "Password123!" }
 
     get admin_dashboard_url
     assert_response :success
+    assert_includes response.body, I18n.t("admin.dashboard.recent_users")
+    assert_includes response.body, I18n.t("admin.dashboard.recent_houses")
+    assert_includes response.body, I18n.t("admin.dashboard.this_month_badge", count: 1, month: Date.current.strftime("%m/%Y"))
   end
 
   test "should access users list when authenticated" do

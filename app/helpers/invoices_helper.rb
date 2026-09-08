@@ -6,7 +6,7 @@ module InvoicesHelper
     when "paid"
       content_tag(:span, class: "invoice-badge invoice-badge-paid") do
         safe_join([
-          content_tag(:span, "check_circle", class: "material-symbols-outlined fs-6"),
+          content_tag(:span, "check_circle", class: "material-symbols-filled fs-6"),
           " ",
           t("invoice.status.paid")
         ])
@@ -15,7 +15,7 @@ module InvoicesHelper
       if check_overdue && invoice.overdue?
         content_tag(:span, class: "invoice-badge invoice-badge-overdue") do
           safe_join([
-            content_tag(:span, "error", class: "material-symbols-outlined fs-6"),
+            content_tag(:span, "error", class: "material-symbols-filled fs-6"),
             " ",
             t("invoice.status.overdue")
           ])
@@ -24,7 +24,7 @@ module InvoicesHelper
         label = check_overdue ? t("invoice.status.waiting_payment") : t("invoice.status.pending")
         content_tag(:span, class: "invoice-badge invoice-badge-pending") do
           safe_join([
-            content_tag(:span, "hourglass_top", class: "material-symbols-outlined fs-6"),
+            content_tag(:span, "hourglass_top", class: "material-symbols-filled fs-6"),
             " ",
             label
           ])
@@ -33,7 +33,7 @@ module InvoicesHelper
     when "cancelled"
       content_tag(:span, class: "invoice-badge invoice-badge-cancelled text-decoration-none") do
         safe_join([
-          content_tag(:span, "cancel", class: "material-symbols-outlined fs-6"),
+          content_tag(:span, "cancel", class: "material-symbols-filled fs-6"),
           " ",
           t("invoice.status.cancelled")
         ])

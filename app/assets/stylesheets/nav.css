@@ -227,7 +227,7 @@
 .secondary-nav .card.active {
     background-color: rgba(124, 72, 72, 0.2);
     border: 1px solid #365B4B;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2)  
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2)
 }
 
 /* Rotate collapse arrow when closed */
@@ -291,11 +291,12 @@
 	font-size: 0.85rem;
 }
 
-#navbarSupportedContent {
+#navbarSupportedContent,
+#adminNavbarContent {
   background:
     /* 1. Left Shadow Cover (Hides left shadow when scrolled to start) */
     linear-gradient(to right, #d7e6ea 30%, rgba(215, 230, 234, 0)),
-    
+
     /* 2. Right Shadow Cover (Hides right shadow when not shrunk/overflowing) */
     linear-gradient(to left, #d7e6ea 30%, rgba(215, 230, 234, 0)) 100% 0,
 
@@ -308,7 +309,7 @@
   background-repeat: no-repeat;
   background-color: #d7e6ea;
   background-size: 40px 100%, 40px 100%, 14px 100%, 14px 100%;
-  
+
   /* CRITICAL: 'local' moves covers with content; 'scroll' keeps shadows fixed */
   background-attachment: local, local, scroll, scroll;
 }

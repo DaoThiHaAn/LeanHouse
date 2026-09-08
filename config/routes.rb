@@ -12,7 +12,8 @@ Rails.application.routes.draw do
 
   get "/privacy", to: "public_pages#privacy"
   get "/terms-of-use", to: "public_pages#terms"
-  get "/report-issues", to: "public_pages#report_issues"
+  get "/report-issues", to: "public_pages#report_issues", as: :report_issues
+  post "/report-issues", to: "public_pages#create_issue_report", as: :create_issue_report
 
 
   get "/signup", to: "authentication#sign_up", as: :signup
@@ -246,5 +247,6 @@ Rails.application.routes.draw do
     resources :contracts, only: [ :show ]
     resources :invoices, only: [ :show ]
     resources :requests, only: [ :index, :show ]
+    resources :issue_reports, only: [ :index, :show, :update ]
   end
 end

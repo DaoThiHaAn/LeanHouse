@@ -1,0 +1,55 @@
+<tr id="issue_report_row_<%= report.id %>">
+  <!-- ID -->
+  <td class="px-3 fw-semibold text-secondary">
+    #<%= report.id %>
+  </td>
+
+  <!-- Reporter Email -->
+  <td class="px-3">
+    <div class="d-flex align-items-center gap-2">
+      <span class="material-symbols-outlined fs-5 text-secondary" aria-hidden="true">mail</span>
+      <span class="fw-medium font-monospace small"><%= report.email %></span>
+    </div>
+  </td>
+
+  <!-- Subject / Title -->
+  <td class="px-3 custom-text-primary fw-bold">
+    <%= report.title %>
+  </td>
+
+  <!-- Status -->
+  <td class="px-3 text-center">
+    <%= issue_report_status_badge(report.status) %>
+  </td>
+
+  <!-- Sent At -->
+  <td class="px-3 text-center text-secondary small">
+    <%= report.created_at.strftime("%d/%m/%Y %H:%M") %>
+  </td>
+
+  <!-- Resolved Info -->
+  <td class="px-3 text-center small">
+    <% if report.resolved? %>
+      <div class="text-success-emphasis fw-medium">
+        <%= report.resolved_by&.fullname || t("admin.self") %>
+      </div>
+      <div class="text-secondary small">
+        <%= report.resolved_at&.strftime("%d/%m/%Y %H:%M") %>
+      </div>
+    <% else %>
+      <span class="text-secondary">-</span>
+    <% end %>
+  </td>
+
+  <!-- Actions -->
+  <td class="px-3 text-center">
+    <%= link_to admin_issue_report_path(report),
+          class: "btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-1 shadow-sm",
+          title: t("admin.issue_reports.view_detail"),
+          aria: { label: t("admin.issue_reports.view_detail") },
+          data: { turbo_frame: "_top" } do %>
+      <span class="material-symbols-filled fs-6" aria-hidden="true">visibility</span>
+      <span><%= t("admin.issue_reports.view_detail") %></span>
+    <% end %>
+  </td>
+</tr>

@@ -1,66 +1,99 @@
 <%= content_for :title, t("page_titles.issue_report") %>
 
-<div class="main-container w-50 py-4">
-  <div class="row justify-content-center">
-    <div class="col-12 col-md-8 col-lg-6">
+<div class="issue-report-wrapper shadow-sm">
+  <div class="text-center mb-4">
+    <div class="d-inline-flex align-items-center justify-content-center p-3 bg-danger-subtle text-danger-emphasis rounded-circle mb-3">
+      <span class="material-symbols-filled fs-1" aria-hidden="true">report_problem</span>
+    </div>
+    <h1 class="text-danger-emphasis mb-3">
+      <%= t("incident_reports.title").upcase %>
+    </h1>
+    <p class="text-secondary">
+      <%= t("incident_reports.subtitle") %>
+    </p>
+  </div>
 
-      <h1 class="text-center fw-bold mb-4">
-        <%= t("incident_reports.new.title").upcase %>
-      </h1>
+  <div class="p-4">
+    <%= form_with model: @issue_report, url: create_issue_report_path, method: :post,
+                  class: "issue-report-form",
+                  data: {
+                    turbo: false,
+                    controller: "loading",
+                    loading_text_value: t("sending") + "...",
+                    action: "submit->loading#submit"
+                  } do |form| %>
 
-      <div class="card shadow-sm border-0 rounded-4">
-        <div class="card-body p-4 p-md-5">
-
-          <%= form_with model: @incident_report do |form| %>
-
-            <% if @incident_report.errors.any? %>
-              <div class="alert alert-danger" role="alert">
-                <h2 class="h6 fw-bold">
-                  <%= t("errors.messages.form_invalid") %>
-                </h2>
-
-                <ul class="mb-0">
-                  <% @incident_report.errors.full_messages.each do |message| %>
-                    <li><%= message %></li>
-                  <% end %>
-                </ul>
-              </div>
+      <% if @issue_report.errors.any? %>
+        <div class="alert alert-danger mb-4" role="alert" aria-live="polite">
+          <h2 class="h6 fw-bold mb-2 d-flex align-items-center gap-1">
+            <span class="material-symbols-filled fs-5 text-danger" aria-hidden="true">error</span>
+            <%= t("errors.messages.form_invalid") %>
+          </h2>
+          <ul class="mb-0 ps-3">
+            <% @issue_report.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
             <% end %>
-
-            <div class="mb-4">
-              <%= form.label :email, t("incident_reports.new.email"), class: "form-label fw-semibold" %>
-
-              <%= form.email_field :email,
-                  class: "form-control",
-                  placeholder: t("incident_reports.new.email_placeholder"),
-                  autocomplete: "email" %>
-            </div>
-
-            <div class="mb-4">
-              <%= form.label :title, t("incident_reports.new.subject"), class: "form-label fw-semibold" %>
-
-              <%= form.text_field :title,
-                  class: "form-control",
-                  placeholder: t("incident_reports.new.subject_placeholder") %>
-            </div>
-
-            <div class="mb-4">
-              <%= form.label :description, t("incident_reports.new.description"), class: "form-label fw-semibold" %>
-
-              <%= form.text_area :description,
-                  class: "form-control",
-                  rows: 5,
-                  placeholder: t("incident_reports.new.description_placeholder") %>
-            </div>
-
-            <div class="d-flex justify-content-center">
-              <%= form.submit t("submit"),
-                  class: "btn btn-primary px-5 rounded-pill" %>
-            </div>
-          <% end %>
+          </ul>
         </div>
+      <% end %>
+
+      <div class="mb-3">
+        <%= form.label :email, class: "form-label fw-semibold" do %>
+          <%= t("incident_reports.email") %> <span class="text-danger">*</span>
+        <% end %>
+        <%= form.email_field :email,
+            class: "form-control shadow-none #{@issue_report.errors[:email].any? ? 'is-invalid' : ''}",
+            placeholder: t("incident_reports.email_placeholder"),
+            autocomplete: "email",
+            required: true %>
       </div>
 
-    </div>
+      <div class="mb-3" data-controller="character-counter" data-character-counter-max-value="100">
+        <div class="d-flex justify-content-between align-items-center mb-1">
+          <%= form.label :title, class: "form-label fw-semibold mb-0" do %>
+            <%= t("incident_reports.subject") %> <span class="text-danger">*</span>
+          <% end %>
+          <span class="small text-secondary" data-character-counter-target="count"></span>
+        </div>
+        <%= form.text_field :title,
+            class: "form-control shadow-none #{@issue_report.errors[:title].any? ? 'is-invalid' : ''}",
+            placeholder: t("incident_reports.subject_placeholder"),
+            maxlength: 100,
+            required: true,
+            data: {
+              character_counter_target: "input",
+              action: "input->character-counter#update"
+            } %>
+      </div>
+
+      <div class="mb-4" data-controller="character-counter" data-character-counter-max-value="5000">
+        <div class="d-flex justify-content-between align-items-center mb-1">
+          <%= form.label :description, class: "form-label fw-semibold mb-0" do %>
+            <%= t("incident_reports.description") %> <span class="text-danger">*</span>
+          <% end %>
+          <span class="small text-secondary" data-character-counter-target="count">0/5000</span>
+        </div>
+        <%= form.text_area :description,
+            class: "form-control issue-report-textarea shadow-none #{@issue_report.errors[:description].any? ? 'is-invalid' : ''}",
+            placeholder: t("incident_reports.description_placeholder"),
+            rows: 5,
+            maxlength: 5000,
+            required: true,
+            data: {
+              character_counter_target: "input",
+              action: "input->character-counter#update"
+            } %>
+      </div>
+
+      <div class="d-flex justify-content-center">
+        <%= form.button type: :submit,
+            class: "issue-report-submit-btn shadow-sm d-inline-flex align-items-center justify-content-center gap-2",
+            data: { loading_target: "button" } do %>
+          <span class="material-symbols-filled fs-5" data-loading-target="icon" aria-hidden="true">send</span>
+          <span class="material-symbols-outlined spin d-none" data-loading-target="spinner" aria-hidden="true">progress_activity</span>
+          <span data-loading-target="text"><%= t("incident_reports.submit") %></span>
+        <% end %>
+      </div>
+    <% end %>
   </div>
 </div>

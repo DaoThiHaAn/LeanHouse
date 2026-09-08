@@ -1,0 +1,149 @@
+<% content_for :title, "#{t('page_titles.admin_issue_report_detail')} ##{@issue_report.id}" %>
+
+<div class="d-flex align-items-center mb-4 pb-2 border-bottom">
+  <%= back_link_to admin_issue_reports_path, t("admin.issue_reports.back_to_list") %>
+
+  <h1 class="text-center flex-grow-1"><%= t('page_titles.admin_issue_report_detail') %></h1>
+</div>
+
+<div class="row g-4">
+  <!-- Left Column: Report Details -->
+  <div class="col-12 col-md-6 col-lg-8">
+    <div class="card issue-report-detail-card shadow-sm border-0 mb-4">
+      <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
+        <h2 class="mb-0 d-flex align-items-center gap-2">
+          <span class="material-symbols-filled fs-5" aria-hidden="true">report_problem</span>
+          <span><%= @issue_report.title %></span>
+        </h2>
+        <span class="badge bg-light text-secondary font-monospace" title="<%= t("admin.issue_reports.id") %>">
+          #<%= @issue_report.id %>
+        </span>
+      </div>
+
+      <div class="card-body p-4">
+        <!-- Metadata Grid -->
+        <div class="issue-report-meta-grid mb-4">
+          <div class="issue-report-meta-item">
+            <div>
+              <p class="text-secondary small d-block mb-1"><%= t("admin.issue_reports.reporter_email") %></p>
+              <div class="fw-semibold font-monospace small text-dark d-flex align-items-center gap-1">
+                <span class="material-symbols-outlined fs-6 text-secondary" aria-hidden="true">mail</span>
+                <a href="mailto:<%= @issue_report.email %>" class="text-decoration-none text-dark">
+                  <%= @issue_report.email %>
+                </a>
+              </div>
+            </div>
+
+            <div>
+              <p class="text-secondary small d-block mb-1"><%= t("admin.issue_reports.sent_at") %></p>
+              <div class="fw-semibold text-dark d-flex align-items-center gap-1 small">
+                <span class="material-symbols-outlined fs-6 text-secondary" aria-hidden="true">schedule</span>
+                <%= @issue_report.created_at.strftime("%d/%m/%Y %H:%M:%S") %>
+              </div>
+            </div>
+          </div>
+
+          <div class="issue-report-meta-item">
+            <%= issue_report_status_badge(@issue_report.status) %>
+
+            <div>
+              <p class="text-secondary small mb-1"><%= t("admin.issue_reports.resolved_info") %></p>
+              <div class="fw-semibold small d-flex align-items-center gap-1">
+                <% if @issue_report.resolved? %>
+                  <span class="material-symbols-filled fs-6 text-success" aria-hidden="true">check_circle</span>
+                  <span class="text-success-emphasis">
+                    <%= @issue_report.resolved_by&.fullname || t("admin.self") %>
+                    (<%= @issue_report.resolved_at&.strftime("%d/%m/%Y %H:%M") %>)
+                  </span>
+                <% else %>
+                  <span class="text-secondary"><%= t("admin.issue_reports.not_resolved_yet") %></span>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Issue Description -->
+        <h3 class="h6 fw-bold text-dark mb-2"><%= t("admin.issue_reports.description") %></h3>
+        <div class="issue-report-content-box p-3 mb-4">
+          <%= @issue_report.description %>
+        </div>
+
+        <!-- Existing Admin Notes if present -->
+        <% if @issue_report.admin_notes.present? %>
+          <h3 class="h6 fw-bold text-dark mb-2"><%= t("admin.issue_reports.admin_notes") %></h3>
+          <div class="p-3 bg-light border rounded-3 text-secondary small fst-italic">
+            <%= simple_format(@issue_report.admin_notes) %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Column: Status & Resolution Form -->
+  <div class="col-12 col-md-6 col-lg-4">
+    <div class="card form issue-report-detail-card shadow-sm border">
+      <div class="card-header py-3">
+        <h2 class="mb-0 d-flex align-items-center gap-2">
+          <span class="material-symbols-filled fs-4" aria-hidden="true">tune</span>
+          <span><%= t("admin.issue_reports.update_status_title") %></span>
+        </h2>
+      </div>
+
+      <div class="card-body p-4">
+        <%= form_with model: [:admin, @issue_report],
+                      method: :patch,
+                      class: "issue-report-edit-form",
+                      data: {
+                        controller: "loading",
+                        loading_text_value: "#{t('saving')}...",
+                        action: "submit->loading#submit"
+                      } do |f| %>
+          <div class="mb-3">
+            <%= f.label :status, t("admin.issue_reports.status"), class: "form-label fw-semibold small" %>
+            <%= f.select :status,
+                options_for_select([
+                  [t("admin.issue_reports.status_pending"), "pending"],
+                  [t("admin.issue_reports.status_in_progress"), "in_progress"],
+                  [t("admin.issue_reports.status_resolved"), "resolved"]
+                ], @issue_report.status),
+                {},
+                class: "form-select shadow-none" %>
+          </div>
+
+          <div class="mb-3" data-controller="character-counter" data-character-counter-max-value="1000">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <%= f.label :admin_notes, t("admin.issue_reports.admin_notes"), class: "form-label fw-semibold small mb-0" %>
+              <span class="small text-secondary" data-character-counter-target="count">0/1000</span>
+            </div>
+            <%= f.text_area :admin_notes,
+                value: @issue_report.admin_notes,
+                rows: 4,
+                maxlength: 1000,
+                placeholder: t("admin.issue_reports.admin_notes_placeholder"),
+                class: "form-control shadow-none small",
+                data: {
+                  character_counter_target: "input",
+                  action: "input->character-counter#update"
+                } %>
+          </div>
+
+          <p class="text-warning-emphasis small fw-medium mb-3">
+            <span class="material-symbols-filled fs-6">emergency_home</span>
+            <%= t("admin.issue_reports.status_resolved_note") %>
+          </p>
+
+          <div class="d-grid">
+            <%= f.button type: :submit,
+                class: "custom-primary-btn shadow-sm mx-auto fs-6 d-inline-flex align-items-center justify-content-center gap-2",
+                data: { loading_target: "button" } do %>
+              <span class="material-symbols-outlined fs-5" data-loading-target="icon" aria-hidden="true">save</span>
+              <span class="material-symbols-outlined spin d-none" data-loading-target="spinner" aria-hidden="true">progress_activity</span>
+              <span data-loading-target="text"><%= t("admin.issue_reports.save_status") %></span>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

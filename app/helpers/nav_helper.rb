@@ -72,4 +72,12 @@ module NavHelper
     return "99+" if num > 99
     num
   end
+
+  def pending_requests_count
+    @pending_requests_count ||= Request.pending.count
+  end
+
+  def pending_issue_reports_count
+    @pending_issue_reports_count ||= IssueReport.pending.count
+  end
 end
