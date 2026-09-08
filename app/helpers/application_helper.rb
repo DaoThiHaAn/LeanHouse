@@ -83,7 +83,7 @@ module ApplicationHelper
 
   # Format vietnamese name
   def vn_name(fullname)
-    fullname.mb_chars.downcase.titleize.to_s
+    fullname.downcase.titleize
   end
 
   # Render a polished, consistent back/return navigation link.
