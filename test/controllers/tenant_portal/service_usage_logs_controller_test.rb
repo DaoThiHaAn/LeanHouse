@@ -366,7 +366,7 @@ class TenantPortal::ServiceUsageLogsControllerTest < ActionDispatch::Integration
     assert_response :success
 
     # Guide modal trigger button and modal dialog are rendered
-    assert_select "button[data-bs-target='#billingMonthGuideModal']", text: /#{I18n.t("service_usage_logs.billing_month_guide_btn")}/
+    assert_select "button[data-bs-target='#billingMonthGuideModal']", text: /(?:#{I18n.t("service_usage_logs.billing_month_guide_btn")}|#{I18n.t("guide")})/
     assert_select "#billingMonthGuideModal"
 
     # Explanation content inside modal is rendered

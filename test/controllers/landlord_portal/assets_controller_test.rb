@@ -120,6 +120,9 @@ class LandlordPortal::AssetsControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "action=\"replace\" target=\"#{ActionView::RecordIdentifier.dom_id(@asset_1)}\""
     assert_includes response.body, "action=\"replace\" target=\"asset_stats_grid\""
     assert_includes response.body, "close-modal"
+    # Verify the replaced row has the updated status badge and text
+    assert_includes response.body, I18n.t("enums.asset.status.damaged")
+    assert_includes response.body, "bg-danger-subtle"
 
     @asset_1.reload
     assert_equal "damaged", @asset_1.status

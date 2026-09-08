@@ -23,7 +23,7 @@
       <tbody>
         <% if assets.empty? %>
           <tr>
-            <td colspan="8" class="text-center py-4 text-secondary">
+            <td colspan="9" class="text-center py-4 text-secondary">
               <%= t("form.asset.none") %>
             </td>
           </tr>
@@ -36,7 +36,7 @@
   </div>
 
   <div class="mt-3">
-    <%= paginate assets, 
+    <%= paginate assets,
         params: { category: params[:category], status: params[:status] } %>
   </div>
 <% end %>

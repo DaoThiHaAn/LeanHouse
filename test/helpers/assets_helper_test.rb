@@ -43,4 +43,21 @@ class AssetsHelperTest < ActionView::TestCase
     badge = asset_maintenance_cost_badge([ log1, log2 ])
     assert_includes badge, "350,000"
   end
+
+  test "asset_status_tag delegates to asset_status_badge and supports both symbols and strings" do
+    badge_sym = asset_status_tag(:damaged)
+    assert_includes badge_sym, "bg-danger-subtle"
+    assert_includes badge_sym, "error"
+    assert_includes badge_sym, I18n.t("enums.asset.status.damaged")
+
+    badge_str = asset_status_tag("damaged")
+    assert_includes badge_str, "bg-danger-subtle"
+    assert_includes badge_str, "error"
+    assert_includes badge_str, I18n.t("enums.asset.status.damaged")
+
+    badge_repair = asset_status_tag(:under_repair)
+    assert_includes badge_repair, "bg-warning-subtle"
+    assert_includes badge_repair, "build"
+    assert_includes badge_repair, I18n.t("enums.asset.status.under_repair")
+  end
 end

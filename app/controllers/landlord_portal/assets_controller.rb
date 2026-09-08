@@ -36,6 +36,7 @@ class LandlordPortal::AssetsController < LandlordPortal::BaseController
 
   def update
     if @asset.update(asset_params)
+      @asset.reload
       @stats = @house.asset_summary_stats
       flash.now[:notice] = t("success_messages.asset_updated")
       respond_to do |format|
