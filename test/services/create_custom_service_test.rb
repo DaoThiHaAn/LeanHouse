@@ -114,7 +114,7 @@ class Invoices::CreateCustomServiceTest < ActiveSupport::TestCase
 
     # Check Tenant 1 invoice
     assert_equal @room1.id, inv1.room_id
-    assert_equal "individual", inv1.invoice_type
+    assert_equal "custom", inv1.invoice_type
     assert_equal "Phí vệ sinh chung tòa nhà", inv1.title
     assert_equal 100_000, inv1.total_addition
     assert_equal 20_000, inv1.total_discount
@@ -123,7 +123,7 @@ class Invoices::CreateCustomServiceTest < ActiveSupport::TestCase
 
     # Check Tenant 2 invoice
     assert_equal @room2.id, inv2.room_id
-    assert_equal "individual", inv2.invoice_type
+    assert_equal "custom", inv2.invoice_type
     assert_equal "Phí vệ sinh chung tòa nhà", inv2.title
     assert_equal 80_000, inv2.total_amount
 

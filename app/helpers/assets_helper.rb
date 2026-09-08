@@ -12,17 +12,17 @@ module AssetsHelper
 
     icon_name, badge_class = case status
     when "normal"
-      [ "check_circle", "bg-success-subtle text-success border border-success-subtle" ]
+      [ "check_circle", "bg-success-subtle text-success-emphasis border border-success-subtle" ]
     when "damaged"
-      [ "error", "bg-danger-subtle text-danger border border-danger-subtle" ]
+      [ "error", "bg-danger-subtle text-danger-emphasis border border-danger-subtle" ]
     when "under_repair"
       [ "build", "bg-warning-subtle text-warning-emphasis border border-warning-subtle" ]
     else
-      [ "info", "bg-secondary-subtle text-secondary border border-secondary-subtle" ]
+      [ "info", "bg-secondary-subtle text-secondary-emphasis border border-secondary-subtle" ]
     end
 
     content_tag(:span, class: "badge #{badge_class} rounded-2 px-2.5 py-1 d-inline-flex align-items-center justify-content-center gap-1 fw-medium shadow-none") do
-      concat content_tag(:span, icon_name, class: "material-symbols-filled fs-6")
+      concat content_tag(:span, icon_name, class: "material-symbols-filled fs-6", aria: { hidden: true })
       concat content_tag(:span, I18n.t("enums.asset.status.#{status}", default: status.humanize))
     end
   end

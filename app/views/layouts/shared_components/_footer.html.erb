@@ -1,4 +1,4 @@
-<footer class="w-100 d-flex flex-md-row flex-column align-items-center justify-content-center 
+<footer class="w-100 d-flex flex-md-row flex-column align-items-center justify-content-center
 							p-2 px-md-3 pt-md-4 gap-4">
     <!-- Col 1: Logo -->
     <%= image_tag "logo.png", alt: "LeanHouse Logo", class: "logo" %>
@@ -19,10 +19,6 @@
             </div>
 
             <div class="main-links d-flex flex-column flex-wrap align-items-start gap-2">
-                <%= link_to posts_path, class: "d-flex align-items-center gap-1" do %>
-									<span class="icon material-symbols-filled">search</span>
-									<%= t('bar.find_rooms') %>
-                <% end %>
                 <%= link_to t('bar.terms'), terms_of_use_path %>
                 <%= link_to t('bar.privacy'), privacy_path %>
             </div>

@@ -19,26 +19,29 @@
       <%= link_to edit_landlord_house_bed_path(house, bed),
                 data: { turbo_frame: "edit_bed_modal" },
                 title: t("edit"),
+                aria: { label: t("edit") },
                 class: "table-action" do %>
-        <span class="material-symbols-filled">edit</span>
+        <span class="material-symbols-filled" aria-hidden="true">edit</span>
       <% end %>
 
       <% if bed.can_delete? %>
         <%= button_to landlord_house_bed_path(house, bed),
                       method: :delete,
                       title: t("delete"),
+                      aria: { label: t("delete") },
                       class: "table-action",
                       data: {
                         turbo_confirm: t("form.bed.confirm_delete", name: bed.name)
                       } do %>
-          <span class="material-symbols-filled text-danger-emphasis">delete</span>
+          <span class="material-symbols-filled text-danger-emphasis" aria-hidden="true">delete</span>
         <% end %>
       <% else %>
         <button type="button"
                 class="table-action border-0 bg-transparent"
                 title="<%= t("delete") %>"
+                aria-label="<%= t("delete") %>"
                 onclick="alert('<%= j t("form.bed.cannot_delete_has_tenants") %>')">
-          <span class="material-symbols-filled text-secondary">delete</span>
+          <span class="material-symbols-filled text-secondary" aria-hidden="true">delete</span>
         </button>
       <% end %>
     </div>

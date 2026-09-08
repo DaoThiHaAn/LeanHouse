@@ -8,9 +8,9 @@
       end %>
 
   <div class="flash-container shadow-sm">
-    <div class="m-0 alert <%= bootstrap_class %> alert-dismissible fade show" role="alert" id="flash-message-<%= SecureRandom.hex(4) %>">
+    <div class="m-0 alert <%= bootstrap_class %> alert-dismissible fade show" role="alert" aria-live="polite" id="flash-message-<%= SecureRandom.hex(4) %>">
       <%= message %>
-      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="<%= t('close', default: 'Đóng') %>"></button>
     </div>
   </div>
 <% end %>

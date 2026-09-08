@@ -16,22 +16,25 @@
       <%= link_to edit_landlord_house_asset_path(house, asset),
                 data: { turbo_frame: "edit_asset_modal" },
                 title: t("edit"),
+                aria: { label: t("edit") },
                 class: "table-action" do %>
-        <span class="material-symbols-filled">edit</span>
+        <span class="material-symbols-filled" aria-hidden="true">edit</span>
       <% end %>
 
       <%= link_to landlord_house_asset_maintenance_logs_path(house, asset),
                 data: { turbo_frame: "_top" },
                 title: t("form.maintenance_log.view"),
+                aria: { label: t("form.maintenance_log.view") },
                 class: "table-action" do %>
-        <span class="material-symbols-outlined">manage_history</span>
+        <span class="material-symbols-outlined" aria-hidden="true">manage_history</span>
       <% end %>
 
       <%= button_to landlord_house_asset_path(house, asset), method: :delete,
                 title: t("delete"),
+                aria: { label: t("delete") },
                 data: { turbo_confirm: [t("form.asset.delete_cf"), t("not_redo")].join("\n\n") },
                 class: "table-action text-danger-emphasis" do %>
-        <span class="material-symbols-filled">delete</span>
+        <span class="material-symbols-filled" aria-hidden="true">delete</span>
       <% end %>
     </div>
   </td>

@@ -26,38 +26,43 @@
       <%= link_to landlord_house_contract_path(house, contract),
                 data: { turbo_frame: "_top" },
                 title: t("view_detail"),
+                aria: { label: t("view_detail") },
                 class: "table-action" do %>
-        <span class="material-symbols-filled">visibility</span>
+        <span class="material-symbols-filled" aria-hidden="true">visibility</span>
       <% end %>
 
       <% unless contract.finished? %>
         <%= link_to edit_landlord_house_contract_path(house, contract),
                   data: { turbo_frame: "_top" },
                   title: t("edit"),
+                  aria: { label: t("edit") },
                   class: "table-action" do %>
-          <span class="material-symbols-filled">edit</span>
+          <span class="material-symbols-filled" aria-hidden="true">edit</span>
         <% end %>
       <% end %>
 
       <%= link_to extend_landlord_house_contract_path(house, contract),
                 data: { turbo_frame: "extend_modal" },
                 title: t("form.contract.extend"),
+                aria: { label: t("form.contract.extend") },
                 class: "table-action" do %>
-        <span class="material-symbols-outlined">more_time</span>
+        <span class="material-symbols-outlined" aria-hidden="true">more_time</span>
       <% end %>
 
       <%= link_to sign_new_landlord_house_contract_path(house, contract),
                 data: { turbo_frame: "_top" },
                 title: t("form.contract.sign_new"),
+                aria: { label: t("form.contract.sign_new") },
                 class: "table-action" do %>
-        <span class="material-symbols-filled">ink_pen</span>
+        <span class="material-symbols-filled" aria-hidden="true">ink_pen</span>
       <% end %>
 
       <%= link_to close_landlord_house_contract_path(house, contract),
                 title: t("form.contract.close"),
+                aria: { label: t("form.contract.close") },
                 data: { turbo_frame: "close_cf_modal" },
                 class: "table-action" do %>
-        <span class="material-symbols-filled text-danger-emphasis">contract_delete</span>
+        <span class="material-symbols-filled text-danger-emphasis" aria-hidden="true">contract_delete</span>
       <% end %>
     </div>
   </td>

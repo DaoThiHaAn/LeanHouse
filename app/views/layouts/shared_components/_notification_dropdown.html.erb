@@ -2,9 +2,10 @@
 
 <div class="dropdown notification-dropdown">
   <button class="dropdown-toggle" type="button" data-bs-toggle="dropdown"
-          aria-expanded="false" title="<%= t("click_open") %>">
+          aria-expanded="false" title="<%= t("click_open") %>"
+          aria-label="<%= t("noti.notifications", default: "Thông báo") %><%= " (#{unread_count} " + t("noti.unread", default: "chưa đọc") + ")" if unread_count.to_i > 0 %>">
     <div class="position-relative">
-      <span class="noti material-symbols-filled">notifications</span>
+      <span class="noti material-symbols-filled" aria-hidden="true">notifications</span>
       <% if unread_count.to_i > 0 %>
         <span class="notification-badge">
           <%= noti_count(unread_count) %>
@@ -47,8 +48,9 @@
                 <%= button_to mark_as_read_notification_path(notification),
                       method: :patch,
                       title: t("noti.mark_as_read"),
+                      aria: { label: t("noti.mark_as_read") },
                       class: "btn btn-link p-0 text-secondary d-flex align-items-center border-0 bg-transparent" do %>
-                  <span class="material-symbols-outlined fs-6">done</span>
+                  <span class="material-symbols-outlined fs-6" aria-hidden="true">done</span>
                 <% end %>
               <% end %>
 

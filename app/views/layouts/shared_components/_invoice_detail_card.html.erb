@@ -9,9 +9,9 @@
   <!-- Header: Title & Badges -->
   <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-4 pb-3 border-bottom">
     <div>
-      <h2 class="fw-bolder mb-1 text-danger">
-        <%= t('invoice.month_invoice', month: invoice.billing_month.strftime("%m")) %>
-      </h2>
+      <h1 class="mb-1">
+        <%= invoice.title %>
+      </h1>
       <div class="text-secondary small font-monospace">
         <%= t('invoice.code') %>: <span class="fw-bold invoice-code-tag">#<%= invoice.code %></span> (<%= t('invoice.id') %>: <%= invoice.id %>)
       </div>

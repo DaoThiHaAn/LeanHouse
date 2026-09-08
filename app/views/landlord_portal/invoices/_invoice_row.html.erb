@@ -32,40 +32,44 @@
       <%= link_to landlord_house_invoice_path(house, inv),
                 class: "table-action px-1 py-0",
                 data: { turbo_frame: "_top" },
-                title: t("view_detail") do %>
-        <span class="material-symbols-filled">visibility</span>
+                title: t("view_detail"),
+                aria: { label: t("view_detail") } do %>
+        <span class="material-symbols-filled" aria-hidden="true">visibility</span>
       <% end %>
 
       <% if inv.pending? || inv.overdue? %>
         <%= link_to edit_landlord_house_invoice_path(house, inv),
                   data: { turbo_frame: "edit_invoice_modal" },
                   title: t("edit"),
-                  class: "table-action" do %>
-          <span class="material-symbols-filled">edit</span>
+                  aria: { label: t("edit") } do %>
+          <span class="material-symbols-filled" aria-hidden="true">edit</span>
         <% end %>
 
         <button type="button"
                 class="table-action text-success border-0 bg-transparent p-0"
                 data-bs-toggle="modal"
                 data-bs-target="#rowMarkPaidModal_<%= inv.id %>"
-                title="<%= t('invoice.actions.done') %>">
-          <span class="material-symbols-filled">paid</span>
+                title="<%= t('invoice.actions.done') %>"
+                aria-label="<%= t('invoice.actions.done') %>">
+          <span class="material-symbols-filled" aria-hidden="true">paid</span>
         </button>
 
         <%= button_to cancel_landlord_house_invoice_path(house, inv),
                   method: :patch,
                   title: t("invoice.actions.cancel"),
+                  aria: { label: t("invoice.actions.cancel") },
                   data: { turbo_confirm: t("invoice.actions.cancel_confirm"), turbo_frame: "_top" },
                   class: "table-action text-danger-emphasis" do %>
-          <span class="material-symbols-filled">cancel</span>
+          <span class="material-symbols-filled" aria-hidden="true">cancel</span>
         <% end %>
       <% elsif inv.paid? %>
         <button type="button"
                 class="table-action text-danger border-0 bg-transparent p-0"
                 data-bs-toggle="modal"
                 data-bs-target="#rowUndoPaidModal_<%= inv.id %>"
-                title="<%= t('invoice.undo_paid_tooltip') %>">
-          <span class="material-symbols-filled">undo</span>
+                title="<%= t('invoice.undo_paid_tooltip') %>"
+                aria-label="<%= t('invoice.undo_paid_tooltip') %>">
+          <span class="material-symbols-filled" aria-hidden="true">undo</span>
         </button>
       <% end %>
     </div>

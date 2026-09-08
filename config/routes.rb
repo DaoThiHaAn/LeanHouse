@@ -58,8 +58,6 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :posts
-
     resources :requests, only: %i[index show] do
       collection do
         get :filtered

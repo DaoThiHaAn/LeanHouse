@@ -64,19 +64,20 @@
               <%= link_to landlord_house_tenant_path(house, tenant),
                         class: "table-action px-1 py-0",
                         data: { turbo_frame: "tenant_detail_modal" },
-                        title: t("view_detail") do %>
-                <span class="material-symbols-filled">visibility</span>
+                        title: t("view_detail"),
+                        aria: { label: t("view_detail") } do %>
+                <span class="material-symbols-filled" aria-hidden="true">visibility</span>
               <% end %>
 
               <%= link_to move_landlord_house_tenant_path(house, tenant),
                         title: t("form.tenant.move"),
+                        aria: { label: t("form.tenant.move") },
                         data: {
                           turbo_frame: "move_tenant_modal"
                         },
                         class: "table-action" do %>
-                <span class="material-symbols-filled">move_location</span>
+                <span class="material-symbols-filled" aria-hidden="true">move_location</span>
               <% end %>
-
 
               <%= button_to landlord_house_tenant_path(house, tenant), method: :delete,
                     data: {
@@ -86,8 +87,9 @@
                       ].join("\n\n")
                     },
                     title: t("form.tenant.remove"),
+                    aria: { label: t("form.tenant.remove") },
                     class: "table-action" do %>
-                <span class="material-symbols-filled text-danger-emphasis">person_remove</span>
+                <span class="material-symbols-filled text-danger-emphasis" aria-hidden="true">person_remove</span>
               <% end %>
             </div>
           </td>

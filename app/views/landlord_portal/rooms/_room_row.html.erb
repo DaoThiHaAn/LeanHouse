@@ -14,42 +14,45 @@
       <%= link_to landlord_house_room_service_usage_logs_path(house, room, tab: target_tab),
                   class: "table-action",
                   data: { turbo_frame: "_top" },
-                  title: t("service_usage_logs.room_logs_action") do %>
-        <span class="material-symbols-filled text-primary">electric_meter</span>
+                  title: t("service_usage_logs.room_logs_action"),
+                  aria: { label: t("service_usage_logs.room_logs_action") } do %>
+        <span class="material-symbols-filled text-primary" aria-hidden="true">electric_meter</span>
       <% end %>
 
       <%= link_to landlord_house_room_path(house, room),
                 class: "table-action px-1 py-0",
                 data: { turbo_frame: "room_detail_modal" },
-                title: t("view_detail") do %>
-        <span class="material-symbols-filled">visibility</span>
+                title: t("view_detail"),
+                aria: { label: t("view_detail") } do %>
+        <span class="material-symbols-filled" aria-hidden="true">visibility</span>
       <% end %>
 
       <%= link_to edit_landlord_house_room_path(house, room),
                 data: { turbo_frame: "edit_room_modal" },
                 title: t("edit"),
-                class: "table-action" do %>
-        <span class="material-symbols-filled">edit</span>
+                aria: { label: t("edit") } do %>
+        <span class="material-symbols-filled" aria-hidden="true">edit</span>
       <% end %>
 
       <% if room.can_delete? %>
         <%= button_to landlord_house_room_path(house, room),
                       method: :delete,
                       title: t("delete"),
+                      aria: { label: t("delete") },
                       class: "table-action",
                       data: {
                         turbo_confirm: t("form.room.confirm_delete", name: room.name)
                       } do %>
-          <span class="material-symbols-filled text-danger-emphasis">delete</span>
+          <span class="material-symbols-filled text-danger-emphasis" aria-hidden="true">delete</span>
         <% end %>
       <% else %>
         <button type="button"
                 class="table-action border-0 bg-transparent"
                 title="<%= t("delete") %>"
+                aria-label="<%= t("delete") %>"
                 onclick="alert('<%= j t("form.room.cannot_delete_has_tenants") %>')">
-          <span class="material-symbols-filled text-secondary">delete</span>
+          <span class="material-symbols-filled text-secondary" aria-hidden="true">delete</span>
         </button>
       <% end %>
-    </div>
   </td>
 </tr>
