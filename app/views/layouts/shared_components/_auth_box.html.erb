@@ -33,7 +33,7 @@
     <!-- Mở kết nối WebSocket lắng nghe thông báo riêng của current_user -->
     <%= turbo_stream_from current_user, :notifications %>
 
-    <div id="notification_box">
+    <div id="notification_box" data-controller="notification-sync" data-notification-sync-url-value="<%= box_notifications_path %>">
       <%= render "layouts/shared_components/notification_dropdown",
             unread_count: unread_count,
             notifications: notifications %>

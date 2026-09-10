@@ -117,4 +117,18 @@ class NotificationsControllerTest < ActionDispatch::IntegrationTest
 
     assert_equal 0, @user.notifications.unread.count
   end
+
+  test "box redirects unauthenticated user to login" do
+    get box_notifications_path
+    assert_redirected_to login_path
+  end
+
+  test "box returns notification dropdown partial for authenticated user" do
+    sign_in_as(@user)
+
+    get box_notifications_path
+    assert_response :success
+    assert_select ".notification-dropdown"
+    assert_select ".notification-badge", text: "1"
+  end
 end

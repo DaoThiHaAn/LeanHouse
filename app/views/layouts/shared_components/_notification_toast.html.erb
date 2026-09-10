@@ -1,0 +1,32 @@
+<%# Local variables: notification %>
+<%
+  level = (notification.respond_to?(:level) && notification.level.presence) || "info"
+  alert_class, icon_name = case level
+  when "urgent"
+    ["alert-danger", "error"]
+  when "warning"
+    ["alert-warning", "warning"]
+  when "success"
+    ["alert-success", "check_circle"]
+  else
+    ["alert-info", "campaign"]
+  end
+%>
+
+<div class="flash-container shadow-sm notification-toast-wrapper" data-controller="notification-toast">
+  <div class="m-0 alert <%= alert_class %> d-flex align-items-start gap-2 shadow-sm" role="alert" aria-live="polite">
+    <span class="material-symbols-outlined fs-5 flex-shrink-0 mt-1"><%= icon_name %></span>
+    <div class="flex-grow-1 min-w-0">
+      <div class="d-flex justify-content-between align-items-center mb-1">
+        <strong class="d-block text-truncate pe-2"><%= notification.title %></strong>
+      </div>
+      <p class="mb-1 small text-break"><%= truncate(notification.message, length: 140) %></p>
+      <% if notification.respond_to?(:url) && notification.url.present? %>
+        <%= link_to t("view_detail", default: "Xem chi tiết"), notification.url, class: "small fw-semibold alert-link text-decoration-underline" %>
+      <% else %>
+        <%= link_to t("noti.view_all", default: "Xem tất cả thông báo"), notifications_path, class: "small fw-semibold alert-link text-decoration-underline" %>
+      <% end %>
+    </div>
+    <button type="button" class="btn-close flex-shrink-0 mt-1" data-action="click->notification-toast#close" aria-label="<%= t('close', default: 'Đóng') %>"></button>
+  </div>
+</div>

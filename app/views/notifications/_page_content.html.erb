@@ -12,9 +12,7 @@
           class: "btn btn-sm #{filter == 'unread' ? 'btn-primary' : 'btn-outline-secondary'} rounded-pill px-3 position-relative" do %>
       <%= t("noti.unread") %>
       <span id="unread_filter_badge">
-        <% if unread_count.to_i > 0 %>
-          <span class="badge bg-danger ms-1"><%= unread_count %></span>
-        <% end %>
+        <%= render "notifications/unread_badge", unread_count: unread_count %>
       </span>
     <% end %>
 
@@ -37,8 +35,12 @@
 
 <!-- Notification list -->
 <div id="notifications_items_container">
+  <div id="notifications_list_items" class="d-flex flex-column gap-4 mb-4">
+    <%= render partial: "notifications/notification", collection: notifications_list, as: :notification %>
+  </div>
+
   <% if notifications_list.empty? %>
-    <div class="card border-0 py-5 text-center text-secondary rounded-3">
+    <div id="notifications_empty_state" class="card border-0 py-5 text-center text-secondary rounded-3">
       <div class="card-body">
         <span class="material-symbols-outlined fs-1 text-secondary mb-2 d-block">
           notifications_off
@@ -49,10 +51,6 @@
       </div>
     </div>
   <% else %>
-    <div class="d-flex flex-column gap-4 mb-4">
-      <%= render partial: "notifications/notification", collection: notifications_list, as: :notification %>
-    </div>
-
     <!-- Pagination -->
     <div class="d-flex justify-content-center mt-4">
       <%= paginate notifications_list %>

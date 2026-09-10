@@ -26,7 +26,7 @@
 
     <div class="d-flex gap-2 align-items-center">
         <%# User authentication links %>
-      <%= render "layouts/shared_components/auth_box", 
+      <%= render "layouts/shared_components/auth_box",
           unread_count: unread_count, notifications: notifications %>
 
       <%# Language selector %>
@@ -36,7 +36,7 @@
             id="langDropdown"
             data-bs-toggle="dropdown"
             aria-expanded="false">
-            <span class="material-symbols-outlined">language</span>
+            <span class="material-symbols-outlined fs-5">language</span>
             <%= I18n.locale.to_s.upcase %> <!-- Current language -->
         </button>
 

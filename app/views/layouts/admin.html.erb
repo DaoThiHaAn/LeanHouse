@@ -35,6 +35,7 @@
     <div id="flash">
       <%= render "layouts/shared_components/flash_message" %>
     </div>
+    <div id="notification_toast"></div>
 
     <!-- Admin Header Navbar -->
     <nav class="navbar sticky-top navbar-expand-lg navbar-light py-0 admin-navbar">
@@ -109,6 +110,13 @@
               <% end %>
             </li>
 
+            <li class="flex-shrink-0 nav-item custom <%= 'active' if controller_name == 'notifications' %>">
+              <%= link_to admin_notifications_path, class: "nav-link d-flex align-items-center gap-1 px-3 py-2 text-nowrap" do %>
+                <span class="material-symbols-filled fs-5" aria-hidden="true">campaign</span>
+                <span><%= t("admin.nav.notifications") %></span>
+              <% end %>
+            </li>
+
             <% if current_admin&.super_admin? %>
               <li class="flex-shrink-0 nav-item custom <%= 'active' if controller_name == 'admins' %>">
                 <%= link_to admin_admins_path, class: "nav-link d-flex align-items-center gap-1 px-3 py-2 text-nowrap" do %>
@@ -153,7 +161,7 @@
             <button class="nav-link lang-btn dropdown-toggle d-flex justify-content-center align-items-center gap-1"
                     type="button" title="<%= t("bar.lang_switch") %>"
                     id="adminLangDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-              <span class="material-symbols-outlined">language</span>
+              <span class="material-symbols-outlined fs-5">language</span>
               <%= I18n.locale.to_s.upcase %>
             </button>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminLangDropdown">

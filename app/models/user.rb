@@ -2,6 +2,7 @@ class User < ApplicationRecord
   MIN_AGE = 15
   scope :kept, -> { where(discarded_at: nil) } # user is not deleted
   scope :registered, -> { where(discarded_at: nil).where.not(tel_verified_at: nil) }
+  scope :active, -> { kept.where(is_active: true) }
   scope :name_sorted, -> { order(fullname: :asc) }
 
   # Virtual attribute

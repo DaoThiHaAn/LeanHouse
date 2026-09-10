@@ -1,0 +1,94 @@
+<%= turbo_frame_tag "admin_notifications_table",
+      data: {
+        controller: "pagination-sync",
+        pagination_sync_canonical_url_value: admin_notifications_path,
+        pagination_sync_default_params_value: {}.to_json,
+        pagination_sync_query_params_value: ["level", "audience"].to_json,
+        pagination_sync_total_pages_selector_value: "[data-pagination-total-pages]",
+        action: "turbo:frame-load->pagination-sync#updateUrl"
+      } do %>
+
+  <span hidden data-pagination-total-pages="<%= @events.respond_to?(:total_pages) ? @events.total_pages : 1 %>"></span>
+
+  <% if @events.empty? %>
+    <div class="card border bg-white rounded-4 p-5 text-center shadow-sm">
+      <span class="material-symbols-outlined text-secondary fs-1 mb-2">notifications_off</span>
+      <% if @level.present? || @audience.present? %>
+        <h5 class="fw-bold"><%= t("admin.notifications.filter.no_matching_title") %></h5>
+        <p class="text-secondary small mb-0"><%= t("admin.notifications.filter.no_matching_desc") %></p>
+      <% else %>
+        <h5 class="fw-bold"><%= t("admin.notifications.empty_title") %></h5>
+        <p class="text-secondary small mb-3"><%= t("admin.notifications.empty_desc") %></p>
+      <% end %>
+    </div>
+
+  <% else %>
+    <div class="table-responsive border bg-white rounded-3 shadow-sm mb-4">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th class="ps-3"><%= t("admin.notifications.table.sent_at") %></th>
+            <th><%= t("admin.notifications.table.level") %></th>
+            <th><%= t("admin.notifications.table.title") %></th>
+            <th><%= t("admin.notifications.table.audience") %></th>
+            <th class="text-center"><%= t("admin.notifications.table.recipients") %></th>
+            <th class="text-center"><%= t("admin.notifications.table.read_rate") %></th>
+            <th><%= t("admin.notifications.table.sender") %></th>
+            <th class="text-center pe-3"><%= t("actions") %></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @events.each do |event| %>
+            <%
+              p = (event.params || {}).with_indifferent_access
+              lvl = p[:level].presence || "info"
+              aud = p[:target_audience].presence || "all"
+              read_cnt = event.notifications.where.not(read_at: nil).count
+              tot_cnt = event.notifications_count.to_i
+              rate = tot_cnt.positive? ? ((read_cnt.to_f / tot_cnt) * 100).round(1) : 0.0
+            %>
+            <tr>
+              <td class="ps-3 text-nowrap">
+                <span class="small"><%= format_date(event.created_at) %></span>
+                <span class="text-secondary small d-block"><%= event.created_at.strftime("%H:%M:%S") %></span>
+              </td>
+
+              <td><%= notification_level_badge(lvl) %></td>
+
+              <td>
+                <div class="fw-bold text-clamp-1"><%= p["title"] %></div>
+                <div class="small text-secondary text-clamp-1"><%= p["message"] %></div>
+              </td>
+
+              <td><%= notification_audience_badge(aud) %></td>
+
+              <td class="text-center font-monospace fw-bold">
+                <%= tot_cnt %>
+              </td>
+
+              <td class="text-center font-monospace">
+                <span class="badge <%= rate > 50 ? 'bg-success-subtle text-success border border-success-subtle' : 'bg-light text-secondary border' %>">
+                  <%= read_cnt %>/<%= tot_cnt %> (<%= rate %>%)
+                </span>
+              </td>
+
+              <td>
+                <span class="small text-secondary"><%= p["sender_name"].presence || event.record&.fullname || t("admin.self") %></span>
+              </td>
+
+              <td class="text-center pe-3">
+                <%= link_to admin_notification_path(event), class: "table-action", data: { turbo_frame: "_top" } do %>
+                  <span class="material-symbols-filled fs-4">visibility</span>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="d-flex justify-content-center">
+      <%= paginate @events %>
+    </div>
+  <% end %>
+<% end %>

@@ -39,6 +39,7 @@ Rails.application.routes.draw do
     end
     collection do
       patch :mark_all_as_read
+      get :box
     end
   end
 
@@ -248,5 +249,6 @@ Rails.application.routes.draw do
     resources :invoices, only: [ :show ]
     resources :requests, only: [ :index, :show ]
     resources :issue_reports, only: [ :index, :show, :update ]
+    resources :notifications, only: [ :index, :new, :create, :show ]
   end
 end

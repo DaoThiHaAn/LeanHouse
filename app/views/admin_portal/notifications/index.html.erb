@@ -1,0 +1,104 @@
+<% content_for :title, t("admin.notifications.title") %>
+
+<div class="d-flex flex-column align-items-center gap-2 pb-3 mb-4 border-bottom">
+  <h1 class="admin-title"><%= t("admin.notifications.title") %></h1>
+  <p class="text-secondary text-center mb-0">
+    <%= t("admin.notifications.subtitle") %>
+  </p>
+</div>
+
+<!-- Header Stats & Action Bar -->
+<div class="row g-3 mb-4 align-items-center justify-content-between">
+  <div class="col-12 col-md-auto">
+    <div class="d-flex align-items-center gap-3 flex-wrap">
+      <h2 class="mb-0">
+        <span class="material-symbols-filled fs-3">campaign</span>
+        <%= t("admin.notifications.history_title") %>
+      </h2>
+      <span class="badge bg-light text-dark border p-2">
+        <%= t("admin.notifications.total_broadcasts", count: @total_broadcasts) %>
+      </span>
+      <% if @total_recipients_delivered.to_i > 0 %>
+        <span class="badge bg-primary-subtle text-primary border border-primary-subtle p-2">
+          <%= t("admin.notifications.total_delivered", count: @total_recipients_delivered) %>
+        </span>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="col-12 col-md-auto">
+    <%= link_to new_admin_notification_path, class: "main-btn d-inline-flex align-items-center gap-2 shadow-sm text-decoration-none" do %>
+      <span class="material-symbols-filled fs-4">notification_add</span>
+      <span><%= t("admin.notifications.new_broadcast") %></span>
+    <% end %>
+  </div>
+</div>
+
+<!-- Filter Form -->
+<div class="mb-4">
+  <%= form_with url: admin_notifications_path, method: :get,
+                class: "row g-3 align-items-center",
+                data: {
+                  controller: "search",
+                  turbo_frame: "admin_notifications_table",
+                  turbo_action: "advance"
+                } do |f| %>
+
+    <!-- Priority / Level Filter -->
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+      <div class="form-floating shadow-sm rounded">
+        <%= f.select :level,
+            options_for_select([
+              [t("admin.notifications.filter.all_priorities"), ""],
+              [t("admin.notifications.levels.info"), "info"],
+              [t("admin.notifications.levels.warning"), "warning"],
+              [t("admin.notifications.levels.urgent"), "urgent"]
+            ], @level),
+            {},
+            class: "form-select shadow-none",
+            id: "floatingLevelSelect",
+            data: {
+              action: "change->search#changed"
+            } %>
+        <label for="floatingLevelSelect" class="text-secondary small fw-medium">
+          <%= t("admin.notifications.filter.filter_priority") %>
+        </label>
+      </div>
+    </div>
+
+    <!-- Recipients / Target Audience Filter -->
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+      <div class="form-floating shadow-sm rounded">
+        <%= f.select :audience,
+            options_for_select([
+              [t("admin.notifications.filter.all_recipients"), ""],
+              [t("admin.notifications.audience.all"), "all"],
+              [t("admin.notifications.audience.landlords"), "landlords"],
+              [t("admin.notifications.audience.tenants"), "tenants"]
+            ], @audience),
+            {},
+            class: "form-select shadow-none",
+            id: "floatingAudienceSelect",
+            data: {
+              action: "change->search#changed"
+            } %>
+        <label for="floatingAudienceSelect" class="text-secondary small fw-medium">
+          <%= t("admin.notifications.filter.filter_recipients") %>
+        </label>
+      </div>
+    </div>
+
+    <!-- Clear Filter Button -->
+    <div class="col-auto <%= 'd-none' unless @level.present? || @audience.present? %>" data-search-target="clearButton">
+      <button type="button"
+              class="btn btn-outline-secondary d-flex align-items-center gap-1 shadow-sm align-self-center px-3"
+              data-action="click->search#clear">
+        <span class="material-symbols-outlined fs-6">filter_alt_off</span>
+        <span class="small"><%= t("clear_filter") %></span>
+      </button>
+    </div>
+  <% end %>
+</div>
+
+<!-- History Table (Turbo Frame) -->
+<%= render "table" %>

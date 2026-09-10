@@ -275,6 +275,7 @@ vi:
     next: "Trang sau"
 
   datetime:
+    just_now: "Ngay bây giờ"
     distance_in_words:
       less_than_x_seconds:
         one: "gần 1 giây"

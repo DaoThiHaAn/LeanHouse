@@ -1,0 +1,323 @@
+<% content_for :title, t("admin.notifications.new_title") %>
+
+<div class="d-flex border-bottom pt-1 pb-3 align-items-start mb-4">
+  <%= back_link_to admin_notifications_path, t("admin.notifications.back") %>
+  <div class="d-flex flex-column align-items-center gap-2">
+    <h1 class="admin-title"><%= t("admin.notifications.new_title") %></h1>
+    <p class="text-secondary text-center mb-0">
+      <%= t("admin.notifications.new_subtitle") %>
+    </p>
+  </div>
+</div>
+
+<div class="row justify-content-center"
+     data-controller="broadcast-notification"
+     data-broadcast-notification-default-title-value="<%= t('admin.notifications.preview.default_title') %>"
+     data-broadcast-notification-default-message-value="<%= t('admin.notifications.preview.default_message') %>"
+     data-broadcast-notification-audience-all-text-value="<%= t('admin.notifications.audience.all') %> (<%= @all_users_count %> <%= t('admin.notifications.recipients_unit') %>)"
+     data-broadcast-notification-audience-landlords-text-value="<%= t('admin.notifications.audience.landlords') %> (<%= @landlords_count %> <%= t('admin.notifications.recipients_unit') %>)"
+     data-broadcast-notification-audience-tenants-text-value="<%= t('admin.notifications.audience.tenants') %> (<%= @tenants_count %> <%= t('admin.notifications.recipients_unit') %>)"
+     data-broadcast-notification-level-info-text-value="<%= t('admin.notifications.levels.info') %>"
+     data-broadcast-notification-level-warning-text-value="<%= t('admin.notifications.levels.warning') %>"
+     data-broadcast-notification-level-urgent-text-value="<%= t('admin.notifications.levels.urgent') %>">
+  <div class="col-12 col-xl-10">
+
+    <!-- Immutability Warning Alert -->
+    <div class="alert alert-warning border-warning-subtle shadow-sm rounded-3 mb-4 d-flex align-items-start gap-3 p-3">
+      <span class="material-symbols-filled text-danger-emphasis fs-3 mt-1">warning</span>
+      <div class="text-danger-emphasis">
+        <h6 class="fw-bold mb-1">
+          <%= t("admin.notifications.immutability_warning_title") %>
+        </h6>
+        <p class="small">
+          <%= t("admin.notifications.immutability_warning_desc") %>
+        </p>
+      </div>
+    </div>
+
+    <%= form_with url: admin_notifications_path, method: :post, id: "broadcastNotificationForm", data: { broadcast_notification_target: "form" } do |f| %>
+      <div class="card border bg-white rounded-3 shadow-sm py-4 px-5 mb-4 gap-5">
+
+        <!-- 1. Target Audience Selector -->
+        <div>
+          <%= f.label :target_audience, class: "form-label fw-bold d-flex align-items-center gap-2 mb-2" do %>
+            <span class="material-symbols-filled fs-4">groups</span>
+            <span><%= t("admin.notifications.form.audience_label") %></span>
+            <span class="text-danger">*</span>
+          <% end %>
+
+          <div class="row g-3">
+            <!-- All Users -->
+            <div class="col-12 col-md-4">
+              <%= f.label :target_audience, value: "all",
+                  class: "card h-100 p-3 border rounded-3 cursor-pointer audience-card" do %>
+                <div class="d-flex align-items-start gap-2">
+                  <%= f.radio_button :target_audience, "all", checked: true,
+                      class: "form-check-input mt-1",
+                      data: { broadcast_notification_target: "audienceRadio", action: "change->broadcast-notification#updateAudience" } %>
+                  <div>
+                    <div class="fw-bold"><%= t("admin.notifications.audience.all") %></div>
+                    <div class="small text-secondary"><%= t("admin.notifications.audience.all_hint") %></div>
+                    <span class="badge bg-secondary-subtle text-secondary border mt-2 font-monospace">
+                      <%= @all_users_count %> <%= t("admin.notifications.recipients_unit") %>
+                    </span>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+
+            <!-- Landlords Only -->
+            <div class="col-12 col-md-4">
+              <%= f.label :target_audience, value: "landlords", class: "card h-100 p-3 border rounded-3 cursor-pointer audience-card" do %>
+                <div class="d-flex align-items-start gap-2">
+                  <%= f.radio_button :target_audience, "landlords", class: "form-check-input mt-1",
+                      data: { broadcast_notification_target: "audienceRadio", action: "change->broadcast-notification#updateAudience" } %>
+                  <div>
+                    <div class="fw-bold"><%= t("admin.notifications.audience.landlords") %></div>
+                    <div class="small text-secondary"><%= t("admin.notifications.audience.landlords_hint") %></div>
+                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle mt-2 font-monospace">
+                      <%= @landlords_count %> <%= t("admin.notifications.recipients_unit") %>
+                    </span>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+
+            <!-- Tenants Only -->
+            <div class="col-12 col-md-4">
+              <%= f.label :target_audience, value: "tenants", class: "card h-100 p-3 border rounded-3 cursor-pointer audience-card" do %>
+                <div class="d-flex align-items-start gap-2">
+                  <%= f.radio_button :target_audience, "tenants", class: "form-check-input mt-1",
+                      data: { broadcast_notification_target: "audienceRadio", action: "change->broadcast-notification#updateAudience" } %>
+                  <div>
+                    <div class="fw-bold"><%= t("admin.notifications.audience.tenants") %></div>
+                    <div class="small text-secondary"><%= t("admin.notifications.audience.tenants_hint") %></div>
+                    <span class="badge bg-success-subtle text-success border border-success-subtle mt-2 font-monospace">
+                      <%= @tenants_count %> <%= t("admin.notifications.recipients_unit") %>
+                    </span>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Priority Level -->
+        <div>
+          <%= f.label :level, class: "form-label fw-bold d-flex align-items-center gap-2 mb-2" do %>
+            <span class="material-symbols-filled fs-4">flag</span>
+            <span><%= t("admin.notifications.form.level_label") %></span>
+            <span class="text-danger">*</span>
+          <% end %>
+          <div class="d-flex gap-3 flex-wrap">
+            <div class="form-check">
+              <%= f.radio_button :level, "info", checked: true, class: "form-check-input",
+                  data: {
+                    broadcast_notification_target: "levelRadio",
+                    action: "change->broadcast-notification#updateLevel" } %>
+              <%= f.label :level, value: "info", class: "form-check-label d-inline-flex align-items-center gap-1" do %>
+                <span class="badge bg-info-subtle text-info-emphasis border border-info-subtle px-2 py-1">
+                  <span class="material-symbols-outlined fs-6 align-middle me-1">bigtop_updates</span>
+                  <%= t("admin.notifications.levels.info") %>
+                </span>
+              <% end %>
+              <p class="mt-1 small text-secondary">(<%= t("admin.notifications.levels.info_hint") %>)</p>
+            </div>
+
+            <div class="form-check">
+              <%= f.radio_button :level, "warning", class: "form-check-input",
+                  data: {
+                    broadcast_notification_target: "levelRadio",
+                    action: "change->broadcast-notification#updateLevel" } %>
+              <%= f.label :level, value: "warning", class: "form-check-label d-inline-flex align-items-center gap-1" do %>
+                <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle px-2 py-1">
+                  <span class="material-symbols-filled fs-6 align-middle me-1">warning</span>
+                  <%= t("admin.notifications.levels.warning") %>
+                </span>
+              <% end %>
+              <p class="mt-1 small text-secondary">(<%= t("admin.notifications.levels.warning_hint") %>)</p>
+            </div>
+
+            <div class="form-check">
+              <%= f.radio_button :level, "urgent", class: "form-check-input",
+                  data: {
+                    broadcast_notification_target: "levelRadio",
+                    action: "change->broadcast-notification#updateLevel" } %>
+              <%= f.label :level, value: "urgent", class: "form-check-label d-inline-flex align-items-center gap-1" do %>
+                <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1">
+                  <span class="material-symbols-filled fs-6 align-middle me-1">release_alert</span>
+                  <%= t("admin.notifications.levels.urgent") %>
+                </span>
+              <% end %>
+              <p class="mt-1 small text-secondary">(<%= t("admin.notifications.levels.urgent_hint") %>)</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Title Input -->
+        <div data-controller="character-counter" data-character-counter-max-value="150">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <%= f.label :title, class: "form-label fw-bold d-flex align-items-center gap-2 mb-0" do %>
+              <span class="material-symbols-outlined fs-5">title</span>
+              <span><%= t("admin.notifications.form.title_label") %></span>
+              <span class="text-danger">*</span>
+            <% end %>
+            <span class="small text-secondary" data-character-counter-target="count">0/150</span>
+          </div>
+          <%= f.text_field :title,
+                           id: "notification_title",
+                           class: "form-control",
+                           placeholder: t("admin.notifications.form.title_placeholder"),
+                           maxlength: 150,
+                           required: true,
+                           data: {
+                             broadcast_notification_target: "titleInput",
+                             character_counter_target: "input",
+                             action: "input->broadcast-notification#updateTextPreview input->character-counter#update"
+                           } %>
+        </div>
+
+        <!-- 4. Message Body -->
+        <div data-controller="character-counter" data-character-counter-max-value="1000">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <%= f.label :message, class: "form-label fw-bold d-flex align-items-center gap-2 mb-0" do %>
+              <span class="material-symbols-outlined fs-5">notes</span>
+              <span><%= t("admin.notifications.form.message_label") %></span>
+              <span class="text-danger">*</span>
+            <% end %>
+            <span class="small text-secondary" data-character-counter-target="count">0/1000</span>
+          </div>
+          <%= f.text_area :message,
+                          id: "notification_message",
+                          class: "form-control",
+                          rows: 5,
+                          maxlength: 1000,
+                          placeholder: t("admin.notifications.form.message_placeholder"),
+                          required: true,
+                          data: {
+                            broadcast_notification_target: "messageInput",
+                            character_counter_target: "input",
+                            action: "input->broadcast-notification#updateTextPreview input->character-counter#update"
+                          } %>
+        </div>
+
+        <!-- 5. Action URL (Optional) -->
+        <div>
+          <%= f.label :url, class: "form-label fw-bold d-flex align-items-center gap-2" do %>
+            <span class="material-symbols-outlined fs-5">link</span>
+            <span><%= t("admin.notifications.form.url_label") %></span>
+          <% end %>
+          <%= f.url_field :url,
+                          id: "notification_url",
+                          class: "form-control",
+                          placeholder: t("admin.notifications.form.url_placeholder"),
+                          data: {
+                            broadcast_notification_target: "urlInput",
+                            action: "input->broadcast-notification#updateTextPreview"
+                          } %>
+        </div>
+
+        <!-- 6. Live User Preview Box -->
+        <div class="p-3 bg-light-subtle rounded-3 border">
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <span class="material-symbols-outlined text-secondary fs-5">preview</span>
+            <span class="fw-bold small text-uppercase text-secondary"><%= t("admin.notifications.preview.header") %></span>
+          </div>
+          <div class="card bg-white border rounded-3 p-3 shadow-sm">
+            <div class="d-flex justify-content-between align-items-start gap-2 mb-1">
+              <div class="d-flex align-items-center gap-2">
+                <span class="badge bg-primary rounded-circle p-1" title="<%= t('noti.unread') %>"></span>
+                <h6 class="fw-bold mb-0" id="previewTitle" data-broadcast-notification-target="previewTitle">
+                  <%= t("admin.notifications.preview.default_title") %>
+                </h6>
+              </div>
+              <span class="badge bg-info-subtle text-info-emphasis border border-info-subtle" id="previewLevelBadge" data-broadcast-notification-target="previewLevelBadge">
+                <%= t("admin.notifications.levels.info") %>
+              </span>
+            </div>
+            <p class="text-secondary small mb-2" id="previewMessage" data-broadcast-notification-target="previewMessage">
+              <%= t("admin.notifications.preview.default_message") %>
+            </p>
+            <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+              <span class="text-secondary small fst-italic" id="previewSender">
+                <%= current_admin&.fullname || t("admin.self") %> • <%= t("datetime.just_now") %>
+              </span>
+              <span class="btn btn-sm btn-outline-primary py-0 px-2 d-none" id="previewBtnLink" data-broadcast-notification-target="previewBtnLink">
+                <%= t("view_detail") %>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+          <%= link_to admin_notifications_path, class: "btn btn-outline-secondary d-inline-flex align-items-center gap-1" do %>
+            <span class="material-symbols-outlined fs-6">arrow_back</span>
+            <span><%= t("cancel") %></span>
+          <% end %>
+
+          <%= f.button type: :button,
+                       class: "custom-primary-btn d-inline-flex align-items-center gap-2 shadow-sm",
+                       data: { action: "click->broadcast-notification#openConfirmModal" } do %>
+            <span class="material-symbols-filled fs-5">send</span>
+            <span><%= t("admin.notifications.form.submit_btn") %></span>
+          <% end %>
+        </div>
+
+      </div>
+    <% end %>
+
+  </div>
+
+  <!-- Send Confirmation Modal -->
+  <div class="modal fade" id="confirmBroadcastModal" tabindex="-1" aria-labelledby="confirmBroadcastModalLabel" aria-hidden="true" data-broadcast-notification-target="modal">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content rounded-4 shadow border-0">
+        <div class="modal-header border-bottom py-3 px-4">
+          <h2 class="modal-title d-flex align-items-center gap-2" id="confirmBroadcastModalLabel">
+            <span class="material-symbols-outlined fs-3">notification_sound</span>
+            <%= t("admin.notifications.confirm_modal.title") %>
+          </h2>
+          <button type="button" class="btn-close" data-bs-theme="dark" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body p-4">
+          <div class="alert alert-danger border-danger-subtle rounded-3 small mb-3 d-flex align-items-start gap-2">
+            <span class="material-symbols-filled text-danger fs-5 mt-1">lock</span>
+            <span><%= t("admin.notifications.confirm_modal.irreversible_warning") %></span>
+          </div>
+
+          <div class="p-3 bg-light rounded-3 border mb-3 small">
+            <div class="mb-2">
+              <p class="fw-medium text-secondary"><%= t("admin.notifications.form.audience_label") %>:</p>
+              <span class="fw-bold" id="modalAudienceText" data-broadcast-notification-target="modalAudience"><%= t("admin.notifications.audience.all") %></span>
+            </div>
+            <div class="mb-2">
+              <p class="fw-medium text-secondary"><%= t("admin.notifications.form.title_label") %>:</p>
+              <span class="fw-bold" id="modalTitleText" data-broadcast-notification-target="modalTitle">-</span>
+            </div>
+            <div>
+              <p class="fw-medium text-secondary"><%= t("admin.notifications.form.level_label") %>:</p>
+              <span class="badge bg-info-subtle text-info-emphasis border border-info-subtle" id="modalLevelBadge" data-broadcast-notification-target="modalLevelBadge"><%= t("admin.notifications.levels.info") %></span>
+            </div>
+          </div>
+
+          <p class="small text-secondary mb-0">
+            <%= t("admin.notifications.confirm_modal.prompt") %>
+          </p>
+        </div>
+        <div class="modal-footer bg-light border-top py-2 px-4">
+          <%= button_tag t("cancel"), type: :button, class: "btn btn-secondary btn-sm px-3", data: { bs_dismiss: "modal" } %>
+          <%= button_tag type: :button, class: "custom-primary-btn px-4",
+                data: {
+                  broadcast_notification_target: "submitBtn",
+                  action: "click->broadcast-notification#submit"
+                } do %>
+            <span class="material-symbols-filled fs-6 align-middle me-1">send</span>
+            <%= t("admin.notifications.confirm_modal.confirm_btn") %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -57,4 +57,32 @@ class CleanupNotificationsJobTest < ActiveJob::TestCase
     assert Noticed::Event.exists?(@read_recent.event_id), "Event for recent read notification should be kept"
     assert Noticed::Event.exists?(@unread_recent.event_id), "Event for recent unread notification should be kept"
   end
+
+  test "perform preserves CustomAnnouncementNotifier events even when notifications are deleted" do
+    admin = Admin.create!(
+      email: "audit_cleanup@leanhouse.vn",
+      fullname: "Audit Admin",
+      password: "Password123!",
+      password_confirmation: "Password123!",
+      role: "super_admin",
+      is_active: true
+    )
+
+    CustomAnnouncementNotifier.with(
+      record: admin,
+      title: "Bảo trì cũ",
+      message: "Nội dung cũ",
+      target_audience: "all"
+    ).deliver(@user)
+
+    custom_noti = @user.notifications.order(:id).last
+    custom_event = custom_noti.event
+    custom_noti.update_columns(created_at: 40.days.ago, read_at: 35.days.ago)
+    custom_event.update_columns(created_at: 40.days.ago)
+
+    CleanupNotificationsJob.perform_now(read_days: 30, unread_days: 180)
+
+    assert_not Noticed::Notification.exists?(custom_noti.id), "Old read notification should be deleted"
+    assert Noticed::Event.exists?(custom_event.id), "CustomAnnouncementNotifier event should be preserved for admin audit"
+  end
 end

@@ -19,8 +19,10 @@ class CleanupNotificationsJob < ApplicationJob
       batch.delete_all
     end
 
-    # 3. Clean up orphaned events (events with no corresponding notifications remaining)
-    Noticed::Event.where.not(id: Noticed::Notification.select(:event_id))
+    # 3. Clean up orphaned events (events with no corresponding notifications remaining),
+    # preserving CustomAnnouncementNotifier events so Admin Portal retains its broadcast audit log.
+    Noticed::Event.where.not(type: "CustomAnnouncementNotifier")
+                  .where.not(id: Noticed::Notification.select(:event_id))
                   .in_batches(of: 1000) do |batch|
       batch.delete_all
     end

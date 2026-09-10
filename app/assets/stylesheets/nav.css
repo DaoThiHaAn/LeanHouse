@@ -106,9 +106,9 @@
 
 .lang-btn {
     font-weight: bold;
-    font-size: 0.8rem;
-    padding: 5px 10px;
-    border-radius: 25px;
+    font-size: 0.75rem;
+    padding: 4px 9px;
+    border-radius: 15px;
     border: 1px solid #A6BBC6;
     background-color: transparent;
     color: #44656F;
@@ -151,6 +151,24 @@
   align-items: center;
   justify-content: center;
   pointer-events: none; /* allow clicking the button under it */
+}
+
+@keyframes bell-ring {
+  0% { transform: rotate(0); }
+  10% { transform: rotate(15deg); }
+  20% { transform: rotate(-15deg); }
+  30% { transform: rotate(10deg); }
+  40% { transform: rotate(-10deg); }
+  50% { transform: rotate(5deg); }
+  60% { transform: rotate(-5deg); }
+  70% { transform: rotate(0); }
+  100% { transform: rotate(0); }
+}
+
+.noti-ringing {
+  display: inline-block;
+  animation: bell-ring 1s ease-in-out;
+  transform-origin: top center;
 }
 
 .navbar .icon-img {

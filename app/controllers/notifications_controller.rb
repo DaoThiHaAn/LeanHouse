@@ -90,4 +90,13 @@ class NotificationsController < ApplicationController
       format.html { redirect_back fallback_location: root_path }
     end
   end
+
+  # Render latest notification dropdown HTML for real-time background sync
+  def box
+    @notifications = current_user.notifications.order(created_at: :desc).limit(10)
+    @unread_count = current_user.notifications.unread.count
+
+    render partial: "layouts/shared_components/notification_dropdown",
+           locals: { unread_count: @unread_count, notifications: @notifications }
+  end
 end

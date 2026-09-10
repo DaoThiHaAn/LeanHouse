@@ -5,7 +5,7 @@
           aria-expanded="false" title="<%= t("click_open") %>"
           aria-label="<%= t("noti.notifications", default: "Thông báo") %><%= " (#{unread_count} " + t("noti.unread", default: "chưa đọc") + ")" if unread_count.to_i > 0 %>">
     <div class="position-relative">
-      <span class="noti material-symbols-filled" aria-hidden="true">notifications</span>
+      <span class="noti material-symbols-filled <%= 'noti-ringing' if local_assigns[:animate_bell] %>" aria-hidden="true">notifications</span>
       <% if unread_count.to_i > 0 %>
         <span class="notification-badge">
           <%= noti_count(unread_count) %>
