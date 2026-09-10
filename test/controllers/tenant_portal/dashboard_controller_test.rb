@@ -196,4 +196,32 @@ class TenantPortal::DashboardControllerTest < ActionDispatch::IntegrationTest
     assert_select ".invoice-title", text: I18n.t("dashboard.tenant.invoices_title")
     assert_select ".invoice-value", text: /3,000,000/
   end
+
+  test "tenant sees animated warning alert when invoice due date is today" do
+    @house.invoices.create!(
+      code: "HD#{Date.current.strftime('%y%m')}-101-TODAY",
+      title: "Tiền phòng tháng này",
+      room: @room,
+      tenant: @tenant,
+      created_by: @landlord_user,
+      billing_month: Date.current.beginning_of_month,
+      due_date: Date.current,
+      invoice_type: :individual,
+      status: :pending,
+      subtotal: 3_000_000,
+      total_discount: 0,
+      total_addition: 0,
+      total_amount: 3_000_000
+    )
+
+    sign_in_as(@tenant_user)
+
+    get tenant_dashboard_path
+    assert_response :success
+
+    assert_select ".card-tenant-invoices.has-due-today"
+    assert_select ".invoice-due-today-pulse"
+    assert_includes response.body, I18n.t("dashboard.tenant.invoice_due_today_alert")
+    assert_includes response.body, I18n.t("dashboard.tenant.invoices_unpaid_count", count: 1)
+  end
 end

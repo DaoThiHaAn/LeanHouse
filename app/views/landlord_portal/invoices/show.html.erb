@@ -3,22 +3,22 @@
 
 <div class="container py-4 invoice-detail-wrapper">
   <!-- Navigation Top Bar -->
-  <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom d-print-none">
-    <%= link_to landlord_house_invoices_path(@house, month: @invoice.billing_month.strftime("%Y-%m")), class: "btn btn-outline-secondary btn-sm d-flex align-items-center gap-1 shadow-sm" do %>
+  <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom d-print-none flex-wrap gap-2">
+    <%= link_to landlord_house_invoices_path(@house, month: @invoice.billing_month.strftime("%Y-%m")), class: "btn btn-outline-secondary btn-sm d-flex align-items-center gap-1 shadow-sm px-3 rounded-pill" do %>
       <span class="material-symbols-outlined fs-6">arrow_back</span> <%= t('invoice.actions.back_to_list') %>
     <% end %>
 
-    <div class="d-flex gap-2">
-      <button onclick="window.print()" class="btn btn-outline-dark btn-sm d-flex align-items-center gap-1 shadow-sm">
+    <div class="d-flex gap-2 align-items-center flex-wrap">
+      <button onclick="window.print()" class="btn btn-outline-dark btn-sm d-flex align-items-center gap-1 shadow-sm px-3 rounded-pill">
         <span class="material-symbols-outlined fs-6">print</span> <%= t('invoice.actions.print') %>
       </button>
       <% if @invoice.pending? || @invoice.overdue? %>
-        <button type="button" class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1 shadow-sm" data-bs-toggle="modal" data-bs-target="#editInvoiceDatesModal">
+        <button type="button" class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1 shadow-sm px-3 rounded-pill" data-bs-toggle="modal" data-bs-target="#editInvoiceDatesModal">
           <span class="material-symbols-outlined fs-6">edit_calendar</span> <%= t('invoice.edit_dates_and_info', default: 'Sửa ngày & ghi chú') %>
         </button>
       <% end %>
       <% if @invoice.pending? %>
-        <%= button_to cancel_landlord_house_invoice_path(@house, @invoice), method: :patch, data: { turbo_confirm: t('invoice.actions.cancel_confirm') }, class: "btn btn-outline-danger btn-sm d-flex align-items-center gap-1 shadow-sm" do %>
+        <%= button_to cancel_landlord_house_invoice_path(@house, @invoice), method: :patch, data: { turbo_confirm: t('invoice.actions.cancel_confirm') }, class: "btn btn-outline-danger btn-sm d-flex align-items-center gap-1 shadow-sm px-3 rounded-pill" do %>
           <span class="material-symbols-outlined fs-6">cancel</span> <%= t('invoice.actions.cancel') %>
         <% end %>
       <% end %>

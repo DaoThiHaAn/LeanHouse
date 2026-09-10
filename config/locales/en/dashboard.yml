@@ -7,7 +7,7 @@ en:
       select_house: "Select house"
       all_houses: "All houses"
       month_stats_label: "Statistics for %{month}"
-      
+
       # Card 1: Tenant flow
       tenant_flow_title: "Tenant Flow"
       tenant_flow_desc: "Monthly tenant turnover"
@@ -38,10 +38,27 @@ en:
       invoices_period_subtitle: "Billing cycle %{month}"
       invoices_overdue_short: "overdue"
       invoices_pending_short: "pending"
-      invoices_collected_rate: "collected"
+      invoices_paid_short: "Collected"
+      invoices_collected_rate: "Collection Rate"
+      invoices_total_label: "Total Invoices"
       invoices_total_count: "%{count} invoice(s)"
+      invoices_unit: "invoice(s)"
       invoices_none_month: "No invoices this month"
+      invoices_badge: "Receivables"
       view_invoices: "View invoices list"
+
+      # Card 6: Revenue
+      revenue_title: "Revenue & Distribution"
+      revenue_period_subtitle: "Billing cycle %{month}"
+      collected_revenue: "Collected this month"
+      expected_revenue: "Expected (Invoiced)"
+      rent_portion: "Room Rent"
+      service_portion: "Services & Utilities"
+      portfolio_share: "Contributes %{pct}% of portfolio revenue"
+      no_revenue_data: "No revenue recorded for this month"
+      house_portion_title: "Revenue portion by house"
+      revenue_badge: "Revenue"
+      view_revenue: "View revenue details"
 
       # Fallback
       no_house_selected_tip: "Select a specific house to access detailed management pages."
@@ -69,4 +86,6 @@ en:
       invoices_unpaid_count: "%{count} invoice(s) unpaid"
       invoices_overdue_alert: "%{count} invoice(s) overdue!"
       invoice_due_date: "Due: %{date}"
+      invoice_due_today_alert: "Payment due today!"
+      invoice_due_today_badge: "Due today"
       unpaid_amount_label: "Amount to pay"

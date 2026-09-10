@@ -71,6 +71,15 @@
   color: #0E8A7A;
 }
 
+.card-indigo {
+  background-color: #EEF2FF;
+  border-color: #C7D2FE;
+  border-left-color: #4F46E5;
+}
+.card-indigo .stat-icon {
+  color: #4F46E5;
+}
+
 /* Stat Card Inner Elements */
 .stat-card-title {
   font-size: 1rem;
@@ -182,6 +191,17 @@
   box-shadow: 0 4px 12px rgba(14, 138, 122, 0.3);
 }
 
+.card-indigo .action-arrow-btn {
+  color: #4F46E5;
+  border-color: #C7D2FE;
+}
+.card-indigo .action-arrow-btn:hover {
+  background-color: #4F46E5;
+  color: #FFFFFF;
+  border-color: #4F46E5;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
 /* Tenant Dashboard Stat Cards */
 .tenant-stat-card {
   min-height: 140px;
@@ -241,8 +261,8 @@
   color: #198754;
 }
 .card-tenant-invoices.has-overdue {
-  background-color: #FFEDE8;
-  border-color: #F7C9C9;
+  background-color: #fde4de;
+  border-color: #fabcbc;
 }
 .card-tenant-invoices.has-overdue .invoice-title {
   color: #921E1E;
@@ -250,6 +270,32 @@
 .card-tenant-invoices.has-overdue .invoice-value {
   color: #DC3545;
 }
+.card-tenant-invoices.has-due-today {
+  background-color: #fef5d8;
+  border-color: #FED7AA;
+  border-left-color: #EA580C;
+}
+.card-tenant-invoices.has-due-today .invoice-title {
+  color: #9A3412;
+}
+.card-tenant-invoices.has-due-today .invoice-value {
+  color: #C2410C;
+}
+.invoice-due-today-pulse {
+  display: inline-block;
+  animation: invoice-due-today-bounce 1.5s infinite ease-in-out;
+}
+@keyframes invoice-due-today-bounce {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.25);
+    opacity: 1;
+  }
+}
+
 .arrow-invoices {
   color: #198754;
   border-color: #C6ECD9;
@@ -260,11 +306,14 @@
   border-color: #198754;
   box-shadow: 0 4px 12px rgba(25, 135, 84, 0.3);
 }
-.card-tenant-invoices.has-overdue .arrow-invoices {
+
+.card-tenant-invoices.has-overdue .arrow-invoices,
+.card-tenant-invoices.has-due-today .arrow-invoices {
   color: #DC3545;
   border-color: #F7C9C9;
 }
-.card-tenant-invoices.has-overdue .arrow-invoices:hover {
+.card-tenant-invoices.has-overdue .arrow-invoices:hover,
+.card-tenant-invoices.has-due-today .arrow-invoices:hover {
   background-color: #DC3545;
   color: #FFFFFF;
   border-color: #DC3545;
@@ -293,4 +342,86 @@
   .dashboard-stat-card {
     height: auto;
   }
+}
+
+/* Landlord Financial Cards (Row 2) */
+.dashboard-financial-card {
+  height: auto;
+  min-height: 165px;
+}
+
+.text-teal-accent {
+  color: #0E8A7A !important;
+}
+
+.text-indigo-accent {
+  color: #4F46E5 !important;
+}
+
+@media (min-width: 576px) {
+  .border-end-sm {
+    border-right: 1px solid rgba(0, 0, 0, 0.08) !important;
+  }
+}
+
+/* SVG Progress and Distribution Bars */
+.financial-progress-container {
+  width: 100%;
+  height: 8px;
+}
+
+.financial-progress-svg {
+  width: 100%;
+  height: 8px;
+  display: block;
+}
+
+.progress-bg {
+  fill: rgba(0, 0, 0, 0.07);
+}
+
+.progress-fill-teal {
+  fill: #0E8A7A;
+}
+
+.portion-rent {
+  fill: #4F46E5;
+}
+
+.portion-service {
+  fill: #06B6D4;
+}
+
+/* Multi-House Palette for SVG & Badges */
+.portion-house-0 { fill: #4F46E5; }
+.portion-house-1 { fill: #06B6D4; }
+.portion-house-2 { fill: #10B981; }
+.portion-house-3 { fill: #F59E0B; }
+.portion-house-4 { fill: #EC4899; }
+.portion-house-5 { fill: #8B5CF6; }
+
+.bg-house-0 { background-color: #4F46E5; }
+.bg-house-1 { background-color: #06B6D4; }
+.bg-house-2 { background-color: #10B981; }
+.bg-house-3 { background-color: #F59E0B; }
+.bg-house-4 { background-color: #EC4899; }
+.bg-house-5 { background-color: #8B5CF6; }
+
+.dot-rent { background-color: #4F46E5; }
+.dot-service { background-color: #06B6D4; }
+
+.portion-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.house-portion-chip {
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 6px;
+  padding: 2px 6px;
+  font-size: 0.8rem;
 }

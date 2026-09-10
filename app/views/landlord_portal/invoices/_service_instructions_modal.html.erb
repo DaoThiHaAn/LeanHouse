@@ -1,34 +1,161 @@
-<!-- Modal Hướng dẫn Dịch vụ Real-time / Đo đạc -->
+<!-- Modal Hướng dẫn Dịch vụ Real-time / Đo đạc & Chu kỳ sử dụng -->
 <div class="modal fade" id="serviceInstructionsModal" tabindex="-1" aria-labelledby="serviceInstructionsModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content rounded-4 shadow">
-      <div class="modal-header border-bottom">
-        <h5 class="modal-title fw-bold" id="serviceInstructionsModalLabel">
-          <span class="material-symbols-outlined text-primary align-middle">info</span>
-          <%= t('invoice.service_instructions_title') %>
-        </h5>
+  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+    <div class="modal-content rounded-4 shadow border-0 overflow-hidden">
+      <!-- Header -->
+      <div class="modal-header bg-light border-bottom py-3 px-4">
+        <div>
+          <h5 class="modal-title fw-bold text-dark d-flex align-items-center gap-2 mb-1" id="serviceInstructionsModalLabel">
+            <span class="material-symbols-outlined text-primary fs-4">receipt_long</span>
+            <%= t('invoice.service_instructions_title') %>
+          </h5>
+          <p class="text-secondary small mb-0">
+            <%= t('invoice.service_instructions_subtitle') %>
+          </p>
+        </div>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body">
-        <h6 class="fw-bold text-dark"><%= t('invoice.realtime_usage_title') %></h6>
-        <p class="text-secondary small mb-3">
-          <%= t('invoice.realtime_usage_desc') %>
-          <br>
-          <code class="text-primary font-monospace fw-bold"><%= t('invoice.usage_quantity') %> = <%= t('invoice.latest_reading') %> - <%= t('invoice.prev_reading') %></code>
-        </p>
 
-        <h6 class="fw-bold text-dark"><%= t('invoice.fixed_usage_title') %></h6>
-        <p class="text-secondary small mb-3">
-          <%= simple_format(t('invoice.fixed_usage_desc')) %>
-        </p>
+      <div class="modal-body p-4">
+        <!-- 1. Real-time / Metered Usage -->
+        <div class="card border rounded-3 p-3 mb-3 bg-white shadow-sm">
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <span class="material-symbols-outlined text-primary fs-5">speed</span>
+            <h6 class="fw-bold text-dark mb-0"><%= t('invoice.realtime_usage_title') %></h6>
+          </div>
+          <p class="text-secondary small mb-2">
+            <%= t('invoice.realtime_usage_desc') %>
+          </p>
+          <div class="bg-light p-2 rounded text-center font-monospace fw-bold small text-primary border">
+            <%= t('invoice.usage_quantity') %> = <%= t('invoice.latest_reading') %> − <%= t('invoice.prev_reading') %>
+          </div>
+        </div>
 
-        <h6 class="fw-bold text-dark"><%= t('invoice.individual_split_title') %></h6>
-        <p class="text-secondary small mb-0">
-          <%= t('invoice.individual_split_desc') %>
-        </p>
+        <!-- 2. Fixed Usage -->
+        <div class="card border rounded-3 p-3 mb-3 bg-white shadow-sm">
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <span class="material-symbols-outlined text-success fs-5">inventory_2</span>
+            <h6 class="fw-bold text-dark mb-0"><%= t('invoice.fixed_usage_title') %></h6>
+          </div>
+          <div class="text-secondary small">
+            <%= simple_format(t('invoice.fixed_usage_desc'), class: "mb-0") %>
+          </div>
+        </div>
+
+        <!-- 3. Individual Split -->
+        <div class="card border rounded-3 p-3 mb-3 bg-white shadow-sm">
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <span class="material-symbols-outlined text-info fs-5">group</span>
+            <h6 class="fw-bold text-dark mb-0"><%= t('invoice.individual_split_title') %></h6>
+          </div>
+          <p class="text-secondary small mb-0">
+            <%= t('invoice.individual_split_desc') %>
+          </p>
+        </div>
+
+        <!-- 4. Service Usage Period Determination Rules -->
+        <div class="card border rounded-3 p-3 mb-3 bg-white shadow-sm">
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <span class="material-symbols-outlined text-primary fs-5">date_range</span>
+            <h6 class="fw-bold text-dark mb-0"><%= t('invoice.usage_period_title') %></h6>
+          </div>
+          <p class="text-secondary small mb-3">
+            <%= t('invoice.usage_period_desc') %>
+          </p>
+
+          <div class="d-flex flex-column gap-2">
+            <!-- Tier 1 -->
+            <div class="p-2 border rounded bg-light-subtle">
+              <div class="d-flex align-items-center gap-2 mb-1">
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle"><%= t('invoice.usage_period_tier1_badge') %></span>
+                <strong class="text-dark small"><%= t('invoice.usage_period_tier1_title') %></strong>
+              </div>
+              <div class="small text-secondary mb-1"><%= t('invoice.usage_period_tier1_desc') %></div>
+              <div class="small text-success font-monospace fw-medium bg-white p-2 rounded border">
+                <span class="material-symbols-outlined fs-6 align-middle me-1">check_circle</span>
+                <%= t('invoice.usage_period_tier1_example') %>
+              </div>
+            </div>
+
+            <!-- Tier 2 -->
+            <div class="p-2 border rounded bg-light-subtle">
+              <div class="d-flex align-items-center gap-2 mb-1">
+                <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle"><%= t('invoice.usage_period_tier2_badge') %></span>
+                <strong class="text-dark small"><%= t('invoice.usage_period_tier2_title') %></strong>
+              </div>
+              <div class="small text-secondary mb-1"><%= t('invoice.usage_period_tier2_desc') %></div>
+              <div class="small text-warning-emphasis font-monospace fw-medium bg-white p-2 rounded border">
+                <span class="material-symbols-outlined fs-6 align-middle me-1">check_circle</span>
+                <%= t('invoice.usage_period_tier2_example') %>
+              </div>
+            </div>
+
+            <!-- Tier 3 -->
+            <div class="p-2 border rounded bg-light-subtle">
+              <div class="d-flex align-items-center gap-2 mb-1">
+                <span class="badge bg-secondary-subtle text-secondary-emphasis border"><%= t('invoice.usage_period_tier3_badge') %></span>
+                <strong class="text-dark small"><%= t('invoice.usage_period_tier3_title') %></strong>
+              </div>
+              <div class="small text-secondary mb-1"><%= t('invoice.usage_period_tier3_desc') %></div>
+              <div class="small text-secondary font-monospace fw-medium bg-white p-2 rounded border">
+                <span class="material-symbols-outlined fs-6 align-middle me-1">check_circle</span>
+                <%= t('invoice.usage_period_tier3_example') %>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. Handling Unconfirmed or Missing Meter Readings -->
+        <div class="card border rounded-3 p-3 mb-3 bg-white shadow-sm">
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <span class="material-symbols-outlined text-warning-emphasis fs-5">pending_actions</span>
+            <h6 class="fw-bold text-dark mb-0"><%= t('invoice.unconfirmed_realtime_title') %></h6>
+          </div>
+          <p class="text-secondary small mb-3">
+            <%= t('invoice.unconfirmed_realtime_desc') %>
+          </p>
+
+          <div class="row g-2">
+            <!-- Case 1: Pending Confirmation -->
+            <div class="col-12 col-md-6">
+              <div class="p-3 border rounded-3 bg-light-subtle h-100">
+                <div class="d-flex align-items-center gap-1 mb-1 text-primary fw-semibold small">
+                  <span class="material-symbols-outlined fs-6">task_alt</span>
+                  <span><%= t('invoice.unconfirmed_case_pending_title') %></span>
+                </div>
+                <div class="small text-secondary">
+                  <%= t('invoice.unconfirmed_case_pending_desc') %>
+                </div>
+              </div>
+            </div>
+
+            <!-- Case 2: Missing Reading -->
+            <div class="col-12 col-md-6">
+              <div class="p-3 border rounded-3 bg-light-subtle h-100">
+                <div class="d-flex align-items-center gap-1 mb-1 text-warning-emphasis fw-semibold small">
+                  <span class="material-symbols-outlined fs-6">edit_note</span>
+                  <span><%= t('invoice.unconfirmed_case_missing_title') %></span>
+                </div>
+                <div class="small text-secondary">
+                  <%= simple_format(t('invoice.unconfirmed_case_missing_desc'), class: "mb-0") %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6. Snapshot Immutability Note -->
+        <div class="alert alert-info border-0 rounded-3 mb-0 d-flex align-items-start gap-2 py-2 px-3">
+          <span class="material-symbols-outlined text-info-emphasis fs-5 mt-1 flex-shrink-0">lock</span>
+          <div class="small">
+            <strong class="text-info-emphasis"><%= t('invoice.snapshot_note_title') %>:</strong>
+            <span class="text-secondary"><%= t('invoice.snapshot_note_desc') %></span>
+          </div>
+        </div>
       </div>
-      <div class="modal-footer border-top">
-        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal"><%= t('invoice.understood') %></button>
+
+      <div class="modal-footer bg-light border-top py-2 px-4">
+        <button type="button" class="btn btn-primary btn-sm px-4" data-bs-dismiss="modal"><%= t('invoice.understood') %></button>
       </div>
     </div>
   </div>

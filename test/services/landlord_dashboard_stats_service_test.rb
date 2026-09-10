@@ -350,4 +350,67 @@ class LandlordDashboardStatsServiceTest < ActiveSupport::TestCase
     assert_equal 3_000_000, stats_h1[:invoices][:total_amount]
     assert_equal 100.0, stats_h1[:invoices][:collection_rate]
   end
+
+  test "calculates revenue stats and house portions accurately" do
+    inv1 = @house1.invoices.create!(
+      code: "HD#{Date.current.strftime('%y%m')}-P101-0003",
+      title: "Hóa đơn P101",
+      room: @room1,
+      created_by: @landlord_user,
+      billing_month: Date.current.beginning_of_month,
+      due_date: Date.current + 5.days,
+      invoice_type: :room,
+      status: :paid,
+      subtotal: 4_000_000,
+      total_discount: 0,
+      total_addition: 0,
+      total_amount: 4_000_000,
+      paid_at: Time.current
+    )
+    inv1.invoice_items.create!(name: "Tiền phòng", item_type: :rent, quantity: 1, unit_price: 3_000_000, amount: 3_000_000)
+    inv1.invoice_items.create!(name: "Tiền điện", item_type: :metered_service, quantity: 1, unit_price: 1_000_000, amount: 1_000_000)
+
+    inv2 = @house2.invoices.create!(
+      code: "HD#{Date.current.strftime('%y%m')}-P201-0004",
+      title: "Hóa đơn P201",
+      room: @room3,
+      created_by: @landlord_user,
+      billing_month: Date.current.beginning_of_month,
+      due_date: Date.current + 5.days,
+      invoice_type: :room,
+      status: :paid,
+      subtotal: 6_000_000,
+      total_discount: 0,
+      total_addition: 0,
+      total_amount: 6_000_000,
+      paid_at: Time.current
+    )
+    inv2.invoice_items.create!(name: "Tiền phòng", item_type: :rent, quantity: 1, unit_price: 6_000_000, amount: 6_000_000)
+
+    # All houses stats
+    stats_all = LandlordDashboardStatsService.call(landlord: @landlord)
+    assert_equal 10_000_000, stats_all[:revenue][:total_revenue]
+    assert_equal 10_000_000, stats_all[:revenue][:paid_revenue]
+    assert_equal 9_000_000, stats_all[:revenue][:rent_revenue]
+    assert_equal 1_000_000, stats_all[:revenue][:service_revenue]
+    assert_equal 90.0, stats_all[:revenue][:rent_percentage]
+    assert_equal 10.0, stats_all[:revenue][:service_percentage]
+    assert_equal 2, stats_all[:revenue][:house_portions].size
+
+    h1_portion = stats_all[:revenue][:house_portions].find { |p| p[:id] == @house1.id }
+    h2_portion = stats_all[:revenue][:house_portions].find { |p| p[:id] == @house2.id }
+    assert_equal 4_000_000, h1_portion[:paid_revenue]
+    assert_equal 40.0, h1_portion[:percentage]
+    assert_equal 6_000_000, h2_portion[:paid_revenue]
+    assert_equal 60.0, h2_portion[:percentage]
+
+    # Specific house stats
+    stats_h1 = LandlordDashboardStatsService.call(landlord: @landlord, house_id: @house1.id)
+    assert_equal 4_000_000, stats_h1[:revenue][:paid_revenue]
+    assert_equal 3_000_000, stats_h1[:revenue][:rent_revenue]
+    assert_equal 1_000_000, stats_h1[:revenue][:service_revenue]
+    assert_equal 75.0, stats_h1[:revenue][:rent_percentage]
+    assert_equal 25.0, stats_h1[:revenue][:service_percentage]
+    assert_equal 40.0, stats_h1[:revenue][:portfolio_share]
+  end
 end

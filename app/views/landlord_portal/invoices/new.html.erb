@@ -209,6 +209,7 @@
                 <%= t('invoice.tenant', default: 'Người thuê / Giường') %> <span class="text-danger">*</span>
               <% end %>
               <select name="invoice[tenant_id]" id="tenant_select" class="form-select shadow-sm"
+                      <%= 'disabled' unless @invoice_type == 'individual' %>
                       data-invoice-form-target="tenantSelect"
                       data-action="change->invoice-form#tenantChanged">
                 <% if @room %>

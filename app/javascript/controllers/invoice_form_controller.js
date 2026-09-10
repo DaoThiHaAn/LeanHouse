@@ -31,6 +31,9 @@ export default class extends Controller {
     if (!this.hasInvoiceTypeSelectTarget || !this.hasTenantWrapperTarget) return
     const isIndividual = this.invoiceTypeSelectTarget.value === "individual"
     this.tenantWrapperTarget.classList.toggle("d-none", !isIndividual)
+    if (this.hasTenantSelectTarget) {
+      this.tenantSelectTarget.disabled = !isIndividual
+    }
   }
 
   floorChanged() {

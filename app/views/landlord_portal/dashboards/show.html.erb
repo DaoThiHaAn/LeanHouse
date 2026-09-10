@@ -21,7 +21,7 @@
         <label for="house_id" class="fw-bold text-nowrap">
           <%= t('dashboard.landlord.select_house') %>:
         </label>
-        <%= form_with url: landlord_dashboard_path, method: :get, data: { turbo_frame: "dashboard_stats" } do |f| %>
+        <%= form_with url: landlord_dashboard_path, method: :get, data: { turbo_action: "advance" } do |f| %>
           <%= f.select :house_id,
                       options_for_select(
                         [[t('dashboard.landlord.all_houses'), "all"]] + @houses.map { |h| [h.name, h.id] },

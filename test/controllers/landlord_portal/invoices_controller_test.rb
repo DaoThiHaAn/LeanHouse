@@ -958,4 +958,43 @@ class LandlordPortal::InvoicesControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, @invoice2.code
     assert_not_includes response.body, @invoice1.code
   end
+
+  test "creating room invoice ignores tenant_id and invoice show displays representative info" do
+    sign_in_as(@landlord_user)
+
+    assert_difference -> { @house.invoices.count }, 1 do
+      post landlord_house_invoices_path(@house), params: {
+        invoice: {
+          room_id: @room1.id,
+          invoice_type: "room",
+          tenant_id: @tenant.id,
+          billing_month: @billing_month.strftime("%Y-%m"),
+          due_date: Date.current + 5.days,
+          title: "Hóa đơn phòng 101",
+          items: [
+            {
+              selected: "1",
+              item_type: "rent",
+              name: "Tiền phòng",
+              unit: "tháng",
+              unit_price: 3_000_000,
+              quantity: 1,
+              amount: 3_000_000
+            }
+          ]
+        }
+      }
+    end
+
+    created_invoice = Invoice.order(:created_at).last
+    assert_redirected_to landlord_house_invoice_path(@house, created_invoice)
+    assert_nil created_invoice.tenant_id
+    assert_predicate created_invoice, :room?
+
+    follow_redirect!
+    assert_response :success
+    # Should display representative room mode, and not attribute the bill to the single tenant
+    assert_includes response.body, I18n.t("invoice.room_occupants_notice")
+    assert_includes response.body, I18n.t("invoice.badge_representative")
+  end
 end

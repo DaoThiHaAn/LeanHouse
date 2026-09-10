@@ -113,6 +113,7 @@ class TenantDashboardStatsService
 
     upcoming_unpaid = scope.where(status: :pending).where("due_date >= ?", today).order(due_date: :asc)
     nearest_due_date = upcoming_unpaid.first&.due_date
+    due_today = nearest_due_date.present? && nearest_due_date == today
 
     {
       total_count: total_count,
@@ -121,6 +122,7 @@ class TenantDashboardStatsService
       unpaid_amount: unpaid_amount,
       paid_amount: paid_amount,
       nearest_due_date: nearest_due_date,
+      due_today: due_today,
       has_invoices: total_count.positive?
     }
   end
@@ -133,6 +135,7 @@ class TenantDashboardStatsService
       unpaid_amount: 0,
       paid_amount: 0,
       nearest_due_date: nil,
+      due_today: false,
       has_invoices: false
     }
   end

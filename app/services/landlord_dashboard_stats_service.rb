@@ -21,7 +21,8 @@ class LandlordDashboardStatsService
       pending_requests: pending_reqs,
       pending_requests_count: pending_reqs[:total],
       contracts: calculate_contract_stats,
-      invoices: calculate_invoice_stats
+      invoices: calculate_invoice_stats,
+      revenue: calculate_revenue_stats
     }
   end
 
@@ -210,6 +211,101 @@ class LandlordDashboardStatsService
       paid_amount: paid_amount,
       pending_amount: pending_amount,
       collection_rate: collection_rate
+    }
+  end
+
+  # 6. Monthly revenue summary and house portion breakdown
+  def calculate_revenue_stats
+    house_ids = target_houses.select(:id)
+    empty_res = {
+      total_revenue: 0,
+      paid_revenue: 0,
+      pending_revenue: 0,
+      rent_revenue: 0,
+      service_revenue: 0,
+      rent_percentage: 0.0,
+      service_percentage: 0.0,
+      portfolio_share: 0.0,
+      house_portions: []
+    }
+    return empty_res if house_ids.empty?
+
+    invoices_scope = Invoice.where(house_id: house_ids)
+                            .for_month(target_date.beginning_of_month)
+                            .where.not(status: :cancelled)
+
+    rev_stats = invoices_scope.select(
+      ActiveRecord::Base.sanitize_sql_array([
+        "COALESCE(SUM(total_amount), 0) AS total_revenue,
+         COALESCE(SUM(total_amount) FILTER (WHERE status = 'paid'), 0) AS paid_revenue,
+         COALESCE(SUM(total_amount) FILTER (WHERE status != 'paid'), 0) AS pending_revenue"
+      ])
+    ).take
+
+    total_rev = rev_stats&.total_revenue.to_i
+    paid_rev = rev_stats&.paid_revenue.to_i
+    pending_rev = rev_stats&.pending_revenue.to_i
+
+    # Items breakdown (Rent vs Services)
+    items_scope = InvoiceItem.joins(:invoice)
+                             .where(invoices: { id: invoices_scope.select(:id) })
+
+    item_stats = items_scope.select(
+      ActiveRecord::Base.sanitize_sql_array([
+        "COALESCE(SUM(invoice_items.amount) FILTER (WHERE invoice_items.item_type = 'rent'), 0) AS rent_total,
+         COALESCE(SUM(invoice_items.amount) FILTER (WHERE invoice_items.item_type IN ('metered_service', 'fixed_service')), 0) AS services_total"
+      ])
+    ).take
+
+    rent_total = item_stats&.rent_total.to_i
+    services_total = item_stats&.services_total.to_i
+
+    items_sum = rent_total + services_total
+    rent_pct = items_sum.positive? ? ((rent_total.to_f / items_sum) * 100).round(1) : 0.0
+    services_pct = items_sum.positive? ? [ 100.0 - rent_pct, 0.0 ].max.round(1) : 0.0
+
+    all_active_houses = landlord.houses.active.sorted
+    all_invoices_scope = Invoice.where(house_id: all_active_houses.select(:id))
+                                .for_month(target_date.beginning_of_month)
+                                .where.not(status: :cancelled)
+
+    total_portfolio_paid = all_invoices_scope.where(status: :paid).sum(:total_amount).to_i
+
+    portfolio_share = if house_id && total_portfolio_paid.positive?
+      ((paid_rev.to_f / total_portfolio_paid) * 100).round(1)
+    else
+      100.0
+    end
+
+    house_portions = []
+    if house_id.nil? && all_active_houses.any?
+      house_paid_map = all_invoices_scope.where(status: :paid)
+                                         .group(:house_id)
+                                         .sum(:total_amount)
+
+      all_active_houses.each_with_index do |house, idx|
+        h_paid = house_paid_map[house.id].to_i
+        h_pct = total_portfolio_paid.positive? ? ((h_paid.to_f / total_portfolio_paid) * 100).round(1) : 0.0
+        house_portions << {
+          id: house.id,
+          name: house.name,
+          paid_revenue: h_paid,
+          percentage: h_pct,
+          color_index: idx % 6
+        }
+      end
+    end
+
+    {
+      total_revenue: total_rev,
+      paid_revenue: paid_rev,
+      pending_revenue: pending_rev,
+      rent_revenue: rent_total,
+      service_revenue: services_total,
+      rent_percentage: rent_pct,
+      service_percentage: services_pct,
+      portfolio_share: portfolio_share,
+      house_portions: house_portions
     }
   end
 end

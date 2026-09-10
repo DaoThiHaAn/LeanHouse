@@ -1,15 +1,15 @@
-<% content_for :title, "#{t('page_titles.contract_detail')} - #{@invoice.code}" %>
+<% content_for :title, "#{t('invoice.title')} #{@invoice.code} - #{@invoice.house.name}" %>
 
 <div class="container py-4 invoice-detail-wrapper">
   <!-- Navigation Top Bar -->
-  <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom d-print-none">
-    <%= back_link_to tenant_invoices_path, t("invoice.my_invoices") %>
+  <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom d-print-none flex-wrap gap-2">
+    <div>
+      <%= back_link_to tenant_invoices_path, t("invoice.my_invoices") %>
+    </div>
 
-    <h1><%= t('page_titles.contract_detail') %></h1>
-
-    <div class="d-flex gap-2">
-      <button onclick="window.print()" class="btn btn-outline-dark btn-sm d-flex align-items-center gap-1 shadow-sm">
-        <span class="material-symbols-filled fs-5">print</span> <%= t('invoice.actions.print') %>
+    <div class="d-flex align-items-center gap-2">
+      <button onclick="window.print()" class="btn btn-outline-dark btn-sm d-flex align-items-center gap-1 shadow-sm px-3 py-1-5 rounded-pill">
+        <span class="material-symbols-outlined fs-6">print</span> <%= t('invoice.actions.print') %>
       </button>
     </div>
   </div>

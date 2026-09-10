@@ -126,47 +126,175 @@
         </div>
       </div>
     </div>
-    <!-- Card 5: Quản lý Hóa đơn & Thu tiền -->
-    <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-      <div class="dashboard-stat-card card-teal p-3 shadow-sm d-flex flex-column justify-content-between">
-        <div class="d-flex align-items-start justify-content-between">
-          <div class="d-flex gap-3 align-items-center">
-            <span class="material-symbols-filled stat-icon">receipt_long</span>
-            <div>
-              <div class="stat-card-title"><%= t('dashboard.landlord.invoices_title') %></div>
-              <div class="stat-subtext text-secondary mb-1"><%= t('dashboard.landlord.invoices_period_subtitle', month: Date.current.strftime("%m/%Y")) %></div>
-              <div class="stat-value mb-1">
-                <% if stats[:invoices][:overdue].positive? %>
-                  <span class="text-danger"><%= stats[:invoices][:overdue] %></span>
-                  <span class="fs-6 text-danger fw-normal"><%= t('dashboard.landlord.invoices_overdue_short') %></span>
-                <% else %>
-                  <span class="text-primary"><%= stats[:invoices][:pending] %></span>
-                  <span class="fs-6 text-secondary fw-normal"><%= t('dashboard.landlord.invoices_pending_short') %></span>
-                <% end %>
+    <!-- Card 5: Quản lý Hóa đơn & Thu tiền (Rộng 6 cột) -->
+    <div class="col-12 col-xl-6">
+      <div class="dashboard-stat-card dashboard-financial-card card-teal p-3 shadow-sm d-flex flex-column justify-content-between">
+        <div>
+          <div class="d-flex align-items-start justify-content-between mb-3">
+            <div class="d-flex gap-3 align-items-center">
+              <span class="material-symbols-filled stat-icon">receipt_long</span>
+              <div>
+                <div class="stat-card-title mb-0"><%= t('dashboard.landlord.invoices_title') %></div>
+                <div class="stat-subtext text-secondary"><%= t('dashboard.landlord.invoices_period_subtitle', month: Date.current.strftime("%m/%Y")) %></div>
               </div>
-              <div class="stat-subtext">
-                <% if stats[:invoices][:total].positive? %>
-                  <span class="text-success fw-bold"><%= stats[:invoices][:collection_rate] %>% <%= t('dashboard.landlord.invoices_collected_rate') %></span>
-                  <span> · </span>
-                  <span><%= t('dashboard.landlord.invoices_total_count', count: stats[:invoices][:total]) %></span>
-                <% else %>
-                  <span class="text-secondary"><%= t('dashboard.landlord.invoices_none_month') %></span>
+            </div>
+            <% if selected_house %>
+              <%= link_to landlord_house_invoices_path(selected_house, month: Date.current.strftime("%Y-%m")), class: "action-arrow-btn", title: t('dashboard.landlord.view_invoices'), data: { turbo_frame: "_top" } do %>
+                <span class="material-symbols-outlined">arrow_forward</span>
+              <% end %>
+            <% else %>
+              <%= link_to landlord_houses_path, class: "action-arrow-btn", title: t('dashboard.landlord.view_invoices'), data: { turbo_frame: "_top" } do %>
+                <span class="material-symbols-outlined">arrow_forward</span>
+              <% end %>
+            <% end %>
+          </div>
+
+          <div class="row g-3 align-items-center">
+            <!-- Cột trái: Chi tiết tình trạng thu -->
+            <div class="col-12 col-sm-6 border-end-sm">
+              <div class="d-flex flex-column gap-1 pe-sm-2">
+                <div class="d-flex align-items-baseline justify-content-between">
+                  <span class="stat-subtext text-success-emphasis fw-semibold"><%= t('dashboard.landlord.invoices_paid_short') %>:</span>
+                  <span class="fw-bold text-success font-monospace"><%= stats[:invoices][:paid] %> <%= t('dashboard.landlord.invoices_unit') %> (<%= format_money(stats[:invoices][:paid_amount]) %>)</span>
+                </div>
+                <div class="d-flex align-items-baseline justify-content-between">
+                  <span class="stat-subtext text-warning-emphasis fw-semibold"><%= t('dashboard.landlord.invoices_pending_short') %>:</span>
+                  <span class="fw-bold text-warning-emphasis font-monospace"><%= stats[:invoices][:pending] %> <%= t('dashboard.landlord.invoices_unit') %> (<%= format_money(stats[:invoices][:pending_amount]) %>)</span>
+                </div>
+                <% if stats[:invoices][:overdue].positive? %>
+                  <div class="d-flex align-items-baseline justify-content-between">
+                    <span class="stat-subtext text-danger fw-bold"><%= t('dashboard.landlord.invoices_overdue_short') %>:</span>
+                    <span class="fw-bold text-danger font-monospace"><%= stats[:invoices][:overdue] %> <%= t('dashboard.landlord.invoices_unit') %></span>
+                  </div>
                 <% end %>
               </div>
             </div>
+
+            <!-- Cột phải: Tiến độ thu & Tổng hóa đơn -->
+            <div class="col-12 col-sm-6 ps-sm-2">
+              <div class="d-flex justify-content-between align-items-baseline mb-1">
+                <span class="stat-subtext text-secondary fw-semibold"><%= t('dashboard.landlord.invoices_collected_rate') %></span>
+                <span class="fw-bold fs-5 text-teal-accent font-monospace"><%= stats[:invoices][:collection_rate] %>%</span>
+              </div>
+              <div class="financial-progress-container mb-2">
+                <svg class="financial-progress-svg rounded-pill" viewBox="0 0 100 8" preserveAspectRatio="none" aria-hidden="true">
+                  <rect x="0" y="0" width="100" height="8" class="progress-bg" />
+                  <rect x="0" y="0" width="<%= [stats[:invoices][:collection_rate], 100.0].min %>" height="8" class="progress-fill-teal" />
+                </svg>
+              </div>
+              <div class="d-flex justify-content-between align-items-center stat-subtext">
+                <span class="text-secondary"><%= t('dashboard.landlord.invoices_total_label') %>:</span>
+                <span class="fw-bold text-dark"><%= t('dashboard.landlord.invoices_total_count', count: stats[:invoices][:total]) %> · <%= format_money(stats[:invoices][:total_amount]) %></span>
+              </div>
+            </div>
           </div>
-          <% if selected_house %>
-            <%= link_to landlord_house_invoices_path(selected_house, month: Date.current.strftime("%Y-%m")), class: "action-arrow-btn", title: t('dashboard.landlord.view_invoices'), data: { turbo_frame: "_top" } do %>
-              <span class="material-symbols-outlined">arrow_forward</span>
+        </div>
+
+        <div class="stat-subtext mt-3 pt-2 border-top border-light-subtle d-flex justify-content-between align-items-center">
+          <span><%= selected_house ? selected_house.name : t('dashboard.landlord.all_houses') %></span>
+          <span class="badge bg-white text-secondary border font-monospace"><%= t('dashboard.landlord.invoices_badge') %></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 6: Doanh thu & Phân bổ nguồn thu (6 cột) -->
+    <div class="col-12 col-xl-6">
+      <div class="dashboard-stat-card dashboard-financial-card card-indigo p-3 shadow-sm d-flex flex-column justify-content-between">
+        <div>
+          <div class="d-flex align-items-start justify-content-between mb-3">
+            <div class="d-flex gap-3 align-items-center">
+              <span class="material-symbols-filled stat-icon">payments</span>
+              <div>
+                <div class="stat-card-title mb-0"><%= t('dashboard.landlord.revenue_title') %></div>
+                <div class="stat-subtext text-secondary"><%= t('dashboard.landlord.revenue_period_subtitle', month: Date.current.strftime("%m/%Y")) %></div>
+              </div>
+            </div>
+            <% if selected_house %>
+              <%= link_to landlord_house_invoices_path(selected_house, month: Date.current.strftime("%Y-%m")), class: "action-arrow-btn", title: t('dashboard.landlord.view_revenue'), data: { turbo_frame: "_top" } do %>
+                <span class="material-symbols-outlined">arrow_forward</span>
+              <% end %>
+            <% else %>
+              <%= link_to landlord_houses_path, class: "action-arrow-btn", title: t('dashboard.landlord.view_revenue'), data: { turbo_frame: "_top" } do %>
+                <span class="material-symbols-outlined">arrow_forward</span>
+              <% end %>
             <% end %>
+          </div>
+
+          <!-- Primary Numbers: Thực thu vs Tổng dự kiến -->
+          <div class="d-flex flex-wrap align-items-baseline justify-content-between gap-2 mb-2">
+            <div>
+              <span class="stat-subtext text-secondary d-block"><%= t('dashboard.landlord.collected_revenue') %></span>
+              <span class="stat-value text-indigo-accent font-monospace"><%= format_money(stats.dig(:revenue, :paid_revenue) || 0) %></span>
+            </div>
+            <div class="text-sm-end">
+              <span class="stat-subtext text-secondary d-block"><%= t('dashboard.landlord.expected_revenue') %></span>
+              <span class="fs-6 fw-bold text-secondary font-monospace"><%= format_money(stats.dig(:revenue, :total_revenue) || 0) %></span>
+            </div>
+          </div>
+
+          <!-- Breakdown / Portions -->
+          <% if selected_house %>
+            <!-- Single House: Rent vs Services -->
+            <div class="financial-progress-container mb-2">
+              <svg class="financial-progress-svg rounded-pill" viewBox="0 0 100 8" preserveAspectRatio="none" aria-hidden="true">
+                <rect x="0" y="0" width="100" height="8" class="progress-bg" />
+                <rect x="0" y="0" width="<%= stats.dig(:revenue, :rent_percentage) || 0 %>" height="8" class="portion-rent" />
+                <rect x="<%= stats.dig(:revenue, :rent_percentage) || 0 %>" y="0" width="<%= stats.dig(:revenue, :service_percentage) || 0 %>" height="8" class="portion-service" />
+              </svg>
+            </div>
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 stat-subtext">
+              <div class="d-flex align-items-center gap-1">
+                <span class="portion-dot dot-rent"></span>
+                <span class="text-secondary"><%= t('dashboard.landlord.rent_portion') %>:</span>
+                <span class="fw-bold text-dark font-monospace"><%= stats.dig(:revenue, :rent_percentage) || 0 %>% (<%= format_money(stats.dig(:revenue, :rent_revenue) || 0) %>)</span>
+              </div>
+              <div class="d-flex align-items-center gap-1">
+                <span class="portion-dot dot-service"></span>
+                <span class="text-secondary"><%= t('dashboard.landlord.service_portion') %>:</span>
+                <span class="fw-bold text-dark font-monospace"><%= stats.dig(:revenue, :service_percentage) || 0 %>% (<%= format_money(stats.dig(:revenue, :service_revenue) || 0) %>)</span>
+              </div>
+            </div>
           <% else %>
-            <%= link_to landlord_houses_path, class: "action-arrow-btn", title: t('dashboard.landlord.view_invoices'), data: { turbo_frame: "_top" } do %>
-              <span class="material-symbols-outlined">arrow_forward</span>
+            <!-- All Houses: Stacked House Portions -->
+            <% if stats.dig(:revenue, :house_portions).present? && (stats.dig(:revenue, :paid_revenue) || 0).positive? %>
+              <div class="financial-progress-container mb-2">
+                <svg class="financial-progress-svg rounded-pill" viewBox="0 0 100 8" preserveAspectRatio="none" aria-hidden="true">
+                  <rect x="0" y="0" width="100" height="8" class="progress-bg" />
+                  <% offset = 0.0 %>
+                  <% stats[:revenue][:house_portions].each do |portion| %>
+                    <% if portion[:percentage].positive? %>
+                      <rect x="<%= offset %>" y="0" width="<%= portion[:percentage] %>" height="8" class="portion-house-<%= portion[:color_index] %>" />
+                      <% offset += portion[:percentage] %>
+                    <% end %>
+                  <% end %>
+                </svg>
+              </div>
+              <div class="d-flex flex-wrap gap-2 stat-subtext">
+                <% stats[:revenue][:house_portions].each do |portion| %>
+                  <div class="d-flex align-items-center gap-1 house-portion-chip">
+                    <span class="portion-dot bg-house-<%= portion[:color_index] %>"></span>
+                    <span class="text-dark fw-medium"><%= portion[:name] %>:</span>
+                    <span class="fw-bold font-monospace text-secondary"><%= portion[:percentage] %>%</span>
+                  </div>
+                <% end %>
+              </div>
+            <% else %>
+              <div class="stat-subtext text-secondary fst-italic py-1">
+                <%= t('dashboard.landlord.no_revenue_data') %>
+              </div>
             <% end %>
           <% end %>
         </div>
-        <div class="stat-subtext mt-2 pt-2 border-top border-light-subtle">
-          <%= selected_house ? selected_house.name : t('dashboard.landlord.all_houses') %>
+
+        <div class="stat-subtext mt-3 pt-2 border-top border-light-subtle d-flex justify-content-between align-items-center">
+          <span>
+            <% if selected_house %>
+              <%= t('dashboard.landlord.portfolio_share', pct: stats.dig(:revenue, :portfolio_share) || 100.0) %>
+            <% else %>
+              <%= t('dashboard.landlord.house_portion_title') %>
+            <% end %>
+          </span>
+          <span class="badge bg-white text-secondary border font-monospace"><%= t('dashboard.landlord.revenue_badge') %></span>
         </div>
       </div>
     </div>

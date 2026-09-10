@@ -156,8 +156,9 @@ class RequestTest < ActiveSupport::TestCase
     assert_equal :nearly_due, @request.expiry_status
     assert_equal 1, @request.remaining_expiry_days
 
-    # Due today (created within 7 days, expires today e.g. 2 hours from now)
-    @request.update_columns(created_at: (7.days.ago + 2.hours))
+    # Due today (created within 7 days, expires today before end of day)
+    remaining_today = (Time.current.end_of_day - Time.current) / 2
+    @request.update_columns(created_at: (7.days.ago + remaining_today))
     assert_equal :due_today, @request.expiry_status
     assert_equal 0, @request.remaining_expiry_days
 

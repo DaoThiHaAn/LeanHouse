@@ -9,15 +9,18 @@ module Invoices
         start_date = params[:start_date].presence || month.beginning_of_month
         end_date = params[:end_date].presence || month.end_of_month
 
+        inv_type = params[:invoice_type].presence || "room"
+        tenant_id = inv_type == "room" ? nil : params[:tenant_id].presence
+
         invoice = Invoice.create!(
           code: code,
           title: params[:title].presence || "Thu tiền hàng tháng",
           house: room.house,
           room: room,
-          tenant_id: params[:tenant_id].presence,
+          tenant_id: tenant_id,
           bank_account_id: params[:bank_account_id].presence,
           created_by: landlord,
-          invoice_type: params[:invoice_type].presence || "room",
+          invoice_type: inv_type,
           billing_month: month,
           start_date: start_date,
           end_date: end_date,
@@ -126,7 +129,7 @@ module Invoices
             raw_month: invoice.billing_month.strftime("%Y-%m"),
             amount: ApplicationController.helpers.format_money(invoice.total_amount),
             due_date: invoice.due_date.strftime("%d/%m/%Y"),
-            house_id: room.house_id
+            house_id: invoice.house_id
           ).deliver_later(tenant_users)
         end
 
