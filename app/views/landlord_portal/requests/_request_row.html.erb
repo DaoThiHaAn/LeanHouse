@@ -22,7 +22,12 @@
 
   <!-- Sender (Tenant name + phone) -->
   <td class="px-3">
-    <div class="fw-semibold text-dark"><%= vn_name(request.tenant.user.fullname) %></div>
+    <div class="d-flex align-items-center gap-1 flex-wrap">
+      <span class="fw-semibold text-dark"><%= vn_name(request.tenant.user.fullname) %></span>
+      <% if request.house.tenant_stay_for(request.tenant_id).nil? %>
+        <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle small"><%= t('request.tenant_departed', default: 'Đã trả phòng') %></span>
+      <% end %>
+    </div>
     <div class="text-secondary small"><%= request.tenant.user.tel %></div>
   </td>
 

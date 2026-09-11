@@ -69,6 +69,11 @@
     end
 
     def change_mode
+      if HouseModeChanger.new(@house).call
+        redirect_to edit_landlord_house_path(@house), notice: t("success_messages.house_mode_changed")
+      else
+        redirect_to edit_landlord_house_path(@house), alert: t("form.house.change_mode_blocked")
+      end
     end
 
     def check_deletion
@@ -80,11 +85,11 @@
     end
 
     def destroy
-      @house.destroy!
-
-      respond_to do |format|
-        format.html { redirect_to houses_path, notice: "House was successfully destroyed.", status: :see_other }
-        format.json { head :no_content }
+      if @house.can_delete?
+        @house.soft_delete!
+        redirect_to landlord_houses_path, notice: t("success_messages.house_deleted")
+      else
+        redirect_to edit_landlord_house_path(@house), alert: t("errors.house_cant_deleted")
       end
     end
 

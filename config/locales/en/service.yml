@@ -25,6 +25,8 @@ en:
     select_service_prompt: "Select a service from the left list to view and manage variants"
     no_variants: "No service variants yet"
     no_variants_prompt: "Create the first variant (unit price, unit) to start applying to rooms."
+    applied_date: "Applied Date"
+    applied_room: "Applied to %{room}"
     variant:
       self: "Service Variant"
       add: "Add New Variant"

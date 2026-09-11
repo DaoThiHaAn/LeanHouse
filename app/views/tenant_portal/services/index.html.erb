@@ -14,7 +14,10 @@
 
   <!-- Filter & Search Toolbar -->
   <div class="d-flex flex-column flex-sm-row justify-content-between gap-2 ms-1 my-3 align-items-center">
-    <h2 class="mb-0"><%= t("service.list") %></h2>
+    <div>
+      <h2 class="mb-1"><%= t("service.list") %></h2>
+      <p class="text-body">(<%= t("service.applied_room", room: @room.title_name, floor: @room.floor.title_name) %>)</p>
+    </div>
 
     <%= form_with url: tenant_services_path,
                   method: :get,

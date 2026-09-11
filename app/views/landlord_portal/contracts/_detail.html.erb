@@ -96,7 +96,12 @@
 
     <p>
       <%= tenant_stay&.rental_unit&.location_info || t("none") %>,
-      <%= house.name %>,
+      <% if house.is_deleted? %>
+        <span class="text-decoration-line-through text-secondary"><%= house.name %></span>
+        <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle small ms-1">(<%= t('form.house.deleted_status', default: 'Nhà đã xóa') %>)</span>
+      <% else %>
+        <%= house.name %>
+      <% end %>,
       <%= house.full_address %>
     </p>
   </div>

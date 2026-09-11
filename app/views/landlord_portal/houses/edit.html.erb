@@ -22,18 +22,27 @@
       <div class="d-flex flex-column side-bar align-items-stretch">
         <%= house_mode_badge(@house) %>
 
-        <%= button_to change_mode_landlord_house_path(@house), 
-            class:"d-flex align-items-center justify-content-center p-2",
-            data: {
-              turbo_confirm: t("form.house.change_mode_cf"),
-              **tooltip( "left",
-                          :"form.house.change_mode_info_1",
-                          :"form.house.change_mode_info_2",
+        <% if @house.can_change_mode? %>
+          <%= button_to change_mode_landlord_house_path(@house),
+              method: :patch,
+              class: "d-flex align-items-center justify-content-center p-2",
+              data: {
+                turbo_confirm: t("form.house.change_mode_cf", target_mode: @house.room? ? t("form.house.bed").downcase : t("form.house.room").downcase),
+                **tooltip("left",
+                          @house.room? ? :"form.house.change_mode_info_room_to_bed" : :"form.house.change_mode_info_bed_to_room",
                           :"form.house.change_mode_info_3"
                         )
-            } do %>
-          <span class="material-symbols-outlined">change_circle</span>
-          <%= t('form.house.change_mode') %>
+              } do %>
+            <span class="material-symbols-outlined">change_circle</span>
+            <%= t("form.house.change_mode") %>
+          <% end %>
+        <% else %>
+          <div data-controller="tooltip" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="<%= t('form.house.change_mode_blocked_tooltip') %>">
+            <button type="button" class="d-flex align-items-center justify-content-center p-2 w-100 opacity-50" disabled>
+              <span class="material-symbols-outlined">change_circle</span>
+              <%= t("form.house.change_mode") %>
+            </button>
+          </div>
         <% end %>
       </div>
 
@@ -61,7 +70,7 @@
       <section id="general-info" class="mb-5">
         <h3 class="mb-4"><%= t("general_info") %></h3>
 
-        <%= turbo_frame_tag "edit_house_form" do 
+        <%= turbo_frame_tag "edit_house_form" do
           render "general_info_form", house: @house, provinces: @provinces, communes: @communes
         end %>
       </section>

@@ -138,6 +138,7 @@ vi:
   clear_search: "Xóa từ khóa"
   status: "Trạng thái"
   guide: "Hướng dẫn"
+  open_in_new_tab: "Mở trong tab mới"
 
   errors:
     session_expired: |
@@ -164,7 +165,7 @@ vi:
     rental_unit_unavailable: "Vị trí thuê này không còn trống. Vui lòng chọn lại."
     not_bed_mode: "Nhà này không thuộc loại hình Thuê theo Giường!"
     capacity_below_tenants: "Không thể giảm sức chứa xuống dưới số khách hiện tại (%{count} người)!"
-    house_cant_deleted: "Không thể xóa nhà này khi vẫn còn khách thuê!"
+    house_cant_deleted: "Không thể xóa nhà này khi vẫn còn khách thuê hoặc có yêu cầu chưa xử lý!"
     floor_cant_deleted: "Không thể xóa tầng này vì còn ít nhất 1 phòng vẫn còn khách thuê"
     room_cant_deleted: "Không thể xóa phòng này khi vẫn còn khách thuê!"
     bed_cant_deleted: "Không thể xóa giường này khi vẫn còn khách thuê!"
@@ -186,6 +187,8 @@ vi:
     pw_updated: "Cập nhật mật khẩu thành công!"
     house_created: "Tạo nhà thành công!"
     house_updated: "Cập nhật thông tin nhà thành công!"
+    house_deleted: "Xóa nhà thành công!"
+    house_mode_changed: "Chuyển đổi loại hình nhà thành công!"
     floor_created: "Tạo tầng thành công!"
     floor_updated: "Cập nhật thông tin tầng thành công!"
     floor_deleted: "Xóa tầng thành công!"

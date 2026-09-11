@@ -13,6 +13,7 @@ class Checkout
 
   def call
     TenantStay.transaction do
+      auto_approve_pending_requests!
       checkout_stay!
       tenant_stay.rental_unit.tenant_removed!  # Update occupancy
       end_contract! if @end_contract
@@ -26,6 +27,30 @@ class Checkout
   private
 
   attr_reader :tenant_stay, :house
+
+  def auto_approve_pending_requests!
+    landlord_user = house.landlord.user
+    house.requests.where(tenant_id: tenant_stay.tenant_id, status: %i[pending handling]).find_each do |req|
+      case req.requestable_type
+      when "LeaveHouseRequest"
+        req.update!(
+          status: :approved,
+          resolved_by: landlord_user,
+          resolved_at: Time.current
+        )
+      when "VehicleRequest"
+        req.requestable.approve!(landlord_user)
+      when "RepairRequest"
+        req.requestable.complete!(landlord_user)
+      else
+        req.update!(
+          status: :approved,
+          resolved_by: landlord_user,
+          resolved_at: Time.current
+        )
+      end
+    end
+  end
 
   # Update the checkout time
   def checkout_stay!

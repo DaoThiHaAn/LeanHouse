@@ -90,4 +90,36 @@ class HouseTest < ActiveSupport::TestCase
     assert_not_includes result, @house_occupied
     assert_not_includes result, @house_full
   end
+
+  test "can_delete? returns true when house is empty and has no pending requests" do
+    assert @house_empty.can_delete?
+  end
+
+  test "can_delete? returns false when house has staying tenants" do
+    assert_not @house_occupied.can_delete?
+  end
+
+  test "can_delete? returns false when house has pending requests" do
+    tenant_user = User.create!(
+      fullname: "Tenant Request",
+      tel: "0908889999",
+      password: "Password123",
+      password_confirmation: "Password123",
+      role: "tenant",
+      sex: "male",
+      bday: 20.years.ago.to_date,
+      address: "Tenant Rd",
+      tel_verified_at: Time.current
+    )
+    tenant = Tenant.find_or_create_by!(id: tenant_user.id)
+    vr = VehicleRequest.create!(license_plate: "29A-12345", vehicle_type: "bike")
+    @house_empty.requests.create!(tenant: tenant, requestable: vr, status: :pending)
+
+    assert_not @house_empty.can_delete?
+  end
+
+  test "soft_delete! sets is_deleted to true" do
+    @house_empty.soft_delete!
+    assert @house_empty.reload.is_deleted?
+  end
 end

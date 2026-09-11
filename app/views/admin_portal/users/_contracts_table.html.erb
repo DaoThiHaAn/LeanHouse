@@ -21,7 +21,12 @@
             </td>
             <td>
               <% if c.house %>
-                <%= link_to c.house.name, admin_house_path(c.house), class: "link fw-semibold" %>
+                <% if c.house.is_deleted? %>
+                  <span class="text-decoration-line-through text-secondary"><%= c.house.name %></span>
+                  <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle small ms-1">(<%= t('form.house.deleted_status', default: 'Nhà đã xóa') %>)</span>
+                <% else %>
+                  <%= link_to c.house.name, admin_house_path(c.house), class: "link fw-semibold" %>
+                <% end %>
               <% else %>
                 <span class="text-secondary">-</span>
               <% end %>

@@ -1,17 +1,21 @@
 <% content_for :title, "#{t('invoice.new_meter_log')} - #{@house.name}" %>
-<% provide :container_width, "h-100" %>
 
 <div class="container py-3 usage-log-form-wrapper">
-  <div class="card shadow-sm border-0 rounded-4">
+  <div class="card shadow">
     <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
-      <h4 class="card-title fw-bold mb-0 d-flex align-items-center gap-2">
-        <span class="material-symbols-outlined text-primary">electric_meter</span>
-        <%= t("invoice.meter_logs_title") %>
-      </h4>
+      <h1 class="d-flex align-items-center gap-2">
+        <span class="material-symbols-filled fs-2">electric_meter</span>
+        <%= t("invoice.new_meter_log") %>
+      </h1>
       <%= link_to t("invoice.actions.back"), (params[:from_room] == "true" && @room ? landlord_house_room_service_usage_logs_path(@house, @room) : landlord_house_service_usage_logs_path(@house, month: (@billing_month || @log&.billing_month || Date.current).strftime("%Y-%m"))), class: "btn btn-sm btn-outline-secondary" %>
     </div>
     <div class="card-body p-4">
-      <%= form_with model: [:landlord, @house, @log], local: true do |f| %>
+      <%= form_with model: [:landlord, @house, @log], local: true,
+                    data: {
+                      controller: "loading",
+                      loading_text_value: "#{t('saving')}...",
+                      action: "submit->loading#submit"
+                    } do |f| %>
         <%= hidden_field_tag :from_room, "true" if params[:from_room] == "true" %>
         <% if @log.errors.any? %>
           <div class="alert alert-danger">
@@ -31,18 +35,24 @@
 
         <div class="row g-3">
           <div class="col-md-6">
-            <%= f.label :billing_month, t("invoice.billing_month"), class: "form-label fw-semibold" %>
+            <%= f.label :billing_month, class: "form-label fw-semibold" do %>
+              <%= t("invoice.billing_month") %> <span class="text-danger">*</span>
+            <% end %>
             <%= f.month_field :billing_month, value: @billing_month.strftime("%Y-%m"), class: "form-control shadow-sm", required: true %>
           </div>
 
           <div class="col-md-6">
-            <%= f.label :room_id, t("invoice.applied_room"), class: "form-label fw-semibold" %>
+            <%= f.label :room_id, class: "form-label fw-semibold" do %>
+              <%= t("invoice.applied_room") %> <span class="text-danger">*</span>
+            <% end %>
             <%= f.collection_select :room_id, @house.rooms.active.sorted, :id, :title_name, { selected: @room&.id }, class: "form-select shadow-sm", required: true %>
           </div>
 
           <div class="col-md-6">
-            <%= f.label :service_variant_id, t("invoice.measured_service"), class: "form-label fw-semibold" %>
-            <select name="service_usage_log[service_variant_id]" class="form-select shadow-sm" onchange="this.form.submit()">
+            <%= f.label :service_variant_id, class: "form-label fw-semibold" do %>
+              <%= t("invoice.measured_service") %> <span class="text-danger">*</span>
+            <% end %>
+            <select name="service_usage_log[service_variant_id]" class="form-select shadow-sm" required onchange="this.form.submit()">
               <% @house.service_variants.where(is_real_time: true).each do |v| %>
                 <option value="<%= v.id %>" <%= 'selected' if @log.service_variant_id == v.id %>>
                   <%= v.service.name %> (<%= v.human_unit %> - <%= number_to_currency(v.fee, unit: 'đ', precision: 0) %>)
@@ -52,12 +62,16 @@
           </div>
 
           <div class="col-md-6">
-            <%= f.label :prev_reading, t("invoice.prev_reading_label", unit: @log.unit), class: "form-label fw-semibold" %>
+            <%= f.label :prev_reading, class: "form-label fw-semibold" do %>
+              <%= t("invoice.prev_reading_label", unit: @log.unit) %> <span class="text-danger">*</span>
+            <% end %>
             <%= f.number_field :prev_reading, class: "form-control shadow-sm", required: true %>
           </div>
 
           <div class="col-md-6">
-            <%= f.label :latest_reading, t("invoice.latest_reading_label", unit: @log.unit), class: "form-label fw-semibold text-primary" %>
+            <%= f.label :latest_reading, class: "form-label fw-semibold text-primary" do %>
+              <%= t("invoice.latest_reading_label", unit: @log.unit) %> <span class="text-danger">*</span>
+            <% end %>
             <%= f.number_field :latest_reading, class: "form-control shadow-sm fw-bold", placeholder: t("invoice.reading_placeholder"), required: true %>
           </div>
 
@@ -67,13 +81,17 @@
           </div>
 
           <div class="col-md-6">
-            <%= f.label :start_date, t("invoice.cycle_start_date"), class: "form-label fw-semibold" %>
-            <%= f.date_field :start_date, value: @log.start_date || @billing_month.beginning_of_month, class: "form-control shadow-sm" %>
+            <%= f.label :start_date, class: "form-label fw-semibold" do %>
+              <%= t("invoice.cycle_start_date") %> <span class="text-danger">*</span>
+            <% end %>
+            <%= f.date_field :start_date, value: @log.start_date || @billing_month.beginning_of_month, class: "form-control shadow-sm", required: true %>
           </div>
 
           <div class="col-md-6">
-            <%= f.label :end_date, t("invoice.cycle_end_date"), class: "form-label fw-semibold" %>
-            <%= f.date_field :end_date, value: @log.end_date || @billing_month.end_of_month, class: "form-control shadow-sm" %>
+            <%= f.label :end_date, class: "form-label fw-semibold" do %>
+              <%= t("invoice.cycle_end_date") %> <span class="text-danger">*</span>
+            <% end %>
+            <%= f.date_field :end_date, value: @log.end_date || @billing_month.end_of_month, class: "form-control shadow-sm", required: true %>
           </div>
 
           <div class="col-12 mt-3">
@@ -84,7 +102,14 @@
           </div>
 
           <div class="col-12 mt-4 text-end">
-            <%= f.submit t("invoice.save_meter_log_btn"), class: "btn btn-primary px-4 py-2 fw-semibold" %>
+            <%= f.button type: :submit,
+                         class: "custom-primary-btn shadow-sm d-inline-flex align-items-center justify-content-center gap-2",
+                         data: { loading_target: "button" } do %>
+              <span data-loading-target="text"><%= t("invoice.save_meter_log_btn") %></span>
+              <span class="material-symbols-outlined spin d-none" data-loading-target="spinner">
+                progress_activity
+              </span>
+            <% end %>
           </div>
         </div>
       <% end %>

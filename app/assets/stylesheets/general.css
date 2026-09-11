@@ -184,6 +184,10 @@ textarea {
   resize: none
 }
 
+.log-tab {
+  font-size: 1.1rem;
+}
+
 ::placeholder {
   font-style: italic !important;
   font-size: 0.8rem;

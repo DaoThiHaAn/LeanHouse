@@ -1,6 +1,7 @@
 vi:
   service:
     self: "Dịch vụ"
+    back: "Quay lại Danh sách dịch vụ"
     mng_note: "Nơi quản lý các dịch vụ trong nhà của bạn"
     my_note: "Giúp bạn theo dõi các dịch vụ áp dụng trong phòng ở"
     none: "Chưa có dịch vụ nào trong Nhà"
@@ -37,6 +38,8 @@ vi:
     no_variants: "Chưa có phiên bản dịch vụ nào"
     no_variants_prompt: "Hãy tạo phiên bản đầu tiên (đơn giá, đơn vị tính) để bắt đầu áp dụng cho các phòng."
     applied_date: "Ngày áp dụng"
+    applied_room: "Áp dụng cho %{room}, %{floor}"
+
     variant:
       self: "Phiên bản dịch vụ"
       add: "Thêm phiên bản mới"
@@ -53,6 +56,7 @@ vi:
       notify_tenants: "Gửi thông báo cập nhật cho khách thuê đang ở các phòng bị ảnh hưởng"
       select_all: "Chọn tất cả"
       selected_count: "Phòng đã chọn"
+
     guide:
       btn_title: "Hướng dẫn"
       modal_title: "Cẩm nang: Quản lý Dịch vụ & Ghi nhận Chỉ số"

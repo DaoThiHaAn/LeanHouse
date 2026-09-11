@@ -83,7 +83,7 @@
                     data: {
                       turbo_confirm: [
                         t("form.tenant.remove_cf"),
-                        t("form.tenant.remove_warning_1") + "\n" + t("form.tenant.remove_warning_2")
+                        [t("form.tenant.remove_warning_1"), t("form.tenant.remove_warning_2"), t("form.tenant.remove_warning_3")].join("\n")
                       ].join("\n\n")
                     },
                     title: t("form.tenant.remove"),

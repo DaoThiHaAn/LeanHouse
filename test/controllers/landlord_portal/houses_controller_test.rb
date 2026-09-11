@@ -83,4 +83,45 @@ class LandlordPortal::HousesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_includes response.body, I18n.t("form.house.no_houses_found")
   end
+
+  test "landlord can change mode of empty house" do
+    sign_in_as(@landlord_user)
+
+    patch change_mode_landlord_house_path(@house2)
+
+    assert_redirected_to edit_landlord_house_path(@house2)
+    assert_equal I18n.t("success_messages.house_mode_changed"), flash[:notice]
+    assert_predicate @house2.reload, :bed?
+  end
+
+  test "landlord cannot change mode of occupied house" do
+    sign_in_as(@landlord_user)
+
+    patch change_mode_landlord_house_path(@house1)
+
+    assert_redirected_to edit_landlord_house_path(@house1)
+    assert_equal I18n.t("form.house.change_mode_blocked"), flash[:alert]
+    assert_predicate @house1.reload, :room?
+  end
+
+  test "landlord can delete empty house (soft delete)" do
+    sign_in_as(@landlord_user)
+
+    delete landlord_house_path(@house2)
+
+    assert_redirected_to landlord_houses_path
+    assert_equal I18n.t("success_messages.house_deleted"), flash[:notice]
+    assert @house2.reload.is_deleted?
+    assert @house2.rooms.count > 0
+  end
+
+  test "landlord cannot delete occupied house" do
+    sign_in_as(@landlord_user)
+
+    delete landlord_house_path(@house1)
+
+    assert_redirected_to edit_landlord_house_path(@house1)
+    assert_equal I18n.t("errors.house_cant_deleted"), flash[:alert]
+    assert_not @house1.reload.is_deleted?
+  end
 end

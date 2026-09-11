@@ -1,4 +1,4 @@
-<% content_for :title, "#{t('invoice.title')} #{@invoice.code} - #{@invoice.house.name}" %>
+<% content_for :title, "#{t('invoice.self')} #{@invoice.code} - #{@invoice.house.name}" %>
 <%= turbo_stream_from @invoice, :payment %>
 
 <div class="container py-4 invoice-detail-wrapper">

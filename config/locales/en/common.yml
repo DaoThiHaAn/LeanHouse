@@ -127,6 +127,8 @@ en:
     room_updated: "Room updated successfully!"
     bed_created: "Bed created successfully!"
     bed_updated: "Bed updated successfully!"
+    house_mode_changed: "House mode changed successfully!"
+    house_deleted: "House deleted successfully!"
   form:
     asset:
       stats:

@@ -109,11 +109,15 @@ class House < ApplicationRecord
     floors.sum(:rooms_count)
   end
 
-  # Soft delete the house
-  def deleted
+  def soft_delete!
+    update!(is_deleted: true)
   end
 
   def can_delete?
+    !rooms.where("tenants_count > 0").exists? && !requests.where(status: %i[pending handling]).exists?
+  end
+
+  def can_change_mode?
     !rooms.where("tenants_count > 0").exists?
   end
 

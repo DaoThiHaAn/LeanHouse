@@ -70,4 +70,24 @@ class CheckoutTest < ActiveSupport::TestCase
     assert_equal 0, @house.vehicles.where(tenant: @tenant).count
     assert_not Vehicle.exists?(@vehicle.id)
   end
+
+  test "checkout automatically approves pending requests of the tenant without sending request notification" do
+    leave_req = LeaveHouseRequest.create!
+    req = @house.requests.create!(
+      tenant: @tenant,
+      requestable: leave_req,
+      status: :pending
+    )
+
+    assert_no_difference -> { Noticed::Event.where(type: "RequestResolvedNotifier").count } do
+      Checkout.call(
+        house: @house,
+        tenant_stay: @tenant_stay
+      )
+    end
+
+    assert_equal "approved", req.reload.status
+    assert_not_nil req.resolved_at
+    assert_equal @landlord_user.id, req.resolved_by_id
+  end
 end

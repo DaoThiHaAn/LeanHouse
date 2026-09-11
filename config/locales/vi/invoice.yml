@@ -1,6 +1,6 @@
 vi:
   invoice:
-    title: "Hóa đơn"
+    self: "Hóa đơn"
     detail: "Chi tiết hóa đơn"
     my_invoices: "Hóa đơn của tôi"
     my_invoices_subtitle: "Xem chi tiết hóa đơn và xác nhận thanh toán."
@@ -10,11 +10,13 @@ vi:
     management_subtitle: "Nơi quản lý các hóa đơn của nhà, xuất hóa đơn mới, và theo dõi trạng thái thanh toán."
     new_invoice: "Xuất hóa đơn mới"
     create_invoice_title: "Hóa đơn mới"
+
     types:
       room_service_title: "Hóa đơn theo phòng"
       room_service_desc: "Tiền thuê và dịch vụ theo phòng hoặc cá nhân trong phòng"
       custom_title: "Hóa đơn thu phí tùy chọn"
       custom_desc: "Tự do chọn người thuê bất kỳ & thiết lập các khoản thu, giảm trừ"
+
     custom_invoice_title: "Lập Hóa đơn Thu phí Tùy chọn"
     custom_invoice_subtitle: "Tạo hóa đơn thu phí hoặc giảm trừ cho các người thuê được chọn bất kỳ (không gắn liền với tiền phòng hoặc dịch vụ định kỳ)."
     custom_title_placeholder: "Ví dụ: Phí vệ sinh chung, Bồi thường tài sản hỏng..."
@@ -33,9 +35,11 @@ vi:
     custom_create_success_multiple: "Đã xuất thành công %{count} hóa đơn cho các người thuê được chọn!"
     default_custom_title: "Hóa đơn thu phí tùy chọn"
     each_tenant_pays: "TỔNG TIỀN MỖI NGƯỜI CẦN THANH TOÁN"
+
     tabs:
       room: "Hóa đơn theo phòng"
       individual: "Hóa đơn thu phí tùy chọn"
+
     total_custom_billing: "Tổng tiền cần thu (tất cả người thuê)"
     edit_invoice: "Chỉnh sửa hóa đơn"
     update_success: "Đã cập nhật thông tin hóa đơn thành công!"
@@ -202,8 +206,8 @@ vi:
       payos_bullet_3_html: "Cả bạn và người thuê đều nhận thông báo xác nhận thành công ngay lập tức mà bạn <strong>không cần mở app ngân hàng kiểm tra hay bấm duyệt thủ công</strong>."
       payos_activation_hint_html: "Để kích hoạt: Vào mục <strong>Cài đặt tài khoản ngân hàng</strong> ➔ Bật tùy chọn <em>\"Kích hoạt tự động gạch nợ qua payOS\"</em>."
       click_to_view: "Nhấn vào bất kỳ mục nào để xem hướng dẫn chi tiết"
-    example: "Ví dụ minh họa trên hóa đơn:"
 
+    example: "Ví dụ minh họa trên hóa đơn:"
     realtime_usage_title: "1. Dịch vụ đo theo công tơ / chỉ số thực tế (Real-time Usage)"
     realtime_usage_desc: "Bao gồm tất cả các dịch vụ có lắp đặt đồng hồ đo đạc riêng (ví dụ: Điện, Nước, Khí Gas, Trạm sạc xe, Nước nóng...) (lưu ý, trong thực tế, việc thiết lập dịch vụ phụ thuộc hoàn toàn vào chủ nhà). Lượng tiêu thụ được tính bằng:"
     fixed_usage_title: "2. Dịch vụ tính theo định mức cố định"
@@ -284,10 +288,12 @@ vi:
     paid_success: "Hóa đơn này đã được thanh toán thành công!"
     paid_success_hint: "Cảm ơn bạn đã hoàn thành tiền phòng đúng hạn."
     paid_completed: "Đã hoàn tất thanh toán"
+
     payos:
       realtime_badge: "Tự động nhận diện thanh toán (payOS)"
       open_checkout: "Mở trang thanh toán payOS"
       auto_paid_note: "Tự động gạch nợ qua payOS (Mã GD: %{ref})"
+
     transfer_note: "Nội dung chuyển khoản"
     transfer_note_strict: "Nội dung chuyển khoản (Bắt buộc giữ nguyên)"
     transfer_note_config: "Cú pháp chuyển khoản VietQR"
@@ -451,7 +457,6 @@ vi:
     no_custom_invoices_tenant_hint: "Các khoản phụ phí hoặc giảm trừ phát sinh riêng do chủ nhà lập sẽ xuất hiện tại đây."
     no_services: "Không có dịch vụ nào trong kỳ này"
     meter_logs: "Chỉ số thực tế"
-    meter_logs_title: "Ghi nhận Chỉ số Điện & Nước"
     meter_logs_subtitle: "Quản lý và phê duyệt chỉ số công tơ do khách gửi hoặc chủ trọ ghi nhận hàng tháng."
     new_meter_log: "Ghi chỉ số mới"
     edit_meter_log: "Chỉnh sửa chỉ số"
@@ -490,7 +495,7 @@ vi:
     billing_month: "Kỳ tính toán (tháng)"
     billing_month_tooltip: "Quy tắc chu kỳ tính toán đề xuất:<br>• <strong>Tiền phòng (Thu trước)</strong>: Thu trước cho chu kỳ tháng được chọn (ví dụ: tháng 9 thu từ 01/09 đến 30/09).<br>• <strong>Điện, nước & Dịch vụ đo đếm (Thu sau)</strong>: Thu sau cho mức tiêu thụ thực tế của tháng vừa qua (hệ thống tự động tìm và điền chỉ số chốt gần nhất)."
     applied_room: "Phòng áp dụng"
-    measured_service: "Dịch vụ đo đạc"
+    measured_service: "Dịch vụ ghi nhận"
     reading_placeholder: "Nhập số trên đồng hồ"
     cycle_start_date: "Ngày bắt đầu kỳ"
     cycle_end_date: "Ngày kết thúc kỳ"
@@ -499,7 +504,7 @@ vi:
     service_usage_details: "Chi tiết sử dụng dịch vụ"
     tenant_history_scope_notice: "Bạn chỉ được xem dữ liệu dịch vụ từ thời điểm bạn bắt đầu lưu trú (tháng %{month})."
     no_logs_for_month: "Không có dữ liệu sử dụng dịch vụ cho tháng đã chọn"
-    no_logs_for_month_hint: "Chưa có chỉ số được ghi nhận cho tháng này. Bạn có thể chọn tháng khác hoặc xóa bộ lọc."
+    no_logs_for_month_hint: "Chưa có chỉ số được ghi nhận cho tháng này. Bạn có thể chọn tháng khác để xem."
     not_entered: "Chưa nhập"
     no_photo_yet: "Chưa nộp ảnh"
     confirmed_and_locked: "Đã chốt số"

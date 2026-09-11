@@ -56,7 +56,14 @@
                 <%= contract.title_name %>
               </td>
 
-              <td class="custom-text-primary fw-medium"><%= contract.house&.name || t("none") %></td>
+              <td class="custom-text-primary fw-medium">
+                <% if contract.house&.is_deleted? %>
+                  <span class="text-decoration-line-through text-secondary"><%= contract.house.name %></span>
+                  <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle small ms-1">(<%= t('form.house.deleted_status', default: 'Nhà đã xóa') %>)</span>
+                <% else %>
+                  <%= contract.house&.name || t("none") %>
+                <% end %>
+              </td>
 
               <td>
                 <div class="fw-semibold"><%= vn_name(contract.landlord.user.fullname) %></div>

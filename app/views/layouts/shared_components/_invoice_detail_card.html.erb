@@ -53,7 +53,14 @@
             <span class="material-symbols-outlined fs-5">apartment</span>
             <span><%= t('invoice.biller_info') %></span>
           </div>
-          <div class="invoice-party-name"><%= invoice.house.name %></div>
+          <div class="invoice-party-name">
+            <% if invoice.house.is_deleted? %>
+              <span class="text-decoration-line-through text-secondary"><%= invoice.house.name %></span>
+              <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle small ms-1">(<%= t('form.house.deleted_status', default: 'Nhà đã xóa') %>)</span>
+            <% else %>
+              <%= invoice.house.name %>
+            <% end %>
+          </div>
           <div class="invoice-party-info">
             <div><span class="text-secondary"><%= t('form.house.addr') %>:</span>&nbsp;
             <%= invoice.house.full_address %></div>

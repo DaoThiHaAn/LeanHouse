@@ -1,0 +1,34 @@
+<%= turbo_frame_tag "house_delete_modal" do %>
+  <div class="modal fade" id="houseCheckDeleteConfirmModal" tabindex="-1" aria-hidden="true"
+        data-controller="modal" data-modal-auto-open-value="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content px-2">
+        <div class="modal-header border-bottom pb-2">
+          <div class="d-flex align-items-center justify-content-start gap-2">
+            <span class="icon material-symbols-filled text-danger fs-4">warning</span>
+            <h1 class="modal-title fs-5 fw-bold mb-0"><%= t("form.house.delete") %> - <%= @house.name %></h1>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body py-3">
+          <p class="mb-2"><%= t("form.house.delete_confirm_desc") %></p>
+          <p class="text-secondary small fst-italic mb-0"><%= t("form.house.delete_confirm_note") %></p>
+        </div>
+
+        <div class="modal-footer border-top pt-2 d-flex justify-content-end gap-2">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+            <%= t("cancel") %>
+          </button>
+          <%= button_to landlord_house_path(@house),
+                        method: :delete,
+                        data: { turbo_frame: "_top" },
+                        class: "btn btn-danger d-flex align-items-center gap-1 fw-semibold" do %>
+            <span class="material-symbols-outlined fs-6">delete</span>
+            <%= t("form.house.delete") %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

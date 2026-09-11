@@ -65,9 +65,10 @@
     </div>
     <h5 class="fw-bold text-dark mb-2"><%= t("service_usage_logs.no_fixed_services_in_cycle") %></h5>
     <p class="text-secondary mx-auto mb-0 col-md-8 col-lg-6">
-      <%= t("service_usage_logs.no_fixed_services_tenant_hint", default: "Phòng chưa có dịch vụ tính phí cố định nào trong kỳ tính toán này.") %>
+      <%= t("service_usage_logs.no_fixed_services_tenant_hint") %>
     </p>
   </div>
+
 <% else %>
   <!-- Table -->
   <div class="table-responsive bg-white rounded-2 shadow-sm border mb-4">
@@ -86,8 +87,8 @@
         <% summary.paginated_items.group_by(&:invoice).each do |invoice, items| %>
           <tr class="table-light border-top border-bottom">
             <% if invoice.present? %>
-
-              <td colspan="5" class="ps-4 py-2 bg-light bg-opacity-75">
+              <!-- Invoice span row -->
+              <td colspan="5" class="ps-4 py-2 invoice-row">
                 <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
                   <div class="d-flex align-items-center gap-2">
                     <span class="material-symbols-outlined fs-5 text-primary">receipt_long</span>
@@ -96,12 +97,12 @@
                                 target: "_blank",
                                 rel: "noopener noreferrer",
                                 class: "font-monospace fw-bold text-primary text-decoration-none d-inline-flex align-items-center gap-1",
-                                title: t("common.open_in_new_tab", default: "Mở trong tab mới") do %>
+                                title: t("open_in_new_tab") do %>
                       <span><%= invoice.code %></span>
                       <span class="material-symbols-outlined fs-6">open_in_new</span>
                     <% end %>
                     <% if invoice.title.present? %>
-                      <span class="text-secondary small fst-italic">(<%= invoice.title %>)</span>
+                      <span class="text-body small">(<%= invoice.title %>)</span>
                     <% end %>
                   </div>
                   <div class="pe-3">

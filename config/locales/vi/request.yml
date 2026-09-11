@@ -59,6 +59,7 @@ vi:
     documents_purged: "Ảnh giấy tờ đã được xóa tự động sau khi xét duyệt theo chính sách bảo mật."
     resolved_by: "Người duyệt"
     sender: "Người gửi"
+    tenant_departed: "Đã trả phòng"
     phone: "Số điện thoại"
     vehicle_info: "Thông tin phương tiện"
     request_info: "Thông tin yêu cầu"
