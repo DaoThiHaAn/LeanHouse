@@ -15,7 +15,8 @@
   border-left-width: 4px;
   border-left-style: solid;
   border-radius: 16px;
-  height: 140px;
+  height: fit-content;
+  min-height: 140px;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   position: relative;
 }

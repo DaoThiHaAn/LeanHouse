@@ -21,6 +21,7 @@ class Invoice < ApplicationRecord
   before_validation :normalize_title
   before_validation :normalize_payment_method
   before_validation :set_default_transfer_note
+  before_validation :assign_payos_order_code, on: :create
 
   validates :code, :billing_month, :due_date, :status, :invoice_type, :title, presence: true
   validates :code, uniqueness: true
@@ -150,7 +151,6 @@ class Invoice < ApplicationRecord
   end
 
   def transfer_note
-    super.presence || build_fallback_transfer_note
     val = read_attribute(:transfer_note)
     return val if val.present?
     return nil if persisted? || transfer_note_mode == "none"
@@ -166,13 +166,35 @@ class Invoice < ApplicationRecord
     TransferNoteBuilder.build(house.transfer_note_template, self)
   end
 
+  def payos_configured?
+    bank_account&.payos_configured?
+  end
+
+  def payos_transfer_description
+    "HD #{payos_order_code}"
+  end
+
+  def effective_transfer_note
+    if payos_configured?
+      payos_transfer_description
+    else
+      transfer_note
+    end
+  end
+
   def vietqr_url(account = bank_account)
     return unless account
+
+    desc = if account.payos_configured?
+             payos_transfer_description
+    else
+             transfer_note
+    end
 
     VietqrService.generate_url(
       bank_account: account,
       amount: total_amount,
-      description: transfer_note
+      description: desc
     )
   end
 
@@ -199,6 +221,18 @@ class Invoice < ApplicationRecord
   def normalize_title
     self.title = title&.squish
     self.note = note&.squish
+  end
+
+  def assign_payos_order_code
+    return if payos_order_code.present?
+
+    loop do
+      candidate = rand(100_000_000..999_999_999)
+      unless Invoice.exists?(payos_order_code: candidate)
+        self.payos_order_code = candidate
+        break
+      end
+    end
   end
 
   def set_default_transfer_note

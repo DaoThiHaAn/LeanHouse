@@ -16,6 +16,7 @@ vi:
         content_2: "Thông tin phòng trọ và hợp đồng"
         content_3: "Hình ảnh giấy tờ (nếu người dùng tải lên)"
         content_4: "Thông tin tài khoản ngân hàng nhận tiền của chủ trọ (Ngân hàng, số tài khoản, tên chủ tài khoản)"
+        content_5: "Thông tin kết nối API cổng thanh toán (Client ID, API Key, Checksum Key) nếu chủ trọ lựa chọn kích hoạt tính năng tự động gạch nợ"
 
       technical:
         title: "1.2. Thông tin kỹ thuật tự động thu thập"
@@ -27,7 +28,7 @@ vi:
       title: "2. Mục đích sử dụng thông tin"
       content: "Thông tin thu thập được sử dụng cho:"
       content_1: "Quản lý tài khoản và dữ liệu người thuê/phòng trọ"
-      content_2: "Hiển thị hợp đồng, hóa đơn, thông tin thanh toán VietQR và yêu cầu dịch vụ"
+      content_2: "Hiển thị hợp đồng, hóa đơn, thông tin thanh toán VietQR và yêu cầu dịch vụ, đối soát gạch nợ tự động"
       content_3: "Nâng cấp tính năng và đảm bảo an toàn hệ thống"
       content_4: "Liên hệ hỗ trợ khi cần thiết"
       content_5: "LeanHouse không sử dụng thông tin cho mục đích thương mại hóa hoặc gửi quảng cáo không mong muốn"
@@ -40,6 +41,7 @@ vi:
       content_3: "Cần thiết để vận hành hệ thống (ví dụ: dịch vụ lưu trữ dữ liệu)"
       content_4: "Các đối tác kỹ thuật chỉ được tiếp cận thông tin ở mức tối thiểu cần thiết"
       content_5: "Thông tin tài khoản ngân hàng nhận tiền của chủ trọ được hiển thị trên hóa đơn và mã VietQR cho khách thuê của phòng trọ tương ứng để phục vụ thanh toán tiền phòng"
+      content_6: "Đối với hóa đơn có kích hoạt tính năng tự động gạch nợ qua payOS, thông tin đơn hàng (số tiền, mã hóa đơn, nội dung chuyển khoản) được truyền tải an toàn tới cổng payOS để tạo mã QR thanh toán động và nhận Webhook đối soát tự động"
 
     security:
       title: "4. Lưu trữ và bảo mật dữ liệu"
@@ -48,6 +50,14 @@ vi:
       content_2: "Hạn chế truy cập nội bộ theo phân quyền"
       content_3: "Sao lưu dữ liệu định kỳ"
       content_4: "Sử dụng nền tảng lưu trữ an toàn"
+
+      payment_security:
+        title: "4.1. An toàn thanh toán VietQR và Cổng kết nối payOS"
+        content: "Nhằm đảm bảo an toàn tuyệt đối cho dòng tiền và dữ liệu tài chính của người dùng, LeanHouse cam kết và tuân thủ các nguyên tắc sau:"
+        content_1: "Mô hình chuyển khoản trực tiếp (A2A): LeanHouse KHÔNG phải là ví điện tử hay tổ chức trung gian thanh toán và KHÔNG giữ tiền của người dùng. Tiền phòng chuyển trực tiếp 100% từ tài khoản người thuê sang tài khoản ngân hàng của chủ trọ."
+        content_2: "Tuyệt đối không lưu trữ thông tin nhạy cảm: Hệ thống KHÔNG BAO GIỜ yêu cầu, thu thập hoặc lưu trữ mật khẩu đăng nhập Internet Banking, mã PIN thẻ, mã OTP ngân hàng của bất kỳ người dùng nào."
+        content_3: "Bảo vệ thông số kết nối API: Các khóa cấu hình API của chủ trọ (Client ID, API Key, Checksum Key) được lưu trữ an toàn trong cơ sở dữ liệu, chỉ được sử dụng cho mục đích kỹ thuật nhằm tạo liên kết thanh toán và xác thực dữ liệu giao dịch."
+        content_4: "Xác thực chữ ký số Webhook (HMAC-SHA256): Mọi dữ liệu thông báo biến động thanh toán nhận từ đối tác payOS đều bắt buộc phải vượt qua bước kiểm tra chữ ký số mật mã học HMAC-SHA256 với Checksum Key bí mật. Hệ thống chỉ cập nhật trạng thái 'Đã thanh toán' khi chữ ký số hoàn toàn hợp lệ, loại trừ mọi nguy cơ giả mạo giao dịch."
 
       user_responsibility: "Tuy nhiên, không hệ thống nào đảm bảo bảo mật tuyệt đối. Người dùng cũng cần:"
       user_responsibility_1: "Bảo vệ thông tin đăng nhập"

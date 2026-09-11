@@ -19,3 +19,21 @@
   border-color: rgb(71, 140, 141) !important;
   border-width: 1.5px !important;
 }
+
+.bank-account-card-logo-sm {
+  max-height: 22px;
+  max-width: 65px;
+  object-fit: contain;
+}
+
+.notice-box-sm {
+  font-size: 0.775rem;
+}
+
+.webhook-info-box {
+  font-size: 0.75rem;
+}
+
+.env-notice-text {
+  font-size: 0.725rem;
+}

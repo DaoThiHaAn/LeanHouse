@@ -11,7 +11,7 @@ class LandlordPortal::BankAccountsController < ApplicationController
   end
 
   def create
-    @bank_account = @landlord.bank_accounts.build(bank_account_params)
+    @bank_account = @landlord.bank_accounts.build(bank_account_create_params)
 
     if @bank_account.save
       @bank_accounts = current_bank_accounts
@@ -46,7 +46,7 @@ class LandlordPortal::BankAccountsController < ApplicationController
   end
 
   def update
-    if @bank_account.update(bank_account_params)
+    if @bank_account.update(bank_account_update_params)
       @bank_accounts = current_bank_accounts
       flash.now[:notice] = t("bank_account.updated_success")
 
@@ -127,7 +127,17 @@ class LandlordPortal::BankAccountsController < ApplicationController
     @landlord.bank_accounts.reload.includes(:bank).default_first
   end
 
-  def bank_account_params
-    params.require(:bank_account).permit(:bank_id, :account_number, :account_holder, :is_default, :consent_accepted)
+  def bank_account_create_params
+    params.require(:bank_account).permit(
+      :bank_id, :account_number, :account_holder, :is_default, :consent_accepted,
+      :payos_enabled, :payos_client_id, :payos_api_key, :payos_checksum_key
+    )
+  end
+
+  def bank_account_update_params
+    params.require(:bank_account).permit(
+      :account_number, :account_holder, :is_default,
+      :payos_enabled, :payos_client_id, :payos_api_key, :payos_checksum_key
+    )
   end
 end

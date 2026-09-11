@@ -1,10 +1,8 @@
 /* --- Container & Layout --- */
 .invoice-wrapper {
-  width: 97%;
-  max-width: 1000px;
+  width: 97% !important;
+  max-width: 1400px;
   margin: 20px auto;
-  padding-left: 10px;
-  padding-right: 10px;
 }
 
 .invoice-detail-wrapper {
@@ -499,11 +497,10 @@
 .meter-reading-breakdown {
   display: inline-flex;
   flex-direction: column;
-  background-color: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 0.5rem;
+  background-color: #fdfff4;
+  border: 1px solid #dae0c2;
   padding: 0.35rem 0.65rem;
-  font-size: 0.8125rem;
+  font-size: 0.8rem;
   text-align: left;
   min-width: 175px;
 }
@@ -769,7 +766,8 @@
 }
 
 /* Guide modal */
-#invoiceCreationGuideModal .nav-link.active {
+#invoiceCreationGuideModal .nav-link.active,
+#tenantInvoiceGuideModal .nav-link.active {
   color: white !important;
 }
 
@@ -910,6 +908,26 @@
 
 .guide-step-title-purple {
   color: #7c3aed;
+}
+
+/* Guide Custom Invoice Purple Theme */
+.guide-badge-purple-icon {
+  background-color: #9333ea;
+}
+
+.guide-badge-purple-subtle {
+  color: #6b21a8;
+  background-color: #faf5ff;
+  border-color: #e9d5ff !important;
+}
+
+.guide-box-purple {
+  background-color: #faf5ff;
+  border: 1px solid #e9d5ff;
+}
+
+.guide-title-purple {
+  color: #6b21a8;
 }
 
 .guide-step-desc {

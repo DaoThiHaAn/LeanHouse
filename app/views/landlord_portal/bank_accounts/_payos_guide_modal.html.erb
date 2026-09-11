@@ -1,0 +1,174 @@
+<!-- Modal Hướng dẫn Cài đặt payOS cho Chủ trọ -->
+<div class="modal fade" id="payosSetupGuideModal" tabindex="-1" aria-labelledby="payosSetupGuideModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
+    <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+      <!-- Header -->
+      <div class="modal-header bg-success text-white py-3 px-4 border-0 d-flex justify-content-between align-items-center">
+        <div>
+          <h2 class="modal-title text-white d-flex align-items-center gap-2 mb-2" id="payosSetupGuideModalLabel">
+            <span class="material-symbols-outlined fs-3">bolt</span>
+            <%= t("bank_account.payos_guide.modal_title") %>
+          </h2>
+          <div class="d-flex flex-wrap gap-2">
+            <span class="badge bg-white text-success fw-bold px-3 py-1-5 shadow-sm">
+              <%= t("bank_account.payos_guide.free_badge") %>
+            </span>
+            <span class="badge bg-success-subtle text-success-emphasis border border-success-subtle px-3 py-1-5">
+              <%= t("bank_account.payos_guide.supported_banks") %>
+            </span>
+          </div>
+        </div>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body p-4">
+        <!-- Banner lợi ích -->
+        <div class="alert alert-success border-0 rounded-4 p-3 mb-4 d-flex align-items-start gap-3">
+          <span class="material-symbols-outlined fs-2 text-success mt-1">verified</span>
+          <div>
+            <h6 class="fw-bold text-success-emphasis mb-1">
+              <%= t("bank_account.payos_guide.intro_title") %>
+            </h6>
+            <p class="small text-success-emphasis">
+              <%= t("bank_account.payos_guide.intro_desc") %>
+            </p>
+          </div>
+        </div>
+
+        <!-- 4 Bước cài đặt -->
+        <h5 class="fw-bold  mb-3 d-flex align-items-center gap-2">
+          <%= t("bank_account.payos_guide.steps_title") %>
+        </h5>
+
+        <div class="row g-3 mb-4">
+          <!-- Bước 1 -->
+          <div class="col-md-6">
+            <div class="card h-100 border shadow-sm rounded-3 p-3">
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <span class="badge bg-success text-white rounded-circle p-2 fs-6">1</span>
+                <h6 class="fw-bold text-success mb-0"><%= t("bank_account.payos_guide.step1_title") %></h6>
+              </div>
+              <p class="small text-secondary mb-3">
+                <%= t("bank_account.payos_guide.step1_desc") %>
+              </p>
+              <div class="mt-auto">
+                <a href="https://my.payos.vn" target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary btn-sm d-inline-flex align-items-center gap-1">
+                  <span><%= t("bank_account.payos_guide.step1_btn") %></span>
+                  <span class="material-symbols-outlined fs-6">open_in_new</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bước 2 -->
+          <div class="col-md-6">
+            <div class="card h-100 border shadow-sm rounded-3 p-3">
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <span class="badge bg-success text-white rounded-circle p-2 fs-6">2</span>
+                <h6 class="fw-bold text-success mb-0"><%= t("bank_account.payos_guide.step2_title") %></h6>
+              </div>
+              <p class="small text-secondary mb-0">
+                <%= t("bank_account.payos_guide.step2_desc") %>
+              </p>
+            </div>
+          </div>
+
+          <!-- Bước 3 -->
+          <div class="col-md-6">
+            <div class="card h-100 border shadow-sm rounded-3 p-3">
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <span class="badge bg-success text-white rounded-circle p-2 fs-6">3</span>
+                <h6 class="fw-bold text-success mb-0"><%= t("bank_account.payos_guide.step3_title") %></h6>
+              </div>
+              <p class="small text-secondary mb-2">
+                <%= t("bank_account.payos_guide.step3_desc") %>
+              </p>
+              <ul class="small text-secondary ps-3 mb-0">
+                <li><strong>Client ID</strong></li>
+                <li><strong>API Key</strong></li>
+                <li><strong>Checksum Key</strong></li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Bước 4 -->
+          <div class="col-md-6">
+            <div class="card h-100 border shadow-sm rounded-3 p-3">
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <span class="badge bg-success text-white rounded-circle p-2 fs-6">4</span>
+                <h6 class="fw-bold text-success mb-0"><%= t("bank_account.payos_guide.step4_title") %></h6>
+              </div>
+              <p class="small text-secondary mb-2">
+                <%= t("bank_account.payos_guide.step4_desc") %>
+              </p>
+              <div class="input-group input-group-sm mb-2" data-controller="clipboard"
+                   data-clipboard-copied-text-value="<%= t('bank_account.payos_guide.copied_btn') %>"
+                   data-clipboard-original-text-value="<%= t('bank_account.payos_guide.copy_btn') %>">
+                <input type="text" class="form-control font-monospace  bg-light" readonly
+                       value="<%= payos_webhook_url %>" data-clipboard-target="source" autocomplete="off">
+                <button class="btn btn-outline-secondary" type="button" data-action="click->clipboard#copy" data-clipboard-target="button">
+                  <%= t("bank_account.payos_guide.copy_btn") %>
+                </button>
+              </div>
+              <p class="small text-muted mb-2 fst-italic">
+                <%= t("bank_account.payos_guide.step4_confirm_hint") %>
+              </p>
+
+              <% if payos_local_env? %>
+                <div class="alert alert-warning p-2 mb-0 rounded-2 notice-box-sm">
+                  <div class="d-flex align-items-center gap-1 fw-bold text-warning-emphasis mb-1">
+                    <span class="material-symbols-outlined fs-6">warning</span>
+                    <span><%= t("bank_account.payos_guide.dev_env_warning_title") %></span>
+                  </div>
+                  <div class="text-secondary lh-sm">
+                    <%= t("bank_account.payos_guide.dev_env_warning_prod_note_html") %><br>
+                    <%= t("bank_account.payos_guide.dev_env_warning_local_note_html") %>
+                  </div>
+                </div>
+              <% else %>
+                <div class="alert alert-success-subtle border border-success-subtle p-2 mb-0 rounded-2 notice-box-sm">
+                  <span class="material-symbols-outlined fs-6 text-success align-middle me-1">verified</span>
+                  <span class="text-success-emphasis fw-medium"><%= t("bank_account.payos_guide.prod_env_ready") %></span>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lưu ý & Hỏi đáp nhanh -->
+        <div class="bg-light p-3 rounded-4 border">
+          <h6 class="fw-bold  d-flex align-items-center gap-2 mb-2">
+            <span class="material-symbols-outlined fs-5">help</span>
+            <%= t("bank_account.payos_guide.notes_title") %>
+          </h6>
+          <div class="small text-secondary">
+            <p class="mb-1">
+              <strong><%= t("bank_account.payos_guide.faq1_q") %></strong><br>
+              <%= t("bank_account.payos_guide.faq1_a") %>
+            </p>
+            <p class="mb-1">
+              <strong><%= t("bank_account.payos_guide.faq2_q") %></strong><br>
+              <%= t("bank_account.payos_guide.faq2_a") %>
+            </p>
+            <p class="mb-0">
+              <strong><%= t("bank_account.payos_guide.faq3_q") %></strong><br>
+              <%= t("bank_account.payos_guide.faq3_a") %>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer bg-light border-top py-2 px-4 d-flex justify-content-between align-items-center">
+        <span class="text-secondary small">
+          <span class="material-symbols-outlined fs-6 align-middle text-success">security</span>
+          <%= t("bank_account.payos_guide.security_footer") %>
+        </span>
+        <button type="button" class="btn btn-success px-4 fw-semibold shadow-sm" data-bs-dismiss="modal">
+          <%= t("bank_account.payos_guide.btn_got_it") %>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

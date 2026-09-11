@@ -21,21 +21,18 @@
         <ul class="nav nav-pills gap-2" id="tenantInvoiceGuideTabs" role="tablist">
           <li class="nav-item" role="presentation">
             <button class="nav-link active fw-semibold d-inline-flex align-items-center gap-1 py-2 px-3 rounded-pill" id="tenant-guide-timing-tab" data-bs-toggle="pill" data-bs-target="#tenant-guide-timing" type="button" role="tab" aria-controls="tenant-guide-timing" aria-selected="true">
-              <span class="material-symbols-outlined fs-5">schedule</span>
               <span><%= t('invoice.tenant_guide.tab_timing') %></span>
             </button>
           </li>
 
           <li class="nav-item" role="presentation">
             <button class="nav-link fw-semibold d-inline-flex align-items-center gap-1 py-2 px-3 rounded-pill" id="tenant-guide-modes-tab" data-bs-toggle="pill" data-bs-target="#tenant-guide-modes" type="button" role="tab" aria-controls="tenant-guide-modes" aria-selected="false">
-              <span class="material-symbols-outlined fs-5">category</span>
               <span><%= t('invoice.tenant_guide.tab_modes') %></span>
             </button>
           </li>
 
           <li class="nav-item" role="presentation">
             <button class="nav-link fw-semibold d-inline-flex align-items-center gap-1 py-2 px-3 rounded-pill" id="tenant-guide-vietqr-tab" data-bs-toggle="pill" data-bs-target="#tenant-guide-vietqr" type="button" role="tab" aria-controls="tenant-guide-vietqr" aria-selected="false">
-              <span class="material-symbols-outlined fs-5">qr_code_scanner</span>
               <span><%= t('invoice.tenant_guide.tab_vietqr') %></span>
             </button>
           </li>
@@ -50,11 +47,10 @@
           <div class="tab-pane fade show active" id="tenant-guide-timing" role="tabpanel" aria-labelledby="tenant-guide-timing-tab">
             <div class="card border-0 bg-light rounded-4 p-4 mb-3">
               <h5 class="fw-bold text-dark d-flex align-items-center gap-2 mb-3">
-                <span class="material-symbols-outlined fs-4 text-primary">schedule</span>
+                <span class="material-symbols-outlined fs-4">schedule</span>
                 <%= t('invoice.tenant_guide.timing_title') %>
               </h5>
-              <p class="text-secondary mb-4"><%= t('invoice.tenant_guide.timing_p1') %></p>
-
+              <p class="text-secondary mb-4"><%= sanitize(t('invoice.tenant_guide.timing_p1')) %></p>
               <div class="row g-3 mb-4">
                 <!-- Tiền phòng trả trước -->
                 <div class="col-md-6">
@@ -83,6 +79,63 @@
                 </div>
               </div>
 
+              <!-- Practical Scenarios -->
+              <div class="bg-white rounded-3 shadow-sm border p-4 mb-4">
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2 pb-2 border-bottom">
+                  <h6 class="fw-bold text-dark d-flex align-items-center gap-2 mb-0">
+                    <span class="material-symbols-outlined fs-5">psychology_alt</span>
+                    <span><%= t('invoice.tenant_guide.scenario_title') %></span>
+                  </h6>
+                  <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1 small">
+                    <%= t('invoice.tenant_guide.scenario_badge') %>
+                  </span>
+                </div>
+                <p class="text-secondary small mb-3"><%= t('invoice.tenant_guide.scenario_subtitle') %></p>
+
+                <div class="row g-3">
+                  <!-- Scenario 1: Beginning of month -->
+                  <div class="col-12">
+                    <div class="p-3 rounded-3 bg-light border border-success-subtle">
+                      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
+                        <div class="fw-bold text-success d-flex align-items-center gap-1">
+                          <span class="material-symbols-outlined fs-5">today</span>
+                          <span><%= t('invoice.tenant_guide.scenario_beginning_title') %></span>
+                        </div>
+                        <span class="badge bg-success-subtle text-success border border-success-subtle small"><%= t('invoice.tenant_guide.scenario_beginning_badge') %></span>
+                      </div>
+                      <div class="small text-secondary guide-step-desc">
+                        <%= sanitize(t('invoice.tenant_guide.scenario_beginning_desc')) %>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Scenario 2: End of month -->
+                  <div class="col-12">
+                    <div class="p-3 rounded-3 bg-light border border-primary-subtle">
+                      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
+                        <div class="fw-bold text-primary d-flex align-items-center gap-1">
+                          <span class="material-symbols-outlined fs-5">event_repeat</span>
+                          <span><%= t('invoice.tenant_guide.scenario_monthend_title') %></span>
+                        </div>
+                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle small"><%= t('invoice.tenant_guide.scenario_monthend_badge') %></span>
+                      </div>
+                      <div class="small text-secondary guide-step-desc">
+                        <%= sanitize(t('invoice.tenant_guide.scenario_monthend_desc')) %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Cycle Dependency Notice -->
+              <div class="alert alert-warning border-0 rounded-3 mb-4 d-flex align-items-start gap-2">
+                <span class="material-symbols-outlined text-warning-emphasis fs-4 mt-1">info</span>
+                <div class="small">
+                  <strong class="d-block text-warning-emphasis mb-1"><%= t('invoice.tenant_guide.cycle_dependency_title') %></strong>
+                  <span><%= sanitize(t('invoice.tenant_guide.cycle_dependency_desc')) %></span>
+                </div>
+              </div>
+
               <!-- Minh bạch chỉ số công tơ -->
               <div class="p-3 bg-white rounded-3 shadow-sm border border-info-subtle">
                 <div class="fw-bold text-info-emphasis d-flex align-items-center gap-2 mb-2">
@@ -93,19 +146,19 @@
                   <%= sanitize(t('invoice.tenant_guide.timing_meter_desc')) %>
                 </div>
 
-                <div class="p-3 rounded-3 bg-light border border-light-subtle d-inline-block">
-                  <span class="small text-muted d-block mb-1 fw-medium"><%= t('invoice.example', default: 'Ví dụ minh họa trên hóa đơn:') %></span>
+                <div class="p-2 d-inline-block">
+                  <p class="small text-secondary d-block mb-2 fw-medium"><%= t('invoice.example') %></p>
                   <div class="meter-reading-breakdown">
                     <div class="meter-row">
-                      <span class="meter-label"><%= t('invoice.prev_reading', default: 'Chỉ số cũ') %>:</span>
+                      <span class="meter-label"><%= t('invoice.prev_reading') %>:</span>
                       <span class="meter-value">1250</span>
                     </div>
                     <div class="meter-row">
-                      <span class="meter-label"><%= t('invoice.latest_reading', default: 'Chỉ số mới') %>:</span>
+                      <span class="meter-label"><%= t('invoice.latest_reading') %>:</span>
                       <span class="meter-value">1380</span>
                     </div>
                     <div class="meter-row meter-usage-row">
-                      <span class="meter-label text-primary fw-semibold"><%= t('invoice.used_amount', default: 'Tiêu thụ') %>:</span>
+                      <span class="meter-label text-primary fw-semibold"><%= t('invoice.used_amount') %>:</span>
                       <span class="meter-usage-value">130.0 kWh</span>
                     </div>
                   </div>
@@ -147,7 +200,7 @@
                         <span class="material-symbols-filled fs-5">co_present</span>
                         <span><%= t('invoice.tenant_guide.mode_representative_title') %></span>
                       </div>
-                      <p class="small text-secondary mb-0"><%= t('invoice.tenant_guide.mode_representative_desc') %></p>
+                      <p class="small text-secondary"><%= t('invoice.tenant_guide.mode_representative_desc') %></p>
                     </div>
                   </div>
 
@@ -158,7 +211,7 @@
                         <span class="material-symbols-filled fs-5">person</span>
                         <span><%= t('invoice.tenant_guide.mode_self_pay_title') %></span>
                       </div>
-                      <p class="small text-secondary mb-0"><%= t('invoice.tenant_guide.mode_self_pay_desc') %></p>
+                      <p class="small text-secondary"><%= t('invoice.tenant_guide.mode_self_pay_desc') %></p>
                     </div>
                   </div>
                 </div>
@@ -168,7 +221,7 @@
               <div class="card bg-white border-0 shadow-sm rounded-3 p-3">
                 <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2 pb-2 border-bottom">
                   <div class="d-flex align-items-center gap-2">
-                    <span class="badge text-white p-2 rounded-circle" style="background-color: #9333ea;">
+                    <span class="badge text-white p-2 rounded-circle guide-badge-purple-icon">
                       <span class="material-symbols-filled fs-5">tune</span>
                     </span>
                     <div>
@@ -176,13 +229,13 @@
                       <span class="small text-secondary"><%= t('invoice.tenant_guide.type_custom_desc') %></span>
                     </div>
                   </div>
-                  <span class="badge border small fw-semibold" style="color: #6b21a8; background-color: #faf5ff; border-color: #e9d5ff !important;">
+                  <span class="badge border small fw-semibold guide-badge-purple-subtle">
                     <%= t('invoice.guide.custom_pays_individually') %>
                   </span>
                 </div>
 
-                <div class="p-3 rounded-3 mt-2" style="background-color: #faf5ff; border: 1px solid #e9d5ff;">
-                  <div class="fw-bold d-flex align-items-center gap-1 mb-2" style="color: #6b21a8;">
+                <div class="p-3 rounded-3 mt-2 guide-box-purple">
+                  <div class="fw-bold d-flex align-items-center gap-1 mb-2 guide-title-purple">
                     <span class="material-symbols-filled fs-5">person_check</span>
                     <span><%= t('invoice.guide.custom_mode_heading') %></span>
                   </div>
@@ -223,6 +276,32 @@
                     </div>
                     <div class="small text-secondary">
                       <%= sanitize(simple_format(t('invoice.tenant_guide.vietqr_step2_desc'))) %>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Tự động xác nhận Real-time payOS -->
+                <div class="col-12 mt-3">
+                  <div class="p-3 bg-success-subtle rounded-3 shadow-sm border border-success-subtle">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                      <span class="badge bg-success text-white rounded-circle p-2">
+                        <span class="material-symbols-outlined fs-6 align-middle">bolt</span>
+                      </span>
+                      <h6 class="fw-bold text-success-emphasis mb-0">
+                        <%= t('invoice.tenant_guide.payos_realtime_title') %>
+                      </h6>
+                    </div>
+                    <div class="small text-secondary">
+                      <p class="mb-1">
+                        <%= sanitize(t('invoice.tenant_guide.payos_intro_html', badge: raw('<span class="badge bg-success text-white px-2 py-0-5"><span class="material-symbols-outlined fs-6 align-middle">bolt</span> payOS</span>'))) %>
+                      </p>
+                      <ul class="ps-3 mb-1">
+                        <li><%= sanitize(t('invoice.tenant_guide.payos_bullet_1_html')) %></li>
+                        <li><%= sanitize(t('invoice.tenant_guide.payos_bullet_2_html')) %></li>
+                      </ul>
+                      <p class="text-muted fst-italic">
+                        <%= sanitize(t('invoice.tenant_guide.payos_note_html')) %>
+                      </p>
                     </div>
                   </div>
                 </div>

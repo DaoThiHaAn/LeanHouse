@@ -43,6 +43,11 @@ Rails.application.routes.draw do
     end
   end
 
+  # WEBHOOKS
+  namespace :webhooks do
+    post "payos", to: "payos#receive"
+  end
+
   # LANDLORD
   namespace :landlord, module: :landlord_portal do
     resource :profile, only: [ :show, :edit, :update ] do

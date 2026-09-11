@@ -1,0 +1,131 @@
+require "net/http"
+require "json"
+require "uri"
+require "openssl"
+
+class PayosService
+  PAYOS_API_URL = "https://api-merchant.payos.vn/v2/payment-requests".freeze
+
+  # Generate HMAC-SHA256 signature for any hash of data by sorting keys alphabetically
+  def self.create_signature(data, checksum_key)
+    return nil if data.blank? || checksum_key.blank?
+
+    sorted_keys = data.keys.map(&:to_s).sort
+    data_string = sorted_keys.map do |k|
+      val = data[k] || data[k.to_sym]
+      "#{k}=#{val}"
+    end.join("&")
+
+    OpenSSL::HMAC.hexdigest("SHA256", checksum_key, data_string)
+  end
+
+  # Verify signature received in payOS webhook
+  def self.verify_webhook_data(data, signature, checksum_key)
+    return false if data.blank? || signature.blank? || checksum_key.blank?
+
+    expected_sig = create_signature(data, checksum_key)
+    return false if expected_sig.blank?
+
+    ActiveSupport::SecurityUtils.secure_compare(expected_sig.downcase, signature.to_s.downcase)
+  rescue StandardError => e
+    Rails.logger.error("[PayosService] Webhook verification failed: #{e.message}")
+    false
+  end
+
+  # Resolve base application URL from environment, request host, or routing defaults
+  def self.base_app_url(host: nil)
+    if ENV["APP_HOST"].present?
+      h = ENV["APP_HOST"].to_s.strip
+      return h.chomp("/") if h.start_with?("http://", "https://")
+      protocol = Rails.env.production? ? "https" : "http"
+      return "#{protocol}://#{h}".chomp("/")
+    end
+
+    if host.present?
+      h = host.to_s.strip
+      return h.chomp("/") if h.start_with?("http://", "https://")
+      protocol = Rails.env.production? ? "https" : "http"
+      return "#{protocol}://#{h}".chomp("/")
+    end
+
+    default_host = Rails.application.routes.default_url_options[:host]
+    if default_host.present?
+      protocol = Rails.env.production? ? "https" : "http"
+      port = Rails.application.routes.default_url_options[:port]
+      port_str = port.present? && ![ 80, 443 ].include?(port.to_i) ? ":#{port}" : ""
+      return "#{protocol}://#{default_host}#{port_str}".chomp("/")
+    end
+
+    "http://localhost:3000"
+  end
+
+  # Resolve Webhook URL for payOS (prioritizes PAYOS_WEBHOOK_URL, then request, then base_app_url)
+  def self.webhook_url(request = nil)
+    return ENV["PAYOS_WEBHOOK_URL"].strip if ENV["PAYOS_WEBHOOK_URL"].present?
+
+    if request.present? && request.respond_to?(:base_url) && request.base_url.present?
+      return "#{request.base_url.chomp('/')}/webhooks/payos"
+    end
+
+    "#{base_app_url}/webhooks/payos"
+  end
+
+  # Create payment link for an invoice via payOS API
+  def self.create_payment_link(invoice, host: nil)
+    bank_account = invoice.bank_account
+    return { success: false, error: "Bank account not configured for payOS" } unless bank_account&.payos_configured?
+
+    order_code = invoice.payos_order_code || invoice.id
+    amount = invoice.total_amount.to_i
+    description = invoice.payos_transfer_description
+    base_url = base_app_url(host: host)
+    return_url = "#{base_url}/tenant/invoices/#{invoice.id}"
+    cancel_url = return_url
+
+    # Data to sign for payment request
+    request_data = {
+      "amount" => amount,
+      "cancelUrl" => cancel_url,
+      "description" => description,
+      "orderCode" => order_code,
+      "returnUrl" => return_url
+    }
+
+    signature = create_signature(request_data, bank_account.payos_checksum_key)
+
+    body = request_data.merge("signature" => signature)
+
+    uri = URI(PAYOS_API_URL)
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = (uri.scheme == "https")
+    http.open_timeout = 10
+    http.read_timeout = 15
+
+    request = Net::HTTP::Post.new(uri.request_uri)
+    request["Content-Type"] = "application/json"
+    request["x-client-id"] = bank_account.payos_client_id
+    request["x-api-key"] = bank_account.payos_api_key
+    request.body = body.to_json
+
+    response = http.request(request)
+    res_data = JSON.parse(response.body) rescue {}
+
+    if response.is_a?(Net::HTTPSuccess) && res_data["code"] == "00" && res_data["data"].present?
+      data = res_data["data"]
+      invoice.update_columns(
+        payos_payment_link_id: data["paymentLinkId"],
+        payos_checkout_url: data["checkoutUrl"],
+        payos_qr_code: data["qrCode"],
+        payos_status: data["status"] || "PENDING"
+      )
+      { success: true, data: data }
+    else
+      err_msg = res_data["desc"] || "Failed to create payOS payment link (HTTP #{response.code})"
+      Rails.logger.warn("[PayosService] API error for invoice ##{invoice.id}: #{err_msg}")
+      { success: false, error: err_msg, response: res_data }
+    end
+  rescue StandardError => e
+    Rails.logger.error("[PayosService] Exception creating payment link: #{e.message}")
+    { success: false, error: e.message }
+  end
+end

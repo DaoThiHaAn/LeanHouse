@@ -55,6 +55,7 @@ class LandlordPortal::BankAccountsControllerTest < ActionDispatch::IntegrationTe
     assert_includes response.body, "CHU TRO BANK TEST"
     assert_select "img[src*='VCB.png']"
     assert_select ".bank-account-card-logo"
+    assert_select "#bank_accounts_list.align-items-start"
     assert_not_includes response.body, "translation missing"
   end
 
@@ -141,25 +142,31 @@ class LandlordPortal::BankAccountsControllerTest < ActionDispatch::IntegrationTe
     assert_includes response.body, I18n.t("activerecord.errors.models.bank_account.attributes.account_number.already_added")
   end
 
-  test "landlord can get edit view for bank account" do
+  test "landlord can get edit view for bank account with read-only bank" do
     sign_in_as(@landlord_user)
     get edit_landlord_bank_account_url(@bank_account)
     assert_response :success
     assert_includes response.body, %(turbo-frame id="bank_account_#{@bank_account.id}")
     assert_includes response.body, I18n.t("bank_account.edit_title")
+    assert_includes response.body, I18n.t("bank_account.fixed_bank_badge")
+    assert_includes response.body, I18n.t("bank_account.fixed_bank_help")
+    assert_select "select[name='bank_account[bank_id]']", count: 0
   end
 
-  test "landlord can update bank account via HTML and Turbo Stream" do
+  test "landlord can update bank account via HTML and Turbo Stream, but cannot change bank_id" do
+    other_bank = Bank.create!(name: "Asia Commercial Bank", code: "ACB", bin: "970416", short_name: "ACB")
     sign_in_as(@landlord_user)
 
-    # HTML update
+    # HTML update attempting to change bank_id
     patch landlord_bank_account_url(@bank_account), params: {
       bank_account: {
+        bank_id: other_bank.id,
         account_holder: "CHU TRO UPDATED"
       }
     }
     assert_redirected_to landlord_bank_accounts_url
     assert_equal "CHU TRO UPDATED", @bank_account.reload.account_holder
+    assert_equal @bank.id, @bank_account.bank_id, "bank_id must be immutable on update"
 
     # Turbo Stream update
     patch landlord_bank_account_url(@bank_account), as: :turbo_stream, params: {
@@ -260,5 +267,80 @@ class LandlordPortal::BankAccountsControllerTest < ActionDispatch::IntegrationTe
     assert_includes response.body, %(turbo-stream action="update" target="bank_accounts_list_container")
     assert_includes response.body, I18n.t("bank_account.deleted_success")
     assert acc2.reload.is_default?, "Remaining account should be promoted to default"
+  end
+
+  test "landlord can create bank account with payOS configuration" do
+    mb = Bank.create!(name: "Military Bank", code: "MB", bin: "970422", short_name: "MB")
+    sign_in_as(@landlord_user)
+
+    assert_difference -> { @landlord.bank_accounts.count }, 1 do
+      post landlord_bank_accounts_url, params: {
+        bank_account: {
+          bank_id: mb.id,
+          account_number: "0999888777",
+          account_holder: "CHU TRO PAYOS",
+          consent_accepted: "1",
+          payos_enabled: "1",
+          payos_client_id: "test-client-id",
+          payos_api_key: "test-api-key",
+          payos_checksum_key: "test-checksum-key"
+        }
+      }
+    end
+
+    assert_redirected_to landlord_bank_accounts_path
+    new_acc = @landlord.bank_accounts.find_by(account_number: "0999888777")
+    assert new_acc.payos_enabled?
+    assert_equal "test-client-id", new_acc.payos_client_id
+    assert_equal "test-api-key", new_acc.payos_api_key
+    assert_equal "test-checksum-key", new_acc.payos_checksum_key
+    assert new_acc.payos_configured?
+  end
+
+  test "index view renders bank-account-form stimulus controller and initially hides payos section" do
+    sign_in_as(@landlord_user)
+    get landlord_bank_accounts_url
+    assert_response :success
+
+    # Verify Stimulus controller is attached to new bank account form
+    assert_select "form#new_bank_account_form[data-controller*='bank-account-form']"
+    assert_select "form#new_bank_account_form[data-bank-account-form-supported-bank-ids-value]"
+
+    # Verify targets exist
+    assert_select "select[data-bank-account-form-target='bankSelect']"
+    assert_select "div[data-bank-account-form-target='payosContainer'].d-none"
+    assert_select "input[data-bank-account-form-target='payosToggle']"
+    assert_select "div[data-bank-account-form-target='unsupportedNotice']"
+
+    assert_not_includes response.body, "translation missing"
+  end
+
+  test "edit view displays payos container for supported bank and hides for unsupported bank" do
+    mb = Bank.create!(name: "Military Bank", code: "MB", bin: "970422", short_name: "MB")
+    mb_acc = @landlord.bank_accounts.create!(
+      bank: mb,
+      account_number: "0988776655",
+      account_holder: "CHU TRO MB",
+      payos_enabled: true,
+      payos_client_id: "client-id",
+      payos_api_key: "api-key",
+      payos_checksum_key: "checksum-key"
+    )
+
+    sign_in_as(@landlord_user)
+
+    # Edit supported bank: payosContainer does NOT have d-none
+    get edit_landlord_bank_account_url(mb_acc)
+    assert_response :success
+    assert_select "div[data-bank-account-form-target='payosContainer']:not(.d-none)"
+    assert_select "div[data-bank-account-form-target='unsupportedNotice'].d-none"
+
+    # Edit unsupported bank: payosContainer DOES have d-none, unsupportedNotice is visible
+    get edit_landlord_bank_account_url(@bank_account) # VCB is unsupported
+    assert_response :success
+    assert_select "div[data-bank-account-form-target='payosContainer'].d-none"
+    assert_select "div[data-bank-account-form-target='unsupportedNotice']:not(.d-none)"
+    assert_includes response.body, I18n.t("bank_account.unsupported_bank_notice")
+    assert_not_includes response.body, "translation missing"
   end
 end

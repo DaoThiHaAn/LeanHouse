@@ -33,6 +33,7 @@
         </div>
       </div>
     </div>
+
     <!-- Card 2: Tỉ lệ lấp chỗ trống -->
     <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
       <div class="dashboard-stat-card card-green p-3 shadow-sm d-flex flex-column justify-content-between ">
@@ -62,6 +63,7 @@
         </div>
       </div>
     </div>
+
     <!-- Card 3: Yêu cầu chưa xử lý -->
     <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
       <div class="dashboard-stat-card card-orange p-3 shadow-sm d-flex flex-column justify-content-between ">
@@ -99,6 +101,7 @@
         </div>
       </div>
     </div>
+
     <!-- Card 4: Hợp đồng sắp hết hạn & Quá hạn -->
     <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
       <div class="dashboard-stat-card card-blue p-3 shadow-sm d-flex flex-column justify-content-between ">
@@ -126,6 +129,7 @@
         </div>
       </div>
     </div>
+
     <!-- Card 5: Quản lý Hóa đơn & Thu tiền (Rộng 6 cột) -->
     <div class="col-12 col-xl-6">
       <div class="dashboard-stat-card dashboard-financial-card card-teal p-3 shadow-sm d-flex flex-column justify-content-between">
@@ -154,17 +158,34 @@
             <div class="col-12 col-sm-6 border-end-sm">
               <div class="d-flex flex-column gap-1 pe-sm-2">
                 <div class="d-flex align-items-baseline justify-content-between">
-                  <span class="stat-subtext text-success-emphasis fw-semibold"><%= t('dashboard.landlord.invoices_paid_short') %>:</span>
-                  <span class="fw-bold text-success font-monospace"><%= stats[:invoices][:paid] %> <%= t('dashboard.landlord.invoices_unit') %> (<%= format_money(stats[:invoices][:paid_amount]) %>)</span>
+                  <span class="stat-subtext text-success-emphasis fw-semibold">
+                    <%= t('dashboard.landlord.invoices_paid_short').capitalize %>:
+                  </span>
+                  <span class="fw-bold text-success font-monospace">
+                    <%= stats[:invoices][:paid] %>
+                    <%= t('dashboard.landlord.invoices_unit') %>
+                    (<%= format_money(stats[:invoices][:paid_amount]) %>)
+                  </span>
                 </div>
                 <div class="d-flex align-items-baseline justify-content-between">
-                  <span class="stat-subtext text-warning-emphasis fw-semibold"><%= t('dashboard.landlord.invoices_pending_short') %>:</span>
-                  <span class="fw-bold text-warning-emphasis font-monospace"><%= stats[:invoices][:pending] %> <%= t('dashboard.landlord.invoices_unit') %> (<%= format_money(stats[:invoices][:pending_amount]) %>)</span>
+                  <span class="stat-subtext text-warning-emphasis fw-semibold">
+                    <%= t('dashboard.landlord.invoices_pending_short').capitalize %>:
+                  </span>
+                  <span class="fw-bold text-warning-emphasis font-monospace">
+                    <%= stats[:invoices][:pending] %>
+                    <%= t('dashboard.landlord.invoices_unit') %>
+                    (<%= format_money(stats[:invoices][:pending_amount]) %>)
+                  </span>
                 </div>
                 <% if stats[:invoices][:overdue].positive? %>
                   <div class="d-flex align-items-baseline justify-content-between">
-                    <span class="stat-subtext text-danger fw-bold"><%= t('dashboard.landlord.invoices_overdue_short') %>:</span>
-                    <span class="fw-bold text-danger font-monospace"><%= stats[:invoices][:overdue] %> <%= t('dashboard.landlord.invoices_unit') %></span>
+                    <span class="stat-subtext text-danger fw-bold">
+                      <%= t('dashboard.landlord.invoices_overdue_short').capitalize %>:
+                    </span>
+                    <span class="fw-bold text-danger font-monospace">
+                      <%= stats[:invoices][:overdue] %>
+                      <%= t('dashboard.landlord.invoices_unit') %>
+                    </span>
                   </div>
                 <% end %>
               </div>

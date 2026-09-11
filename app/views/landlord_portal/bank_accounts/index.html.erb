@@ -7,11 +7,33 @@
         <span class="material-symbols-filled fs-2">account_balance</span>
         <%= t("bank_account.title") %>
       </h1>
-      <p><%= t("bank_account.subtitle") %></p>
+      <p class="w-85"><%= t("bank_account.subtitle") %></p>
     </div>
     <span class="badge custom-primary-btn fs-6 px-3 py-2 rounded-pill" id="bank_accounts_count">
       <%= t("bank_account.accounts_count", count: @bank_accounts.size, max: BankAccount::MAX_ACCOUNTS) %>
     </span>
+  </div>
+
+  <!-- Banner giới thiệu tính năng payOS -->
+  <div class="card border-0 bg-success-subtle rounded-4 p-3 mb-4 shadow-sm">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+      <div class="d-flex align-items-center gap-3">
+        <div class="bg-success text-white p-2 rounded-circle d-flex align-items-center justify-content-center shadow-sm">
+          <span class="material-symbols-outlined fs-4">bolt</span>
+        </div>
+        <div>
+          <h6 class="fw-bold text-success-emphasis mb-1">
+            <%= t("bank_account.payos_banner_title") %>
+          </h6>
+          <p class="small text-secondary mb-0">
+            <%= t("bank_account.payos_banner_desc") %>
+          </p>
+        </div>
+      </div>
+      <button type="button" class="btn btn-success btn-sm px-3 py-1-5 rounded-pill fw-semibold shadow-sm" data-bs-toggle="modal" data-bs-target="#payosSetupGuideModal">
+        <%= t("bank_account.payos_banner_btn") %>
+      </button>
+    </div>
   </div>
 
   <!-- Danh sách tài khoản đã thêm -->
@@ -24,3 +46,5 @@
     <%= render "form", bank_account: @bank_account, banks: @banks, bank_accounts_count: @bank_accounts.size %>
   </div>
 </div>
+
+<%= render "payos_guide_modal" %>

@@ -29,9 +29,9 @@ module Invoices
           code: invoice.code,
           room_name: invoice.room.title_name,
           amount: ApplicationController.helpers.format_money(invoice.total_amount),
-          paid_by_role: paid_by.role,
-          paid_by_id: paid_by.id,
-          actor_name: paid_by.fullname,
+          paid_by_role: paid_by&.role || "system",
+          paid_by_id: paid_by&.id,
+          actor_name: paid_by&.fullname || "payOS",
           method_label: method_label
         ).deliver_later(recipients) if recipients.any?
 

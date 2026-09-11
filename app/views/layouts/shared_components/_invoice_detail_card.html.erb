@@ -232,7 +232,7 @@
                         </div>
                         <div class="meter-row meter-usage-row">
                           <span class="meter-label text-primary fw-semibold"><%= t('invoice.used_amount', default: 'Tiêu thụ') %>:</span>
-                          <span class="meter-usage-value"><%= item.quantity %> <%= item.unit %></span>
+                          <span class="meter-usage-value"><%= item.quantity %></span>
                         </div>
                       </div>
                     <% else %>
@@ -362,15 +362,23 @@
     </div>
 
     <!-- Thông tin Chuyển khoản & Thanh toán -->
-    <div class="p-4">
-      <h2 class="mb-3 d-flex align-items-center gap-2">
-        <span class="material-symbols-outlined fs-3">account_balance</span>
-        <span><%= t('invoice.bank_transfer_info') %></span>
-      </h2>
+    <div class="p-4" id="invoice_payment_card_section_<%= invoice.id %>">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+        <h2 class="mb-0 d-flex align-items-center gap-2">
+          <span class="material-symbols-outlined fs-3">account_balance</span>
+          <span><%= t('invoice.bank_transfer_info') %></span>
+        </h2>
+        <% if invoice.payos_configured? %>
+          <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1-5 d-inline-flex align-items-center gap-1 shadow-sm">
+            <span class="material-symbols-outlined fs-6">bolt</span>
+            <span class="fw-semibold"><%= t('invoice.payos.realtime_badge') %></span>
+          </span>
+        <% end %>
+      </div>
 
       <div class="row g-4 align-items-stretch">
         <!-- Cột trái: Thẻ VietQR & Số tài khoản -->
-        <div class="col-12 col-md-6 col-lg-5">
+        <div class="col-12 col-md-6">
           <% if bank_account && qr_url %>
             <div class="invoice-bank-card gap-3 d-flex flex-column align-items-center justify-content-center">
               <button type="button"
@@ -382,6 +390,15 @@
               </button>
 
               <%= image_tag qr_url, alt: t('invoice.vietqr.qr_alt'), class: "d-block mx-auto", width: "200px" %>
+
+              <% if invoice.payos_checkout_url.present? %>
+                <div class="text-center d-print-none mb-1">
+                  <a href="<%= invoice.payos_checkout_url %>" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-success d-inline-flex align-items-center gap-1 px-3 py-1 rounded-pill">
+                    <span><%= t('invoice.payos.open_checkout') %></span>
+                    <span class="material-symbols-outlined fs-6">open_in_new</span>
+                  </a>
+                </div>
+              <% end %>
 
               <div class="bg-light p-3 rounded-3 border small font-monospace">
                 <div class="d-flex justify-content-between align-items-center mb-1">
@@ -404,13 +421,19 @@
                   <strong class="text-dark"><%= bank_account.account_holder %></strong>
                 </div>
 
-                <% if invoice.transfer_note.present? %>
+                <% effective_note = invoice.effective_transfer_note %>
+                <% if effective_note.present? %>
                   <div class="border-top pt-2 mt-2" data-controller="clipboard"
                         data-clipboard-copied-text-value="<%= t('invoice.vietqr.copied') %>"
                         data-clipboard-original-text-value="<%= t('invoice.vietqr.copy') %>">
-                    <div class="text-secondary mb-1"><%= t('invoice.transfer_note_strict') %>:</div>
+                    <div class="text-secondary mb-1 d-flex align-items-center justify-content-between">
+                      <span><%= t('invoice.transfer_note_strict') %>:</span>
+                      <% if invoice.payos_configured? %>
+                        <span class="badge bg-success-subtle text-success border border-success-subtle small">payOS</span>
+                      <% end %>
+                    </div>
                     <div class="d-flex justify-content-between align-items-center bg-white p-2 rounded border">
-                      <span class="fw-bold text-dark font-monospace text-break" data-clipboard-target="source"><%= invoice.transfer_note %></span>
+                      <span class="fw-bold text-dark font-monospace text-break" data-clipboard-target="source"><%= effective_note %></span>
                       <button type="button" class="btn btn-copy-quick ms-2 flex-shrink-0 d-print-none" data-action="click->clipboard#copy" data-clipboard-target="button">
                         <%= t('invoice.vietqr.copy') %>
                       </button>
@@ -437,7 +460,7 @@
         </div>
 
         <!-- Cột phải: Hướng dẫn thanh toán & Thao tác hành động -->
-        <div class="col-12 col-md-6 col-lg-7 d-flex flex-column justify-content-between">
+        <div class="col-12 col-md-6 d-flex flex-column justify-content-between">
           <div>
             <% if invoice.undo_reason.present? && !invoice.paid? %>
               <div class="undo-reason-banner mb-3">
@@ -464,7 +487,7 @@
               </div>
 
               <div class="invoice-guidance-item">
-                <span class="material-symbols-filled fs-6 mt-0.5">edit_note</span>
+                <span class="material-symbols-filled fs-5 mt-0.5">edit_note</span>
                 <span><%= t('invoice.warning_report') %></span>
               </div>
 

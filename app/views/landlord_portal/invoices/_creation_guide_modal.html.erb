@@ -122,7 +122,7 @@
                       <span class="material-symbols-outlined fs-4">forward</span>
                       <span><%= t('invoice.guide.prepaid') %></span>
                     </div>
-                    <p class="small text-secondary mb-0"><%= t('invoice.guide.prepaid_point') %></p>
+                    <p class="small text-secondary"><%= t('invoice.guide.prepaid_point') %></p>
                   </div>
                 </div>
 
@@ -132,7 +132,7 @@
                       <span class="material-symbols-outlined fs-5">history</span>
                       <span><%= t('invoice.guide.postpaid') %></span>
                     </div>
-                    <p class="small text-secondary mb-0"><%= t('invoice.guide.postpaid_point') %></p>
+                    <p class="small text-secondary"><%= t('invoice.guide.postpaid_point') %></p>
                   </div>
                 </div>
               </div>
@@ -229,7 +229,7 @@
                         <span class="material-symbols-filled fs-5">co_present</span>
                         <span><%= t('invoice.guide.mode_room_title') %></span>
                       </div>
-                      <p class="small text-secondary mb-0"><%= t('invoice.guide.mode_room_point') %></p>
+                      <p class="small text-secondary"><%= t('invoice.guide.mode_room_point') %></p>
                     </div>
                   </div>
 
@@ -240,7 +240,7 @@
                         <span class="material-symbols-filled fs-5">person</span>
                         <span><%= t('invoice.guide.mode_individual_title') %></span>
                       </div>
-                      <p class="small text-secondary mb-0"><%= t('invoice.guide.mode_individual_point') %></p>
+                      <p class="small text-secondary"><%= t('invoice.guide.mode_individual_point') %></p>
                     </div>
                   </div>
                 </div>
@@ -255,7 +255,7 @@
               <div class="card bg-white border-0 shadow-sm rounded-3 p-3">
                 <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2 pb-2 border-bottom">
                   <div class="d-flex align-items-center gap-2">
-                    <span class="badge text-white p-2 rounded-circle" style="background-color: #9333ea;">
+                    <span class="badge text-white p-2 rounded-circle guide-badge-purple-icon">
                       <span class="material-symbols-filled fs-5">tune</span>
                     </span>
                     <div>
@@ -263,17 +263,17 @@
                       <span class="small text-secondary"><%= t('invoice.guide.type_custom_desc') %></span>
                     </div>
                   </div>
-                  <span class="badge border small fw-semibold" style="color: #6b21a8; background-color: #faf5ff; border-color: #e9d5ff !important;">
+                  <span class="badge border small fw-semibold guide-badge-purple-subtle">
                     <%= t('invoice.guide.custom_pays_individually') %>
                   </span>
                 </div>
 
-                <div class="p-3 rounded-3 mt-2" style="background-color: #faf5ff; border: 1px solid #e9d5ff;">
-                  <div class="fw-bold d-flex align-items-center gap-1 mb-2" style="color: #6b21a8;">
+                <div class="p-3 rounded-3 mt-2 guide-box-purple">
+                  <div class="fw-bold d-flex align-items-center gap-1 mb-2 guide-title-purple">
                     <span class="material-symbols-filled fs-5">person_check</span>
                     <span><%= t('invoice.guide.custom_mode_heading') %></span>
                   </div>
-                  <p class="small text-secondary mb-0"><%= t('invoice.guide.mode_custom_point') %></p>
+                  <p class="small text-secondary"><%= t('invoice.guide.mode_custom_point') %></p>
                 </div>
               </div>
             </div>
@@ -294,7 +294,7 @@
                   </div>
                   <div>
                     <h6 class="fw-bold text-dark mb-1"><%= t('invoice.guide.dynamic_qr') %></h6>
-                    <p class="small text-secondary mb-0"><%= t('invoice.guide.vietqr_point1') %></p>
+                    <p class="small text-secondary"><%= t('invoice.guide.vietqr_point1') %></p>
                   </div>
                 </div>
 
@@ -304,7 +304,7 @@
                   </div>
                   <div>
                     <h6 class="fw-bold text-dark mb-1"><%= t('invoice.guide.auto_tranfer_note') %></h6>
-                    <p class="small text-secondary mb-0"><%= t('invoice.guide.vietqr_point2') %></p>
+                    <p class="small text-secondary"><%= t('invoice.guide.vietqr_point2') %></p>
                   </div>
                 </div>
 
@@ -314,7 +314,31 @@
                   </div>
                   <div>
                     <h6 class="fw-bold text-dark mb-1"><%= t("invoice.guide.paid_confirm") %></h6>
-                    <p class="small text-secondary mb-0"><%= t('invoice.guide.vietqr_point3') %></p>
+                    <p class="small text-secondary"><%= t('invoice.guide.vietqr_point3') %></p>
+                  </div>
+                </div>
+
+                <!-- Tính năng Mới: Tự động gạch nợ payOS -->
+                <div class="d-flex align-items-start gap-3 p-3 bg-success-subtle rounded-3 shadow-sm border border-success-subtle">
+                  <div class="p-2 rounded-3 bg-success text-white mt-1 shadow-sm">
+                    <span class="material-symbols-outlined fs-5">bolt</span>
+                  </div>
+                  <div>
+                    <div class="d-flex align-items-center gap-2 mb-1">
+                      <h6 class="fw-bold text-success-emphasis mb-0"><%= t('invoice.guide.payos_realtime_title') %></h6>
+                      <span class="badge bg-success text-white small px-2 py-0-5"><%= t('invoice.guide.payos_new_badge') %></span>
+                    </div>
+                    <p class="small text-secondary mb-2">
+                      <%= t('invoice.guide.payos_realtime_desc') %>
+                    </p>
+                    <ul class="small text-secondary ps-3 mb-2">
+                      <li><%= t('invoice.guide.payos_bullet_1') %></li>
+                      <li><%= sanitize(t('invoice.guide.payos_bullet_2_html')) %></li>
+                      <li><%= sanitize(t('invoice.guide.payos_bullet_3_html')) %></li>
+                    </ul>
+                    <p class="small text-muted fst-italic">
+                      <%= sanitize(t('invoice.guide.payos_activation_hint_html')) %>
+                    </p>
                   </div>
                 </div>
               </div>

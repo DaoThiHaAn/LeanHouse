@@ -138,4 +138,15 @@ module ApplicationHelper
     end
   end
   alias_method :turn_back_link, :back_link_to
+
+  # Returns the dynamic or configured Webhook URL for payOS
+  def payos_webhook_url
+    PayosService.webhook_url(defined?(request) ? request : nil)
+  end
+
+  # Check whether current webhook URL is running on a local development IP/host
+  def payos_local_env?
+    url = payos_webhook_url
+    url.include?("localhost") || url.include?("127.0.0.1") || url.include?("0.0.0.0")
+  end
 end
