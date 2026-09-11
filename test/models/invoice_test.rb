@@ -132,4 +132,79 @@ class InvoiceTest < ActiveSupport::TestCase
     @invoice.update!(title: "Tiêu đề đã sửa sau khi hoàn tác")
     assert_equal "Tiêu đề đã sửa sau khi hoàn tác", @invoice.reload.title
   end
+
+  test "generate_code formats prefix as HD followed by dd, mm, and yyyy based on creation date" do
+    creation_date = Date.new(2026, 9, 26)
+    code = Invoice.generate_code(@room, creation_date)
+
+    # Prefix is HD26092026, room name cleaned (ROOM10), followed by 4 uppercase alphanumeric suffix
+    assert_match(/\AHD26092026-ROOM10-[A-Z0-9]{4}\z/, code)
+
+    # If created on 11th of September 2026:
+    code_today = Invoice.generate_code(@room, Date.new(2026, 9, 11))
+    assert_match(/\AHD11092026-ROOM10-[A-Z0-9]{4}\z/, code_today)
+  end
+
+  test "automatically sets transfer_note on validation if mode is system or default" do
+    inv = @house.invoices.new(
+      code: "HD-AUTO-NOTE-TEST",
+      title: "Tiền phòng",
+      room: @room,
+      created_by: @user,
+      billing_month: Date.current.beginning_of_month,
+      due_date: Date.current + 5.days,
+      invoice_type: :room,
+      status: :pending
+    )
+    assert inv.valid?
+    assert_equal "HD-AUTO-NOTE-TEST", inv.transfer_note
+  end
+
+  test "sets transfer_note to nil when transfer_note_mode is none" do
+    inv = @house.invoices.new(
+      code: "HD-NONE-NOTE-TEST",
+      title: "Tiền phòng",
+      room: @room,
+      created_by: @user,
+      billing_month: Date.current.beginning_of_month,
+      due_date: Date.current + 5.days,
+      invoice_type: :room,
+      status: :pending,
+      transfer_note_mode: "none"
+    )
+    assert inv.valid?
+    assert_nil inv.transfer_note
+  end
+
+  test "sets custom transfer_note when transfer_note_mode is custom" do
+    inv = @house.invoices.new(
+      code: "HD-CUSTOM-NOTE-TEST",
+      title: "Tiền phòng",
+      room: @room,
+      created_by: @user,
+      billing_month: Date.current.beginning_of_month,
+      due_date: Date.current + 5.days,
+      invoice_type: :room,
+      status: :pending,
+      transfer_note_mode: "custom",
+      transfer_note: "CUSTOM RENT PAYMENT"
+    )
+    assert inv.valid?
+    assert_equal "CUSTOM RENT PAYMENT", inv.transfer_note
+  end
+
+  test "vietqr_url does not include addInfo when transfer_note is nil" do
+    bank = Bank.find_or_create_by!(code: "VCB", bin: "970436", short_name: "Vietcombank", name: "Vietcombank")
+    bank_account = BankAccount.create!(
+      landlord: @landlord,
+      bank: bank,
+      account_number: "0123456789",
+      account_holder: "TEST USER"
+    )
+    @invoice.update_column(:transfer_note, nil)
+    @invoice.reload
+
+    url = @invoice.vietqr_url(bank_account)
+    assert_not_includes url, "addInfo="
+  end
 end

@@ -5,6 +5,7 @@ module Invoices
 
       ActiveRecord::Base.transaction do
         code = Invoice.generate_code(room, month)
+        code = Invoice.generate_code(room, Date.current)
 
         start_date = params[:start_date].presence || month.beginning_of_month
         end_date = params[:end_date].presence || month.end_of_month
@@ -109,6 +110,15 @@ module Invoices
 
         total_amount = [ subtotal + total_addition - total_discount, 0 ].max
         transfer_note = TransferNoteBuilder.build(room.house.transfer_note_template, invoice)
+        mode = params[:transfer_note_mode].presence || "system"
+        transfer_note = case mode
+        when "none"
+                          nil
+        when "custom"
+                          params[:transfer_note].presence
+        else
+                          TransferNoteBuilder.build(room.house.transfer_note_template, invoice)
+        end
 
         invoice.update!(
           subtotal: subtotal,

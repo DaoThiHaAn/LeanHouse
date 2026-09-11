@@ -515,4 +515,57 @@ class TenantPortal::InvoicesControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
     assert_includes response.body, I18n.t("invoice.already_paid")
   end
+
+  test "GET index supports custom tab with custom invoices and badge counts" do
+    sign_in_as(@tenant_user)
+
+    custom_invoice = @house.invoices.create!(
+      code: "HD-CUSTOM-TENANT-01",
+      title: "Phụ phí phát sinh dọn phòng",
+      room: @room,
+      tenant: @tenant,
+      created_by: @landlord_user,
+      billing_month: @billing_month,
+      due_date: Date.current + 3.days,
+      invoice_type: :custom,
+      status: :pending,
+      subtotal: 200_000,
+      total_amount: 200_000
+    )
+
+    # 1. Default tab (room) shows room invoice and count badge, not custom invoice
+    get tenant_invoices_path
+    assert_response :success
+    assert_includes response.body, @invoice.code
+    assert_not_includes response.body, custom_invoice.code
+    assert_select "select[name='invoice_type']" # payment mode filter visible on room tab
+
+    # 2. Custom tab shows custom invoice and hides room invoice
+    get tenant_invoices_path(tab: "custom")
+    assert_response :success
+    assert_not_includes response.body, @invoice.code
+    assert_includes response.body, custom_invoice.code
+    assert_select ".invoice-badge-custom", text: /#{I18n.t('invoice.badge_custom')}/
+    assert_select "select[name='invoice_type']", 0 # no payment mode filter on custom tab
+  end
+
+  test "tenant invoice show renders service instructions modal and trigger button when invoice has services" do
+    sign_in_as(@tenant_user)
+    @invoice.invoice_items.create!(
+      item_type: "metered_service",
+      name: "Điện",
+      unit: "kWh",
+      unit_price: 3_500,
+      quantity: 50,
+      amount: 175_000,
+      prev_reading: 100,
+      latest_reading: 150
+    )
+
+    get tenant_invoice_path(@invoice)
+    assert_response :success
+    assert_includes response.body, 'data-bs-target="#serviceInstructionsModal"'
+    assert_includes response.body, 'id="serviceInstructionsModal"'
+    assert_includes response.body, CGI.escapeHTML(I18n.t("invoice.service_instructions"))
+  end
 end

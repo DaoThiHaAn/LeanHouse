@@ -60,6 +60,7 @@ module Invoices
           tenant = stay.tenant
           room = stay.rental_unit.room
           code = Invoice.generate_code(room, month)
+          code = Invoice.generate_code(room, Date.current)
 
           invoice = Invoice.create!(
             code: code,
@@ -102,6 +103,15 @@ module Invoices
 
           total_amount = [ total_addition - total_discount, 0 ].max
           transfer_note = TransferNoteBuilder.build(@house.transfer_note_template, invoice)
+          mode = @params[:transfer_note_mode].presence || "system"
+          transfer_note = case mode
+          when "none"
+                            nil
+          when "custom"
+                            @params[:transfer_note].presence
+          else
+                            TransferNoteBuilder.build(@house.transfer_note_template, invoice)
+          end
 
           invoice.update!(
             subtotal: 0,

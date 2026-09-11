@@ -1,13 +1,14 @@
 <%# locals: (inv:) %>
 <tr id="<%= dom_id(inv) %>">
   <td class="ps-3">
-    <div class="invoice-code-tag">
-      <%= link_to inv.code, tenant_invoice_path(inv), data: { turbo_frame: "_top" }, class: "text-decoration-none" %>
+    <p class="invoice-code-tag mb-1"><%= inv.code %></p>
+    <p class="fw-semibold mb-1"><%= inv.title %></p>
+    <div class="d-flex align-items-center flex-wrap gap-1 mt-1">
+      <% if inv.room.present? %>
+        <span class="badge bg-light text-secondary border"><%= inv.room.title_name %></span>
+      <% end %>
+      <%= invoice_type_badge(inv, show_target: false) %>
     </div>
-    <% if inv.title.present? %>
-      <div class="fw-semibold text-dark small mt-1"><%= inv.title %></div>
-    <% end %>
-    <div class="mt-1"><%= invoice_type_badge(inv) %></div>
   </td>
   <td class="fw-semibold"><%= t('month') %> <%= format_month(inv.billing_month) %></td>
   <td>

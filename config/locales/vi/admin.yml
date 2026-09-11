@@ -123,7 +123,7 @@ vi:
       services_and_amenities: "Dịch vụ & Tiện ích"
       assets_and_maintenance: "Tài sản & Thiết bị"
       contracts: "Hợp đồng thuê"
-      invoices: "Hóa đơn thu tiền"
+      invoices: "Hóa đơn"
       no_services: "Chưa cấu hình dịch vụ nào."
       no_assets: "Chưa có tài sản nào."
       no_contracts: "Chưa có hợp đồng nào."

@@ -60,11 +60,17 @@ module InvoicesHelper
     ], " ")
   end
 
-  def invoice_type_badge(invoice)
+  def invoice_type_badge(invoice, show_target: true)
     if invoice.custom?
-      content_tag(:span, "#{t('invoice.badge_custom')}: #{invoice.tenant&.user&.fullname || invoice.room.title_name}", class: "invoice-badge invoice-badge-custom")
+      label = if show_target && (invoice.tenant || invoice.room)
+                "#{t('invoice.badge_custom')}: #{invoice.tenant&.user&.fullname || invoice.room&.title_name}"
+      else
+                t("invoice.badge_custom")
+      end
+      content_tag(:span, label, class: "invoice-badge invoice-badge-custom")
     elsif invoice.individual? && invoice.tenant
-      content_tag(:span, "#{t('invoice.badge_self_pay')}: #{invoice.tenant.user.fullname}", class: "invoice-badge invoice-badge-individual")
+      label = show_target ? "#{t('invoice.badge_self_pay')}: #{invoice.tenant.user.fullname}" : t("invoice.badge_self_pay")
+      content_tag(:span, label, class: "invoice-badge invoice-badge-individual")
     else
       content_tag(:span, t("invoice.badge_representative"), class: "invoice-badge invoice-badge-room")
     end

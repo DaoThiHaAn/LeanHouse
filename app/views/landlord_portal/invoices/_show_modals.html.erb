@@ -1,11 +1,11 @@
 <%# Modals for Landlord Portal Invoice Show %>
-<%= render "landlord_portal/invoices/zoom_qr_modal",
+<%= render "layouts/shared_components/invoices/zoom_qr_modal",
            invoice: (local_assigns[:invoice] || @invoice),
            bank_account: (local_assigns[:bank_account] || @bank_account) %>
 
-<%= render "landlord_portal/invoices/service_instructions_modal" %>
+<%= render "layouts/shared_components/invoices/service_instructions_modal" %>
 
-<%= render "landlord_portal/invoices/invoice_info_modal",
+<%= render "layouts/shared_components/invoices/invoice_info_modal",
            invoice: (local_assigns[:invoice] || @invoice) %>
 
 <%= render "landlord_portal/invoices/edit_dates_modal",
@@ -21,5 +21,6 @@
            house: (local_assigns[:house] || @house),
            invoice: (local_assigns[:invoice] || @invoice) %>
 
-<%= render "landlord_portal/invoices/payment_proof_modal",
-           invoice: (local_assigns[:invoice] || @invoice) %>
+<%= render "layouts/shared_components/invoices/payment_proof_modal",
+           invoice: (local_assigns[:invoice] || @invoice),
+           modal_id: "viewPaymentProofModal" %>

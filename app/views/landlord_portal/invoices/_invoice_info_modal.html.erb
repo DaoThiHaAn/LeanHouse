@@ -1,31 +1,6 @@
-<%
-  inv = local_assigns[:invoice] || @invoice
-  r_total = local_assigns[:rent_total] || inv.rent_total
-  s_total = local_assigns[:services_total] || inv.services_total
-  a_total = local_assigns[:additions_total] || inv.additions_total
-  d_total = local_assigns[:discounts_total] || inv.discounts_total
-%>
-
-<!-- Modal Chi tiết Tổng tiền -->
-<div class="modal fade" id="invoiceInfoModal" tabindex="-1" aria-labelledby="invoiceInfoModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-sm">
-    <div class="modal-content rounded-4 shadow">
-      <div class="modal-header border-bottom">
-        <h6 class="modal-title fw-bold" id="invoiceInfoModalLabel"><%= t('invoice.calculate_formula_title') %></h6>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body small">
-        <p class="mb-1"><strong><%= t('invoice.rent_fee') %>:</strong> <%= format_money(r_total) %></p>
-        <p class="mb-1"><strong><%= t('invoice.service_fee') %>:</strong> +<%= format_money(s_total) %></p>
-        <% if a_total > 0 %>
-          <p class="mb-1 text-primary"><strong><%= t('invoice.addition_items') %>:</strong> +<%= format_money(a_total) %></p>
-        <% end %>
-        <% if d_total > 0 %>
-          <p class="mb-1 text-danger"><strong><%= t('invoice.discount_items') %>:</strong> -<%= format_money(d_total) %></p>
-        <% end %>
-        <hr>
-        <p class="mb-0 fw-bold fs-6"><%= t('invoice.total_payment') %>: <%= format_money(inv.total_amount) %></p>
-      </div>
-    </div>
-  </div>
-</div>
+<%= render "layouts/shared_components/invoices/invoice_info_modal",
+           invoice: (local_assigns[:invoice] || @invoice),
+           rent_total: local_assigns[:rent_total],
+           services_total: local_assigns[:services_total],
+           additions_total: local_assigns[:additions_total],
+           discounts_total: local_assigns[:discounts_total] %>

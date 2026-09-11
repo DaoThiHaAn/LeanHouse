@@ -12,3 +12,15 @@ en:
               blank: "Account holder name cannot be blank!"
             consent_accepted:
               accepted: "You must agree to the terms of collecting and displaying bank account information."
+
+  enums:
+    room_service:
+      unit:
+        per_person: "Person"
+        per_room: "Room"
+        per_month: "Month"
+        per_item: "Quantity"
+        per_hour: "Hour"
+        per_use: "Per Use"
+        per_kwh: "kWh"
+        per_m3: "m3"

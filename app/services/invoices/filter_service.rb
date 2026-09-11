@@ -61,7 +61,7 @@ module Invoices
     def apply_tab_and_type(scope)
       tab = params[:tab].presence || "room"
 
-      if tab == "individual"
+      if %w[individual custom].include?(tab)
         scope = scope.where(invoice_type: "custom")
         if type_valid? && params[:invoice_type] == "custom"
           scope = scope.where(invoice_type: "custom")
@@ -70,6 +70,8 @@ module Invoices
         # Default or 'room' tab: standard room & service invoices
         if type_valid? && %w[room individual].include?(params[:invoice_type])
           scope = scope.where(invoice_type: params[:invoice_type])
+        elsif type_valid? && params[:invoice_type] == "custom"
+          scope = scope.where(invoice_type: "custom")
         else
           scope = scope.where(invoice_type: %w[room individual])
         end

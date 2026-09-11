@@ -18,10 +18,10 @@ module Invoices
         return false
       end
 
-      return false unless invoice.update(params)
+      return false unless invoice.update(params.except(:transfer_note_mode))
 
       sync_item_dates_if_needed
-      regenerate_transfer_note
+      sync_transfer_note
       deliver_notifications
 
       true
@@ -40,11 +40,22 @@ module Invoices
       end
     end
 
-    def regenerate_transfer_note
-      invoice.update_column(
-        :transfer_note,
-        TransferNoteBuilder.build(house.transfer_note_template, invoice)
-      )
+    def sync_transfer_note
+      mode = params[:transfer_note_mode]
+      return unless mode.present? || params.key?(:transfer_note)
+
+      new_note = case mode
+      when "none"
+                   nil
+      when "custom"
+                   TransferNoteBuilder.sanitize(params[:transfer_note])
+      when "system"
+                   TransferNoteBuilder.build(house.transfer_note_template, invoice)
+      else
+                   params[:transfer_note].present? ? TransferNoteBuilder.sanitize(params[:transfer_note]) : nil
+      end
+
+      invoice.update_column(:transfer_note, new_note)
     end
 
     def deliver_notifications

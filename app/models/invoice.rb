@@ -3,6 +3,8 @@ class Invoice < ApplicationRecord
   enum :status, { pending: "pending", paid: "paid", overdue: "overdue", cancelled: "cancelled" }
   enum :payment_method, { cash: "cash", transfer: "transfer" }
 
+  attr_accessor :transfer_note_mode
+
   has_one_attached :payment_proof
 
   belongs_to :house
@@ -18,6 +20,7 @@ class Invoice < ApplicationRecord
 
   before_validation :normalize_title
   before_validation :normalize_payment_method
+  before_validation :set_default_transfer_note
 
   validates :code, :billing_month, :due_date, :status, :invoice_type, :title, presence: true
   validates :code, uniqueness: true
@@ -146,6 +149,23 @@ class Invoice < ApplicationRecord
     "#{effective_start_date.strftime('%d/%m/%Y')} - #{effective_end_date.strftime('%d/%m/%Y')}"
   end
 
+  def transfer_note
+    super.presence || build_fallback_transfer_note
+    val = read_attribute(:transfer_note)
+    return val if val.present?
+    return nil if persisted? || transfer_note_mode == "none"
+    return nil unless room.present? && house.present?
+
+    TransferNoteBuilder.build(house.transfer_note_template, self)
+  end
+
+  def build_fallback_transfer_note
+    return nil if transfer_note_mode == "none"
+    return code unless room.present? && house.present?
+
+    TransferNoteBuilder.build(house.transfer_note_template, self)
+  end
+
   def vietqr_url(account = bank_account)
     return unless account
 
@@ -156,8 +176,9 @@ class Invoice < ApplicationRecord
     )
   end
 
-  def self.generate_code(room, month)
-    prefix = "HD#{month.strftime('%y%m')}"
+  def self.generate_code(room, date = Date.current)
+    d = date.to_date
+    prefix = "HD#{d.strftime('%d%m%Y')}"
     clean_room = room.name.gsub(/[^0-9A-Za-z]/, "").upcase[0..5]
 
     loop do
@@ -178,6 +199,23 @@ class Invoice < ApplicationRecord
   def normalize_title
     self.title = title&.squish
     self.note = note&.squish
+  end
+
+  def set_default_transfer_note
+    if transfer_note_mode == "none"
+      self.transfer_note = nil
+      return
+    end
+
+    if transfer_note_mode == "custom"
+      self.transfer_note = transfer_note.presence
+      return
+    end
+
+    return if read_attribute(:transfer_note).present?
+    return unless room.present? && house.present?
+
+    self.transfer_note = TransferNoteBuilder.build(house.transfer_note_template, self)
   end
 
   def normalize_payment_method

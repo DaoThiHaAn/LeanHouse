@@ -34,7 +34,7 @@ vi:
       view_contracts: "Xem danh sách hợp đồng"
 
       # Card 5: Invoices
-      invoices_title: "Hóa đơn thu tiền"
+      invoices_title: "Hóa đơn"
       invoices_period_subtitle: "Kỳ hóa đơn tháng %{month}"
       invoices_overdue_short: "quá hạn"
       invoices_pending_short: "chờ thu"

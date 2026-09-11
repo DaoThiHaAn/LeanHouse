@@ -1,0 +1,73 @@
+<%
+  inv = local_assigns[:invoice] || @invoice
+  is_tenant = local_assigns[:portal].to_s == "tenant" || (local_assigns[:portal].blank? && current_user&.tenant?)
+  proof_target = local_assigns[:proof_modal_id] || (is_tenant ? "tenantViewPaymentProofModal" : "viewPaymentProofModal")
+%>
+<div class="d-flex gap-4 flex-column d-print-none">
+  <% if inv.paid? %>
+    <div class="d-flex gap-3">
+      <p class="badge bg-success px-3 py-2 fs-6">
+        <span class="material-symbols-outlined fs-4">price_check</span>
+        <%= t('invoice.paid_completed') %>
+      </p>
+
+      <% unless is_tenant %>
+        <button type="button" class="btn btn-outline-danger btn-sm d-inline-flex align-items-center gap-1 shadow-sm px-3 py-2 fw-semibold" data-bs-toggle="modal" data-bs-target="#undoPaidModal" title="<%= t('invoice.undo_paid_tooltip') %>">
+          <span class="material-symbols-outlined fs-5">undo</span>
+          <%= t('invoice.undo_paid_action') %>
+        </button>
+      <% end %>
+    </div>
+
+    <div class="d-flex gap-3 align-items-center">
+      <p>
+        <%= t('invoice.payment_method_label') %>:
+        <span class="badge bg-light text-dark border p-2 fs-6">
+          <%= inv.cash? ? t('invoice.payment_methods.cash') : t('invoice.payment_methods.transfer') %>
+        </span>
+      </p>
+
+      <% if inv.paid_at.present? %>
+        <div>
+          <span class="text-secondary material-symbols-outlined fs-5" title="<%= t("invoice.paid_at_label") %>">history_2</span>
+          <span class="text-secondary small"><%= format_datetime(inv.paid_at) %></span>
+        </div>
+      <% end %>
+
+      <% if inv.paid_by.present? %>
+        <span class="badge bg-light text-primary border px-2 py-1 small">
+          <%= t('invoice.paid_by_label') %>: <%= inv.paid_by.fullname %> (<%= inv.paid_by_role == 'landlord' ? t('invoice.paid_by_landlord') : t('invoice.paid_by_tenant') %>)
+        </span>
+      <% end %>
+    </div>
+
+  <% else %>
+    <% if is_tenant %>
+      <button type="button" class="btn btn-mark-paid-primary px-4 py-2 fw-semibold d-inline-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#tenantMarkPaidModal">
+        <span class="material-symbols-outlined fs-5">payments</span>
+        <%= t('invoice.submit_tenant_payment') %>
+      </button>
+    <% else %>
+      <button type="button" class="btn btn-mark-paid-primary px-4 py-2 fw-semibold d-inline-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#markPaidModal">
+        <span class="material-symbols-outlined fs-5">check_circle</span>
+        <%= t('invoice.mark_as_paid') %>
+      </button>
+    <% end %>
+  <% end %>
+</div>
+
+<% if inv.paid? %>
+  <div class="mt-3 pt-3 border-top">
+    <label class="form-label fw-bold text-dark mb-1 d-block"><%= t('invoice.payment_proof') %>:</label>
+    <% if inv.payment_proof.attached? %>
+      <div class="payment-proof-thumb-wrapper" data-bs-toggle="modal" data-bs-target="#<%= proof_target %>" title="<%= t('invoice.payment_proof_zoom') %>">
+        <%= image_tag inv.payment_proof, class: "payment-proof-thumb", alt: t('invoice.payment_proof') %>
+        <div class="payment-proof-zoom-icon">
+          <span class="material-symbols-outlined fs-6">zoom_in</span>
+        </div>
+      </div>
+    <% else %>
+      <span class="text-secondary small fst-italic"><%= t('invoice.no_payment_proof') %></span>
+    <% end %>
+  </div>
+<% end %>

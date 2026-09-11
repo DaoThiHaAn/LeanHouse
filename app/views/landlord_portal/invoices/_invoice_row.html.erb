@@ -41,6 +41,7 @@
         <%= link_to edit_landlord_house_invoice_path(house, inv),
                   data: { turbo_frame: "edit_invoice_modal" },
                   title: t("edit"),
+                  class: "table-action",
                   aria: { label: t("edit") } do %>
           <span class="material-symbols-filled" aria-hidden="true">edit</span>
         <% end %>

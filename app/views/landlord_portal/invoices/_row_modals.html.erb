@@ -72,35 +72,9 @@
 
   <%# Row-level Undo Paid Modal %>
   <% if inv.paid? %>
-    <div class="modal fade text-start" id="rowUndoPaidModal_<%= inv.id %>" tabindex="-1" aria-labelledby="rowUndoPaidModalLabel_<%= inv.id %>" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content rounded-4 shadow">
-          <%= form_with url: undo_paid_landlord_house_invoice_path(house, inv), method: :patch do |f| %>
-            <div class="modal-header border-bottom">
-              <h5 class="modal-title fw-bold text-danger" id="rowUndoPaidModalLabel_<%= inv.id %>">
-                <span class="material-symbols-outlined text-danger align-middle">undo</span>
-                <%= t('invoice.undo_paid_title', code: inv.code) %>
-              </h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              <p class="text-secondary small mb-3"><%= t('invoice.undo_paid_desc') %></p>
-
-              <div class="mb-3">
-                <label for="undo_explanation_<%= inv.id %>" class="form-label fw-semibold text-dark">
-                  <%= t('invoice.undo_reason_label') %> <span class="text-danger">*</span>
-                </label>
-                <%= f.text_area :explanation, id: "undo_explanation_#{inv.id}", rows: 3, class: "form-control shadow-sm", placeholder: t('invoice.undo_reason_placeholder'), required: true %>
-                <div class="form-text text-muted small"><%= t('invoice.undo_reason_warning') %></div>
-              </div>
-            </div>
-            <div class="modal-footer border-top">
-              <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal"><%= t('invoice.actions.close') %></button>
-              <%= f.submit t('invoice.undo_paid_btn'), class: "btn btn-danger btn-sm fw-semibold px-3" %>
-            </div>
-          <% end %>
-        </div>
-      </div>
-    </div>
+    <%= render "landlord_portal/invoices/undo_paid_modal",
+               house: house,
+               invoice: inv,
+               modal_id: "rowUndoPaidModal_#{inv.id}" %>
   <% end %>
 <% end %>

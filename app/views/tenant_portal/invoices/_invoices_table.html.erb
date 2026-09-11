@@ -1,11 +1,16 @@
-<%# locals: (invoices:) %>
+<%# locals: (invoices:, current_tab: "room") %>
 <span hidden data-pagination-total-pages="<%= invoices.respond_to?(:total_pages) ? invoices.total_pages : 1 %>"></span>
+
+<%
+  current_tab = params[:tab].presence || local_assigns[:current_tab].presence || "room"
+  is_custom_tab = %w[custom individual].include?(current_tab)
+%>
 
 <% if invoices.empty? %>
   <div class="invoice-empty-state mx-auto">
-    <span class="material-symbols-outlined invoice-empty-icon">receipt_long</span>
-    <p class="fs-5 fw-bold mb-1"><%= t('invoice.no_invoices_tenant') %></p>
-    <p class="text-secondary mb-0"><%= t('invoice.no_invoices_tenant_hint') %></p>
+    <span class="material-symbols-outlined invoice-empty-icon"><%= is_custom_tab ? "tune" : "receipt_long" %></span>
+    <p class="fs-5 fw-bold mb-1"><%= is_custom_tab ? t('invoice.no_custom_invoices_tenant') : t('invoice.no_invoices_tenant') %></p>
+    <p class="text-secondary mb-0"><%= is_custom_tab ? t('invoice.no_custom_invoices_tenant_hint') : t('invoice.no_invoices_tenant_hint') %></p>
   </div>
 <% else %>
   <div class="table-responsive bg-white rounded-3 shadow-sm border">
@@ -13,11 +18,11 @@
       <thead class="table-light">
         <tr>
           <th class="ps-3"><%= t('invoice.code') %></th>
-          <th><%= t('invoice.payment_term') %></th>
+          <th><%= t('invoice.billing_month') %></th>
           <th><%= t('invoice.due_date') %></th>
           <th><%= t('invoice.total') %></th>
-          <th><%= t('common.status', default: 'Trạng thái') %></th>
-          <th class="text-center"><%= t('invoice.actions_header', default: t('actions')) %></th>
+          <th><%= t('status') %></th>
+          <th class="text-center"><%= t('actions') %></th>
         </tr>
       </thead>
       <tbody>
@@ -32,6 +37,7 @@
     <div class="mt-4 d-flex justify-content-center">
       <%= paginate invoices,
                    params: {
+                     tab: params[:tab].presence,
                      query: params[:query].presence,
                      month: params[:month].presence,
                      invoice_type: params[:invoice_type].presence,

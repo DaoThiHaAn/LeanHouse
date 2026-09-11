@@ -407,6 +407,41 @@ class LandlordPortal::InvoicesControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Ghi chú đã sửa", @invoice1.note
   end
 
+  test "landlord can update invoice transfer_note to custom or none" do
+    sign_in_as(@landlord_user)
+
+    # 1. Update to custom note
+    patch landlord_house_invoice_path(@house, @invoice1),
+          params: {
+            invoice: {
+              transfer_note_mode: "custom",
+              transfer_note: "TIEN PHONG P101 THANG 9"
+            }
+          }
+    assert_redirected_to landlord_house_invoice_path(@house, @invoice1)
+    assert_equal "TIEN PHONG P101 THANG 9", @invoice1.reload.transfer_note
+
+    # 2. Update to none
+    patch landlord_house_invoice_path(@house, @invoice1),
+          params: {
+            invoice: {
+              transfer_note_mode: "none"
+            }
+          }
+    assert_redirected_to landlord_house_invoice_path(@house, @invoice1)
+    assert_nil @invoice1.reload.transfer_note
+
+    # 3. Update to system
+    patch landlord_house_invoice_path(@house, @invoice1),
+          params: {
+            invoice: {
+              transfer_note_mode: "system"
+            }
+          }
+    assert_redirected_to landlord_house_invoice_path(@house, @invoice1)
+    assert_equal @invoice1.code, @invoice1.reload.transfer_note
+  end
+
   test "landlord can mark invoice as paid with optional proof and payment method" do
     sign_in_as(@landlord_user)
 
@@ -996,5 +1031,25 @@ class LandlordPortal::InvoicesControllerTest < ActionDispatch::IntegrationTest
     # Should display representative room mode, and not attribute the bill to the single tenant
     assert_includes response.body, I18n.t("invoice.room_occupants_notice")
     assert_includes response.body, I18n.t("invoice.badge_representative")
+  end
+
+  test "landlord invoice show renders service instructions modal and trigger button when invoice has services" do
+    sign_in_as(@landlord_user)
+    @invoice1.invoice_items.create!(
+      item_type: "metered_service",
+      name: "Điện",
+      unit: "kWh",
+      unit_price: 3_500,
+      quantity: 50,
+      amount: 175_000,
+      prev_reading: 100,
+      latest_reading: 150
+    )
+
+    get landlord_house_invoice_path(@house, @invoice1)
+    assert_response :success
+    assert_includes response.body, 'data-bs-target="#serviceInstructionsModal"'
+    assert_includes response.body, 'id="serviceInstructionsModal"'
+    assert_includes response.body, CGI.escapeHTML(I18n.t("invoice.service_instructions"))
   end
 end

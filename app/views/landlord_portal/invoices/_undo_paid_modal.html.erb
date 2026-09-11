@@ -1,29 +1,30 @@
 <%
-  inv = local_assigns[:invoice] || @invoice
-  hse = local_assigns[:house] || @house
+  inv = local_assigns[:invoice] || local_assigns[:inv] || @invoice
+  hse = local_assigns[:house] || local_assigns[:hse] || @house
+  modal_id = local_assigns[:modal_id] || "undoPaidModal"
+  is_local = local_assigns.key?(:local) ? local_assigns[:local] : (modal_id == "undoPaidModal")
 %>
 
 <!-- Modal Hủy xác nhận thanh toán (Chủ trọ) -->
-<div class="modal fade" id="undoPaidModal" tabindex="-1" aria-labelledby="undoPaidModalLabel" aria-hidden="true">
+<div class="modal fade text-start" id="<%= modal_id %>" tabindex="-1" aria-labelledby="<%= modal_id %>Label" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content rounded-4 shadow">
-      <%= form_with url: undo_paid_landlord_house_invoice_path(hse, inv), method: :patch, local: true do |f| %>
-        <div class="modal-header border-bottom">
-          <h5 class="modal-title fw-bold text-danger" id="undoPaidModalLabel">
-            <span class="material-symbols-outlined text-danger align-middle">undo</span>
+    <div class="modal-content rounded-4 shadow overflow-hidden">
+      <%= form_with url: undo_paid_landlord_house_invoice_path(hse, inv), method: :patch, local: is_local do |f| %>
+        <div class="modal-header bg-danger border-bottom">
+          <h2 class="modal-title fs-5 fw-bold text-white d-flex align-items-center gap-2" id="<%= modal_id %>Label">
+            <span class="material-symbols-outlined align-middle">undo</span>
             <%= t('invoice.undo_paid_title', code: inv.code) %>
-          </h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </h2>
+          <button type="button" data-bs-theme="dark" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <p class="text-secondary small mb-3"><%= t('invoice.undo_paid_desc') %></p>
+          <p class="mb-3"><%= t('invoice.undo_paid_desc') %></p>
 
           <div class="mb-3">
-            <label for="undo_explanation" class="form-label fw-semibold text-dark">
+            <label for="undo_explanation_<%= inv.id %>" class="form-label fw-semibold text-dark">
               <%= t('invoice.undo_reason_label') %> <span class="text-danger">*</span>
             </label>
-            <%= f.text_area :explanation, id: "undo_explanation", rows: 3, class: "form-control shadow-sm", placeholder: t('invoice.undo_reason_placeholder'), required: true %>
-            <div class="form-text text-muted small"><%= t('invoice.undo_reason_warning') %></div>
+            <%= f.text_area :explanation, id: "undo_explanation_#{inv.id}", rows: 3, class: "form-control shadow-sm", placeholder: t('invoice.undo_reason_placeholder'), required: true %>
           </div>
         </div>
         <div class="modal-footer border-top">

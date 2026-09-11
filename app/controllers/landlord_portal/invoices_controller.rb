@@ -313,6 +313,7 @@ class LandlordPortal::InvoicesController < LandlordPortal::BaseController
     params.require(:invoice).permit(
       :room_id, :tenant_id, :bank_account_id, :invoice_type,
       :billing_month, :due_date, :start_date, :end_date, :title, :note,
+      :transfer_note, :transfer_note_mode,
       items: [
         :selected, :item_type, :service_variant_id, :service_usage_log_id,
         :name, :unit, :unit_price, :quantity, :amount,
@@ -323,7 +324,8 @@ class LandlordPortal::InvoicesController < LandlordPortal::BaseController
 
   def invoice_update_params
     params.require(:invoice).permit(
-      :start_date, :end_date, :due_date, :title, :note, :bank_account_id
+      :start_date, :end_date, :due_date, :title, :note, :bank_account_id,
+      :transfer_note, :transfer_note_mode
     )
   end
 
@@ -343,6 +345,7 @@ class LandlordPortal::InvoicesController < LandlordPortal::BaseController
   def custom_invoice_params
     params.require(:invoice).permit(
       :billing_month, :due_date, :start_date, :end_date, :title, :note, :bank_account_id,
+      :transfer_note, :transfer_note_mode,
       tenant_ids: [],
       items: [
         :selected, :item_type, :name, :unit, :unit_price, :quantity, :amount, :note

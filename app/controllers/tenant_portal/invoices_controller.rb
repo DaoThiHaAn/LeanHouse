@@ -3,11 +3,25 @@ class TenantPortal::InvoicesController < TenantPortal::BaseController
   before_action :set_invoice, only: %i[show mark_paid]
 
   def index
+    @current_tab = params[:tab].presence || "room"
+
+    tenant_room_ids = tenant_current_house_room_ids
+    base_scope = @house.invoices.kept.where(
+      "(invoices.invoice_type = 'room' AND invoices.room_id IN (:room_ids)) OR (invoices.invoice_type IN ('individual', 'custom') AND invoices.tenant_id = :tenant_id)",
+      room_ids: tenant_room_ids,
+      tenant_id: @tenant.id
+    )
+
+    month_filter = params[:month].present? ? (Date.parse("#{params[:month]}-01") rescue nil) : nil
+    count_scope = month_filter ? base_scope.for_month(month_filter) : base_scope
+    @room_count = count_scope.where(invoice_type: %w[room individual]).count
+    @custom_count = count_scope.where(invoice_type: "custom").count
+
     @invoices = Invoices::FilterService.call(
       house: @house,
       params: params,
       tenant: @tenant,
-      tenant_room_ids: tenant_current_house_room_ids
+      tenant_room_ids: tenant_room_ids
     ).page(params[:page]).per(10)
   end
 

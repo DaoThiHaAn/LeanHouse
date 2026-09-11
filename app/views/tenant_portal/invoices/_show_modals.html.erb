@@ -1,16 +1,19 @@
 <%# Modals for Tenant Portal Invoice Show %>
-<%= render "tenant_portal/invoices/zoom_qr_modal",
+<%= render "layouts/shared_components/invoices/zoom_qr_modal",
            invoice: (local_assigns[:invoice] || @invoice),
            bank_account: (local_assigns[:bank_account] || @bank_account) %>
 
-<%= render "landlord_portal/invoices/service_instructions_modal" %>
+<%= render "layouts/shared_components/invoices/service_instructions_modal" %>
 
-<%= render "tenant_portal/invoices/invoice_info_modal",
+<%= render "layouts/shared_components/invoices/invoice_info_modal",
            invoice: (local_assigns[:invoice] || @invoice) %>
 
 <%= render "tenant_portal/invoices/payment_modal",
            invoice: (local_assigns[:invoice] || @invoice),
            modal_id: "tenantMarkPaidModal" %>
 
-<%= render "tenant_portal/invoices/payment_proof_modal",
-           invoice: (local_assigns[:invoice] || @invoice) %>
+<%= render "layouts/shared_components/invoices/payment_proof_modal",
+           invoice: (local_assigns[:invoice] || @invoice),
+           modal_id: "tenantViewPaymentProofModal" %>
+
+<%= render "tenant_portal/invoices/tenant_guide_modal" %>

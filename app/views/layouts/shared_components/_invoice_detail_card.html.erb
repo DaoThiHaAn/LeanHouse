@@ -141,9 +141,19 @@
             <span class="badge bg-danger-subtle text-danger border border-danger-subtle ms-1"><%= t('invoice.status.overdue') %></span>
           </div>
         <% end %>
-        </div>
       </div>
     </div>
+
+    <!-- Ghi chú nếu có -->
+    <% if invoice.note.present? %>
+      <div class="alert alert-light border rounded-3 p-3 mb-3 d-flex align-items-start gap-2 mb-5">
+        <span class="material-symbols-outlined text-secondary fs-5 mt-0.5">sticky_note_2</span>
+        <div class="small">
+          <strong><%= t('invoice.note') %>:</strong>
+          <span class="text-secondary"><%= invoice.note %></span>
+        </div>
+      </div>
+    <% end %>
 
     <!-- Line Items Section -->
     <div class="mb-4 px-4">
@@ -174,7 +184,7 @@
             </div>
           </div>
           <div class="text-sm-end">
-            <div class="font-monospace fw-bold fs-5 text-dark">
+            <div class="fw-bold fs-5">
               <%= format_money(invoice.rent_total) %>
             </div>
           </div>
@@ -183,6 +193,8 @@
 
       <!-- 2. Phí dịch vụ (Services Table) -->
       <% if invoice.service_items.any? %>
+        <h3><%= t("service.list")%></h3>
+
         <div class="table-responsive rounded-3 border mb-3 overflow-hidden">
           <table class="table table-hover align-middle mb-0 invoice-items-table">
             <thead class="table-light border-bottom">
@@ -198,28 +210,36 @@
               <% invoice.service_items.each do |item| %>
                 <tr>
                   <td class="ps-3">
-                    <div class="fw-semibold text-dark"><%= item.name %></div>
-                    <div class="small text-secondary font-monospace">
+                    <div class="fw-semibold"><%= item.name %></div>
+                    <div class="small text-secondary">
                       <%= format_date(item.effective_start_date(invoice)) %> → <%= format_date(item.effective_end_date(invoice)) %>
                     </div>
                   </td>
                   <td class="text-center text-secondary"><%= item.unit %></td>
-                  <td class="text-end font-monospace text-secondary">
+                  <td class="text-end text-secondary">
                     <%= format_money(item.unit_price) %>
                   </td>
                   <td class="text-center">
                     <% if item.prev_reading.present? && item.latest_reading.present? %>
-                      <div class="meter-reading-badge">
-                        <span class="meter-val-prev"><%= item.prev_reading %></span>
-                        <span class="meter-val-arrow">→</span>
-                        <span class="meter-val-latest"><%= item.latest_reading %></span>
-                        <span class="meter-val-qty">(<%= item.quantity %>)</span>
+                      <div class="meter-reading-breakdown">
+                        <div class="meter-row">
+                          <span class="meter-label"><%= t('invoice.prev_reading', default: 'Chỉ số cũ') %>:</span>
+                          <span class="meter-value"><%= item.prev_reading %></span>
+                        </div>
+                        <div class="meter-row">
+                          <span class="meter-label"><%= t('invoice.latest_reading', default: 'Chỉ số mới') %>:</span>
+                          <span class="meter-value"><%= item.latest_reading %></span>
+                        </div>
+                        <div class="meter-row meter-usage-row">
+                          <span class="meter-label text-primary fw-semibold"><%= t('invoice.used_amount', default: 'Tiêu thụ') %>:</span>
+                          <span class="meter-usage-value"><%= item.quantity %> <%= item.unit %></span>
+                        </div>
                       </div>
                     <% else %>
-                      <span class="font-monospace fw-bold text-dark"><%= item.quantity %></span>
+                      <span class="fw-medium font-monospace"><%= item.quantity %></span>
                     <% end %>
                   </td>
-                  <td class="pe-3 text-end font-monospace fw-bold text-dark">
+                  <td class="pe-3 text-end custom-text-primary fw-bold">
                     <%= format_money(item.amount) %>
                   </td>
                 </tr>
@@ -228,8 +248,8 @@
             <tfoot class="table-light border-top">
               <tr class="fw-bold">
                 <td colspan="4" class="ps-3 text-secondary"><%= t('invoice.total_services') %>:</td>
-                <td class="pe-3 text-end font-monospace text-dark">
-                  <%= format_money(invoice.services_total) %>
+                <td class="pe-3 text-end fs-5 custom-text-primary">
+                  <strong><%= format_money(invoice.services_total) %></strong>
                 </td>
               </tr>
             </tfoot>
@@ -248,7 +268,7 @@
                     <span class="badge bg-primary-subtle text-primary border border-primary-subtle">+</span>
                     <%= t('invoice.addition_items') %>
                   </span>
-                  <span class="font-monospace fw-bold text-primary small">
+                  <span class="fw-bold text-primary small">
                     +<%= number_to_currency(invoice.additions_total, unit: "₫", precision: 0) %>
                   </span>
                 </div>
@@ -257,8 +277,8 @@
                     <tbody>
                       <% invoice.addition_items.each do |item| %>
                         <tr>
-                          <td class="text-dark small"><%= item.name %></td>
-                          <td class="text-end font-monospace text-primary fw-semibold small">
+                          <td class="small"><%= item.name %></td>
+                          <td class="text-end text-primary fw-semibold small">
                             +<%= format_money(item.amount) %>
                           </td>
                         </tr>
@@ -278,7 +298,7 @@
                     <span class="badge bg-danger-subtle text-danger border border-danger-subtle">-</span>
                     <%= t('invoice.discount_items') %>
                   </span>
-                  <span class="font-monospace fw-bold text-danger small">
+                  <span class="fw-bold text-danger small">
                     -<%= format_money(invoice.discounts_total) %>
                   </span>
                 </div>
@@ -288,7 +308,7 @@
                       <% invoice.discount_items.each do |item| %>
                         <tr>
                           <td class="text-dark small"><%= item.name %></td>
-                          <td class="text-end font-monospace text-danger fw-semibold small">
+                          <td class="text-end text-danger fw-semibold small">
                             -<%= format_money(item.amount.abs) %>
                           </td>
                         </tr>
@@ -302,111 +322,92 @@
         </div>
       <% end %>
 
-      <!-- Ghi chú nếu có -->
-      <% if invoice.note.present? %>
-        <div class="alert alert-light border rounded-3 p-3 mb-3 d-flex align-items-start gap-2">
-          <span class="material-symbols-outlined text-secondary fs-5 mt-0.5">sticky_note_2</span>
-          <div class="small">
-            <strong class="text-dark"><%= t('invoice.note') %>:</strong>
-            <span class="text-secondary"><%= invoice.note %></span>
-          </div>
-        </div>
-      <% end %>
-
       <!-- Financial Summary (Totals Block) -->
-      <div class="d-flex justify-content-end mb-4">
-        <div class="invoice-summary-card">
-          <% if invoice.rent_total > 0 %>
-            <div class="invoice-summary-item">
-              <span><%= t('invoice.rent_fee') %></span>
-              <span class="font-monospace fw-semibold"><%= format_money(invoice.rent_total) %></span>
-            </div>
-          <% end %>
-
-          <% if invoice.service_items.any? %>
-            <div class="invoice-summary-item">
-              <span><%= t('invoice.service_fee') %></span>
-              <span class="font-monospace fw-semibold"><%= format_money(invoice.services_total) %></span>
-            </div>
-          <% end %>
-
-          <% if invoice.additions_total > 0 %>
-            <div class="invoice-summary-item text-primary">
-              <span><%= t('invoice.total_addition_summary', default: 'Tổng phụ phí (+)') %></span>
-              <span class="font-monospace fw-semibold">+<%= format_money(invoice.additions_total) %></span>
-            </div>
-          <% end %>
-
-          <% if invoice.discounts_total > 0 %>
-            <div class="invoice-summary-item text-danger">
-              <span><%= t('invoice.total_discount_summary', default: 'Tổng giảm trừ (-)') %></span>
-              <span class="font-monospace fw-semibold">-<%= format_money(invoice.discounts_total) %></span>
-            </div>
-          <% end %>
-
-          <div class="invoice-grand-total-row">
-            <div>
-              <span class="fw-bold fs-6 text-dark d-block"><%= t('invoice.total_payment') %></span>
-            </div>
-            <div class="invoice-grand-total-amount <%= invoice.paid? ? 'is-paid' : (invoice.overdue? ? 'is-overdue' : '') %>">
-              <%= format_money(invoice.total_amount) %>
-            </div>
+      <div class="invoice-summary-card ms-auto">
+        <% if invoice.rent_total > 0 %>
+          <div class="invoice-summary-item">
+            <span><%= t('invoice.rent_fee') %></span>
+            <span class="fw-semibold"><%= format_money(invoice.rent_total) %></span>
           </div>
+        <% end %>
+
+        <% if invoice.service_items.any? %>
+          <div class="invoice-summary-item">
+            <span><%= t('invoice.service_fee') %></span>
+            <span class="fw-semibold"><%= format_money(invoice.services_total) %></span>
+          </div>
+        <% end %>
+
+        <% if invoice.additions_total > 0 %>
+          <div class="invoice-summary-item text-primary">
+            <span><%= t('invoice.total_addition_summary') %></span>
+            <span class="fw-semibold">+<%= format_money(invoice.additions_total) %></span>
+          </div>
+        <% end %>
+
+        <% if invoice.discounts_total > 0 %>
+          <div class="invoice-summary-item text-danger">
+            <span><%= t('invoice.total_discount_summary') %></span>
+            <span class="fw-semibold">-<%= format_money(invoice.discounts_total) %></span>
+          </div>
+        <% end %>
+
+        <div class="invoice-grand-total-row">
+          <p class="fw-bold"><%= t('invoice.total_payment') %></p>
+          <p class="invoice-grand-total-amount <%= invoice.paid? ? 'is-paid' : (invoice.overdue? ? 'is-overdue' : '') %>">
+            <%= format_money(invoice.total_amount) %>
+          </p>
         </div>
       </div>
     </div>
 
     <!-- Thông tin Chuyển khoản & Thanh toán -->
-    <div class="py-4 border-top px-4">
-      <h5 class="fw-bold text-dark mb-3 d-flex align-items-center gap-2">
-        <span class="material-symbols-outlined text-primary fs-5">account_balance</span>
+    <div class="p-4">
+      <h2 class="mb-3 d-flex align-items-center gap-2">
+        <span class="material-symbols-outlined fs-3">account_balance</span>
         <span><%= t('invoice.bank_transfer_info') %></span>
-      </h5>
+      </h2>
 
       <div class="row g-4 align-items-stretch">
         <!-- Cột trái: Thẻ VietQR & Số tài khoản -->
-        <div class="col-12 col-lg-5">
+        <div class="col-12 col-md-6 col-lg-5">
           <% if bank_account && qr_url %>
-            <div class="invoice-bank-card h-100 text-center text-sm-start d-flex flex-column justify-content-between">
-              <div>
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                  <span class="badge bg-danger-subtle text-danger font-monospace px-2 py-1 fw-bold">VIETQR 24/7</span>
-                  <button type="button" class="btn btn-link btn-sm p-0 text-secondary d-inline-flex align-items-center gap-1 d-print-none" data-bs-toggle="modal" data-bs-target="#zoomQrModal" title="<%= t('invoice.vietqr.click_to_zoom') %>">
-                    <span class="material-symbols-outlined fs-6">zoom_in</span>
-                    <span class="small"><%= t('invoice.vietqr.click_to_zoom') %></span>
-                  </button>
+            <div class="invoice-bank-card gap-3 d-flex flex-column align-items-center justify-content-center">
+              <button type="button"
+                      class="btn btn-link text-decoration-none btn-sm p-0 text-secondary d-flex align-items-center gap-1 d-print-none"
+                      data-bs-toggle="modal" data-bs-target="#zoomQrModal"
+                      title="<%= t('invoice.vietqr.click_to_zoom') %>">
+                <span class="material-symbols-outlined fs-6">zoom_in</span>
+                <span class="small"><%= t('invoice.vietqr.click_to_zoom') %></span>
+              </button>
+
+              <%= image_tag qr_url, alt: t('invoice.vietqr.qr_alt'), class: "d-block mx-auto", width: "200px" %>
+
+              <div class="bg-light p-3 rounded-3 border small font-monospace">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <span class="text-secondary"><%= t('invoice.bank_name') %>:</span>
+                  <strong class="text-dark"><%= bank_account.bank.short_name %> (<%= bank_account.bank.code %>)</strong>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-1" data-controller="clipboard"
+                      data-clipboard-copied-text-value="<%= t('invoice.vietqr.copied') %>"
+                      data-clipboard-original-text-value="<%= t('invoice.vietqr.copy') %>">
+                  <span class="text-secondary"><%= t('invoice.account_number') %>:</span>
+                  <div class="d-flex align-items-center gap-1">
+                    <strong class="text-primary fs-6" data-clipboard-target="source"><%= bank_account.account_number %></strong>
+                    <button type="button" class="btn btn-copy-quick d-print-none" data-action="click->clipboard#copy" data-clipboard-target="button">
+                      <%= t('invoice.vietqr.copy') %>
+                    </button>
+                  </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <span class="text-secondary"><%= t('invoice.account_holder') %>:</span>
+                  <strong class="text-dark"><%= bank_account.account_holder %></strong>
                 </div>
 
-                <div class="text-center mb-3">
-                  <div class="p-2 border rounded-3 bg-white shadow-sm d-inline-block cursor-pointer position-relative" data-bs-toggle="modal" data-bs-target="#zoomQrModal">
-                    <%= image_tag qr_url, alt: t('invoice.vietqr.qr_alt'), class: "rounded vietqr-thumb-img" %>
-                  </div>
-                </div>
-
-                <div class="bg-light p-3 rounded-3 border small font-monospace">
-                  <div class="d-flex justify-content-between align-items-center mb-1">
-                    <span class="text-secondary"><%= t('invoice.bank_name') %>:</span>
-                    <strong class="text-dark"><%= bank_account.bank.short_name %> (<%= bank_account.bank.code %>)</strong>
-                  </div>
-                  <div class="d-flex justify-content-between align-items-center mb-1" data-controller="clipboard"
-                       data-clipboard-copied-text-value="<%= t('invoice.vietqr.copied') %>"
-                       data-clipboard-original-text-value="<%= t('invoice.vietqr.copy') %>">
-                    <span class="text-secondary"><%= t('invoice.account_number') %>:</span>
-                    <div class="d-flex align-items-center gap-1">
-                      <strong class="text-primary fs-6" data-clipboard-target="source"><%= bank_account.account_number %></strong>
-                      <button type="button" class="btn btn-copy-quick d-print-none" data-action="click->clipboard#copy" data-clipboard-target="button">
-                        <%= t('invoice.vietqr.copy') %>
-                      </button>
-                    </div>
-                  </div>
-                  <div class="d-flex justify-content-between align-items-center mb-2">
-                    <span class="text-secondary"><%= t('invoice.account_holder') %>:</span>
-                    <strong class="text-dark"><%= bank_account.account_holder %></strong>
-                  </div>
-
+                <% if invoice.transfer_note.present? %>
                   <div class="border-top pt-2 mt-2" data-controller="clipboard"
-                       data-clipboard-copied-text-value="<%= t('invoice.vietqr.copied') %>"
-                       data-clipboard-original-text-value="<%= t('invoice.vietqr.copy') %>">
+                        data-clipboard-copied-text-value="<%= t('invoice.vietqr.copied') %>"
+                        data-clipboard-original-text-value="<%= t('invoice.vietqr.copy') %>">
                     <div class="text-secondary mb-1"><%= t('invoice.transfer_note_strict') %>:</div>
                     <div class="d-flex justify-content-between align-items-center bg-white p-2 rounded border">
                       <span class="fw-bold text-dark font-monospace text-break" data-clipboard-target="source"><%= invoice.transfer_note %></span>
@@ -415,9 +416,15 @@
                       </button>
                     </div>
                   </div>
-                </div>
+                <% else %>
+                  <div class="border-top pt-2 mt-2 text-secondary small fst-italic">
+                    <span class="material-symbols-outlined fs-6 align-middle text-muted">info</span>
+                    <%= t('invoice.no_strict_transfer_note', default: 'Nội dung chuyển khoản: Tùy ý (Không bắt buộc)') %>
+                  </div>
+                <% end %>
               </div>
             </div>
+
           <% else %>
             <div class="p-4 bg-light rounded-3 text-secondary small border d-flex align-items-center gap-3 h-100">
               <span class="material-symbols-outlined text-warning fs-2">warning</span>
@@ -430,7 +437,7 @@
         </div>
 
         <!-- Cột phải: Hướng dẫn thanh toán & Thao tác hành động -->
-        <div class="col-12 col-lg-7 d-flex flex-column justify-content-between">
+        <div class="col-12 col-md-6 col-lg-7 d-flex flex-column justify-content-between">
           <div>
             <% if invoice.undo_reason.present? && !invoice.paid? %>
               <div class="undo-reason-banner mb-3">
@@ -446,21 +453,23 @@
             <% end %>
 
             <!-- Guidance Box -->
-            <div class="invoice-guidance-card mb-4">
-              <h6 class="fw-bold text-dark mb-2 d-flex align-items-center gap-1">
-                <span class="material-symbols-outlined text-info fs-5">help</span>
-                <span><%= t('invoice.payment_instructions', default: 'Lưu ý khi thanh toán') %></span>
+            <div class="info-container p-3 mb-4">
+              <h6 class="invoice-guidance-item fs-6 fw-bold mb-2">
+                <%= t('invoice.payment_instructions') %>
               </h6>
+
               <div class="invoice-guidance-item">
-                <span class="material-symbols-outlined text-primary fs-6 mt-0.5">verified</span>
+                <span class="material-symbols-filled fs-6 mt-0.5">verified</span>
                 <span><%= t('invoice.warning_check') %></span>
               </div>
+
               <div class="invoice-guidance-item">
-                <span class="material-symbols-outlined text-primary fs-6 mt-0.5">edit_note</span>
+                <span class="material-symbols-filled fs-6 mt-0.5">edit_note</span>
                 <span><%= t('invoice.warning_report') %></span>
               </div>
+
               <div class="invoice-guidance-item">
-                <span class="material-symbols-outlined text-primary fs-6 mt-0.5">add_a_photo</span>
+                <span class="material-symbols-filled fs-6 mt-0.5">add_a_photo</span>
                 <span><%= t('invoice.warning_proof') %></span>
               </div>
             </div>

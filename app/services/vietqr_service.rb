@@ -10,5 +10,10 @@ class VietqrService
     amt = amount.to_i
 
     "https://img.vietqr.io/image/#{bin}-#{acc_num}-#{template}.png?amount=#{amt}&addInfo=#{add_info}&accountName=#{acc_name}"
+    params = { amount: amt, accountName: acc_name }
+    params[:addInfo] = add_info if description.present?
+
+    query = params.map { |k, v| "#{k}=#{v}" }.join("&")
+    "https://img.vietqr.io/image/#{bin}-#{acc_num}-#{template}.png?#{query}"
   end
 end

@@ -196,7 +196,7 @@
             </div>
           </div>
 
-          <!-- TAB 3: BILLING MODES -->
+          <!-- TAB 3: INVOICE TYPES & BILLING MODES -->
           <div class="tab-pane fade" id="guide-modes" role="tabpanel" aria-labelledby="guide-modes-tab">
             <div class="card border-0 bg-light rounded-4 p-4 mb-3">
               <h6 class="fw-bold text-dark d-flex align-items-center gap-2 mb-3">
@@ -204,41 +204,77 @@
                 <%= t('invoice.guide.modes_title') %>
               </h6>
 
-              <div class="row g-3">
-                <div class="col-md-4">
-                  <div class="p-3 bg-white rounded-3 shadow-sm border border-info-subtle h-100">
-                    <div class="fw-bold text-info-emphasis d-flex align-items-center gap-1 mb-2">
+              <!-- Section 1: Hóa đơn theo phòng -->
+              <div class="card bg-white border-0 shadow-sm rounded-3 p-3 mb-3">
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2 pb-2 border-bottom">
+                  <div class="d-flex align-items-center gap-2">
+                    <span class="badge bg-primary text-white p-2 rounded-circle">
                       <span class="material-symbols-filled fs-5">meeting_room</span>
-                      <span><%= t('invoice.mode_representative') %></span>
+                    </span>
+                    <div>
+                      <h6 class="fw-bold text-dark mb-0"><%= t('invoice.guide.type_room_title') %></h6>
+                      <span class="small text-secondary"><%= t('invoice.guide.type_room_desc') %></span>
                     </div>
-                    <p class="small text-secondary mb-0"><%= t('invoice.guide.mode_room_point') %></p>
+                  </div>
+                  <span class="badge bg-primary-subtle text-primary border border-primary-subtle small fw-semibold">
+                    <%= t('invoice.guide.has_2_payment_modes') %>
+                  </span>
+                </div>
+
+                <div class="row g-3 mt-1">
+                  <!-- Mode 1: Đại diện phòng -->
+                  <div class="col-md-6">
+                    <div class="p-3 bg-light rounded-3 border border-info-subtle h-100">
+                      <div class="fw-bold text-info-emphasis d-flex align-items-center gap-1 mb-2">
+                        <span class="material-symbols-filled fs-5">co_present</span>
+                        <span><%= t('invoice.guide.mode_room_title') %></span>
+                      </div>
+                      <p class="small text-secondary mb-0"><%= t('invoice.guide.mode_room_point') %></p>
+                    </div>
+                  </div>
+
+                  <!-- Mode 2: Tự thanh toán -->
+                  <div class="col-md-6">
+                    <div class="p-3 bg-light rounded-3 border border-success-subtle h-100">
+                      <div class="fw-bold text-success d-flex align-items-center gap-1 mb-2">
+                        <span class="material-symbols-filled fs-5">person</span>
+                        <span><%= t('invoice.guide.mode_individual_title') %></span>
+                      </div>
+                      <p class="small text-secondary mb-0"><%= t('invoice.guide.mode_individual_point') %></p>
+                    </div>
                   </div>
                 </div>
 
-                <div class="col-md-4">
-                  <div class="p-3 bg-white rounded-3 shadow-sm border border-success-subtle h-100">
-                    <div class="fw-bold text-success d-flex align-items-center gap-1 mb-2">
-                      <span class="material-symbols-filled fs-5">person</span>
-                      <span><%= t('invoice.mode_self_pay') %></span>
-                    </div>
-                    <p class="small text-secondary mb-0"><%= t('invoice.guide.mode_individual_point') %></p>
-                  </div>
-                </div>
-
-                <div class="col-md-4">
-                  <div class="p-3 bg-white rounded-3 shadow-sm border border-primary-subtle h-100">
-                    <div class="fw-bold text-primary d-flex align-items-center gap-1 mb-2">
-                      <span class="material-symbols-filled fs-5">tune</span>
-                      <span><%= t('invoice.guide.mode_custom') %></span>
-                    </div>
-                    <p class="small text-secondary mb-0"><%= t('invoice.guide.mode_custom_point') %></p>
-                  </div>
+                <div class="alert alert-warning border-0 rounded-3 mt-3 mb-0 d-flex align-items-center gap-2 py-2">
+                  <span class="material-symbols-outlined text-warning-emphasis fs-5">info</span>
+                  <span class="small"><%= t('invoice.guide.mode_individual_room_split_note') %></span>
                 </div>
               </div>
 
-              <div class="alert alert-warning border-0 rounded-3 mt-3 mb-0 d-flex align-items-center gap-2">
-                <span class="material-symbols-outlined text-warning-emphasis fs-4">info</span>
-                <span class="small"><%= t('invoice.guide.mode_individual_room_split_note') %></span>
+              <!-- Section 2: Hóa đơn tùy chọn -->
+              <div class="card bg-white border-0 shadow-sm rounded-3 p-3">
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2 pb-2 border-bottom">
+                  <div class="d-flex align-items-center gap-2">
+                    <span class="badge text-white p-2 rounded-circle" style="background-color: #9333ea;">
+                      <span class="material-symbols-filled fs-5">tune</span>
+                    </span>
+                    <div>
+                      <h6 class="fw-bold text-dark mb-0"><%= t('invoice.guide.type_custom_title') %></h6>
+                      <span class="small text-secondary"><%= t('invoice.guide.type_custom_desc') %></span>
+                    </div>
+                  </div>
+                  <span class="badge border small fw-semibold" style="color: #6b21a8; background-color: #faf5ff; border-color: #e9d5ff !important;">
+                    <%= t('invoice.guide.custom_pays_individually') %>
+                  </span>
+                </div>
+
+                <div class="p-3 rounded-3 mt-2" style="background-color: #faf5ff; border: 1px solid #e9d5ff;">
+                  <div class="fw-bold d-flex align-items-center gap-1 mb-2" style="color: #6b21a8;">
+                    <span class="material-symbols-filled fs-5">person_check</span>
+                    <span><%= t('invoice.guide.custom_mode_heading') %></span>
+                  </div>
+                  <p class="small text-secondary mb-0"><%= t('invoice.guide.mode_custom_point') %></p>
+                </div>
               </div>
             </div>
           </div>

@@ -1,104 +1,147 @@
 <% content_for :title, "#{t('invoice.my_invoices')} - LeanHouse" %>
 
+<% current_tab = params[:tab].presence || @current_tab.presence || "room" %>
+
 <div class="main-container py-4 invoice-wrapper">
-  <div class="mb-4 pb-2 border-bottom text-center">
-    <h1 class="mb-3"><%= t('invoice.my_invoices') %></h1>
-    <p class="text-secondary mb-0"><%= t('invoice.my_invoices_subtitle') %></p>
+  <div class="d-flex flex-column flex-lg-row justify-content-center justify-content-lg-between align-items-center mb-4 pb-2 border-bottom gap-3">
+    <div class="text-center text-lg-start">
+      <h1 class="mb-2"><%= t('invoice.my_invoices') %></h1>
+      <p class="text-secondary mb-0"><%= t('invoice.my_invoices_subtitle') %></p>
+    </div>
+    <div class="d-flex gap-3 align-items-center">
+      <button type="button" class="manual-btn d-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#tenantInvoiceGuideModal">
+        <span class="material-symbols-outlined fs-6">menu_book</span> <%= t('invoice.tenant_guide.btn_title') %>
+      </button>
+    </div>
   </div>
 
-  <!-- Filter & Search Toolbar -->
-  <div class="invoice-filter-bar mb-5 mx-4 shadow-sm">
-    <%= form_with url: tenant_invoices_path,
-                  method: :get,
-                  class: "d-flex gap-3 align-items-center flex-wrap",
-                  data: {
-                    controller: "search",
-                    turbo_frame: "tenant_invoices_table",
-                    turbo_action: "advance"
-                  } do |f| %>
-      <!-- Search input -->
-      <div class="d-flex align-items-center gap-2 flex-grow-1" style="min-width: 220px; max-width: 360px;">
-        <div class="input-group">
-          <span class="input-group-text bg-white border-end-0">
-            <span class="material-symbols-outlined text-secondary fs-6">search</span>
-          </span>
-          <%= f.search_field :query,
-                             value: params[:query],
-                             placeholder: t('invoice.search_placeholder'),
-                             class: "form-control border-start-0 ps-0 shadow-none",
-                             data: {
-                               search_target: "input",
-                               action: "input->search#debounce"
-                             } %>
-        </div>
-      </div>
-
-      <!-- Month Filter -->
-      <div class="d-flex align-items-center gap-2">
-        <%= f.label :month, "#{t('invoice.billing_month')}:", class: "fw-bold text-nowrap" %>
-        <%= f.month_field :month,
-                          value: params[:month],
-                          placeholder: t('invoice.month_placeholder'),
-                          class: "form-control shadow-sm w-auto",
-                          onchange: "this.form.requestSubmit()" %>
-      </div>
-
-      <!-- Invoice Type Filter -->
-      <div class="d-flex align-items-center gap-2">
-        <%= f.label :invoice_type, "#{t('invoice.invoice_type')}:", class: "fw-bold text-nowrap" %>
-        <%= f.select :invoice_type,
-                     options_for_select([
-                       [t('invoice.all_types'), ""],
-                       [t('invoice.type_room'), "room"],
-                       [t('invoice.type_individual'), "individual"]
-                     ], params[:invoice_type]),
-                     {},
-                     class: "form-select shadow-sm w-auto",
-                     onchange: "this.form.requestSubmit()" %>
-      </div>
-
-      <!-- Status Filter -->
-      <div class="d-flex align-items-center gap-2">
-        <%= f.label :status, "#{t('invoice.status_label')}:", class: "fw-bold text-nowrap" %>
-        <%= f.select :status,
-                     options_for_select([
-                       [t('invoice.all_status'), ""],
-                       [t('invoice.status.pending'), "pending"],
-                       [t('invoice.status.overdue'), "overdue"],
-                       [t('invoice.status.paid'), "paid"],
-                       [t('invoice.status.cancelled'), "cancelled"]
-                     ], params[:status]),
-                     {},
-                     class: "form-select shadow-sm w-auto",
-                     onchange: "this.form.requestSubmit()" %>
-      </div>
-
-      <!-- Clear Filter -->
-      <% has_filter = params[:query].present? || params[:month].present? || params[:invoice_type].present? || params[:status].present? || (params[:page].present? && params[:page] != "1") %>
-      <% if has_filter %>
-        <div>
-          <%= link_to tenant_invoices_path,
-                      class: "btn btn-outline-secondary btn-sm d-flex align-items-center gap-1 shadow-sm",
-                      data: { turbo_action: "advance" } do %>
-            <span class="material-symbols-outlined fs-6">filter_alt_off</span>
-            <span><%= t('clear_filter', default: 'Xóa bộ lọc') %></span>
-          <% end %>
-        </div>
+  <!-- 2 Tabs: Theo phòng & Tùy chọn -->
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4 mx-4">
+    <div class="d-inline-flex bg-light p-1 rounded-pill border gap-1 shadow-sm fs-5">
+      <%= link_to tenant_invoices_path(tab: "room", month: params[:month]),
+                  class: "log-tab d-flex align-items-center gap-1 px-3 py-1 rounded-pill small text-decoration-none fw-semibold transition #{current_tab == 'room' ? 'active shadow-sm' : 'text-secondary'}",
+                  data: { turbo_action: "advance" } do %>
+        <span class="material-symbols-filled fs-5">meeting_room</span>
+        <span><%= t("invoice.tabs.room") %></span>
+        <% if @room_count.to_i > 0 %>
+          <span class="room-count badge rounded-pill ms-1"><%= @room_count %></span>
+        <% end %>
       <% end %>
-    <% end %>
-  </div>
 
-  <h2 class="mb-3 ms-3"> <%= t("invoice.my_invoices_list") %> </h2>
+      <%= link_to tenant_invoices_path(tab: "custom", month: params[:month]),
+                  class: "log-tab d-flex align-items-center gap-1 px-3 py-1 rounded-pill small text-decoration-none fw-semibold transition #{%w[custom individual].include?(current_tab) ? 'active shadow-sm' : 'text-secondary'}",
+                  data: { turbo_action: "advance" } do %>
+        <span class="material-symbols-outlined fs-4">tune</span>
+        <span><%= t("invoice.tabs.individual") %></span>
+        <% if @custom_count.to_i > 0 %>
+          <span class="badge bg-secondary bg-opacity-25 text-dark rounded-pill ms-1"><%= @custom_count %></span>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
 
   <%= turbo_frame_tag "tenant_invoices_table",
         data: {
           controller: "pagination-sync",
           pagination_sync_canonical_url_value: tenant_invoices_path,
-          pagination_sync_default_params_value: {}.to_json,
-          pagination_sync_query_params_value: ["query", "month", "invoice_type", "status"].to_json,
+          pagination_sync_default_params_value: { tab: "room" }.to_json,
+          pagination_sync_query_params_value: ["tab", "query", "month", "invoice_type", "status"].to_json,
           pagination_sync_total_pages_selector_value: "[data-pagination-total-pages]",
           action: "turbo:frame-load->pagination-sync#updateUrl"
         } do %>
-    <%= render "tenant_portal/invoices/invoices_table", invoices: @invoices %>
+
+    <!-- Filter & Search Toolbar -->
+    <div class="invoice-filter-bar mb-5 mx-4 shadow-sm">
+      <%= form_with url: tenant_invoices_path,
+                    method: :get,
+                    class: "d-flex gap-3 align-items-center flex-wrap",
+                    data: {
+                      controller: "search",
+                      turbo_frame: "tenant_invoices_table",
+                      turbo_action: "advance"
+                    } do |f| %>
+        <%= f.hidden_field :tab, value: current_tab %>
+
+        <!-- Search input -->
+        <div class="d-flex align-items-center gap-2 flex-grow-1" style="min-width: 220px; max-width: 360px;">
+          <div class="input-group">
+            <span class="input-group-text bg-white border-end-0">
+              <span class="material-symbols-outlined text-secondary fs-6">search</span>
+            </span>
+            <%= f.search_field :query,
+                               value: params[:query],
+                               placeholder: t('invoice.search_placeholder'),
+                               class: "form-control border-start-0 ps-0 shadow-none",
+                               data: {
+                                 search_target: "input",
+                                 action: "input->search#debounce"
+                               } %>
+          </div>
+        </div>
+
+        <!-- Month Filter -->
+        <div class="d-flex align-items-center gap-2">
+          <%= f.label :month, "#{t('invoice.billing_month')}:", class: "fw-bold text-nowrap" %>
+          <%= f.month_field :month,
+                            value: params[:month],
+                            placeholder: t('invoice.month_placeholder'),
+                            class: "form-control shadow-sm w-auto",
+                            onchange: "this.form.requestSubmit()" %>
+        </div>
+
+        <% if current_tab == "room" %>
+          <!-- Kiểu thanh toán (Chỉ cho hóa đơn theo phòng) -->
+          <div class="d-flex align-items-center gap-2">
+            <%= f.label :invoice_type, "#{t('invoice.payment_mode')}:", class: "fw-bold text-nowrap" %>
+            <%= f.select :invoice_type,
+                         options_for_select([
+                           [t('invoice.all_payment_modes'), ""],
+                           [t('invoice.mode_representative'), "room"],
+                           [t('invoice.mode_self_pay'), "individual"]
+                         ], params[:invoice_type]),
+                         {},
+                         class: "form-select shadow-sm w-auto",
+                         onchange: "this.form.requestSubmit()" %>
+          </div>
+        <% end %>
+
+        <!-- Status Filter -->
+        <div class="d-flex align-items-center gap-2">
+          <%= f.label :status, "#{t('invoice.status_label')}:", class: "fw-bold text-nowrap" %>
+          <%= f.select :status,
+                       options_for_select([
+                         [t('invoice.all_status'), ""],
+                         [t('invoice.status.pending'), "pending"],
+                         [t('invoice.status.overdue'), "overdue"],
+                         [t('invoice.status.paid'), "paid"],
+                         [t('invoice.status.cancelled'), "cancelled"]
+                       ], params[:status]),
+                       {},
+                       class: "form-select shadow-sm w-auto",
+                       onchange: "this.form.requestSubmit()" %>
+        </div>
+
+        <!-- Clear Filter -->
+        <% has_filter = params[:query].present? || params[:month].present? || (current_tab == "room" && params[:invoice_type].present?) || params[:status].present? || (params[:page].present? && params[:page] != "1") %>
+        <% if has_filter %>
+          <div>
+            <%= link_to tenant_invoices_path(tab: current_tab),
+                        class: "btn btn-outline-secondary btn-sm d-flex align-items-center gap-1 shadow-sm",
+                        data: { turbo_action: "advance" } do %>
+              <span class="material-symbols-outlined fs-6">filter_alt_off</span>
+              <span><%= t('clear_filter', default: 'Xóa bộ lọc') %></span>
+            <% end %>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+
+    <h2 class="mb-3 ms-4">
+      <%= %w[custom individual].include?(current_tab) ? t("invoice.tabs.individual") : t("invoice.tabs.room") %>
+    </h2>
+
+    <%= render "tenant_portal/invoices/invoices_table", invoices: @invoices, current_tab: current_tab %>
   <% end %>
 </div>
+
+<%= render "tenant_portal/invoices/tenant_guide_modal" %>

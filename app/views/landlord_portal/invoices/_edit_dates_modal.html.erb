@@ -44,10 +44,12 @@
               <%= f.select :bank_account_id, ll.bank_accounts.includes(:bank).default_first.map { |a| [a.display_label, a.id] }, { include_blank: t('invoice.vietqr.no_vietqr') }, class: "form-select shadow-sm" %>
             </div>
 
-            <div class="mb-0">
+            <div class="mb-3">
               <%= f.label :note, t('invoice.note'), class: "form-label fw-semibold" %>
               <%= f.text_area :note, rows: 2, class: "form-control shadow-sm", placeholder: t('invoice.note_placeholder') %>
             </div>
+
+            <%= render "landlord_portal/invoices/transfer_note_fields", invoice: inv, id_prefix: "edit_inv_#{inv.id}" %>
           </div>
           <div class="modal-footer border-top">
             <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal"><%= t('invoice.actions.close') %></button>

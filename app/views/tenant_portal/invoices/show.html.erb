@@ -7,7 +7,13 @@
       <%= back_link_to tenant_invoices_path, t("invoice.my_invoices") %>
     </div>
 
+    <h1><%= t('invoice.detail') %></h1>
+
     <div class="d-flex align-items-center gap-2">
+      <button type="button" class="manual-btn d-flex align-items-center gap-1 px-2" data-bs-toggle="modal" data-bs-target="#tenantInvoiceGuideModal">
+        <span class="material-symbols-outlined fs-6">menu_book</span> <%= t('invoice.tenant_guide.btn_title') %>
+      </button>
+
       <button onclick="window.print()" class="btn btn-outline-dark btn-sm d-flex align-items-center gap-1 shadow-sm px-3 py-1-5 rounded-pill">
         <span class="material-symbols-outlined fs-6">print</span> <%= t('invoice.actions.print') %>
       </button>
@@ -15,7 +21,7 @@
   </div>
 
   <%= render "layouts/shared_components/invoice_detail_card", invoice: @invoice, bank_account: @bank_account do %>
-    <%= render "tenant_portal/invoices/payment_actions", invoice: @invoice %>
+    <%= render "layouts/shared_components/invoices/payment_actions", invoice: @invoice, portal: :tenant %>
   <% end %>
 </div>
 

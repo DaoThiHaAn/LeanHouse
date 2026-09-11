@@ -1,12 +1,13 @@
 <% content_for :title, "#{t('invoice.title')} #{@invoice.code} - #{@house.name}" %>
-<% provide :container_width, "h-100" %>
 
 <div class="container py-4 invoice-detail-wrapper">
   <!-- Navigation Top Bar -->
-  <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom d-print-none flex-wrap gap-2">
+  <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom d-print-none flex-wrap gap-2">
     <%= link_to landlord_house_invoices_path(@house, month: @invoice.billing_month.strftime("%Y-%m")), class: "btn btn-outline-secondary btn-sm d-flex align-items-center gap-1 shadow-sm px-3 rounded-pill" do %>
       <span class="material-symbols-outlined fs-6">arrow_back</span> <%= t('invoice.actions.back_to_list') %>
     <% end %>
+
+    <h1><%= t('invoice.detail') %></h1>
 
     <div class="d-flex gap-2 align-items-center flex-wrap">
       <button onclick="window.print()" class="btn btn-outline-dark btn-sm d-flex align-items-center gap-1 shadow-sm px-3 rounded-pill">
@@ -26,7 +27,7 @@
   </div>
 
   <%= render "layouts/shared_components/invoice_detail_card", invoice: @invoice, bank_account: @bank_account do %>
-    <%= render "landlord_portal/invoices/payment_actions", invoice: @invoice %>
+    <%= render "layouts/shared_components/invoices/payment_actions", invoice: @invoice, portal: :landlord %>
   <% end %>
 </div>
 
