@@ -1,7 +1,7 @@
 class TenantPortal::ServiceUsageLogsController < TenantPortal::BaseController
   before_action :set_room
   before_action :set_stay_dates
-  before_action :set_service_usage_log, only: %i[edit update]
+  before_action :set_service_usage_log, only: %i[show edit update]
 
   def index
     @unconfirmed_count = tenant_visible_logs.unconfirmed.count
@@ -42,23 +42,79 @@ class TenantPortal::ServiceUsageLogsController < TenantPortal::BaseController
     end
   end
 
-  def edit
-    unless @log.can_be_edited_by_tenant?
-      redirect_to tenant_service_usage_logs_path, alert: t("errors.landlord_confirm")
+  # Returns the single row partial when requested inside Turbo Frame, or redirects to index
+  def show
+    respond_to do |format|
+      format.html do
+        if turbo_frame_request?
+          render partial: "tenant_portal/service_usage_logs/row", locals: { log: @log }
+        else
+          redirect_to tenant_service_usage_logs_path(month: @log.billing_month.strftime("%Y-%m"))
+        end
+      end
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.replace(helpers.dom_id(@log), partial: "tenant_portal/service_usage_logs/row", locals: { log: @log })
+      end
     end
   end
 
+  # Editing is locked if the log has already been confirmed or billed
+  def edit
+    unless @log.can_be_edited_by_tenant?
+      respond_to do |format|
+        format.turbo_stream do
+          flash.now[:alert] = t("errors.landlord_confirm")
+          render turbo_stream: [
+            turbo_stream.replace(helpers.dom_id(@log), partial: "tenant_portal/service_usage_logs/row", locals: { log: @log }),
+            turbo_stream.update("flash", partial: "layouts/shared_components/flash_message")
+          ]
+        end
+        format.html { redirect_to tenant_service_usage_logs_path, alert: t("errors.landlord_confirm") }
+      end
+    end
+  end
+
+  # Tenant submits reading and photo for an incomplete log created by the landlord
   def update
     unless @log.can_be_edited_by_tenant?
-      redirect_to tenant_service_usage_logs_path, alert: t("errors.landlord_confirm")
+      respond_to do |format|
+        format.turbo_stream do
+          flash.now[:alert] = t("errors.landlord_confirm")
+          render turbo_stream: [
+            turbo_stream.replace(helpers.dom_id(@log), partial: "tenant_portal/service_usage_logs/row", locals: { log: @log }),
+            turbo_stream.update("flash", partial: "layouts/shared_components/flash_message")
+          ]
+        end
+        format.html { redirect_to tenant_service_usage_logs_path, alert: t("errors.landlord_confirm") }
+      end
+      return
+    end
+
+    # Photo is required if not previously attached
+    if !@log.reading_photo.attached? && params[:service_usage_log]&.[](:reading_photo).blank?
+      @log.errors.add(:reading_photo, t("invoice.reading_photo_required", default: "vui lòng chụp hoặc đính kèm ảnh công tơ thực tế"))
+      respond_to do |format|
+        format.turbo_stream { render :edit, status: :unprocessable_entity, formats: [ :html ] }
+        format.html { render :edit, status: :unprocessable_entity }
+      end
       return
     end
 
     @log.submitted_by = current_user
     if @log.update(tenant_log_params)
-      redirect_to tenant_service_usage_logs_path, notice: "Đã gửi chỉ số và ảnh chụp công tơ thành công! Đang chờ chủ trọ duyệt."
+      flash.now[:notice] = t("invoice.submit_reading_success", default: "Đã gửi chỉ số và ảnh chụp công tơ thành công! Đang chờ chủ trọ duyệt.")
+      respond_to do |format|
+        format.turbo_stream
+        format.html do
+          redirect_to tenant_service_usage_logs_path(month: @log.billing_month.strftime("%Y-%m")),
+                      notice: t("invoice.submit_reading_success", default: "Đã gửi chỉ số và ảnh chụp công tơ thành công! Đang chờ chủ trọ duyệt.")
+        end
+      end
     else
-      render :edit, status: :unprocessable_entity
+      respond_to do |format|
+        format.turbo_stream { render :edit, status: :unprocessable_entity, formats: [ :html ] }
+        format.html { render :edit, status: :unprocessable_entity }
+      end
     end
   end
 

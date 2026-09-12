@@ -6,39 +6,14 @@ class LandlordPortal::ServiceUsageLogsController < LandlordPortal::BaseControlle
   before_action :set_room, only: %i[index filtered confirm_all new]
   before_action :set_billing_month, only: %i[index filtered]
   before_action :set_service_usage_log, only: %i[show edit update confirm destroy]
+  before_action :load_floor_and_room_options, only: %i[new create]
 
   def index
     if @room
-      @unconfirmed_count = @room.service_usage_logs.unconfirmed.count
-      @fixed_services_count = @room.room_services.joins(:service_variant).where(service_variants: { is_real_time: false }).count
-      @current_tab = if params[:tab].present?
-        params[:tab] == "fixed" ? "fixed" : "real_time"
-      elsif @room.service_variants.any?(&:is_real_time?)
-        "real_time"
-      elsif @fixed_services_count.positive?
-        "fixed"
-      else
-        "real_time"
-      end
-
-      if @current_tab == "fixed"
-        @fixed_services_summary = RoomFixedServicesSummary.call(
-          room: @room,
-          billing_month: @billing_month,
-          page: params[:page],
-          per_page: params[:per_page]
-        )
-      else
-        @logs = LandlordServiceUsageLogsFilter.call(house: @house, room: @room, params: params)
-        @services = @house.services.name_sorted
-      end
+      setup_room_index
       render :room_index
     else
-      @logs = LandlordServiceUsageLogsFilter.call(house: @house, params: params.reverse_merge(month: @billing_month.strftime("%Y-%m")))
-      @unconfirmed_count = @house.service_usage_logs.for_month(@billing_month).unconfirmed.count
-      @selected_service = @house.services.find_by(id: params[:service_id]) if params[:service_id].present?
-      @services = @house.services.name_sorted
-      @service_variants = @selected_service ? @selected_service.service_variants : @house.service_variants.where(is_real_time: true)
+      setup_house_index
     end
   end
 
@@ -46,6 +21,13 @@ class LandlordPortal::ServiceUsageLogsController < LandlordPortal::BaseControlle
     if @room
       @logs = LandlordServiceUsageLogsFilter.call(house: @house, room: @room, params: params)
       render partial: "room_logs_table", locals: { house: @house, room: @room, logs: @logs }
+    elsif params[:tab] == "fixed"
+      @fixed_services_summary = HouseFixedServicesSummary.call(
+        house: @house,
+        billing_month: @billing_month,
+        params: params
+      )
+      render partial: "house_fixed_services_table", locals: { house: @house, summary: @fixed_services_summary }
     else
       @logs = LandlordServiceUsageLogsFilter.call(house: @house, params: params.reverse_merge(month: @billing_month.strftime("%Y-%m")))
       render partial: "logs_table", locals: { house: @house, logs: @logs, billing_month: @billing_month }
@@ -58,7 +40,7 @@ class LandlordPortal::ServiceUsageLogsController < LandlordPortal::BaseControlle
     service_variant = @house.service_variants.where(is_real_time: true).find_by(id: params[:service_variant_id]) ||
                       @house.service_variants.where(is_real_time: true).first
 
-    prev_reading = target_room ? previous_reading_for(target_room, service_variant&.service_id, @billing_month) : 0
+    prev_reading = target_room ? ServiceUsageLog.previous_reading_for(room: target_room, service_id: service_variant&.service_id, before_month: @billing_month) : 0
 
     @log = ServiceUsageLog.new(
       room: target_room,
@@ -74,11 +56,20 @@ class LandlordPortal::ServiceUsageLogsController < LandlordPortal::BaseControlle
     )
   end
 
+  # Creates a service usage log:
+  # - If is_confirmed: true -> landlord confirms & finalizes reading now
+  # - If is_confirmed: false -> opens the cycle and awaits tenant photo/reading submission
   def create
     @log = ServiceUsageLog.new(log_params)
     @log.submitted_by = current_user
-    @log.confirmed_by = current_user if @log.is_confirmed?
-    @log.confirmed_at = Time.current if @log.is_confirmed?
+
+    if @log.is_confirmed?
+      @log.confirmed_by = current_user
+      @log.confirmed_at = Time.current
+    else
+      @log.confirmed_by = nil
+      @log.confirmed_at = nil
+    end
     @billing_month = @log.billing_month || Date.current.beginning_of_month
 
     if @log.save
@@ -104,12 +95,14 @@ class LandlordPortal::ServiceUsageLogsController < LandlordPortal::BaseControlle
     end
   end
 
+  # Confirms a single log, locks tenant editing, and notifies active staying tenants
   def confirm
     @log.update!(
       is_confirmed: true,
       confirmed_at: Time.current,
       confirmed_by: current_user
     )
+    notify_tenants_of_confirmed_log(@log)
 
     respond_to do |format|
       format.turbo_stream do
@@ -137,26 +130,30 @@ class LandlordPortal::ServiceUsageLogsController < LandlordPortal::BaseControlle
     end
   end
 
+  # Batch confirms unconfirmed logs (either for a specific room or for the entire house/month)
+  # and notifies staying tenants of the confirmed records
   def confirm_all
     if @room
-      logs_to_confirm = @room.service_usage_logs.unconfirmed
+      logs_to_confirm = @room.service_usage_logs.unconfirmed.to_a
       count = logs_to_confirm.count
-      logs_to_confirm.update_all(
+      @room.service_usage_logs.unconfirmed.update_all(
         is_confirmed: true,
         confirmed_at: Time.current,
         confirmed_by_id: current_user.id
       )
+      notify_tenants_of_confirmed_logs(logs_to_confirm)
       redirect_to landlord_house_room_service_usage_logs_path(@house, @room),
                   notice: t("service_usage_logs.confirm_all_room_success", count: count, room: @room.name, default: "Đã xác nhận #{count} chỉ số của phòng #{@room.name}!")
     else
       @billing_month = parse_month(params[:month])
-      logs_to_confirm = @house.service_usage_logs.for_month(@billing_month).unconfirmed
+      logs_to_confirm = @house.service_usage_logs.for_month(@billing_month).unconfirmed.to_a
       count = logs_to_confirm.count
-      logs_to_confirm.update_all(
+      @house.service_usage_logs.for_month(@billing_month).unconfirmed.update_all(
         is_confirmed: true,
         confirmed_at: Time.current,
         confirmed_by_id: current_user.id
       )
+      notify_tenants_of_confirmed_logs(logs_to_confirm)
       redirect_to landlord_house_service_usage_logs_path(@house, month: @billing_month.strftime("%Y-%m")),
                   notice: t("service_usage_logs.confirm_all_success", count: count, default: "Đã xác nhận toàn bộ #{count} chỉ số trong tháng!")
     end
@@ -224,12 +221,15 @@ class LandlordPortal::ServiceUsageLogsController < LandlordPortal::BaseControlle
     @log = @house.service_usage_logs.find(params[:id])
   end
 
-  def previous_reading_for(room, service_id, month)
-    room.service_usage_logs
-        .where(service_id: service_id)
-        .where("billing_month < ?", month)
-        .order(billing_month: :desc)
-        .pick(:latest_reading) || 0
+  def notify_tenants_of_confirmed_log(log)
+    tenants = log.room.active_staying_tenant_users
+    return if tenants.empty?
+
+    ServiceUsageLogConfirmedNotifier.with(log: log).deliver_later(tenants)
+  end
+
+  def notify_tenants_of_confirmed_logs(logs)
+    logs.each { |log| notify_tenants_of_confirmed_log(log) }
   end
 
   def from_room_context?
@@ -241,6 +241,77 @@ class LandlordPortal::ServiceUsageLogsController < LandlordPortal::BaseControlle
       landlord_house_room_service_usage_logs_path(@house, log.room)
     else
       landlord_house_service_usage_logs_path(@house, month: log.billing_month.strftime("%Y-%m"))
+    end
+  end
+
+  def setup_room_index
+    @unconfirmed_count = @room.service_usage_logs.unconfirmed.count
+    @fixed_services_count = @room.room_services.joins(:service_variant).where(service_variants: { is_real_time: false }).count
+    @current_tab = if params[:tab].present?
+      params[:tab] == "fixed" ? "fixed" : "real_time"
+    elsif @room.service_variants.any?(&:is_real_time?)
+      "real_time"
+    elsif @fixed_services_count.positive?
+      "fixed"
+    else
+      "real_time"
+    end
+
+    if @current_tab == "fixed"
+      @fixed_services_summary = RoomFixedServicesSummary.call(
+        room: @room,
+        billing_month: @billing_month,
+        page: params[:page],
+        per_page: params[:per_page]
+      )
+    else
+      @logs = LandlordServiceUsageLogsFilter.call(house: @house, room: @room, params: params)
+      @services = @house.services.name_sorted
+    end
+  end
+
+  def setup_house_index
+    @unconfirmed_count = @house.service_usage_logs.for_month(@billing_month).unconfirmed.count
+    @fixed_services_count = RoomService.where(room_id: @house.rooms.select(:id)).joins(:service_variant).where(service_variants: { is_real_time: false }).count
+    @selected_service = @house.services.find_by(id: params[:service_id]) if params[:service_id].present?
+
+    @current_tab = if params[:tab].present?
+      params[:tab] == "fixed" ? "fixed" : "real_time"
+    elsif @selected_service.present?
+      @selected_service.service_variants.any?(&:is_real_time?) ? "real_time" : "fixed"
+    else
+      "real_time"
+    end
+
+    if @current_tab == "fixed"
+      @fixed_services_summary = HouseFixedServicesSummary.call(
+        house: @house,
+        billing_month: @billing_month,
+        params: params
+      )
+      @fixed_services = @house.services.joins(:service_variants).where(service_variants: { is_real_time: false }).distinct.name_sorted
+      @fixed_variants = if @selected_service
+        @selected_service.service_variants.where(is_real_time: false)
+      else
+        @house.service_variants.where(is_real_time: false)
+      end
+    else
+      @logs = LandlordServiceUsageLogsFilter.call(house: @house, params: params.reverse_merge(month: @billing_month.strftime("%Y-%m")))
+      @services = @house.services.joins(:service_variants).where(service_variants: { is_real_time: true }).distinct.name_sorted
+      @service_variants = @selected_service ? @selected_service.service_variants.where(is_real_time: true) : @house.service_variants.where(is_real_time: true)
+    end
+  end
+
+  # Loads floor and room options for the dependent floor & room input group picker
+  def load_floor_and_room_options
+    @rooms = @house.rooms.active.includes(:floor).sorted
+    @floors = @rooms.map(&:floor).compact.uniq.sort_by(&:position)
+    @room_options = @rooms.map do |r|
+      {
+        id: r.id,
+        floorId: r.floor_id,
+        name: r.title_name
+      }
     end
   end
 

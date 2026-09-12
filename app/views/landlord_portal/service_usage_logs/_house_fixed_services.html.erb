@@ -1,0 +1,168 @@
+<%# locals: (house:, summary:, fixed_services:, fixed_variants:, selected_service:) %>
+
+<!-- Filter Toolbar for Whole-House Fixed Services -->
+<div class="card bg-light border-0 rounded-3 p-3 mb-4">
+  <%
+    active_rooms = house.rooms.active.sorted
+    available_rooms = if params[:floor_id].present?
+      active_rooms.select { |r| r.floor_id.to_s == params[:floor_id].to_s }
+    else
+      active_rooms
+    end
+  %>
+  <%= form_with url: filtered_landlord_house_service_usage_logs_path(house),
+                method: :get,
+                class: "d-flex gap-3 align-items-center flex-wrap",
+                data: {
+                  controller: "filter-floor-room",
+                  filter_floor_room_rooms_value: active_rooms.map { |r| { id: r.id.to_s, name: r.title_name, floor_id: r.floor_id.to_s } }.to_json,
+                  filter_floor_room_all_rooms_label_value: t("invoice.all_rooms"),
+                  turbo_frame: "house_fixed_services_table",
+                  turbo_action: "advance"
+                } do |f| %>
+
+    <%= f.hidden_field :tab, value: "fixed" %>
+
+    <!-- Tháng -->
+    <div class="d-flex align-items-center gap-2">
+      <%= f.label :month, "#{t('month')}:", class: "fw-bold text-nowrap" %>
+      <%= f.month_field :month,
+                        value: summary.billing_month_str,
+                        class: "form-control shadow-sm w-auto",
+                        onchange: "this.form.requestSubmit()" %>
+    </div>
+
+    <!-- Tầng -->
+    <div class="d-flex align-items-center gap-2">
+      <%= f.label :floor_id, "#{t('service_usage_logs.floor')}:", class: "fw-bold text-nowrap" %>
+      <%= f.select :floor_id,
+                   [[t("service_usage_logs.all_floors"), ""]] + house.floors.pos_order.map { |fl| [fl.title_name, fl.id] },
+                   { selected: params[:floor_id] },
+                   class: "form-select shadow-sm w-auto",
+                   data: {
+                     filter_floor_room_target: "floor",
+                     action: "change->filter-floor-room#floorChanged"
+                   } %>
+    </div>
+
+    <!-- Phòng -->
+    <div class="d-flex align-items-center gap-2">
+      <%= f.label :room_id, "#{t('invoice.room')}:", class: "fw-bold text-nowrap" %>
+      <%= f.select :room_id,
+                   [[t("invoice.all_rooms"), ""]] + available_rooms.map { |r| [r.title_name, r.id] },
+                   { selected: params[:room_id] },
+                   class: "form-select shadow-sm w-auto",
+                   data: {
+                     filter_floor_room_target: "room",
+                     action: "change->filter-floor-room#roomChanged"
+                   } %>
+    </div>
+
+    <!-- Dịch vụ cố định -->
+    <% if selected_service.blank? && fixed_services.any? %>
+      <div class="d-flex align-items-center gap-2">
+        <%= f.label :service_id, "#{t('service.self')}:", class: "fw-bold text-nowrap" %>
+        <%= f.select :service_id,
+                     [[t("service_usage_logs.all_services"), ""]] + fixed_services.map { |s| [s.name, s.id] },
+                     { selected: params[:service_id] },
+                     class: "form-select shadow-sm w-auto",
+                     onchange: "this.form.requestSubmit()" %>
+      </div>
+    <% elsif selected_service.present? %>
+      <%= f.hidden_field :service_id, value: selected_service.id %>
+    <% end %>
+
+    <!-- Biến thể cố định -->
+    <% if fixed_variants.any? %>
+      <div class="d-flex align-items-center gap-2">
+        <%= f.label :service_variant_id, "#{t('service_usage_logs.variant')}:", class: "fw-bold text-nowrap" %>
+        <%= f.select :service_variant_id,
+                     [[t("service_usage_logs.all_variants"), ""]] + fixed_variants.map { |v| ["#{v.service&.name} (#{v.human_unit} - #{number_with_delimiter(v.fee)}đ)", v.id] },
+                     { selected: params[:service_variant_id] },
+                     class: "form-select shadow-sm w-auto",
+                     onchange: "this.form.requestSubmit()" %>
+      </div>
+    <% end %>
+
+    <!-- Trạng thái -->
+    <div class="d-flex align-items-center gap-2">
+      <%= f.label :status, "#{t('status')}:", class: "fw-bold text-nowrap" %>
+      <%= f.select :status, [
+            [t("service_usage_logs.all_statuses"), ""],
+            [t("service_usage_logs.status_draft"), "draft"],
+            [t("service_usage_logs.status_billed"), "billed"],
+            [t("service_usage_logs.status_waived"), "waived"]
+          ],
+          { selected: params[:status] },
+          class: "form-select shadow-sm w-auto",
+          onchange: "this.form.requestSubmit()" %>
+    </div>
+
+    <!-- Reset / Manage services shortcut -->
+    <div class="ms-auto d-flex align-items-center gap-2">
+      <%= link_to landlord_house_services_path(house),
+                  class: "btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-1 shadow-xs" do %>
+        <span class="material-symbols-outlined fs-6">settings</span>
+        <span><%= t("service_usage_logs.configure_services_btn") %></span>
+      <% end %>
+    </div>
+  <% end %>
+</div>
+
+<!-- 1 Unified Stat Card -->
+<div class="card stat-card stat-card-blue shadow-sm p-3 mb-4">
+  <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+    <!-- Left: Total Amount -->
+    <div class="d-flex align-items-center gap-3">
+      <div class="stat-icon-wrap rounded-circle d-flex align-items-center justify-content-center flex-shrink-0">
+        <span class="material-symbols-filled fs-2 text-primary">payments</span>
+      </div>
+      <div>
+        <span class="stat-card-title fw-bold small d-block">
+          <%= t("service_usage_logs.total_monthly_est") %>
+        </span>
+        <div class="d-flex align-items-baseline gap-1">
+          <span class="fs-3 fw-bold text-primary stat-card-value">
+            <%= number_with_delimiter(summary.total_amount) %>
+          </span>
+          <span class="fw-semibold stat-card-subtext small">đ</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Divider on desktop -->
+    <div class="vr d-none d-md-block opacity-25 my-1"></div>
+
+    <!-- Right: Context pills -->
+    <div class="d-flex align-items-center flex-wrap gap-2 gap-md-3">
+      <!-- Period Badge -->
+      <div class="d-flex align-items-center gap-2 px-3 py-2 rounded-3 border bg-white shadow-xs">
+        <span class="material-symbols-outlined text-primary fs-5">calendar_month</span>
+        <span class="small fw-semibold text-secondary"><%= t("service_usage_logs.billing_cycle") %>:</span>
+        <span class="fw-bold text-dark"><%= summary.billing_month.strftime("%m/%Y") %></span>
+      </div>
+
+      <!-- Applied Rooms Badge -->
+      <div class="d-flex align-items-center gap-2 px-3 py-2 rounded-3 border bg-white shadow-xs">
+        <span class="material-symbols-outlined text-primary fs-5">meeting_room</span>
+        <span class="small fw-semibold text-secondary"><%= t("service_usage_logs.applied_rooms_count") %>:</span>
+        <span class="badge bg-primary text-white rounded-pill px-2 py-1">
+          <%= summary.total_rooms_count %>
+        </span>
+      </div>
+
+      <!-- Billing Fulfillment Rate Badge -->
+      <div class="d-flex align-items-center gap-2 px-3 py-2 rounded-3 border bg-white shadow-xs">
+        <span class="material-symbols-outlined text-success fs-5">verified</span>
+        <span class="small fw-semibold text-secondary"><%= t("service_usage_logs.status_billed") %>:</span>
+        <span class="badge bg-success text-white rounded-pill px-2 py-1">
+          <%= summary.billed_count %> / <%= summary.total_items_count %>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2 class="mb-3 ms-1 fs-5 fw-bold text-dark"><%= t("service_usage_logs.house_fixed_summary_title") %></h2>
+
+<%= render "house_fixed_services_table", house: house, summary: summary %>

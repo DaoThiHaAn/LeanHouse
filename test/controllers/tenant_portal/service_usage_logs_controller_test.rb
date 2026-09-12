@@ -512,4 +512,193 @@ class TenantPortal::ServiceUsageLogsControllerTest < ActionDispatch::Integration
     assert_select "input#fixed_month_filter[type='month'][value='2026-01']"
     assert_select "a[href*='month=2026-01']"
   end
+
+  test "both complete and incomplete logs created by landlord are displayed in tenant index" do
+    sign_in_as(@tenant_user)
+
+    # Incomplete log created by landlord (@during_stay_log has is_confirmed: false, latest_reading: nil)
+    # Create another complete log for the same month
+    other_service = @house.services.create!(name: "Nước")
+    variant_water = other_service.service_variants.create!(fee: 20_000, unit: "per_m3", is_real_time: true)
+    @room.room_services.create!(service_variant: variant_water)
+    complete_log = @room.service_usage_logs.create!(
+      service: other_service,
+      service_variant: variant_water,
+      service_name: "Nước",
+      unit: "m³",
+      unit_price: 20_000,
+      billing_month: @current_month,
+      start_date: @current_month,
+      end_date: @current_month.end_of_month,
+      prev_reading: 50,
+      latest_reading: 65,
+      is_confirmed: true
+    )
+
+    get tenant_service_usage_logs_path(month: @current_month.strftime("%Y-%m"))
+    assert_response :success
+
+    # Complete log shows locked status
+    assert_select "tr", text: /Nước/ do
+      assert_select "span", text: /#{I18n.t('invoice.confirmed_and_locked')}/
+      assert_select "span", text: /#{I18n.t('invoice.locked')}/
+    end
+
+    # Incomplete log shows editable status and submit action button
+    assert_select "tr", text: /Điện/ do
+      assert_select "span", text: /#{I18n.t('invoice.editable')}/
+      assert_select "a[href='#{edit_tenant_service_usage_log_path(@during_stay_log)}']", text: /#{I18n.t('invoice.submit_reading_or_photo')}/
+    end
+
+    # There should NOT be any button for tenant to create a new log from scratch
+    assert_select "a", text: /#{I18n.t('invoice.submit_new_meter_reading')}/, count: 0
+  end
+
+  test "tenant can upload photo and submit reading to an incomplete log" do
+    sign_in_as(@tenant_user)
+    file = fixture_file_upload("normal.png", "image/png")
+
+    get edit_tenant_service_usage_log_path(@during_stay_log)
+    assert_response :success
+    assert_select "input[name='service_usage_log[latest_reading]']"
+    assert_select "input[type=file][name='service_usage_log[reading_photo]']"
+
+    patch tenant_service_usage_log_path(@during_stay_log), params: {
+      service_usage_log: {
+        latest_reading: 350,
+        reading_photo: file
+      }
+    }
+
+    assert_redirected_to tenant_service_usage_logs_path(month: @during_stay_log.billing_month.strftime("%Y-%m"))
+    @during_stay_log.reload
+    assert_equal 350, @during_stay_log.latest_reading
+    assert_not @during_stay_log.is_confirmed?
+    assert_equal @tenant_user, @during_stay_log.submitted_by
+    assert @during_stay_log.reading_photo.attached?
+  end
+
+  test "tenant updating incomplete log without photo fails if none attached" do
+    sign_in_as(@tenant_user)
+
+    patch tenant_service_usage_log_path(@during_stay_log), params: {
+      service_usage_log: {
+        latest_reading: 350,
+        reading_photo: nil
+      }
+    }
+
+    assert_response :unprocessable_entity
+    assert_nil @during_stay_log.reload.latest_reading
+  end
+
+  test "tenant cannot edit or update confirmed service usage log" do
+    sign_in_as(@tenant_user)
+    @during_stay_log.update!(latest_reading: 280, is_confirmed: true)
+
+    get edit_tenant_service_usage_log_path(@during_stay_log)
+    assert_redirected_to tenant_service_usage_logs_path
+    assert_equal I18n.t("errors.landlord_confirm"), flash[:alert]
+
+    patch tenant_service_usage_log_path(@during_stay_log), params: {
+      service_usage_log: { latest_reading: 300 }
+    }
+    assert_redirected_to tenant_service_usage_logs_path
+    assert_equal 280, @during_stay_log.reload.latest_reading
+  end
+
+  test "modal guide explains tenant photo submission instructions" do
+    sign_in_as(@tenant_user)
+    get tenant_service_usage_logs_path
+    assert_response :success
+    assert_select "#billingMonthGuideModal", text: /#{I18n.t('service_usage_logs.tenant_guide_step_title')}/
+  end
+
+  test "GET index renders each row within a unique turbo frame" do
+    sign_in_as(@tenant_user)
+    get tenant_service_usage_logs_path
+    assert_response :success
+
+    frame_id = ActionView::RecordIdentifier.dom_id(@during_stay_log)
+    assert_select "turbo-frame##{frame_id}.table-row-frame"
+  end
+
+  test "GET edit with Turbo-Frame header returns inline table row form" do
+    sign_in_as(@tenant_user)
+    frame_id = ActionView::RecordIdentifier.dom_id(@during_stay_log)
+
+    get edit_tenant_service_usage_log_path(@during_stay_log), headers: { "Turbo-Frame" => frame_id }
+    assert_response :success
+
+    assert_select "turbo-frame##{frame_id}.table-row-frame" do
+      assert_select "form" do
+        assert_select "input[name='service_usage_log[latest_reading]']"
+        assert_select "input[type=file][name='service_usage_log[reading_photo]']"
+        assert_select "a[href='#{tenant_service_usage_log_path(@during_stay_log)}']", text: /#{I18n.t('invoice.actions.back')}/
+      end
+    end
+    assert_includes response.body, "table-light"
+    assert_includes response.body, "colspan=\"8\""
+  end
+
+  test "GET show with Turbo-Frame header restores normal row partial" do
+    sign_in_as(@tenant_user)
+    frame_id = ActionView::RecordIdentifier.dom_id(@during_stay_log)
+
+    get tenant_service_usage_log_path(@during_stay_log), headers: { "Turbo-Frame" => frame_id }
+    assert_response :success
+
+    assert_select "turbo-frame##{frame_id}.table-row-frame" do
+      assert_select "a[href='#{edit_tenant_service_usage_log_path(@during_stay_log)}']"
+    end
+    assert_includes response.body, @during_stay_log.service_name
+  end
+
+  test "PATCH update with turbo_stream replaces row frame and updates flash" do
+    sign_in_as(@tenant_user)
+    file = fixture_file_upload("normal.png", "image/png")
+    frame_id = ActionView::RecordIdentifier.dom_id(@during_stay_log)
+
+    patch tenant_service_usage_log_path(@during_stay_log),
+          params: {
+            service_usage_log: {
+              latest_reading: 380,
+              reading_photo: file
+            }
+          },
+          as: :turbo_stream
+
+    assert_response :success
+    assert_equal "text/vnd.turbo-stream.html; charset=utf-8", response.content_type
+
+    # Replaces the row frame
+    assert_select "turbo-stream[action='replace'][target='#{frame_id}']" do
+      assert_select "turbo-frame##{frame_id}.table-row-frame"
+      assert_includes response.body, "380"
+    end
+
+    # Updates flash message
+    assert_select "turbo-stream[action='update'][target='flash']"
+
+    @during_stay_log.reload
+    assert_equal 380, @during_stay_log.latest_reading
+  end
+
+  test "PATCH update with validation error via turbo_stream re-renders inline form with 422" do
+    sign_in_as(@tenant_user)
+    frame_id = ActionView::RecordIdentifier.dom_id(@during_stay_log)
+
+    patch tenant_service_usage_log_path(@during_stay_log),
+          params: {
+            service_usage_log: {
+              latest_reading: 380,
+              reading_photo: nil
+            }
+          },
+          as: :turbo_stream
+
+    assert_response :unprocessable_entity
+    assert_select "turbo-frame##{frame_id}.table-row-frame"
+    assert_includes response.body, I18n.t("invoice.reading_photo_required")
+  end
 end

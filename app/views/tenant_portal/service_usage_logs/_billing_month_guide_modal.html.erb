@@ -33,7 +33,7 @@
         </div>
 
         <!-- Two Rule Cards (Formula & Billing Rule) -->
-        <div class="row g-3 mb-4">
+        <div class="row g-3 mb-3">
           <div class="col-md-6">
             <div class="card h-100 border rounded-3 p-3 shadow-sm bg-white">
               <div class="d-flex align-items-center gap-2 mb-2">
@@ -63,6 +63,43 @@
                   <li><strong><%= t("service_usage_logs.rule_postpaid_title") %></strong> <%= t("service_usage_logs.rule_postpaid_desc") %></li>
                   <li><strong><%= t("service_usage_logs.rule_lock_title") %></strong> <%= t("service_usage_logs.rule_lock_desc") %></li>
                 </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tenant Self-Submit Meter Reading Guide -->
+        <div class="card border rounded-3 p-3 bg-light-subtle mb-3">
+          <h6 class="fw-bold text-dark d-flex align-items-center gap-2 mb-3">
+            <span class="material-symbols-outlined text-primary fs-5">photo_camera</span>
+            <%= t("service_usage_logs.tenant_guide_step_title") %>
+          </h6>
+          <div class="row g-2 small">
+            <div class="col-md-4">
+              <div class="p-3 bg-white rounded border h-100">
+                <div class="d-flex align-items-center gap-2 text-primary fw-bold mb-1">
+                  <span class="material-symbols-outlined fs-5">add_a_photo</span>
+                  <span><%= t("service_usage_logs.tenant_guide_step1_title") %></span>
+                </div>
+                <p class="text-secondary mb-0"><%= t("service_usage_logs.tenant_guide_step1_desc") %></p>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="p-3 bg-white rounded border h-100">
+                <div class="d-flex align-items-center gap-2 text-primary fw-bold mb-1">
+                  <span class="material-symbols-outlined fs-5">send</span>
+                  <span><%= t("service_usage_logs.tenant_guide_step2_title") %></span>
+                </div>
+                <p class="text-secondary mb-0"><%= t("service_usage_logs.tenant_guide_step2_desc") %></p>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="p-3 bg-white rounded border h-100">
+                <div class="d-flex align-items-center gap-2 text-success fw-bold mb-1">
+                  <span class="material-symbols-outlined fs-5">verified_user</span>
+                  <span><%= t("service_usage_logs.tenant_guide_step3_title") %></span>
+                </div>
+                <p class="text-secondary mb-0"><%= t("service_usage_logs.tenant_guide_step3_desc") %></p>
               </div>
             </div>
           </div>

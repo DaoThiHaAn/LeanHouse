@@ -499,6 +499,16 @@ en:
     upload_meter_photo_label: "Capture or upload meter photo"
     previously_uploaded_photo: "Previously uploaded photo:"
     submit_reading_btn_text: "Submit Reading & Proof Photo"
+    confirmation_mode_label: "Confirmation Mode"
+    confirm_now_option: "Confirm & Finalize Now"
+    confirm_now_desc: "You have verified the meter and want to lock the reading immediately for invoicing."
+    awaiting_tenant_option: "Await Tenant Photo / Reading"
+    awaiting_tenant_desc: "Create the cycle entry and allow tenants to photograph the meter and submit readings for your approval."
+    submit_new_meter_reading: "Submit Meter Reading / Photo"
+    reading_photo_required: "please capture or attach an actual meter photo"
+    submit_reading_success: "Meter reading and photo submitted successfully! Waiting for landlord confirmation."
+    submit_reading_card_title: "Submit New Meter Reading"
+    submit_reading_card_subtitle: "Capture the meter display and enter the reading to submit to your landlord for confirmation."
 
     errors:
       cannot_update_paid: "Cannot update an invoice after payment confirmation. Please undo payment confirmation first to make changes."

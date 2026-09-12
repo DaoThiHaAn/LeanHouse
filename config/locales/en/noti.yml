@@ -1,0 +1,18 @@
+en:
+  noti:
+    self: "Notifications"
+    notification_center: "Notification Center"
+    view_all: "View all notifications"
+    mark_all_as_read: "Mark all as read"
+    mark_as_read: "Mark as read"
+    empty: "No notifications."
+    no_notifications_in_filter: "No notifications found in this filter."
+    all: "All"
+    unread: "Unread"
+    read: "Read"
+
+    titles:
+      service_usage_log_confirmed: "Meter Reading Confirmed"
+
+    messages:
+      service_usage_log_confirmed: "Landlord has confirmed %{service_name} reading for %{room_name} (month %{month})."

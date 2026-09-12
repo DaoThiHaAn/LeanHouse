@@ -204,7 +204,7 @@ Rails.application.routes.draw do
         patch :mark_paid
       end
     end
-    resources :service_usage_logs, only: %i[index edit update create]
+    resources :service_usage_logs, only: %i[index show edit update]
     resource :contract, only: [ :show ]
     get "/all-contracts", to: "contracts#index", as: :all_contracts
     resource :room, only: [ :show ]

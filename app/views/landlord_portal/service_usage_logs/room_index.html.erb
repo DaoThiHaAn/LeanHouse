@@ -1,17 +1,5 @@
-<% content_for :title, "#{t('service_usage_logs.room_logs_title', room: @room.name)} - #{@house.name}" %>
-<% provide :container_width, "h-100" %>
-
-<!-- Breadcrumb -->
-<nav aria-label="Breadcrumb navigation" class="mb-4">
-  <ol class="breadcrumb mb-0">
-    <li class="breadcrumb-item">
-      <%= back_link_to landlord_house_rooms_path(@house), t("service_usage_logs.back_to_rooms") %>
-    </li>
-    <li class="breadcrumb-item active align-self-center" aria-current="page">
-      <%= t("form.room.self") %> <%= @room.name %>
-    </li>
-  </ol>
-</nav>
+<!-- Service Usage Log Index view for a given room -->
+<% content_for :title, "#{t('service_usage_logs.room_logs_title', room: @room.title_name, floor: @room.floor.title_name)} - #{@house.name}" %>
 
 <%= turbo_frame_tag "room_service_logs_section",
       data: {
@@ -23,47 +11,51 @@
         action: "turbo:frame-load->pagination-sync#updateUrl"
       } do %>
   <!-- Header -->
-  <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4 pb-2 border-bottom">
+  <h1 class="mb-2 d-flex flex-column gap-2 text-center">
     <div>
-      <h1 class="mb-2 d-flex align-items-center gap-2">
-        <span class="material-symbols-filled fs-2">electric_meter</span>
-        <span><%= t("service_usage_logs.room_logs_title", room: @room.name) %></span>
-      </h1>
-      <p class="text-secondary mb-0"><%= t("service_usage_logs.room_logs_subtitle") %></p>
+      <span class="material-symbols-filled fs-2">electric_meter</span>
+      <span><%= t("service_usage_logs.room_logs_title_short") %></span>&nbsp;-
     </div>
 
-    <div class="d-flex align-items-center gap-2">
-      <!-- Guide Modal Button -->
-      <button type="button"
-              class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1 shadow-sm px-3"
-              data-bs-toggle="modal" data-bs-target="#serviceGuideModal">
-        <span class="material-symbols-outlined fs-6">help_outline</span>
-        <span><%= t("service.guide.btn_title") %></span>
-      </button>
+    <span>
+      <%= @room.title_name %>, <%= @room.floor.title_name %>
+    </span>
+  </h1>
+  <p class="text-secondary text-center mb-3"><%= t("service_usage_logs.room_logs_subtitle") %></p>
 
-      <!-- 2 Tabs at the right end of the header row -->
-      <div class="d-inline-flex bg-light p-1 rounded-pill border gap-1">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4 pb-3 border-bottom">
+    <%= back_link_to landlord_house_rooms_path(@house), t("service_usage_logs.back_to_rooms") %>
+
+    <!-- 2 Tabs at the right end of the header row -->
+    <div class="d-inline-flex bg-light p-1 rounded-pill border gap-1 shadow-sm fs-5">
       <%= link_to landlord_house_room_service_usage_logs_path(@house, @room, tab: "real_time", month: @billing_month.strftime("%Y-%m")),
                   class: "log-tab d-flex align-items-center gap-1 px-3 py-1 rounded-pill small text-decoration-none fw-semibold transition #{@current_tab == 'real_time' ? 'active shadow-sm' : 'text-secondary'}",
                   data: { turbo_action: "advance" } do %>
-        <span class="material-symbols-outlined fs-6">speed</span>
+        <span class="material-symbols-filled fs-5">speed</span>
         <span><%= t("service_usage_logs.tab_real_time") %></span>
         <% if @unconfirmed_count.to_i > 0 %>
-          <span class="badge bg-danger rounded-pill ms-1"><%= @unconfirmed_count %></span>
+          <span class="badge rounded-pill ms-1"><%= @unconfirmed_count %></span>
         <% end %>
       <% end %>
 
       <%= link_to landlord_house_room_service_usage_logs_path(@house, @room, tab: "fixed", month: @billing_month.strftime("%Y-%m")),
                   class: "log-tab d-flex align-items-center gap-1 px-3 py-1 rounded-pill small text-decoration-none fw-semibold transition #{@current_tab == 'fixed' ? 'active shadow-sm' : 'text-secondary'}",
                   data: { turbo_action: "advance" } do %>
-        <span class="material-symbols-outlined fs-6">lock</span>
+        <span class="material-symbols-filled fs-5">lock</span>
         <span><%= t("service_usage_logs.tab_fixed") %></span>
         <% if @fixed_services_count.to_i > 0 %>
-          <span class="fixed badge bg-secondary bg-opacity-25 text-dark rounded-pill ms-1"><%= @fixed_services_count %></span>
+          <span class="badge rounded-pill ms-1"><%= @fixed_services_count %></span>
         <% end %>
       <% end %>
-      </div>
     </div>
+
+    <!-- Guide Modal Button -->
+    <button type="button"
+            class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1 shadow-sm px-3"
+            data-bs-toggle="modal" data-bs-target="#serviceGuideModal">
+      <span class="material-symbols-outlined fs-6">help_outline</span>
+      <span><%= t("service.guide.btn_title") %></span>
+    </button>
   </div>
 
   <% if @current_tab == "fixed" %>

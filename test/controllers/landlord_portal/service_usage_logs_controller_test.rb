@@ -133,7 +133,7 @@ class LandlordPortal::ServiceUsageLogsControllerTest < ActionDispatch::Integrati
     get landlord_house_room_service_usage_logs_path(@house, @room)
     assert_response :success
     assert_select "h1", text: /#{@room.name}/
-    assert_select "nav[aria-label*='readcrumb']"
+    assert_select "a", text: /#{I18n.t("service_usage_logs.back_to_rooms")}/
   end
 
   test "should get filtered logs for house" do
@@ -448,5 +448,139 @@ class LandlordPortal::ServiceUsageLogsControllerTest < ActionDispatch::Integrati
 
     get landlord_house_room_service_usage_logs_path(@house, @room, tab: "fixed", page: 2)
     assert_response :success
+  end
+
+  test "new log form renders confirmation mode radio buttons" do
+    get new_landlord_house_service_usage_log_path(@house, room_id: @room.id)
+    assert_response :success
+    assert_select "input[type=radio][name='service_usage_log[is_confirmed]'][value='true']"
+    assert_select "input[type=radio][name='service_usage_log[is_confirmed]'][value='false']"
+  end
+
+  test "new log form renders floor and dependent room fields as an input group" do
+    get new_landlord_house_service_usage_log_path(@house, room_id: @room.id)
+    assert_response :success
+
+    assert_select "div[data-controller='dependent-rental-unit']" do
+      assert_select ".input-group" do
+        assert_select "label[for='floor_id']", text: /#{I18n.t('form.floor.self')}/
+        assert_select "select#floor_id[data-dependent-rental-unit-target='floor']"
+        assert_select "label[for='service_usage_log_room_id']", text: /#{I18n.t('form.room.self')}/
+        assert_select "select#service_usage_log_room_id[data-dependent-rental-unit-target='room']"
+      end
+    end
+  end
+
+  test "creates unconfirmed service usage log when is_confirmed is false even without latest_reading" do
+    next_month = 2.months.from_now.beginning_of_month
+    assert_difference("ServiceUsageLog.count", 1) do
+      post landlord_house_service_usage_logs_path(@house), params: {
+        service_usage_log: {
+          billing_month: next_month.strftime("%Y-%m"),
+          room_id: @room.id,
+          service_id: @service.id,
+          service_variant_id: @variant.id,
+          service_name: @service.name,
+          unit: @variant.human_unit,
+          unit_price: @variant.fee,
+          prev_reading: 220,
+          latest_reading: nil,
+          is_confirmed: false,
+          start_date: next_month,
+          end_date: next_month.end_of_month
+        }
+      }
+    end
+    assert_response :redirect
+    created_log = ServiceUsageLog.last
+    assert_not created_log.is_confirmed?
+    assert_nil created_log.latest_reading
+  end
+
+  test "cannot create confirmed service usage log when latest_reading is blank" do
+    next_month = 3.months.from_now.beginning_of_month
+    assert_no_difference("ServiceUsageLog.count") do
+      post landlord_house_service_usage_logs_path(@house), params: {
+        service_usage_log: {
+          billing_month: next_month.strftime("%Y-%m"),
+          room_id: @room.id,
+          service_id: @service.id,
+          service_variant_id: @variant.id,
+          service_name: @service.name,
+          unit: @variant.human_unit,
+          unit_price: @variant.fee,
+          prev_reading: 220,
+          latest_reading: nil,
+          is_confirmed: true,
+          start_date: next_month,
+          end_date: next_month.end_of_month
+        }
+      }
+    end
+    assert_response :unprocessable_entity
+  end
+
+  test "confirming log sends notification to active staying tenants in room" do
+    tenant_user = User.create!(
+      fullname: "Staying Tenant",
+      tel: "090#{SecureRandom.random_number(10_000_000).to_s.rjust(7, '0')}",
+      password: "Password123",
+      password_confirmation: "Password123",
+      role: "tenant",
+      sex: "female",
+      bday: 22.years.ago.to_date,
+      address: "Room 101",
+      tel_verified_at: Time.current
+    )
+    tenant = Tenant.find_or_create_by!(id: tenant_user.id)
+    TenantStay.create!(
+      rental_unit: @room.rental_unit,
+      tenant: tenant,
+      checkin_at: 1.month.ago,
+      checkout_at: nil
+    )
+
+    assert_difference -> { Noticed::Notification.where(recipient: tenant_user).count }, 1 do
+      patch confirm_landlord_house_service_usage_log_path(@house, @log)
+    end
+    assert_response :redirect
+    assert @log.reload.is_confirmed?
+  end
+
+  test "whole house index with tab fixed renders fixed services summary" do
+    fixed_svc = @house.services.create!(name: "Wifi Cáp Quang")
+    fixed_var = fixed_svc.service_variants.create!(unit: "per_room", fee: 100_000, is_real_time: false)
+    RoomService.create!(room: @room, service_variant: fixed_var, service: fixed_svc)
+
+    get landlord_house_service_usage_logs_path(@house, tab: "fixed", month: @billing_month.strftime("%Y-%m"))
+    assert_response :success
+    assert_select "turbo-frame#house_service_logs_section" do
+      assert_select "turbo-frame#house_fixed_services_table"
+      assert_select "td", text: /Wifi Cáp Quang/
+    end
+  end
+
+  test "whole house index auto-selects fixed tab when fixed service is passed" do
+    fixed_svc = @house.services.create!(name: "Rác Sinh Hoạt")
+    fixed_var = fixed_svc.service_variants.create!(unit: "per_month", fee: 30_000, is_real_time: false)
+    RoomService.create!(room: @room, service_variant: fixed_var, service: fixed_svc)
+
+    get landlord_house_service_usage_logs_path(@house, service_id: fixed_svc.id, month: @billing_month.strftime("%Y-%m"))
+    assert_response :success
+    assert_select "turbo-frame#house_service_logs_section" do
+      assert_select "turbo-frame#house_fixed_services_table"
+      assert_select "td", text: /Rác Sinh Hoạt/
+    end
+  end
+
+  test "whole house filtered action renders house_fixed_services_table partial when tab is fixed" do
+    fixed_svc = @house.services.create!(name: "Gửi Xe")
+    fixed_var = fixed_svc.service_variants.create!(unit: "per_item", fee: 50_000, is_real_time: false)
+    RoomService.create!(room: @room, service_variant: fixed_var, service: fixed_svc)
+
+    get filtered_landlord_house_service_usage_logs_path(@house, tab: "fixed", month: @billing_month.strftime("%Y-%m"))
+    assert_response :success
+    assert_select "turbo-frame#house_fixed_services_table"
+    assert_select "td", text: /Gửi Xe/
   end
 end

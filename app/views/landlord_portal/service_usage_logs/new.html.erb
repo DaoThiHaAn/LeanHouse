@@ -1,6 +1,6 @@
 <% content_for :title, "#{t('invoice.new_meter_log')} - #{@house.name}" %>
 
-<div class="container py-3 usage-log-form-wrapper">
+<div class="py-3 usage-log-form-wrapper">
   <div class="card shadow">
     <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
       <h1 class="d-flex align-items-center gap-2">
@@ -12,7 +12,7 @@
     <div class="card-body p-4">
       <%= form_with model: [:landlord, @house, @log], local: true,
                     data: {
-                      controller: "loading",
+                      controller: "loading service-log-form",
                       loading_text_value: "#{t('saving')}...",
                       action: "submit->loading#submit"
                     } do |f| %>
@@ -33,7 +33,42 @@
         <%= f.hidden_field :unit %>
         <%= f.hidden_field :unit_price %>
 
-        <div class="row g-3">
+        <div class="mb-3">
+          <%= f.label :room_id, class: "form-label fw-semibold" do %>
+            <%= t("invoice.applied_room") %> <span class="text-danger">*</span>
+          <% end %>
+
+          <div data-controller="dependent-rental-unit"
+                data-dependent-rental-unit-rooms-value="<%= @room_options.to_json %>">
+            <div class="input-group shadow-sm">
+              <%= label_tag :floor_id, class: "input-group-text" do %>
+                <%= t("form.floor.self") %><span class="text-danger ms-1">*</span>
+              <% end %>
+              <%= select_tag :floor_id,
+                    options_for_select(
+                      [[t("form.room.select_floor"), ""]] + @floors.map { |floor| [floor.name, floor.id] },
+                      @log.room&.floor_id || @room&.floor_id
+                    ),
+                    class: "form-select", required: true,
+                    data: {
+                      dependent_rental_unit_target: "floor",
+                      action: "change->dependent-rental-unit#floorChanged"
+                    } %>
+              <%= f.label :room_id, class: "input-group-text" do %>
+                <%= t("form.room.self") %><span class="text-danger ms-1">*</span>
+              <% end %>
+              <%= f.select :room_id, [], {}, class: "form-select", required: true,
+                    data: {
+                      dependent_rental_unit_target: "room",
+                      selected_value: @log.room_id || @room&.id,
+                      action: "change->dependent-rental-unit#roomChanged"
+                    } %>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="row g-4">
           <div class="col-md-6">
             <%= f.label :billing_month, class: "form-label fw-semibold" do %>
               <%= t("invoice.billing_month") %> <span class="text-danger">*</span>
@@ -41,12 +76,6 @@
             <%= f.month_field :billing_month, value: @billing_month.strftime("%Y-%m"), class: "form-control shadow-sm", required: true %>
           </div>
 
-          <div class="col-md-6">
-            <%= f.label :room_id, class: "form-label fw-semibold" do %>
-              <%= t("invoice.applied_room") %> <span class="text-danger">*</span>
-            <% end %>
-            <%= f.collection_select :room_id, @house.rooms.active.sorted, :id, :title_name, { selected: @room&.id }, class: "form-select shadow-sm", required: true %>
-          </div>
 
           <div class="col-md-6">
             <%= f.label :service_variant_id, class: "form-label fw-semibold" do %>
@@ -70,9 +99,13 @@
 
           <div class="col-md-6">
             <%= f.label :latest_reading, class: "form-label fw-semibold text-primary" do %>
-              <%= t("invoice.latest_reading_label", unit: @log.unit) %> <span class="text-danger">*</span>
+              <%= t("invoice.latest_reading_label", unit: @log.unit) %>
+              <span class="text-danger" data-service-log-form-target="latestReadingAsterisk">*</span>
             <% end %>
-            <%= f.number_field :latest_reading, class: "form-control shadow-sm fw-bold", placeholder: t("invoice.reading_placeholder"), required: true %>
+            <%= f.number_field :latest_reading, class: "form-control shadow-sm fw-bold",
+                               placeholder: t("invoice.reading_placeholder"),
+                               required: true,
+                               data: { service_log_form_target: "latestReadingInput" } %>
           </div>
 
           <div class="col-md-6">
@@ -94,10 +127,51 @@
             <%= f.date_field :end_date, value: @log.end_date || @billing_month.end_of_month, class: "form-control shadow-sm", required: true %>
           </div>
 
+          <!-- Radio cards: Confirmation Mode -->
           <div class="col-12 mt-3">
-            <div class="form-check">
-              <%= f.check_box :is_confirmed, checked: true, class: "form-check-input", id: "is_confirmed_check" %>
-              <%= f.label :is_confirmed, t("invoice.confirm_and_close_now"), class: "form-check-label fw-semibold", for: "is_confirmed_check" %>
+            <label class="form-label fw-semibold mb-2">
+              <%= t("invoice.confirmation_mode_label") %> <span class="text-danger">*</span>
+            </label>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <div class="card h-100 confirmation-radio-card p-3 border rounded-3 bg-light cursor-pointer">
+                  <div class="form-check d-flex align-items-start gap-2 mb-0">
+                    <%= f.radio_button :is_confirmed, true, checked: (@log.is_confirmed.nil? ? true : @log.is_confirmed?),
+                                       class: "form-check-input mt-1 cursor-pointer",
+                                       id: "is_confirmed_true",
+                                       data: { action: "change->service-log-form#toggleConfirmation" } %>
+                    <label class="form-check-label cursor-pointer w-100" for="is_confirmed_true">
+                      <div class="d-flex align-items-center gap-1 text-success fw-bold mb-1">
+                        <span class="material-symbols-filled fs-5">bookmark_check</span>
+                        <span><%= t("invoice.confirm_now_option") %></span>
+                      </div>
+                      <small class="text-secondary d-block">
+                        <%= t("invoice.confirm_now_desc") %>
+                      </small>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="card h-100 confirmation-radio-card p-3 border rounded-3 bg-light cursor-pointer">
+                  <div class="form-check d-flex align-items-start gap-2 mb-0">
+                    <%= f.radio_button :is_confirmed, false, checked: (@log.is_confirmed == false),
+                                       class: "form-check-input mt-1 cursor-pointer",
+                                       id: "is_confirmed_false",
+                                       data: { action: "change->service-log-form#toggleConfirmation" } %>
+                    <label class="form-check-label cursor-pointer w-100" for="is_confirmed_false">
+                      <div class="d-flex align-items-center gap-1 text-primary fw-bold mb-1">
+                        <span class="material-symbols-filled fs-5">photo_camera</span>
+                        <span><%= t("invoice.awaiting_tenant_option") %></span>
+                      </div>
+                      <small class="text-secondary d-block">
+                        <%= t("invoice.awaiting_tenant_desc") %>
+                      </small>
+                    </label>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 

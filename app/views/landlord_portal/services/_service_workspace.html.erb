@@ -29,11 +29,18 @@
 
     <div class="d-flex align-items-center gap-2">
       <% if variants.any?(&:is_real_time?) %>
-        <%= link_to landlord_house_service_usage_logs_path(house, service_id: service.id),
+        <%= link_to landlord_house_service_usage_logs_path(house, service_id: service.id, tab: "real_time"),
                     class: "btn btn-outline-primary d-flex align-items-center gap-2 px-3 py-2",
                     data: { turbo_frame: "_top" } do %>
           <span class="material-symbols-outlined fs-5">electric_meter</span>
           <span><%= t("service_usage_logs.view_service_logs") %></span>
+        <% end %>
+      <% elsif variants.any? %>
+        <%= link_to landlord_house_service_usage_logs_path(house, service_id: service.id, tab: "fixed"),
+                    class: "btn btn-outline-primary d-flex align-items-center gap-2 px-3 py-2",
+                    data: { turbo_frame: "_top" } do %>
+          <span class="material-symbols-outlined fs-5">lock</span>
+          <span><%= t("service_usage_logs.view_fixed_service_tracking") %></span>
         <% end %>
       <% end %>
 

@@ -6,6 +6,7 @@
 
 .usage-log-form-wrapper {
   max-width: 700px;
+  margin: 0 auto;
 }
 
 .usage-log-tenant-form-wrapper {
@@ -29,11 +30,25 @@
 }
 
 .log-tab.active {
-  color: white;
-  background-color: var(--primary-bg);
+  color: #ffffff !important;
+  background-color: var(--primary-bg) !important;
 }
 
-.log-tab.active .fixed.badge {
+.log-tab:not(.active) .badge {
+  color: #64748b !important;
+  background-color: rgba(128, 128, 128, 0.25) !important;
+}
+
+.log-tab.active .badge {
   color: white !important;
-  background-color: rgba(255, 255, 255, 0.3) !important;
+  background-color: #ffffff60 !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.confirmation-radio-card:has(input[type="radio"]:not(:checked)) {
+  opacity: 0.6;
+}
+
+.confirmation-radio-card:has(input[type="radio"]:checked) {
+  opacity: 1;
 }

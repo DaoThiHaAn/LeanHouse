@@ -1,0 +1,51 @@
+<%= turbo_frame_tag dom_id(log), class: "table-row-frame" do %>
+  <tr>
+    <td class="ps-3 fw-bold font-monospace"><%= log.billing_month.strftime("%m/%Y") %></td>
+    <td>
+      <div class="fw-semibold text-dark"><%= log.service_name %></div>
+      <span class="badge bg-secondary-subtle text-secondary border mt-1">
+        <%= format_money(log.unit_price) %> / <%= log.unit %>
+      </span>
+    </td>
+    <td class="text-secondary"><%= log.prev_reading %></td>
+    <td class="fw-bold text-primary">
+      <%= log.latest_reading.presence || t("invoice.not_entered") %>
+    </td>
+    <td>
+      <% if log.usage_quantity %>
+        <span class="fw-bold text-success">+<%= log.usage_quantity %> <%= log.unit %></span>
+      <% else %>
+        <span class="text-secondary">-</span>
+      <% end %>
+    </td>
+    <td>
+      <% if log.reading_photo.attached? %>
+        <a href="<%= url_for(log.reading_photo) %>" target="_blank">
+          <%= image_tag log.reading_photo.variant(resize_to_limit: [50, 50]), class: "rounded border shadow-sm", alt: t("invoice.meter_photo") %>
+        </a>
+      <% else %>
+        <span class="text-secondary small fst-italic"><%= t("invoice.no_photo_yet") %></span>
+      <% end %>
+    </td>
+    <td>
+      <% if log.is_confirmed? %>
+        <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 d-inline-flex align-items-center gap-1">
+          <span class="material-symbols-outlined fs-6">lock</span> <%= t("invoice.confirmed_and_locked") %>
+        </span>
+      <% else %>
+        <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle px-2 py-1 d-inline-flex align-items-center gap-1">
+          <span class="material-symbols-outlined fs-6">edit</span> <%= t("invoice.editable") %>
+        </span>
+      <% end %>
+    </td>
+    <td class="text-end pe-3">
+      <% if log.can_be_edited_by_tenant? %>
+        <%= link_to edit_tenant_service_usage_log_path(log), class: "btn btn-sm btn-primary d-inline-flex align-items-center gap-1" do %>
+          <span class="material-symbols-outlined fs-6">photo_camera</span> <%= t("invoice.submit_reading_or_photo") %>
+        <% end %>
+      <% else %>
+        <span class="text-secondary small"><%= t("invoice.locked") %></span>
+      <% end %>
+    </td>
+  </tr>
+<% end %>

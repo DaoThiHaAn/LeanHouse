@@ -1,0 +1,138 @@
+<%# locals: (house:, summary:) %>
+<%= turbo_frame_tag "house_fixed_services_table",
+      data: {
+        controller: "pagination-sync",
+        pagination_sync_canonical_url_value: landlord_house_service_usage_logs_path(house),
+        pagination_sync_default_params_value: (params[:service_id].present? ? { tab: "fixed", service_id: params[:service_id].to_s } : { tab: "fixed" }).to_json,
+        pagination_sync_query_params_value: ["tab", "month", "floor_id", "room_id", "service_id", "service_variant_id", "status"].to_json,
+        pagination_sync_total_pages_selector_value: "[data-pagination-total-pages]",
+        action: "turbo:frame-load->pagination-sync#updateUrl"
+      } do %>
+  <span hidden data-pagination-total-pages="<%= summary.paginated_items.respond_to?(:total_pages) ? summary.paginated_items.total_pages : 1 %>"></span>
+
+  <% if summary.items.empty? %>
+    <div class="card bg-light border-0 text-center py-5 rounded-4 mx-auto">
+      <span class="material-symbols-outlined text-secondary fs-1 mb-2">lock_open</span>
+      <p class="fs-5 fw-bold mb-1"><%= t("service_usage_logs.no_fixed_services_house") %></p>
+      <p class="text-secondary small"><%= t("service_usage_logs.no_fixed_services_house_hint") %></p>
+    </div>
+  <% else %>
+    <div class="table-responsive bg-white rounded-3 shadow-sm border mb-4">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th class="ps-3 py-3"><%= t("invoice.room") %></th>
+            <th class="py-3"><%= t("service_usage_logs.service_and_note") %></th>
+            <th class="py-3"><%= t("service_usage_logs.unit_and_price") %></th>
+            <th class="py-3 text-center"><%= t("service_usage_logs.applied_quantity") %></th>
+            <th class="text-end py-3"><%= t("service_usage_logs.monthly_estimate") %></th>
+            <th class="text-center py-3"><%= t("status") %></th>
+            <th class="text-center pe-3 py-3"><%= t("actions") %></th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% summary.paginated_items.each do |item| %>
+            <tr>
+              <td class="ps-3 py-3">
+                <%= link_to landlord_house_room_service_usage_logs_path(house, item.room, tab: "fixed", month: summary.billing_month_str),
+                            class: "text-decoration-none text-dark fw-bold d-inline-flex align-items-center gap-1",
+                            data: { turbo_frame: "_top" },
+                            title: t("service_usage_logs.view_room_logs") do %>
+                  <span><%= item.room.title_name %></span>
+                  <span class="text-secondary small fw-normal">(<%= item.room.floor&.title_name %>)</span>
+                <% end %>
+              </td>
+
+              <td class="py-3">
+                <div class="fw-bold text-dark"><%= item.name %></div>
+                <% if item.service&.note.present? %>
+                  <p class="text-secondary small fst-italic mt-1 mb-0"><%= item.service.note %></p>
+                <% end %>
+              </td>
+
+              <td class="py-3">
+                <div class="fw-semibold text-primary">
+                  <%= format_money(item.unit_price) %>
+                  <span class="text-secondary fw-normal">/ <%= item.unit %></span>
+                </div>
+                <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle rounded-pill small mt-1">
+                  <%= t("service_usage_logs.fixed_badge") %>
+                </span>
+              </td>
+
+              <td class="py-3 text-center">
+                <span class="fw-semibold text-dark"><%= item.quantity_formatted %></span>
+              </td>
+
+              <td class="text-end py-3">
+                <span class="fw-bold text-dark fs-6">
+                  <%= number_with_delimiter(item.amount) %> đ
+                </span>
+              </td>
+
+              <td class="text-center py-3">
+                <% if item.billed? %>
+                  <div class="d-flex flex-column align-items-center gap-1">
+                    <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-1">
+                      <%= t("service_usage_logs.status_billed") %>
+                    </span>
+                    <% if item.invoice.present? %>
+                      <%= link_to landlord_house_invoice_path(house, item.invoice),
+                                  class: "small text-decoration-none font-monospace fw-semibold text-primary",
+                                  data: { turbo_frame: "_top" } do %>
+                        <%= item.invoice.code %>
+                      <% end %>
+                    <% end %>
+                  </div>
+                <% elsif item.waived? %>
+                  <span class="badge bg-light text-secondary border rounded-pill px-2 py-1">
+                    <%= t("service_usage_logs.status_waived") %>
+                  </span>
+                <% else %>
+                  <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle rounded-pill px-2 py-1">
+                    <%= t("service_usage_logs.status_draft") %>
+                  </span>
+                <% end %>
+              </td>
+
+              <td class="text-center pe-3 py-3">
+                <% if item.billed? && item.invoice.present? %>
+                  <%= link_to landlord_house_invoice_path(house, item.invoice),
+                              class: "btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1 shadow-xs",
+                              data: { turbo_frame: "_top" } do %>
+                    <span class="material-symbols-outlined fs-6">receipt_long</span>
+                    <span><%= t("service_usage_logs.view_invoice") %></span>
+                  <% end %>
+                <% else %>
+                  <div class="d-flex align-items-center justify-content-center gap-1">
+                    <%= link_to new_landlord_house_invoice_path(house, room_id: item.room.id, billing_month: summary.billing_month_str),
+                                class: "btn btn-sm btn-outline-success d-inline-flex align-items-center gap-1 shadow-xs",
+                                data: { turbo_frame: "_top" },
+                                title: t("service_usage_logs.create_invoice_for_cycle") do %>
+                      <span class="material-symbols-outlined fs-6">add_notes</span>
+                      <span class="d-none d-lg-inline"><%= t("service_usage_logs.create_invoice_for_cycle") %></span>
+                    <% end %>
+
+                    <%= link_to edit_landlord_house_room_path(house, item.room),
+                                class: "btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1",
+                                data: { turbo_frame: "edit_room_modal" },
+                                title: t("service_usage_logs.configure_services_btn") do %>
+                      <span class="material-symbols-outlined fs-6">tune</span>
+                    <% end %>
+                  </div>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+
+    <% if summary.paginated_items.respond_to?(:total_pages) && summary.paginated_items.total_pages > 1 %>
+      <div class="d-flex justify-content-center mt-3">
+        <%= paginate summary.paginated_items %>
+      </div>
+    <% end %>
+  <% end %>
+<% end %>

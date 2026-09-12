@@ -170,6 +170,19 @@ class Room < ApplicationRecord
     end
   end
 
+  # Returns User records of all currently staying tenants in this room.
+  # Supports both whole-room leasing and individual bed leasing modes.
+  def active_staying_tenant_users
+    User.joins(tenant: { tenant_stays: :rental_unit })
+        .where(tenant_stays: { checkout_at: nil })
+        .where(
+          "(rental_units.rentable_type = 'Room' AND rental_units.rentable_id = :r_id) OR " \
+          "(rental_units.rentable_type = 'Bed' AND rental_units.rentable_id IN " \
+          "(SELECT beds.id FROM beds WHERE beds.room_id = :r_id AND beds.deleted = false))",
+          r_id: id
+        ).distinct
+  end
+
 
   # Unify the data structure to use in view
   # @param house [House]: the current house

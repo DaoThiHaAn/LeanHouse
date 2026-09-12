@@ -10,7 +10,8 @@ class ServiceUsageLog < ApplicationRecord
 
   validates :service_name, :unit, :billing_month, :start_date, :end_date, presence: true
   validates :prev_reading, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
-  validates :latest_reading, numericality: { only_integer: true, greater_than_or_equal_to: :prev_reading }, allow_nil: true
+  # latest_reading is required immediately if confirmed; optional if awaiting tenant photo/reading
+  validates :latest_reading, presence: true, if: :is_confirmed?
   validate :prevent_modification_when_confirmed, on: :update
 
   before_save :compute_usage
@@ -22,6 +23,7 @@ class ServiceUsageLog < ApplicationRecord
   scope :for_month,   ->(month) { where(billing_month: month.to_date.beginning_of_month) }
   scope :sorted,      -> { order(billing_month: :desc, created_at: :desc) }
 
+  # Custom setter method: always parse the billing_month to the 1st date of the month
   def billing_month=(val)
     if val.is_a?(String) && val.match?(/\A\d{4}-\d{2}\z/)
       super(Date.parse("#{val}-01").beginning_of_month)
@@ -38,10 +40,25 @@ class ServiceUsageLog < ApplicationRecord
 
   attr_accessor :allow_landlord_override
 
+  # Retrieves the closest previous meter reading for a given room & service before the target month.
+  # Fallbacks to 0 if no prior logs exist.
+  def self.previous_reading_for(room:, service_id:, before_month:)
+    return 0 unless room && service_id
+
+    last_log = where(room_id: room.id, service_id: service_id)
+                 .where("billing_month < ?", before_month)
+                 .order(billing_month: :desc, created_at: :desc)
+                 .first
+
+    last_log&.latest_reading || last_log&.prev_reading || 0
+  end
+
   def billed?
     invoice_id.present?
   end
 
+  # Tenants can only edit or upload meter photos if the log is not yet confirmed by the landlord
+  # and has not already been billed into an invoice.
   def can_be_edited_by_tenant?
     !is_confirmed? && !billed?
   end

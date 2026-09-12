@@ -1,0 +1,7 @@
+<%= turbo_stream.replace dom_id(@log) do %>
+  <%= render "tenant_portal/service_usage_logs/row", log: @log %>
+<% end %>
+
+<%= turbo_stream.update "flash" do %>
+  <%= render "layouts/shared_components/flash_message" %>
+<% end %>

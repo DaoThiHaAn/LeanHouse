@@ -23,14 +23,14 @@
       <div class="d-flex align-items-center gap-2 flex-wrap justify-content-between w-100">
         <%= back_link_to tenant_services_path, t("service.back") %>
 
-        <div class="d-inline-flex bg-light p-1 rounded-pill border gap-1">
+        <div class="d-inline-flex bg-light p-1 rounded-pill border gap-1 shadow-sm fs-5">
           <%= link_to tenant_service_usage_logs_path(tab: "real_time", month: @billing_month.strftime("%Y-%m")),
                       class: "log-tab d-flex align-items-center gap-1 px-3 rounded-pill small text-decoration-none fw-semibold transition #{@current_tab == 'real_time' ? 'active shadow-sm' : 'text-secondary'}",
                       data: { turbo_action: "advance" } do %>
             <span class="material-symbols-filled fs-4">speed</span>
             <span><%= t("service_usage_logs.tab_real_time") %></span>
             <% if @unconfirmed_count.to_i > 0 %>
-              <span class="badge bg-danger rounded-pill ms-1"><%= @unconfirmed_count %></span>
+              <span class="badge rounded-pill ms-1"><%= @unconfirmed_count %></span>
             <% end %>
           <% end %>
 
@@ -40,7 +40,7 @@
             <span class="material-symbols-filled fs-4">lock</span>
             <span><%= t("service_usage_logs.tab_fixed") %></span>
             <% if @fixed_services_count.to_i > 0 %>
-              <span class="fixed badge bg-secondary bg-opacity-25 text-dark rounded-pill ms-1"><%= @fixed_services_count %></span>
+              <span class="badge rounded-pill ms-1"><%= @fixed_services_count %></span>
             <% end %>
           <% end %>
         </div>
@@ -142,55 +142,7 @@
 
           <tbody>
             <% @logs.each do |log| %>
-              <tr>
-                <td class="ps-3 fw-bold font-monospace"><%= log.billing_month.strftime("%m/%Y") %></td>
-                <td>
-                  <div class="fw-semibold text-dark"><%= log.service_name %></div>
-                  <span class="badge bg-secondary-subtle text-secondary border mt-1">
-                    <%= format_money(log.unit_price) %> / <%= log.unit %>
-                  </span>
-                </td>
-                <td class="text-secondary"><%= log.prev_reading %></td>
-                <td class="fw-bold text-primary">
-                  <%= log.latest_reading.presence || t("invoice.not_entered") %>
-                </td>
-                <td>
-                  <% if log.usage_quantity %>
-                    <span class="fw-bold text-success">+<%= log.usage_quantity %> <%= log.unit %></span>
-                  <% else %>
-                    <span class="text-secondary">-</span>
-                  <% end %>
-                </td>
-                <td>
-                  <% if log.reading_photo.attached? %>
-                    <a href="<%= url_for(log.reading_photo) %>" target="_blank">
-                      <%= image_tag log.reading_photo.variant(resize_to_limit: [50, 50]), class: "rounded border shadow-sm", alt: t("invoice.meter_photo") %>
-                    </a>
-                  <% else %>
-                    <span class="text-secondary small fst-italic"><%= t("invoice.no_photo_yet") %></span>
-                  <% end %>
-                </td>
-                <td>
-                  <% if log.is_confirmed? %>
-                    <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 d-inline-flex align-items-center gap-1">
-                      <span class="material-symbols-outlined fs-6">lock</span> <%= t("invoice.confirmed_and_locked") %>
-                    </span>
-                  <% else %>
-                    <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle px-2 py-1 d-inline-flex align-items-center gap-1">
-                      <span class="material-symbols-outlined fs-6">edit</span> <%= t("invoice.editable") %>
-                    </span>
-                  <% end %>
-                </td>
-                <td class="text-end pe-3">
-                  <% if log.can_be_edited_by_tenant? %>
-                    <%= link_to edit_tenant_service_usage_log_path(log), class: "btn btn-sm btn-primary d-inline-flex align-items-center gap-1" do %>
-                      <span class="material-symbols-outlined fs-6">photo_camera</span> <%= t("invoice.submit_reading_or_photo") %>
-                    <% end %>
-                  <% else %>
-                    <span class="text-secondary small"><%= t("invoice.locked") %></span>
-                  <% end %>
-                </td>
-              </tr>
+              <%= render "tenant_portal/service_usage_logs/row", log: log %>
             <% end %>
           </tbody>
         </table>

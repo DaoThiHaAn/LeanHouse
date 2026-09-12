@@ -16,14 +16,17 @@
 }
 
 /* Log tab */
-.log-tab .room-count {
-  color: grey;
-  background-color: rgba(128, 128, 128, 0.25);
+.log-tab .room-count,
+.log-tab:not(.active) .badge {
+  color: #64748b !important;
+  background-color: rgba(128, 128, 128, 0.25) !important;
 }
 
-.log-tab.active .room-count {
-  color: white;
-  background-color: rgba(255, 255, 255, 0.25);
+.log-tab.active .room-count,
+.log-tab.active .badge {
+  color: var(--primary-bg, #1e7082) !important;
+  background-color: #ffffff !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
 }
 
 /* Invoice row */
@@ -1043,4 +1046,27 @@
 
 .custom-invoice-dropdown-menu .dropdown-item:hover {
   background-color: #f1f5f9;
+}
+
+/* Service Usage Log: Confirmation Radio Cards */
+.confirmation-radio-card {
+  transition: all 0.2s ease-in-out;
+  border: 1.5px solid #dee2e6 !important;
+}
+
+.confirmation-radio-card:hover {
+  border-color: #0d6efd !important;
+  background-color: #f8faff !important;
+}
+
+.confirmation-radio-card:has(.form-check-input:checked) {
+  border-color: #0d6efd !important;
+  background-color: #f0f6ff !important;
+  box-shadow: 0 0.125rem 0.25rem rgba(13, 110, 253, 0.15);
+}
+
+/* Service Usage Log: Table Row Turbo Frames */
+tbody > turbo-frame,
+turbo-frame.table-row-frame {
+  display: contents;
 }
