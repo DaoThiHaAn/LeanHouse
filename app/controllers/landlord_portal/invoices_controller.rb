@@ -163,8 +163,13 @@ class LandlordPortal::InvoicesController < LandlordPortal::BaseController
       load_invoices_and_stats
       flash.now[:notice] = t("invoice.update_success")
       respond_to do |format|
-        format.turbo_stream
-        format.html { redirect_to landlord_house_invoice_path(@house, @invoice), notice: t("invoice.update_success") }
+        if params[:return_to] == "show"
+          format.html { redirect_to landlord_house_invoice_path(@house, @invoice), notice: t("invoice.update_success") }
+          format.turbo_stream { redirect_to landlord_house_invoice_path(@house, @invoice), notice: t("invoice.update_success") }
+        else
+          format.turbo_stream
+          format.html { redirect_to landlord_house_invoice_path(@house, @invoice), notice: t("invoice.update_success") }
+        end
       end
     else
       flash.now[:alert] = @invoice.errors.full_messages.to_sentence

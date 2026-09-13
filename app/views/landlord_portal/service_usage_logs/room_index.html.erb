@@ -33,9 +33,7 @@
                   data: { turbo_action: "advance" } do %>
         <span class="material-symbols-filled fs-5">speed</span>
         <span><%= t("service_usage_logs.tab_real_time") %></span>
-        <% if @unconfirmed_count.to_i > 0 %>
-          <span class="badge rounded-pill ms-1"><%= @unconfirmed_count %></span>
-        <% end %>
+        <%= render "unconfirmed_badge", id: "room_unconfirmed_badge", count: @unconfirmed_count %>
       <% end %>
 
       <%= link_to landlord_house_room_service_usage_logs_path(@house, @room, tab: "fixed", month: @billing_month.strftime("%Y-%m")),
@@ -122,15 +120,7 @@
 
       <!-- The 2 action buttons moved into Real-time Tab Content -->
       <div class="d-flex align-items-center gap-2 ms-auto">
-        <% if @unconfirmed_count > 0 %>
-          <%= button_to confirm_all_landlord_house_room_service_usage_logs_path(@house, @room),
-                        method: :patch,
-                        data: { turbo_confirm: t("service_usage_logs.confirm_all_room_prompt", count: @unconfirmed_count, room: @room.name) },
-                        class: "btn btn-success d-flex align-items-center gap-1 shadow-sm" do %>
-            <span class="material-symbols-outlined fs-6">done_all</span>
-            <span><%= t("service_usage_logs.confirm_all_room_btn", count: @unconfirmed_count) %></span>
-          <% end %>
-        <% end %>
+        <%= render "room_confirm_all_btn", house: @house, room: @room, count: @unconfirmed_count %>
 
         <%= link_to new_landlord_house_service_usage_log_path(@house, room_id: @room.id, from_room: true),
                     class: "main-btn shadow-sm gap-2",

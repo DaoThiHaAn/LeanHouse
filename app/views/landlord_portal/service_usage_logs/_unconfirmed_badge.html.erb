@@ -1,0 +1,6 @@
+<%# locals: (id:, count:) %>
+<span id="<%= id %>">
+  <% if count.to_i > 0 %>
+    <span class="badge rounded-pill ms-1"><%= count %></span>
+  <% end %>
+</span>

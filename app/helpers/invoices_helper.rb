@@ -75,4 +75,26 @@ module InvoicesHelper
       content_tag(:span, t("invoice.badge_representative"), class: "invoice-badge invoice-badge-room")
     end
   end
+
+  def invoice_transfer_note_mode(invoice)
+    return invoice.transfer_note_mode if invoice&.transfer_note_mode.present?
+    return "system" unless invoice&.persisted?
+    return "none" if invoice.transfer_note.blank?
+
+    expected_system_note = TransferNoteBuilder.build(invoice.house&.transfer_note_template, invoice)
+    invoice.transfer_note == expected_system_note ? "system" : "custom"
+  end
+
+  def invoice_custom_transfer_note_value(invoice, mode = nil)
+    mode ||= invoice_transfer_note_mode(invoice)
+    mode == "custom" ? invoice&.transfer_note.to_s : ""
+  end
+
+  def transfer_note_mode_options
+    [
+      { value: "system", label: t("invoice.transfer_note_mode_system"), label_class: "small cursor-pointer" },
+      { value: "custom", label: t("invoice.transfer_note_mode_custom"), label_class: "small cursor-pointer" },
+      { value: "none",   label: t("invoice.transfer_note_mode_none"),   label_class: "small text-secondary cursor-pointer" }
+    ]
+  end
 end

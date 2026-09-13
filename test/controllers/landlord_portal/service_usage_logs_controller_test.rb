@@ -89,11 +89,56 @@ class LandlordPortal::ServiceUsageLogsControllerTest < ActionDispatch::Integrati
     assert_select "turbo-frame#logs_table"
   end
 
-  test "index renders floor name in room column" do
+  test "index renders room name in room column and floor in group header" do
     get landlord_house_service_usage_logs_path(@house)
     assert_response :success
     assert_select "tr##{dom_id(@log)} td" do
-      assert_select "span", text: /#{@floor.title_name}/
+      assert_select "span", text: @room.title_name
+      assert_select "span", text: @floor.title_name, count: 0
+    end
+    assert_select "tr.colspan", text: /#{@floor.title_name}/
+  end
+
+  test "index groups usage log rows by floor" do
+    floor2 = @house.floors.create!(name: "Tầng 2", position: 2)
+    room2 = floor2.rooms.create!(name: "201", max_slots: 2, tenants_count: 1, area: 25)
+    room2.create_rental_unit!(rent: 3_000_000, deposit: 3_000_000)
+    ServiceUsageLog.create!(
+      room: room2,
+      service: @service,
+      service_variant: @variant,
+      service_name: @service.name,
+      unit: @variant.human_unit,
+      unit_price: @variant.fee,
+      prev_reading: 50,
+      latest_reading: 100,
+      billing_month: @billing_month,
+      start_date: @billing_month.beginning_of_month,
+      end_date: @billing_month.end_of_month,
+      is_confirmed: true,
+      submitted_by: @landlord_user
+    )
+
+    get landlord_house_service_usage_logs_path(@house)
+    assert_response :success
+
+    assert_select "tr.colspan" do |elements|
+      assert_equal 2, elements.size
+      assert_includes elements[0].text, @floor.title_name
+      assert_includes elements[1].text, floor2.title_name
+    end
+  end
+
+  test "index groups fixed service summary rows by floor" do
+    fixed_variant = @service.service_variants.create!(unit: "per_month", fee: 50_000, is_real_time: false)
+    RoomService.create!(room: @room, service_variant: fixed_variant, service: @service)
+
+    get landlord_house_service_usage_logs_path(@house, tab: "fixed")
+    assert_response :success
+
+    assert_select "turbo-frame#house_fixed_services_table tr.colspan" do |elements|
+      assert_operator elements.size, :>=, 1
+      assert_includes elements.first.text, @floor.title_name
     end
   end
 
@@ -185,6 +230,28 @@ class LandlordPortal::ServiceUsageLogsControllerTest < ActionDispatch::Integrati
     @log.reload
     assert_equal true, @log.is_confirmed?
     assert_equal false, @log.can_be_edited_by_tenant?
+  end
+
+  test "should confirm single log via turbo_stream in house context" do
+    patch confirm_landlord_house_service_usage_log_path(@house, @log), as: :turbo_stream
+    assert_response :success
+    assert_equal "text/vnd.turbo-stream.html; charset=utf-8", response.content_type
+
+    assert_includes response.body, %(action="replace" target="#{dom_id(@log)}")
+    assert_includes response.body, %(action="replace" target="house_unconfirmed_badge")
+    assert_includes response.body, %(action="replace" target="house_confirm_all_btn")
+    assert @log.reload.is_confirmed?
+  end
+
+  test "should confirm single log via turbo_stream in room context" do
+    patch confirm_landlord_house_service_usage_log_path(@house, @log, room_id: @room.id), as: :turbo_stream
+    assert_response :success
+    assert_equal "text/vnd.turbo-stream.html; charset=utf-8", response.content_type
+
+    assert_includes response.body, %(action="replace" target="#{dom_id(@log)}")
+    assert_includes response.body, %(action="replace" target="room_unconfirmed_badge")
+    assert_includes response.body, %(action="replace" target="room_confirm_all_btn")
+    assert @log.reload.is_confirmed?
   end
 
   test "should confirm all logs for room" do

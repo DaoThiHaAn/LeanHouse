@@ -26,6 +26,13 @@ en:
     variant: "Variant"
     all_floors: "All floors"
     floor: "Floor"
+    unknown_floor: "Other"
+    records_count:
+      one: "%{count} record"
+      other: "%{count} records"
+    services_count:
+      one: "%{count} service"
+      other: "%{count} services"
     all_rooms: "All rooms"
     room: "Room"
     reset_filter: "Reset filter"

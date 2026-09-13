@@ -1,2 +1,2 @@
 web: env RUBY_DEBUG_OPEN=true bin/rails server
-css: yarn build:css --watch
+tunnel: bash -c 'export $(grep "^MY_NGROK" .env | xargs) && ngrok http --url=$MY_NGROK 3000'

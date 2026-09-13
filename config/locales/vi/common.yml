@@ -142,6 +142,7 @@ vi:
   status: "Trạng thái"
   guide: "Hướng dẫn"
   open_in_new_tab: "Mở trong tab mới"
+  required_fields: "Thông tin bắt buộc"
 
   error_pages:
     actions:

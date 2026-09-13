@@ -32,15 +32,27 @@
         </thead>
 
         <tbody>
-          <% summary.paginated_items.each do |item| %>
-            <tr>
+          <% summary.paginated_items.group_by { |item| item.room&.floor }.each do |floor, floor_items| %>
+            <tr class="colspan">
+              <td colspan="100" class="ps-3 py-2">
+                <div class="d-flex align-items-center gap-2">
+                  <span class="material-symbols-outlined fs-5">layers</span>
+                  <span><%= floor&.title_name || t("service_usage_logs.unknown_floor", default: "Khác") %></span>
+                  <span class="badge bg-white text-secondary border rounded-pill fw-normal small">
+                    <%= t("service_usage_logs.services_count", count: floor_items.size, default: "#{floor_items.size} dịch vụ") %>
+                  </span>
+                </div>
+              </td>
+            </tr>
+
+            <% floor_items.each do |item| %>
+              <tr>
               <td class="ps-3 py-3">
                 <%= link_to landlord_house_room_service_usage_logs_path(house, item.room, tab: "fixed", month: summary.billing_month_str),
                             class: "text-decoration-none text-dark fw-bold d-inline-flex align-items-center gap-1",
                             data: { turbo_frame: "_top" },
                             title: t("service_usage_logs.view_room_logs") do %>
                   <span><%= item.room.title_name %></span>
-                  <span class="text-secondary small fw-normal">(<%= item.room.floor&.title_name %>)</span>
                 <% end %>
               </td>
 
@@ -125,7 +137,8 @@
               </td>
             </tr>
           <% end %>
-        </tbody>
+        <% end %>
+      </tbody>
       </table>
     </div>
 

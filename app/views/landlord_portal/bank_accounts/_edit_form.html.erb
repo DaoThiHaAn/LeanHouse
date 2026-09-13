@@ -129,17 +129,10 @@
                       </button>
                     </div>
 
-                    <% if payos_local_env? %>
-                      <div class="mt-1 pt-1 border-top text-warning-emphasis lh-sm env-notice-text">
-                        <span class="material-symbols-outlined fs-6 align-middle text-warning">warning</span>
-                        <%= t("bank_account.payos_dev_env_notice_short_html") %>
-                      </div>
-                    <% else %>
-                      <div class="mt-1 text-success lh-sm env-notice-text">
-                        <span class="material-symbols-outlined fs-6 align-middle text-success">check_circle</span>
-                        <%= t("bank_account.payos_prod_env_ready") %>
-                      </div>
-                    <% end %>
+                    <div class="mt-1 pt-1 border-top text-secondary lh-sm env-notice-text">
+                      <span class="material-symbols-outlined fs-6 align-middle text-success">check_circle</span>
+                      <%= t("bank_account.payos_webhook_hint") %>
+                    </div>
                   </div>
                 </div>
               </div>

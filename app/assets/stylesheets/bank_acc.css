@@ -37,3 +37,14 @@
 .env-notice-text {
   font-size: 0.725rem;
 }
+
+.note-preview {
+  width: 90%;
+  margin: 10px auto;
+}
+
+.note-preview .text-container {
+  border-color: rgb(172, 172, 172);
+  border-width: 0.7px 2.6px 0.7px 2.6px;
+  border-style: solid;
+}

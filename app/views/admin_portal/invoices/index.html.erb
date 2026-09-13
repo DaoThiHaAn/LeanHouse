@@ -155,7 +155,7 @@
                             <div class="fw-semibold text-dark"><%= inv.room.title_name %></div>
                             <div class="small text-secondary"><%= inv.room.floor.name %></div>
                           <% end %>
-                          <div class="mt-1"><%= invoice_type_badge(inv) %></div>
+                          <div class="mt-1"><%= invoice_type_badge(inv, show_target: false) %></div>
                         </td>
                         <td>
                           <span class="fw-semibold"><%= format_month(inv.billing_month) %></span>

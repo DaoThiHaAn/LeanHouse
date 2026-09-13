@@ -1,62 +1,107 @@
 <%= turbo_frame_tag "edit_invoice_modal" do %>
-  <div class="modal fade" id="editInvoiceModal" tabindex="-1" aria-hidden="true"
-        data-controller="modal" data-modal-auto-open-value="true">
+  <%
+    is_from_show = params[:return_to] == "show" || request.referrer&.include?("/invoices/#{@invoice.id}")
+  %>
+  <div class="modal fade" id="editInvoiceModal" tabindex="-1" aria-labelledby="editInvoiceModalLabel" aria-hidden="true"
+       data-controller="modal" data-modal-auto-open-value="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-      <div class="modal-content rounded-4 shadow">
-        <%= form_with model: @invoice, url: landlord_house_invoice_path(@house, @invoice), method: :patch do |f| %>
-          <div class="modal-header border-bottom">
-            <h5 class="modal-title fw-bold d-flex align-items-center gap-2">
-              <span class="material-symbols-outlined text-primary">edit_calendar</span>
-              <%= t('invoice.edit_dates_and_info') %>
-            </h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-
-          <div class="modal-body">
-            <div class="mb-3 pb-3 border-bottom">
-              <div class="text-secondary small"><%= t('invoice.room') %>:</div>
-              <div class="fs-6 fw-bold text-dark"><%= @invoice.room.title_name %> (<%= @invoice.room.floor.name %>, <%= @house.name %>)</div>
-              <div class="invoice-code-tag mt-1">#<%= @invoice.code %></div>
-            </div>
-
-            <div class="mb-3">
-              <%= f.label :title, t('invoice.reason'), class: "form-label fw-semibold" %>
-              <%= f.text_field :title, value: @invoice.title, class: "form-control shadow-sm", placeholder: t('invoice.default_title') %>
-            </div>
-
-            <div class="row g-2 mb-3">
-              <div class="col-6">
-                <%= f.label :start_date, t('invoice.start_date'), class: "form-label fw-semibold" %>
-                <%= f.date_field :start_date, value: (@invoice.start_date || @invoice.billing_month.beginning_of_month), class: "form-control shadow-sm" %>
-              </div>
-              <div class="col-6">
-                <%= f.label :end_date, t('invoice.end_date'), class: "form-label fw-semibold" %>
-                <%= f.date_field :end_date, value: (@invoice.end_date || @invoice.billing_month.end_of_month), class: "form-control shadow-sm" %>
-              </div>
-            </div>
-
-            <div class="mb-3">
-              <%= f.label :due_date, t('invoice.due_date'), class: "form-label fw-semibold" %>
-              <%= f.date_field :due_date, value: (@invoice.due_date || (Date.current + 5.days)), class: "form-control shadow-sm" %>
-            </div>
-
-            <div class="mb-3">
-              <%= f.label :bank_account_id, t('invoice.bank_account_receive'), class: "form-label fw-semibold" %>
-              <%= f.select :bank_account_id, @landlord.bank_accounts.includes(:bank).default_first.map { |a| [a.display_label, a.id] }, { include_blank: t('invoice.vietqr.no_vietqr') }, class: "form-select shadow-sm" %>
-            </div>
-
-            <div class="mb-0">
-              <%= f.label :note, t('invoice.note'), class: "form-label fw-semibold" %>
-              <%= f.text_area :note, rows: 2, class: "form-control shadow-sm", placeholder: t('invoice.note_placeholder') %>
-            </div>
-          </div>
-
-          <div class="modal-footer border-top">
-            <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal"><%= t('common.cancel') %></button>
-            <%= f.submit t('common.save_changes'), class: "btn btn-primary btn-sm px-3 fw-bold shadow-sm" %>
-          </div>
+      <%= form_with model: @invoice, url: landlord_house_invoice_path(@house, @invoice), method: :patch,
+                    local: is_from_show,
+                    class: "modal-content rounded-4 shadow overflow-hidden px-2",
+                    data: {
+                      controller: "loading",
+                      loading_text_value: t("saving", default: "Đang lưu..."),
+                      action: "submit->loading#submit"
+                    } do |f| %>
+        <% if is_from_show %>
+          <%= hidden_field_tag :return_to, "show" %>
         <% end %>
-      </div>
+
+        <div class="modal-header border-bottom">
+          <h2 class="modal-title fw-bold d-flex align-items-center gap-2 mb-0" id="editInvoiceModalLabel">
+            <span class="material-symbols-filled fs-4">edit_document</span>
+            <%= t('invoice.edit_title') %>
+          </h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body overflow-y-auto">
+          <% if @invoice.room.present? %>
+            <div class="mb-3 p-3 bg-primary-subtle rounded-3 border border-primary-subtle">
+              <p class="fw-bold"><%= @invoice.room.title_name %> (<%= @invoice.room.floor.title_name %>, <%= @house.name %>)</p>
+              <p class="invoice-code-tag mt-1">#<%= @invoice.code %></p>
+            </div>
+          <% end %>
+
+          <div class="d-flex justify-content-end mb-2">
+            <span class="text-secondary small">
+              <span class="text-danger">*</span> <%= t('required_fields') %>
+            </span>
+          </div>
+
+          <div class="mb-3">
+            <%= f.label :title, class: "form-label fw-semibold" do %>
+              <%= t('invoice.reason') %> <span class="text-danger">*</span>
+            <% end %>
+            <%= f.text_field :title, value: @invoice.title, class: "form-control shadow-sm", placeholder: t('invoice.default_title'), required: true %>
+          </div>
+
+          <div class="mb-3">
+            <div class="d-flex align-items-center gap-1 mb-1">
+              <span class="material-symbols-outlined fs-5 text-primary">calendar_month</span>
+              <span class="form-label fw-semibold mb-0"><%= t('invoice.rent_period') %></span>
+              <span class="text-danger">*</span>
+            </div>
+            <div class="row g-2">
+              <div class="col-6">
+                <%= f.label :start_date, class: "form-label small text-secondary mb-1" do %>
+                  <%= t('invoice.from_date', default: 'Từ ngày') %> <span class="text-danger">*</span>
+                <% end %>
+                <%= f.date_field :start_date, value: (@invoice.start_date || @invoice.billing_month.beginning_of_month), class: "form-control shadow-sm", required: true %>
+              </div>
+              <div class="col-6">
+                <%= f.label :end_date, class: "form-label small text-secondary mb-1" do %>
+                  <%= t('invoice.to_date', default: 'Đến ngày') %> <span class="text-danger">*</span>
+                <% end %>
+                <%= f.date_field :end_date, value: (@invoice.end_date || @invoice.billing_month.end_of_month), class: "form-control shadow-sm", required: true %>
+              </div>
+            </div>
+            <div class="form-text text-secondary small mt-1 d-flex align-items-start gap-1">
+              <span class="material-symbols-outlined fs-6 flex-shrink-0">info</span>
+              <span><%= t('invoice.rent_period_hint') %></span>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <%= f.label :due_date, class: "form-label fw-semibold" do %>
+              <%= t('invoice.due_date') %> <span class="text-danger">*</span>
+            <% end %>
+            <%= f.date_field :due_date, value: (@invoice.due_date || (Date.current + 5.days)), class: "form-control shadow-sm", required: true %>
+          </div>
+
+          <div class="mb-3">
+            <%= f.label :bank_account_id, t('invoice.bank_account_receive'), class: "form-label fw-semibold" %>
+            <%= f.select :bank_account_id, (@bank_accounts || @landlord.bank_accounts.includes(:bank).default_first).map { |a| [a.display_label, a.id] }, { include_blank: t('invoice.vietqr.no_vietqr') }, class: "form-select shadow-sm" %>
+          </div>
+
+          <div class="mb-3">
+            <%= f.label :note, t('invoice.note'), class: "form-label fw-semibold" %>
+            <%= f.text_area :note, rows: 2, class: "form-control shadow-sm", placeholder: t('invoice.note_placeholder') %>
+          </div>
+
+          <%= render "landlord_portal/invoices/transfer_note_fields", invoice: @invoice, id_prefix: "edit_inv_#{@invoice.id}" %>
+        </div>
+
+        <div class="modal-footer gap-3 border-top bg-light">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"><%= t('cancel') %></button>
+          <%= f.button :submit,
+                class: "custom-primary-btn px-4 shadow-sm d-inline-flex align-items-center justify-content-center gap-2",
+                data: { loading_target: "button" } do %>
+            <span data-loading-target="text"><%= t('save') %></span>
+            <span class="material-symbols-outlined spin d-none" data-loading-target="spinner">progress_activity</span>
+          <% end %>
+        </div>
+      <% end %>
     </div>
   </div>
 <% end %>

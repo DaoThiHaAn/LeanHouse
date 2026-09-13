@@ -115,47 +115,49 @@
                 <%= t("bank_account.payos_guide.step4_confirm_hint") %>
               </p>
 
-              <% if payos_local_env? %>
-                <div class="alert alert-warning p-2 mb-0 rounded-2 notice-box-sm">
-                  <div class="d-flex align-items-center gap-1 fw-bold text-warning-emphasis mb-1">
-                    <span class="material-symbols-outlined fs-6">warning</span>
-                    <span><%= t("bank_account.payos_guide.dev_env_warning_title") %></span>
-                  </div>
-                  <div class="text-secondary lh-sm">
-                    <%= t("bank_account.payos_guide.dev_env_warning_prod_note_html") %><br>
-                    <%= t("bank_account.payos_guide.dev_env_warning_local_note_html") %>
-                  </div>
-                </div>
-              <% else %>
-                <div class="alert alert-success-subtle border border-success-subtle p-2 mb-0 rounded-2 notice-box-sm">
-                  <span class="material-symbols-outlined fs-6 text-success align-middle me-1">verified</span>
-                  <span class="text-success-emphasis fw-medium"><%= t("bank_account.payos_guide.prod_env_ready") %></span>
-                </div>
-              <% end %>
+              <div class="alert alert-success-subtle border border-success-subtle p-2 mb-0 rounded-2 notice-box-sm">
+                <span class="material-symbols-outlined fs-6 text-success align-middle me-1">verified</span>
+                <span class="text-success-emphasis fw-medium"><%= t("bank_account.payos_guide.webhook_note") %></span>
+              </div>
             </div>
           </div>
         </div>
 
         <!-- Lưu ý & Hỏi đáp nhanh -->
         <div class="bg-light p-3 rounded-4 border">
-          <h6 class="fw-bold  d-flex align-items-center gap-2 mb-2">
+          <h6 class="fw-bold d-flex align-items-center gap-2 mb-3 fs-5">
             <span class="material-symbols-outlined fs-5">help</span>
             <%= t("bank_account.payos_guide.notes_title") %>
           </h6>
-          <div class="small text-secondary">
-            <p class="mb-1">
-              <strong><%= t("bank_account.payos_guide.faq1_q") %></strong><br>
-              <%= t("bank_account.payos_guide.faq1_a") %>
-            </p>
-            <p class="mb-1">
-              <strong><%= t("bank_account.payos_guide.faq2_q") %></strong><br>
-              <%= t("bank_account.payos_guide.faq2_a") %>
-            </p>
-            <p class="mb-0">
-              <strong><%= t("bank_account.payos_guide.faq3_q") %></strong><br>
-              <%= t("bank_account.payos_guide.faq3_a") %>
-            </p>
-          </div>
+          <ol class="text-secondary d-flex flex-column gap-3">
+            <li>
+              <p>
+                <strong><%= t("bank_account.payos_guide.faq1_q") %></strong><br>
+                <%= t("bank_account.payos_guide.faq1_a") %>
+              </p>
+            </li>
+
+            <li>
+              <p>
+                <strong><%= t("bank_account.payos_guide.faq2_q") %></strong><br>
+                <%= t("bank_account.payos_guide.faq2_a") %>
+              </p>
+            </li>
+
+            <li>
+              <p>
+                <strong><%= t("bank_account.payos_guide.faq3_q") %></strong><br>
+                <%= t("bank_account.payos_guide.faq3_a") %>
+              </p>
+            </li>
+
+            <li>
+              <p>
+                <strong><%= t("bank_account.payos_guide.faq4_q") %></strong><br>
+                <%= t("bank_account.payos_guide.faq4_a") %>
+              </p>
+            </li>
+          </ol>
         </div>
       </div>
 

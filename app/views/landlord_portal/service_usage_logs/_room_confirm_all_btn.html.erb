@@ -1,0 +1,12 @@
+<%# locals: (house:, room:, count:) %>
+<div id="room_confirm_all_btn">
+  <% if count.to_i > 0 %>
+    <%= button_to confirm_all_landlord_house_room_service_usage_logs_path(house, room),
+                  method: :patch,
+                  data: { turbo_confirm: t("service_usage_logs.confirm_all_room_prompt", count: count, room: room.name) },
+                  class: "btn btn-success d-flex align-items-center gap-1 shadow-sm" do %>
+      <span class="material-symbols-outlined fs-6">done_all</span>
+      <span><%= t("service_usage_logs.confirm_all_room_btn", count: count) %></span>
+    <% end %>
+  <% end %>
+</div>

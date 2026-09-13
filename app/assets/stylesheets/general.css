@@ -519,6 +519,10 @@ figcaption {
   min-width: 100px;
 }
 
+.table-responsive .med-cell {
+  min-width: 150px;
+}
+
 .table-action {
   color: var(--table-action-icon);
   background-color: transparent;

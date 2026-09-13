@@ -1,74 +1,76 @@
 <%
   inv = local_assigns[:invoice]
-  initial_mode = if inv&.persisted?
-                   if inv.transfer_note.blank?
-                     "none"
-                   elsif inv.transfer_note == TransferNoteBuilder.build(inv.house&.transfer_note_template, inv)
-                     "system"
-                   else
-                     "custom"
-                   end
-                 else
-                   "system"
-                 end
-  custom_val = (initial_mode == "custom" ? inv&.transfer_note : "")
+  field_prefix = local_assigns[:field_prefix] || "invoice"
+  id_prefix = local_assigns[:id_prefix] || "inv"
+
+  initial_mode = invoice_transfer_note_mode(inv)
+  custom_val = invoice_custom_transfer_note_value(inv, initial_mode)
 %>
 
 <div class="transfer-note-section p-3 border rounded-3 bg-light-subtle mb-3" data-controller="transfer-note">
-  <div class="d-flex align-items-center justify-content-between mb-2">
-    <label class="form-label fw-semibold text-dark mb-0 d-flex align-items-center gap-1">
-      <span class="material-symbols-outlined text-primary fs-5">receipt_long</span>
-      <%= t('invoice.transfer_note_config', default: 'Cú pháp chuyển khoản VietQR') %>
-    </label>
-    <span class="badge bg-light text-secondary border font-monospace small"><%= t('invoice.max_50_chars', default: 'Tối đa 50 ký tự') %></span>
+  <label class="form-label fw-semibold mb-1 d-flex align-items-center gap-1">
+    <span class="material-symbols-outlined fs-5">short_text</span>
+    <span><%= t("invoice.transfer_note_config") %></span>
+  </label>
+
+  <!-- 3 options for note config -->
+  <div class="d-flex flex-wrap gap-3 mb-2 ms-3">
+    <% transfer_note_mode_options.each do |mode| %>
+      <div class="form-check">
+        <%= radio_button_tag "#{field_prefix}[transfer_note_mode]",
+                              mode[:value],
+                              (initial_mode == mode[:value]),
+                              id: "#{id_prefix}_tn_#{mode[:value]}",
+                              class: "form-check-input",
+                              data: {
+                                transfer_note_target: "radio",
+                                action: "change->transfer-note#modeChanged"
+                              } %>
+        <%= label_tag "#{id_prefix}_tn_#{mode[:value]}",
+                      mode[:label],
+                      class: ["form-check-label", mode[:label_class]] %>
+      </div>
+    <% end %>
   </div>
 
-  <div class="d-flex flex-wrap gap-3 mb-2">
-    <div class="form-check">
-      <input class="form-check-input" type="radio" name="<%= local_assigns[:field_prefix] || 'invoice' %>[transfer_note_mode]" id="<%= local_assigns[:id_prefix] || 'inv' %>_tn_system" value="system" <%= 'checked' if initial_mode == 'system' %> data-transfer-note-target="radio" data-action="change->transfer-note#modeChanged">
-      <label class="form-check-label small fw-medium cursor-pointer" for="<%= local_assigns[:id_prefix] || 'inv' %>_tn_system">
-        <%= t('invoice.transfer_note_mode_system', default: 'Cú pháp hệ thống (Khuyên dùng)') %>
-      </label>
-    </div>
-    <div class="form-check">
-      <input class="form-check-input" type="radio" name="<%= local_assigns[:field_prefix] || 'invoice' %>[transfer_note_mode]" id="<%= local_assigns[:id_prefix] || 'inv' %>_tn_custom" value="custom" <%= 'checked' if initial_mode == 'custom' %> data-transfer-note-target="radio" data-action="change->transfer-note#modeChanged">
-      <label class="form-check-label small fw-medium cursor-pointer" for="<%= local_assigns[:id_prefix] || 'inv' %>_tn_custom">
-        <%= t('invoice.transfer_note_mode_custom', default: 'Tự đặt nội dung') %>
-      </label>
-    </div>
-    <div class="form-check">
-      <input class="form-check-input" type="radio" name="<%= local_assigns[:field_prefix] || 'invoice' %>[transfer_note_mode]" id="<%= local_assigns[:id_prefix] || 'inv' %>_tn_none" value="none" <%= 'checked' if initial_mode == 'none' %> data-transfer-note-target="radio" data-action="change->transfer-note#modeChanged">
-      <label class="form-check-label small fw-medium text-secondary cursor-pointer" for="<%= local_assigns[:id_prefix] || 'inv' %>_tn_none">
-        <%= t('invoice.transfer_note_mode_none', default: 'Không dùng cú pháp') %>
-      </label>
+  <!-- Auto-generated note preview -->
+  <div data-transfer-note-target="systemPreview" class="note-preview <%= 'd-none' if initial_mode != 'system' %>">
+    <div class="text-secondary small d-flex align-items-center gap-1 bg-white p-2 text-container">
+      <span class="material-symbols-filled fs-6 text-success">check_circle</span>
+      <span>
+        <%= t("invoice.transfer_note_system_hint") %>
+        <strong class="font-monospace text-dark">HD<%= Date.current.strftime("%d%m%Y") %>-...</strong>)
+      </span>
     </div>
   </div>
 
-  <div data-transfer-note-target="systemPreview" class="<%= 'd-none' if initial_mode != 'system' %>">
-    <div class="text-secondary small d-flex align-items-center gap-1 bg-white p-2 rounded border">
-      <span class="material-symbols-outlined fs-6 text-success">check_circle</span>
-      <span><%= t('invoice.transfer_note_system_hint', default: 'Hệ thống tự động tạo mã chuẩn theo ngày lập và phòng (ví dụ:') %> <strong class="font-monospace text-dark">HD<%= Date.current.strftime('%d%m%Y') %>-...</strong>)</span>
-    </div>
-  </div>
-
-  <div data-transfer-note-target="customInputWrapper" class="<%= 'd-none' if initial_mode != 'custom' %>" data-controller="character-counter" data-character-counter-max-value="50">
-    <div class="d-flex justify-content-between align-items-center mb-1">
-      <span class="small text-secondary"><%= t('invoice.enter_custom_transfer_note', default: 'Nhập nội dung chuyển khoản tùy chỉnh:') %></span>
+  <!-- Custom note preview -->
+  <div data-transfer-note-target="customInputWrapper"
+       class="note-preview <%= 'd-none' if initial_mode != 'custom' %>"
+       data-controller="character-counter"
+       data-character-counter-max-value="50">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <span class="small text-secondary"><%= t("invoice.enter_custom_transfer_note") %></span>
       <span class="small text-secondary" data-character-counter-target="count"><%= custom_val.to_s.length %>/50</span>
     </div>
-    <input type="text"
-           name="<%= local_assigns[:field_prefix] || 'invoice' %>[transfer_note]"
-           value="<%= custom_val %>"
-           class="form-control form-control-sm font-monospace shadow-sm text-uppercase"
-           maxlength="50"
-           placeholder="<%= t('invoice.custom_transfer_note_placeholder', default: 'Ví dụ: TIEN PHONG T9') %>"
-           data-transfer-note-target="customInput"
-           data-character-counter-target="input"
-           data-action="input->transfer-note#liveUpdate input->character-counter#update blur->transfer-note#sanitizeField change->transfer-note#sanitizeField paste->transfer-note#onPaste"
-           <%= 'disabled' if initial_mode != 'custom' %>>
-    <div class="d-flex justify-content-between align-items-center mt-1">
-      <div class="small text-muted">
-        <%= t('invoice.transfer_note_bank_notice', default: 'Tự động chuẩn hóa chữ không dấu, tối đa 50 ký tự cho ngân hàng.') %>
+
+    <%= text_field_tag "#{field_prefix}[transfer_note]",
+                       custom_val,
+                       id: "#{id_prefix}_transfer_note",
+                       class: "form-control form-control-sm font-monospace shadow-sm text-uppercase",
+                       maxlength: 50,
+                       autocomplete: "off",
+                       placeholder: t("invoice.custom_transfer_note_placeholder"),
+                       disabled: (initial_mode != "custom"),
+                       data: {
+                         transfer_note_target: "customInput",
+                         character_counter_target: "input",
+                         action: "input->transfer-note#liveUpdate input->character-counter#update blur->transfer-note#sanitizeField change->transfer-note#sanitizeField paste->transfer-note#onPaste"
+                       } %>
+
+    <div class="d-flex gap-3 align-items-center mt-2">
+      <div class="small text-danger-emphasis">
+        <%= t("invoice.transfer_note_bank_notice") %>
       </div>
       <div data-transfer-note-target="livePreview" class="small font-monospace badge bg-primary-subtle text-primary border border-primary-subtle d-none"></div>
     </div>

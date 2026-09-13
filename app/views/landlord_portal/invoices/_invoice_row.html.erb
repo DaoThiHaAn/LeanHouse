@@ -4,13 +4,22 @@
     <p class="fw-semibold"><%= inv.title %></p>
   </td>
   <td>
-    <p class="d-flex align-items-center gap-1 mb-0">
-      <%= inv.room.title_name %>, <%= inv.room.floor.title_name %>
-    </p>
-    <% if inv.tenant&.user&.tel.present? %>
-      <small class="text-secondary font-monospace d-block"><%= inv.tenant.user.tel %></small>
+    <% if inv.room? %>
+      <p class="d-flex align-items-center gap-1 mb-0 fw-semibold text-dark">
+        <%= inv.room.title_name %>, <%= inv.room.floor.title_name %>
+      </p>
+    <% elsif inv.tenant.present? %>
+      <div class="fw-semibold text-dark"><%= inv.tenant.user&.fullname %></div>
+      <div class="small text-secondary"><%= inv.room.title_name %>, <%= inv.room.floor.title_name %></div>
+      <% if inv.tenant.user&.tel.present? %>
+        <small class="text-secondary font-monospace d-block"><%= inv.tenant.user.tel %></small>
+      <% end %>
+    <% else %>
+      <p class="d-flex align-items-center gap-1 mb-0 fw-semibold text-dark">
+        <%= inv.room.title_name %>, <%= inv.room.floor.title_name %>
+      </p>
     <% end %>
-    <div class="mt-1"><%= invoice_type_badge(inv) %></div>
+    <div class="mt-1"><%= invoice_type_badge(inv, show_target: false) %></div>
   </td>
   <td><%= format_month(inv.billing_month) %></td>
   <td>
@@ -23,7 +32,7 @@
       <%= format_money(inv.total_amount) %>
     </span>
   </td>
-  <td>
+  <td class="text-center">
     <%= invoice_status_badge(inv) %>
   </td>
   <%# Actions %>

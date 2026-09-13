@@ -762,13 +762,44 @@ class LandlordPortal::InvoicesControllerTest < ActionDispatch::IntegrationTest
     get landlord_house_invoice_path(@house, @invoice2)
     assert_response :success
 
-    # Edit button and edit modal are NOT present
-    assert_select "button[data-bs-target='#editInvoiceDatesModal']", 0
-    assert_select "#editInvoiceDatesModal", 0
+    # Edit button / link and edit modal are NOT present
+    assert_select "a[href*='#{edit_landlord_house_invoice_path(@house, @invoice2)}']", 0
+    assert_select "#editInvoiceModal", 0
 
     # Undo payment button and modal ARE present
     assert_select "button[data-bs-target='#undoPaidModal']"
     assert_select "#undoPaidModal"
+  end
+
+  test "pending invoice show page renders edit link targeting turbo frame and turbo_frame_tag" do
+    sign_in_as(@landlord_user)
+
+    assert_predicate @invoice1, :pending?
+
+    get landlord_house_invoice_path(@house, @invoice1)
+    assert_response :success
+
+    assert_select "a[href*='#{edit_landlord_house_invoice_path(@house, @invoice1)}'][data-turbo-frame='edit_invoice_modal']"
+    assert_select "turbo-frame#edit_invoice_modal"
+  end
+
+  test "landlord updating invoice with return_to show redirects to invoice show page" do
+    sign_in_as(@landlord_user)
+
+    new_due_date = Date.current + 15.days
+    patch landlord_house_invoice_path(@house, @invoice1),
+          params: {
+            return_to: "show",
+            invoice: {
+              title: "Sửa từ trang show",
+              due_date: new_due_date
+            }
+          }
+
+    assert_redirected_to landlord_house_invoice_path(@house, @invoice1)
+    follow_redirect!
+    assert_includes response.body, I18n.t("invoice.update_success")
+    assert_equal "Sửa từ trang show", @invoice1.reload.title
   end
 
   test "invoices index renders new invoice dropdown with standard and custom fee options" do
@@ -1051,5 +1082,28 @@ class LandlordPortal::InvoicesControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, 'data-bs-target="#serviceInstructionsModal"'
     assert_includes response.body, 'id="serviceInstructionsModal"'
     assert_includes response.body, CGI.escapeHTML(I18n.t("invoice.service_instructions"))
+  end
+
+  test "room-type invoice row does not display tel in room column, while individual/custom displays tenant and tel" do
+    sign_in_as(@landlord_user)
+
+    # Attach tenant to room invoice to test that tel is still NOT rendered for room type
+    @invoice1.update!(tenant: @tenant)
+
+    # In room tab, both room-type (@invoice1) and individual-type (@invoice2) are rendered
+    get filtered_landlord_house_invoices_path(@house, tab: "room")
+    assert_response :success
+
+    # Row for @invoice1 (room invoice): Room & floor shown, NO tel
+    assert_select "tr##{ActionView::RecordIdentifier.dom_id(@invoice1)}" do
+      assert_select "td", text: /#{@room1.title_name}/
+      assert_select "small.font-monospace", text: @tenant_user.tel, count: 0
+    end
+
+    # Row for @invoice2 (individual invoice with tenant): tenant fullname and tel ARE shown
+    assert_select "tr##{ActionView::RecordIdentifier.dom_id(@invoice2)}" do
+      assert_select "div.fw-semibold", text: @tenant_user.fullname
+      assert_select "small.font-monospace", text: @tenant_user.tel
+    end
   end
 end

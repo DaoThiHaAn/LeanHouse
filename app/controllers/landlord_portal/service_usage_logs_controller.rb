@@ -109,17 +109,22 @@ class LandlordPortal::ServiceUsageLogsController < LandlordPortal::BaseControlle
         flash.now[:notice] = t("service_usage_logs.confirm_log_success", room: @log.room.name, default: "Đã xác nhận chỉ số phòng #{@log.room.name}!")
         if from_room_context?
           @room = @log.room
-          @logs = LandlordServiceUsageLogsFilter.call(house: @house, room: @room, params: params)
+          @unconfirmed_count = @room.service_usage_logs.unconfirmed.count
           render turbo_stream: [
-            turbo_stream.replace("room_logs_table", partial: "room_logs_table", locals: { house: @house, room: @room, logs: @logs }),
-            turbo_stream.update("flash", partial: "layouts/shared_components/flash_message")
+            turbo_stream.replace(helpers.dom_id(@log), partial: "room_log_row", locals: { house: @house, room: @room, log: @log }),
+            turbo_stream.update("flash", partial: "layouts/shared_components/flash_message"),
+            turbo_stream.replace("room_unconfirmed_badge", partial: "unconfirmed_badge", locals: { id: "room_unconfirmed_badge", count: @unconfirmed_count }),
+            turbo_stream.replace("room_confirm_all_btn", partial: "room_confirm_all_btn", locals: { house: @house, room: @room, count: @unconfirmed_count })
           ]
         else
           @billing_month = @log.billing_month
-          @logs = LandlordServiceUsageLogsFilter.call(house: @house, params: params.reverse_merge(month: @billing_month.strftime("%Y-%m")))
+          @unconfirmed_count = @house.service_usage_logs.for_month(@billing_month).unconfirmed.count
+          @selected_service = @house.services.find_by(id: params[:service_id]) if params[:service_id].present?
           render turbo_stream: [
-            turbo_stream.replace("logs_table", partial: "logs_table", locals: { house: @house, logs: @logs, billing_month: @billing_month }),
-            turbo_stream.update("flash", partial: "layouts/shared_components/flash_message")
+            turbo_stream.replace(helpers.dom_id(@log), partial: "log_row", locals: { house: @house, log: @log }),
+            turbo_stream.update("flash", partial: "layouts/shared_components/flash_message"),
+            turbo_stream.replace("house_unconfirmed_badge", partial: "unconfirmed_badge", locals: { id: "house_unconfirmed_badge", count: @unconfirmed_count }),
+            turbo_stream.replace("house_confirm_all_btn", partial: "house_confirm_all_btn", locals: { house: @house, billing_month: @billing_month, selected_service: @selected_service, count: @unconfirmed_count })
           ]
         end
       end

@@ -24,7 +24,12 @@ class LandlordServiceUsageLogsFilter
 
     scope = scope
       .preload({ room: :floor }, :service, :service_variant, :submitted_by, :confirmed_by, reading_photo_attachment: :blob)
-      .order("service_usage_logs.billing_month DESC, service_usage_logs.created_at DESC")
+
+    scope = if room.present? || params[:room_id].present?
+      scope.order("service_usage_logs.billing_month DESC, service_usage_logs.created_at DESC")
+    else
+      scope.left_joins(room: :floor).order("floors.position ASC, rooms.name ASC, service_usage_logs.billing_month DESC, service_usage_logs.created_at DESC")
+    end
 
     if params[:paginate] == false || params[:paginate] == "false"
       scope

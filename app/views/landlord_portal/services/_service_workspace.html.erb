@@ -8,7 +8,7 @@
     <div class="d-flex align-items-center gap-3">
       <!-- Service icon -->
       <div class="service-header-icon rounded-circle d-flex align-items-center justify-content-center">
-        <span class="material-symbols-filled fs-2 text-primary">shoppingmode</span>
+        <span class="material-symbols-filled fs-2 custom-text-primary">shoppingmode</span>
       </div>
 
       <div>
@@ -46,10 +46,10 @@
 
       <%# Add Variant Button %>
       <%= link_to new_landlord_house_service_service_variant_path(house, service),
-                  class: "custom-primary-btn d-flex align-items-center gap-2 px-3 py-2",
+                  class: "custom-primary-btn d-flex align-items-center gap-2 px-3",
                   data: { turbo_frame: "service_variant_modal" } do %>
-        <span class="material-symbols-filled fs-5">add_circle</span>
-        <span><%= t("service.variant.add") %></span>
+        <span class="material-symbols-filled fs-5">variable_add</span>
+        <span class="fs-6"><%= t("service.variant.add") %></span>
       <% end %>
     </div>
   </div>

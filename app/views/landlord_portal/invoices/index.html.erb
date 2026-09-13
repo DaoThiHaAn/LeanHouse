@@ -1,4 +1,5 @@
 <% content_for :title, "#{t('invoice.management')} - #{@house.name}" %>
+
 <div class="d-flex flex-column flex-lg-row justify-content-center justify-content-lg-between align-items-center mb-4 pb-2 border-bottom gap-3">
   <div class="text-center text-lg-start">
     <h1 class="mb-3"><%= t('invoice.management') %></h1>
@@ -17,7 +18,7 @@
         <li>
           <%= link_to new_landlord_house_invoice_path(@house, month: @billing_month.strftime("%Y-%m")),
               class: "dropdown-item d-flex align-items-center gap-2" do %>
-            <span class="material-symbols-outlined text-primary fs-5">receipt_long</span>
+            <span class="material-symbols-filled fs-5">sensor_door</span>
             <div>
               <div class="fw-semibold"><%= t('invoice.types.room_service_title') %></div>
               <small class="text-secondary"><%= t('invoice.types.room_service_desc') %></small>
@@ -28,7 +29,7 @@
         <li>
           <%= link_to new_landlord_house_invoice_path(@house, month: @billing_month.strftime("%Y-%m"), mode: "custom"),
               class: "dropdown-item d-flex align-items-center gap-2" do %>
-            <span class="material-symbols-outlined text-success fs-5">tune</span>
+            <span class="material-symbols-outlined fs-5">tune</span>
             <div>
               <div class="fw-semibold"><%= t('invoice.types.custom_title') %></div>
               <small class="text-secondary"><%= t('invoice.types.custom_desc') %></small>

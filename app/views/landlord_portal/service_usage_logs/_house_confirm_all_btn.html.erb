@@ -1,0 +1,8 @@
+<%# locals: (house:, billing_month:, selected_service: nil, count:) %>
+<div id="house_confirm_all_btn" class="ms-auto">
+  <% if count.to_i > 0 %>
+    <%= button_to confirm_all_landlord_house_service_usage_logs_path(house, month: billing_month.strftime("%Y-%m"), service_id: selected_service&.id), method: :patch, data: { turbo_confirm: t("invoice.confirm_all_prompt", count: count) }, class: "btn btn-success btn-sm d-flex align-items-center gap-1 shadow-sm" do %>
+      <span class="material-symbols-outlined fs-6">done_all</span> <%= t("invoice.confirm_all", count: count) %>
+    <% end %>
+  <% end %>
+</div>

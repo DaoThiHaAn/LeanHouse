@@ -190,4 +190,60 @@ class InvoicesHelperTest < ActionView::TestCase
     assert_includes badges, I18n.t("invoice.status.in_term")
     assert_includes badges, I18n.t("invoice.status.pending")
   end
+
+  test "invoice_transfer_note_mode detects correct mode" do
+    # nil or unpersisted invoice defaults to system
+    assert_equal "system", invoice_transfer_note_mode(nil)
+    new_inv = @house.invoices.build
+    assert_equal "system", invoice_transfer_note_mode(new_inv)
+
+    # explicit transfer_note_mode takes precedence
+    new_inv.transfer_note_mode = "none"
+    assert_equal "none", invoice_transfer_note_mode(new_inv)
+
+    # persisted with blank transfer_note -> none
+    persisted_inv = @house.invoices.create!(
+      code: "HD-TN-01",
+      title: "Hóa đơn test",
+      room: @room,
+      created_by: @landlord_user,
+      billing_month: Date.current.beginning_of_month,
+      due_date: Date.current + 5.days,
+      invoice_type: :room,
+      status: :pending,
+      subtotal: 100_000,
+      total_discount: 0,
+      total_addition: 0,
+      total_amount: 100_000,
+      transfer_note_mode: "none",
+      transfer_note: nil
+    )
+    # persisted with blank transfer_note (no transfer_note_mode set) -> none
+    persisted_inv.transfer_note_mode = nil
+    assert_equal "none", invoice_transfer_note_mode(persisted_inv)
+
+    # persisted with matching system template -> system
+    expected_system = TransferNoteBuilder.build(@house.transfer_note_template, persisted_inv)
+    persisted_inv.update_column(:transfer_note, expected_system)
+    persisted_inv.transfer_note_mode = nil
+    assert_equal "system", invoice_transfer_note_mode(persisted_inv)
+
+    # persisted with custom note -> custom
+    persisted_inv.update_column(:transfer_note, "CUSTOM_NOTE_123")
+    persisted_inv.transfer_note_mode = nil
+    assert_equal "custom", invoice_transfer_note_mode(persisted_inv)
+  end
+
+  test "invoice_custom_transfer_note_value returns transfer_note only when in custom mode" do
+    persisted_inv = @house.invoices.build(transfer_note: "CUSTOM_NOTE_123")
+    assert_equal "CUSTOM_NOTE_123", invoice_custom_transfer_note_value(persisted_inv, "custom")
+    assert_equal "", invoice_custom_transfer_note_value(persisted_inv, "system")
+    assert_equal "", invoice_custom_transfer_note_value(persisted_inv, "none")
+  end
+
+  test "transfer_note_mode_options returns 3 configured options" do
+    options = transfer_note_mode_options
+    assert_equal 3, options.length
+    assert_equal [ "system", "custom", "none" ], options.map { |o| o[:value] }
+  end
 end

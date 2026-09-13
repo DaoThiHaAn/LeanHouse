@@ -29,6 +29,13 @@ vi:
     variant: "Biến thể"
     all_floors: "Tất cả các tầng"
     floor: "Tầng"
+    unknown_floor: "Khác"
+    records_count:
+      one: "%{count} bản ghi"
+      other: "%{count} bản ghi"
+    services_count:
+      one: "%{count} dịch vụ"
+      other: "%{count} dịch vụ"
     all_rooms: "Tất cả các phòng"
     room: "Phòng"
     reset_filter: "Đặt lại bộ lọc"
