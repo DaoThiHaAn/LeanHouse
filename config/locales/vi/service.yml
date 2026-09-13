@@ -70,7 +70,7 @@ vi:
       step2_title: "2. Thiết lập Biến thể"
       step2_desc: "Mỗi dịch vụ có thể có một hoặc nhiều biến thể tùy theo cách tính:\n• Đo theo công tơ thực tế (kWh cho điện, m³ cho nước).\n• Phí cố định hàng tháng (theo đầu người, theo phòng, hoặc tính theo lượt sử dụng)."
       step3_title: "3. Phân bổ phạm vi phòng áp dụng"
-      step3_desc: "Khi tạo hoặc sửa biến thể dịch vụ, bạn có thể chọn áp dụng cho toàn bộ các phòng trong nhà trọ, hoặc chỉ áp dụng cho từng phòng/tầng cụ thể (ví dụ: phòng có máy lạnh tính giá điện khác)."
+      step3_desc: "Khi tạo hoặc sửa biến thể dịch vụ, bạn có thể chọn áp dụng cho toàn bộ các phòng trong nhà, hoặc chỉ áp dụng cho từng phòng/tầng cụ thể (ví dụ: phòng có máy lạnh tính giá điện khác)."
       step4_title: "4. Quản lý & Cập nhật đơn giá"
       step4_desc: "Dễ dàng chỉnh sửa đơn giá, đơn vị tính, hoặc thêm biến thể giá mới bất cứ lúc nào. Việc cập nhật giá sẽ áp dụng cho các kỳ hóa đơn tiếp theo mà không làm sai lệch số liệu cũ."
       log_step1_title: "1. Truy cập trang Theo dõi chỉ số"

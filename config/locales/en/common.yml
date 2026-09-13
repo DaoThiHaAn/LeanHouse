@@ -59,6 +59,8 @@ en:
     my_saved_post: "Saved Posts"
     my_contract: "My Contract"
     all_contracts: "All Contracts"
+    contract_archive: "Contract Archive"
+    invoice_archive: "Invoice Archive"
     old_contracts: "Old Contracts"
     toggle_nav: "Toggle navigation"
     lang_switch: "Switch language"
@@ -110,6 +112,7 @@ en:
   none: "None"
   saving: "Saving"
   sending: "Sending"
+  status_deleted: "Deleted"
   common:
     month: "Month"
     status: "Status"

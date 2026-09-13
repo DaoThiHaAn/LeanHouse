@@ -212,3 +212,13 @@ td.note {
   box-shadow: 0 0 8px rgba(13, 110, 253, 0.8);
   transform: scale(1.08);
 }
+
+/* Contract Archive Styles */
+.contract-archive-deleted-row {
+  background-color: #fef2f2 !important;
+  opacity: 0.92;
+}
+
+.contract-archive-deleted-row:hover {
+  background-color: #fee2e2 !important;
+}

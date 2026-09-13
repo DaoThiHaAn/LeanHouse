@@ -464,3 +464,18 @@
   color: #64748b !important;
   border-color: #e2e8f0 !important;
 }
+
+/* Deleted House States */
+.admin-house-deleted-row {
+  background-color: #fef2f2 !important;
+  opacity: 0.9;
+}
+
+.admin-house-deleted-row:hover {
+  background-color: #fee2e2 !important;
+}
+
+.admin-deleted-banner {
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+}

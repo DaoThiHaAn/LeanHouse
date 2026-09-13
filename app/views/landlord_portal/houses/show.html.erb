@@ -145,7 +145,7 @@
             <div class="d-flex gap-2 align-items-center">
               <h6 class="fw-bold m-0"><%= t("form.asset.self") + ":" %></h6>
 
-              <%= link_to landlord_house_assets(@house), class: "d-inline-flex align-items-center",
+              <%= link_to landlord_house_assets_path(@house), class: "d-inline-flex align-items-center",
                 data: { turbo_frame: "_top",
                       **tooltip("right", :"view_detail")} do %>
                 <span class="material-symbols-outlined">arrow_right_alt</span>

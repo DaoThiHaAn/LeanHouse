@@ -53,10 +53,29 @@
       </div>
     </div>
 
+    <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+      <div class="form-floating shadow-sm rounded-3">
+        <%= f.select :status,
+            options_for_select([
+              [t("admin.houses.status_all"), "all"],
+              [t("admin.houses.status_active"), "active"],
+              [t("admin.houses.status_deleted"), "deleted"]
+            ], @status_filter),
+            {},
+            class: "form-select",
+            id: "floatingStatusSelect",
+            data: {
+              action: "change->search#changed"
+            } %>
+        <label for="floatingStatusSelect" class="text-secondary small fw-medium">
+          <%= t("admin.houses.status") %>
+        </label>
+      </div>
+    </div>
 
     <div class="col-6 col-md-2 d-flex gap-2">
       <button type="button"
-              class="btn btn-outline-secondary d-flex align-items-center gap-1 <%= 'd-none' unless @query.present? || @mode_filter.present? %>"
+              class="btn btn-outline-secondary d-flex align-items-center gap-1 <%= 'd-none' unless @query.present? || @mode_filter.present? || (@status_filter.present? && @status_filter != 'all') %>"
               data-search-target="clearButton"
               data-action="click->search#clear">
         <span class="material-symbols-outlined fs-6">filter_alt_off</span>
@@ -95,9 +114,12 @@
           <tbody>
             <% if @houses.any? %>
               <% @houses.each do |house| %>
-                <tr>
+                <tr class="<%= 'admin-house-deleted-row' if house.is_deleted? %>">
                   <td class="ps-3 fw-bold">
                     <%= link_to house.name, admin_house_path(house), class: "text-dark text-decoration-none hover-underline", data: { turbo_frame: "_top" } %>
+                    <% if house.is_deleted? %>
+                      <span class="badge bg-danger-subtle text-danger border border-danger-subtle ms-1"><%= t("admin.houses.status_deleted") %></span>
+                    <% end %>
                   </td>
 
                   <td>

@@ -1,0 +1,91 @@
+<%# Local variables: invoices, query, house_id, month %>
+
+<span hidden data-pagination-total-pages="<%= invoices.respond_to?(:total_pages) ? invoices.total_pages : 1 %>"></span>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2 class="mb-0 fs-5">
+    <span class="material-symbols-filled align-middle fs-4">receipt_long</span>
+    <%= t("invoice.list") %>
+  </h2>
+
+  <span class="badge bg-light text-dark border p-2 fs-6">
+    <%= "#{t('total')}: #{invoices.total_count}" rescue "#{t('total')}: #{invoices.size}" %>
+  </span>
+</div>
+
+<div class="table-responsive bg-white rounded-3 shadow-sm border">
+  <table class="table table-hover align-middle mb-0">
+    <thead class="table-light">
+      <tr>
+        <th class="ps-3"><%= t("invoice.code") %></th>
+        <th><%= t("form.house.self") %></th>
+        <th><%= t("invoice.room_or_target") %></th>
+        <th><%= t("invoice.month") %></th>
+        <th><%= t("invoice.due_date", default: "Hạn đóng") %></th>
+        <th><%= t("invoice.total_amount") %></th>
+        <th class="text-center pe-3"><%= t("actions") %></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if invoices.any? %>
+        <% invoices.each do |invoice| %>
+          <tr id="<%= dom_id(invoice) %>" class="<%= 'contract-archive-deleted-row' if invoice.house&.is_deleted? %>">
+            <td class="ps-3">
+              <span class="invoice-code-tag mb-1"><%= invoice.code %></span>
+              <p class="fw-semibold mb-0"><%= invoice.title %></p>
+            </td>
+            <td>
+              <% if invoice.house&.is_deleted? %>
+                <span class="text-decoration-line-through text-secondary"><%= invoice.house.name %></span>
+                <span class="badge bg-danger-subtle text-danger border border-danger-subtle ms-1 small"><%= t("form.house.status_deleted") %></span>
+              <% else %>
+                <%= invoice.house&.name || t("none") %>
+              <% end %>
+            </td>
+            <td>
+              <p class="d-flex align-items-center gap-1 mb-0 fw-semibold">
+                <%= invoice.room&.title_name %>, <%= invoice.room&.floor&.title_name %>
+              </p>
+              <% if invoice.tenant&.user&.fullname.present? %>
+                <small class="text-secondary d-block"><%= invoice.tenant.user.fullname %> (<%= invoice.tenant.user.tel %>)</small>
+              <% end %>
+              <div class="mt-1"><%= invoice_type_badge(invoice) %></div>
+            </td>
+            <td><%= format_month(invoice.billing_month) rescue invoice.billing_month.strftime("%m/%Y") %></td>
+            <td>
+              <span class="<%= 'text-danger small fw-bold' if invoice.overdue? %>">
+                <%= invoice.due_date.strftime("%d/%m/%Y") %>
+              </span>
+            </td>
+            <td>
+              <span class="fw-bold">
+                <%= format_money(invoice.total_amount) %>
+              </span>
+            </td>
+            <td class="text-center pe-3">
+              <%= link_to landlord_archived_invoice_path(invoice),
+                          class: "table-action",
+                          title: t("view_detail"),
+                          data: { turbo_frame: "_top" } do %>
+                <span class="material-symbols-filled fs-5">visibility</span>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      <% else %>
+        <tr>
+          <td colspan="7" class="text-center text-secondary py-5">
+            <span class="material-symbols-outlined fs-1 d-block mb-2 text-secondary">receipt_long</span>
+            <%= t("invoice.no_invoices_in_archive") %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<% if invoices.respond_to?(:total_pages) && invoices.total_pages > 1 %>
+  <div class="mt-4 d-flex justify-content-center">
+    <%= paginate invoices, params: { q: query.presence, house_id: house_id.presence, month: month.presence }.compact %>
+  </div>
+<% end %>

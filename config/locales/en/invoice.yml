@@ -7,6 +7,13 @@ en:
     management_subtitle: "Issue bills, track payment statuses and generate VietQR transfer notes."
     new_invoice: "Issue New Invoice"
     create_invoice_title: "Create Payment Invoice"
+    archive_title: "Invoice Archive"
+    archive_sub: "Browse and review invoices from deleted properties"
+    search_archive_placeholder: "Search by invoice code, title, tenant, room..."
+    deleted_house_notice: "This house has been deleted. Invoice is in read-only archive mode."
+    no_invoices_in_archive: "No invoices found from deleted properties."
+    all_houses: "All deleted houses"
+    due_date: "Due Date"
     types:
       room_service_title: "Room & Service Invoice"
       room_service_desc: "Rent and utilities by room or individual occupants"

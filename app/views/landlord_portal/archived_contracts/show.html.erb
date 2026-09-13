@@ -1,0 +1,41 @@
+<% content_for :title, t("form.contract.info") %>
+
+<div class="contract-detail-wrapper main-container px-0 border rounded-2 shadow-sm bg-white">
+  <div class="px-4 pt-4 pb-2 mb-3 border-bottom">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
+      <%= link_to landlord_archived_contracts_path, class: "btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-1" do %>
+        <span class="material-symbols-outlined fs-6">arrow_back</span>
+        <span><%= t("form.contract.archive_title") %></span>
+      <% end %>
+
+      <% unless @house.is_deleted? %>
+        <%= link_to landlord_house_contract_path(@house, @contract), class: "btn btn-outline-primary btn-sm d-inline-flex align-items-center gap-1" do %>
+          <span class="material-symbols-outlined fs-6">open_in_new</span>
+          <span><%= t("form.contract.view_house_contracts") %></span>
+        <% end %>
+      <% end %>
+    </div>
+
+    <h1 class="text-center mb-1"><%= t("form.contract.info") %></h1>
+    <p class="text-center text-secondary small mb-2">
+      #<%= @contract.id %> - <%= @contract.title_name %>
+      <% if @house.is_deleted? %>
+        <span class="badge bg-danger-subtle text-danger border border-danger-subtle ms-1"><%= t("form.house.status_deleted") %></span>
+      <% end %>
+    </p>
+
+    <% if @house.is_deleted? %>
+      <div class="alert alert-danger d-flex align-items-center gap-2 mb-2 py-2 px-3">
+        <span class="material-symbols-outlined text-danger fs-5">delete</span>
+        <div class="small fw-semibold"><%= t("form.contract.deleted_house_notice") %></div>
+      </div>
+    <% end %>
+  </div>
+
+  <div id="contract_detail" class="px-3 pb-3">
+    <%= render 'landlord_portal/contracts/detail',
+               contract: @contract,
+               house: @house,
+               tenant_stay: @tenant_stay %>
+  </div>
+</div>

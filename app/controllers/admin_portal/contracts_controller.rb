@@ -17,13 +17,13 @@ module AdminPortal
 
     def show
       @house = @contract.house
-      @tenant_stay = @house.tenant_stay_for(@contract.tenant_id)
+      @tenant_stay = @house.tenant_stay_for(@contract.tenant_id) || @house.historical_tenant_stay_for(@contract.tenant_id)
     end
 
     private
 
     def set_house
-      @house = House.active.includes(landlord: :user).find(params[:house_id])
+      @house = House.includes(landlord: :user).find(params[:house_id])
     end
 
     def set_contract

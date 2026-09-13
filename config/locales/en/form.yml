@@ -1,5 +1,9 @@
 en:
   form:
+    house:
+      self: "House"
+      status_deleted: "Deleted"
+      no_deleted_houses: "No deleted houses"
     room:
       self: "Room"
       name: "Room Name"
@@ -114,3 +118,17 @@ en:
       extend_finished_title: "Extend Finished Contract"
       extend_period_note: "Enter a new due date to extend the contract (new date must be after the current due date)."
       cannot_edit_finished: "Cannot edit fields of a finished contract."
+      archive_title: "Contract Archive"
+      archive_sub: "Browse all contracts across managed and deleted houses"
+      search_archive_placeholder: "Search by tenant name, phone, or contract title..."
+      all_houses: "All houses"
+      filter_status: "Status"
+      status_all: "All statuses"
+      status_active: "Active"
+      status_nearly_due: "Expiring soon"
+      status_overdue: "Overdue"
+      status_finished: "Finished"
+      deleted_house_notice: "This house has been deleted. Contract is in read-only archive mode."
+      view_house_contracts: "Manage contracts for this house"
+      no_contracts_in_archive: "No contracts found in archive."
+      view_all_contracts_btn: "View all contracts"

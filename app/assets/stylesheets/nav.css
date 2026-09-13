@@ -284,6 +284,15 @@
 	background-color: var(--dropdown-link-hover-bg);
 }
 
+.profile-dropdown .dropdown-item:active {
+	color: inherit;
+	background-color: var(--dropdown-link-hover-bg);
+}
+
+.profile-dropdown .dropdown-item.text-danger:active {
+	color: var(--bs-danger) !important;
+}
+
 .notification-dropdown li {
 	margin: 0;
 }

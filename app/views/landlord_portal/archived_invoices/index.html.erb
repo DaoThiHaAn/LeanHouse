@@ -1,0 +1,101 @@
+<% content_for :title, t("invoice.archive_title") %>
+
+<div class="contract house-main-container">
+  <div class="d-flex flex-column justify-content-center align-items-center mb-4 border-bottom py-3 flex-wrap gap-2">
+    <h1 class="mb-2"><%= t("invoice.archive_title") %></h1>
+    <p class="text-secondary fw-medium mb-0">
+      <%= t("invoice.archive_sub") %>
+    </p>
+  </div>
+
+  <% if @landlord.deleted_houses_count.zero? %>
+    <div class="d-flex flex-column align-items-center justify-content-center">
+      <div class="empty card text-center py-5 my-4 w-75">
+        <p class="fs-5 text-secondary fw-semibold"><%= t("form.house.no_deleted_houses") %></p>
+      </div>
+    </div>
+  <% else %>
+    <!-- Search & Filter Form -->
+    <div class="mb-4">
+      <%= form_with url: landlord_archived_invoices_path, method: :get,
+                    class: "row g-3 align-items-center justify-content-center",
+                    data: {
+                      controller: "search",
+                      turbo_frame: "invoice_archive_table",
+                      turbo_action: "advance"
+                    } do |f| %>
+
+        <div class="col-12 col-md-5 col-lg-5">
+          <div class="input-group border rounded-3 overflow-hidden shadow-sm transition-all">
+            <span class="input-group-text bg-white border-0 pe-1">
+              <span class="material-symbols-outlined fs-5 text-secondary">search</span>
+            </span>
+            <%= f.search_field :q,
+                value: @query,
+                placeholder: t("invoice.search_archive_placeholder"),
+                class: "form-control border-0 ps-2 bg-white shadow-none",
+                data: {
+                  search_target: "input",
+                  action: "input->search#debounce search->search#debounce"
+                } %>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-4 col-lg-4">
+          <div class="form-floating shadow-sm rounded-3">
+            <%= f.select :house_id,
+                options_for_select(
+                  [[t("invoice.all_houses"), ""]] +
+                  @houses.map { |h| ["#{h.name} (#{t('form.house.status_deleted')})", h.id] },
+                  @house_id
+                ),
+                {},
+                class: "form-select",
+                id: "floatingHouseSelect",
+                data: { action: "change->search#changed" } %>
+            <label for="floatingHouseSelect" class="text-secondary small fw-medium">
+              <%= t("form.house.self") %>
+            </label>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-3 col-lg-3">
+          <div class="form-floating shadow-sm rounded-3">
+            <%= f.month_field :month,
+                value: @month,
+                class: "form-control",
+                id: "floatingMonthSelect",
+                data: { action: "change->search#changed" } %>
+            <label for="floatingMonthSelect" class="text-secondary small fw-medium">
+              <%= t("invoice.billing_month") %>
+            </label>
+          </div>
+        </div>
+
+        <div class="col-auto">
+          <button type="button"
+                  class="btn btn-outline-secondary d-flex align-items-center gap-1 <%= 'd-none' unless @query.present? || @house_id.present? || @month.present? %>"
+                  data-search-target="clearButton"
+                  data-action="click->search#clear">
+            <span class="material-symbols-outlined fs-6">filter_alt_off</span>
+            <%= t("clear_filter") %>
+          </button>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Invoices Table with Turbo Frame -->
+    <%= turbo_frame_tag "invoice_archive_table",
+          data: {
+            turbo_action: "advance",
+            controller: "pagination-sync",
+            pagination_sync_canonical_url_value: landlord_archived_invoices_path,
+            pagination_sync_default_params_value: {}.to_json,
+            pagination_sync_query_params_value: ["q", "house_id", "month"].to_json,
+            pagination_sync_total_pages_selector_value: "[data-pagination-total-pages]",
+            action: "turbo:frame-load->pagination-sync#updateUrl"
+          } do %>
+      <%= render "invoice_table", invoices: @invoices, query: @query, house_id: @house_id, month: @month %>
+    <% end %>
+  <% end %>
+</div>

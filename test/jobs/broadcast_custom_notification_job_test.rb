@@ -61,8 +61,8 @@ class BroadcastCustomNotificationJobTest < ActiveJob::TestCase
         BroadcastCustomNotificationJob.perform_now(
           admin_id: @admin.id,
           target_audience: "landlords",
-          title: "Chỉ cho Chủ trọ",
-          message: "Nội dung dành riêng cho chủ nhà trọ",
+          title: "Chỉ cho Chủ nhà",
+          message: "Nội dung dành riêng cho chủ nhà",
           level: "warning"
         )
       end

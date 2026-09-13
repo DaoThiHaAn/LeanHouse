@@ -19,7 +19,8 @@ Rails.application.routes.draw do
   get "/signup", to: "authentication#sign_up", as: :signup
   get "/login", to: "authentication#login_form", as: :login
   post "/login", to: "authentication#handle_log_in", as: :handle_login
-  get "/logout", to: "authentication#log_out", as: :logout
+  delete "/logout", to: "authentication#log_out", as: :logout
+  get "/logout", to: "authentication#log_out"
   get "/forgot-password", to: "authentication#forgot_pw", as: :forgot_pw
   post "/forgot-password", to: "authentication#handle_forgot_pw", as: :handle_forgot_pw
   get "/reset-password", to: "authentication#reset_pw", as: :reset_pw
@@ -64,6 +65,9 @@ Rails.application.routes.draw do
         patch :set_default
       end
     end
+
+    resources :archived_contracts, only: %i[index show]
+    resources :archived_invoices, only: %i[index show]
 
     resources :requests, only: %i[index show] do
       collection do

@@ -49,7 +49,8 @@ class Ability
     can :read, :dashboard
     can :manage, House, landlord_id: id
     # 2-level relations
-    can :manage, [ Floor, Service, Contract ], house: { landlord_id: id }
+    can :manage, [ Floor, Service ], house: { landlord_id: id }
+    can :manage, Contract, landlord_id: id
     # can :manage, Tenant
     # 3-level relations
     can :manage, [ Room, Bed, ServiceVariant, RoomService ], house: { landlord_id: id }
@@ -70,7 +71,7 @@ class Ability
     can :read, Service
     can :read, Invoice, room: { rental_unit: { tenant_stays: { tenant_id: user.id, checkout_at: nil } } }
     can [ :read, :update ], ServiceUsageLog, room: { rental_unit: { tenant_stays: { tenant_id: user.id, checkout_at: nil } } }
-    can :read, Contract
+    can :read, Contract, tenant_id: user.id
   end
 
   # def guest_abilities

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_11_050001) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_13_154525) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "unaccent"
@@ -242,6 +242,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_11_050001) do
   end
 
   create_table "landlords", force: :cascade do |t|
+    t.integer "deleted_houses_count", default: 0, null: false
     t.integer "houses_count", default: 0, null: false
     t.integer "posts_count", default: 0, null: false
   end

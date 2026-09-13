@@ -6,7 +6,9 @@ class TenantPortal::ContractsController < TenantPortal::BaseController
     if params[:id].present?
       @contract = @tenant.contracts.find_by(id: params[:id])
       if @contract
+        authorize! :read, @contract
         @house = @contract.house
+        @tenant_stay = @house.tenant_stay_for(@contract.tenant_id) || @house.historical_tenant_stay_for(@contract.tenant_id)
         return render :show
       end
     end
@@ -15,6 +17,7 @@ class TenantPortal::ContractsController < TenantPortal::BaseController
 
     @contract = @tenant.latest_active_contract
     if @contract.present?
+      authorize! :read, @contract
       @house = @contract.house
       render :show
     else

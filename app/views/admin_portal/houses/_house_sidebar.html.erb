@@ -11,8 +11,19 @@
   </div>
 
   <div class="card-body p-3 d-flex flex-column gap-2">
+    <% if house.is_deleted? %>
+      <div class="admin-deleted-banner d-flex align-items-center gap-2 p-2 rounded-2">
+        <span class="material-symbols-outlined fs-5 text-danger">delete</span>
+        <span class="small fw-semibold text-danger"><%= t("admin.houses.deleted_banner") %></span>
+      </div>
+    <% end %>
     <div>
-      <h3 class="fs-5 fw-bold text-dark mb-1"><%= house.name %></h3>
+      <h3 class="fs-5 fw-bold text-dark mb-1">
+        <%= house.name %>
+        <% if house.is_deleted? %>
+          <span class="badge bg-danger-subtle text-danger border border-danger-subtle ms-1 small"><%= t("admin.houses.status_deleted") %></span>
+        <% end %>
+      </h3>
       <p class="text-secondary small mb-0 text-break"><%= house.full_address %></p>
     </div>
 

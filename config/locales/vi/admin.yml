@@ -159,6 +159,11 @@ vi:
       filter_all_modes: "Tất cả mô hình"
       filter_room: "Thuê theo phòng"
       filter_bed: "Thuê theo giường"
+      status: "Trạng thái"
+      status_all: "Tất cả trạng thái"
+      status_active: "Đang hoạt động"
+      status_deleted: "Đã xóa"
+      deleted_banner: "Nhà này đã bị xóa (Dữ liệu lưu trữ lịch sử)"
       house_menu: "Danh mục quản lý"
 
     services:
@@ -187,6 +192,7 @@ vi:
       total_subtext: "Trong toàn bộ ngôi nhà"
       needs_repair: "thiết bị cần kiểm tra/sửa chữa"
       all_good: "Tất cả thiết bị hoạt động tốt"
+      no_assets: "Chưa có thiết bị nào"
       investment_subtext: "Tổng giá trị trang thiết bị"
       total_maintenance_cost: "Tổng chi phí"
       performed_date: "Ngày thực hiện"
@@ -317,7 +323,7 @@ vi:
       leave_blank_password: "Để trống nếu không muốn thay đổi mật khẩu hiện tại."
       role_super_admin: "Quản trị hệ thống (Super Admin)"
       role_support: "Nhân viên hỗ trợ (Support)"
-      role_support_desc: "Hỗ trợ khách hàng, xem danh sách người dùng, nhà trọ và hợp đồng."
+      role_support_desc: "Hỗ trợ khách hàng, xem danh sách người dùng, nhà và hợp đồng."
       role_super_admin_desc: "Toàn quyền quản trị hệ thống, quản lý nhân viên và cấu hình."
       cannot_lock_self: "Bạn không thể tự khóa tài khoản của chính mình!"
       cannot_lock_last_super_admin: "Hệ thống phải có ít nhất 1 Super Admin đang hoạt động!"
@@ -427,7 +433,7 @@ vi:
         all: "Tất cả người dùng"
         all_hint: "Bao gồm toàn bộ Chủ trọ và Khách thuê đang hoạt động"
         landlords: "Chỉ Chủ trọ"
-        landlords_hint: "Chỉ gửi đến các tài khoản Chủ nhà trọ"
+        landlords_hint: "Chỉ gửi đến các tài khoản Chủ nhà"
         tenants: "Chỉ Khách thuê"
         tenants_hint: "Chỉ gửi đến các tài khoản Khách thuê phòng"
       levels:

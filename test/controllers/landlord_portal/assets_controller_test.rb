@@ -62,6 +62,27 @@ class LandlordPortal::AssetsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "landlord can view asset index page for house with no assets and see neutral stats card" do
+    empty_house = House.create!(
+      landlord: @landlord,
+      name: "Empty Asset House",
+      mode: :room,
+      address_l1: "456 Empty St",
+      address_l2: "Ward 2",
+      address_l3: "District 2",
+      floors_count: 1,
+      inv_creation_date: 1
+    )
+    sign_in_as(@landlord_user)
+
+    get landlord_house_assets_path(empty_house)
+    assert_response :success
+    assert_select "div#asset_stats_grid" do
+      assert_select "div.stat-card-gray"
+      assert_select "small", text: I18n.t("admin.assets.no_assets")
+    end
+  end
+
   test "filtered returns asset table partial" do
     sign_in_as(@landlord_user)
 

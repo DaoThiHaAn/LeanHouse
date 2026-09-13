@@ -104,4 +104,46 @@ class AuthenticationControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
     assert_includes flash[:alert], "Thông tin xác thực không đúng"
   end
+
+  test "should log out user via DELETE /logout and clear session" do
+    user = User.create!(
+      fullname: "User Logout Test",
+      tel: "0911229999",
+      password: "Password123!",
+      password_confirmation: "Password123!",
+      sex: "male",
+      bday: Date.new(1995, 5, 20),
+      address: "123 Tran Hung Dao",
+      role: "landlord",
+      is_active: true,
+      tel_verified_at: Time.current
+    )
+    post handle_login_path, params: { user: { tel: user.tel, password: "Password123!", role: "landlord" } }
+    assert_equal session[:user_id], user.id
+
+    delete logout_path
+    assert_redirected_to root_path
+    assert_nil session[:user_id]
+  end
+
+  test "should log out user via GET /logout and clear session" do
+    user = User.create!(
+      fullname: "User Logout Two",
+      tel: "0911229998",
+      password: "Password123!",
+      password_confirmation: "Password123!",
+      sex: "male",
+      bday: Date.new(1995, 5, 20),
+      address: "123 Tran Hung Dao",
+      role: "tenant",
+      is_active: true,
+      tel_verified_at: Time.current
+    )
+    post handle_login_path, params: { user: { tel: user.tel, password: "Password123!", role: "tenant" } }
+    assert_equal session[:user_id], user.id
+
+    get logout_path
+    assert_redirected_to root_path
+    assert_nil session[:user_id]
+  end
 end

@@ -18,12 +18,12 @@
   /* Position it slightly outside the top-right corner */
   top: -12px;
   right: -12px;
-  
+
   /* Set explicit dimensions for a perfect circle */
   width: 25px;
   height: 25px;
   z-index: 10; /* Ensures it sits on top of other elements */
-  
+
   /* Center the inner link/icon */
   display: flex;
   align-items: center;
@@ -32,7 +32,7 @@
 
   transition: all 0.1s ease;
   /* base ouline */
-  outline: 0px solid rgba(255, 0, 0, 0);  
+  outline: 0px solid rgba(255, 0, 0, 0);
   border: 1px solid #dee2e6;
 }
 
@@ -115,12 +115,12 @@
     transform: scale(1);
     color: #c69b1b;
   }
-  50% { 
+  50% {
     transform: scale(1.25);
     color: #ffaa33; /* Shifts to red at peak zoom */
   }
 }
- 
+
 /* Tenant dashboard of landlord */
 .stat-card {
   border-radius: 16px;
@@ -228,6 +228,25 @@
 .stat-card-red .stat-icon-wrap {
   background-color: #FFFFFF;
   color: #b83a26;
+}
+
+.stat-card-gray {
+  background-color: #F8F9FA;
+  border-color: #E9ECEF;
+  border-left-color: #ADB5BD;
+}
+.stat-card-gray .stat-card-title {
+  color: #495057;
+}
+.stat-card-gray .stat-card-value {
+  color: #6C757D;
+}
+.stat-card-gray .stat-card-subtext {
+  color: #6C757D;
+}
+.stat-card-gray .stat-icon-wrap {
+  background-color: #FFFFFF;
+  color: #6C757D;
 }
 
 

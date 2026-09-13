@@ -1,4 +1,26 @@
-<%# Locals: stats, house %>
+<%
+  total_count = stats[:total_count].to_i
+  damaged_count = stats[:damaged_count].to_i
+  normal_count = stats[:normal_count].to_i
+  has_assets = total_count.positive?
+  has_damaged = damaged_count.positive?
+
+  condition_theme = if !has_assets
+                      "stat-card-gray"
+                    elsif has_damaged
+                      "stat-card-orange"
+                    else
+                      "stat-card-green"
+                    end
+
+  condition_icon = if !has_assets
+                     "devices"
+                   elsif has_damaged
+                     "build"
+                   else
+                     "verified"
+                   end
+%>
 
 <div id="asset_stats_grid" class="row row-cols-1 row-cols-md-3 g-3 mb-5">
   <%# 1. Total Assets (Teal Theme) %>
@@ -13,36 +35,46 @@
         </div>
       </div>
       <div class="d-flex align-items-baseline gap-2">
-        <span class="fs-3 fw-bold stat-card-value"><%= stats[:total_count] %></span>
+        <span class="fs-3 fw-bold stat-card-value"><%= total_count %></span>
         <p class="stat-card-subtext fw-semibold"><%= t("admin.assets.items_unit") %></p>
       </div>
       <small class="text-secondary mt-1 fst-italic"><%= t("admin.assets.total_subtext") %></small>
     </div>
   </div>
 
-  <%# 2. Condition (Green / Orange Theme) %>
+  <%# 2. Condition (Green / Orange / Gray Theme) %>
   <div class="col">
-    <div class="card stat-card <%= stats[:damaged_count].to_i.positive? ? 'stat-card-orange' : 'stat-card-green' %> shadow-sm h-100 p-3">
+    <div class="card stat-card <%= condition_theme %> shadow-sm h-100 p-3">
       <div class="d-flex align-items-center justify-content-between mb-2">
         <p class="stat-card-title fw-bold">
           <%= t("admin.assets.asset_condition") %>
         </p>
-        <div class="stat-icon-wrap rounded-circle d-flex align-items-center justify-content-center <%= 'text-danger' if stats[:damaged_count].to_i.positive? %>">
-          <span class="material-symbols-filled fs-3 <%= 'warning-pulse' if stats[:damaged_count].to_i.positive? %>">
-            <%= stats[:damaged_count].to_i.positive? ? 'build' : 'verified' %>
+        <div class="stat-icon-wrap rounded-circle d-flex align-items-center justify-content-center <%= 'text-danger' if has_damaged %>">
+          <span class="material-symbols-filled fs-3 <%= 'warning-pulse' if has_damaged %>">
+            <%= condition_icon %>
           </span>
         </div>
       </div>
       <div class="d-flex align-items-baseline gap-2 flex-wrap">
-        <span class="fs-3 fw-bold stat-card-value text-success"><%= stats[:normal_count] %></span>
-        <span class="text-success fw-semibold"><%= t("admin.assets.normal_short") %></span>
-        <span class="text-secondary fs-3">·</span>
-        <span class="fs-3 fw-bold stat-card-value <%= stats[:damaged_count].to_i.positive? ? 'text-danger' : 'text-secondary' %>"><%= stats[:damaged_count] %></span>
-        <span class="<%= stats[:damaged_count].to_i.positive? ? 'text-danger' : 'text-secondary' %> fw-semibold"><%= t("admin.assets.damaged_short") %></span>
+        <% if has_assets %>
+          <span class="fs-3 fw-bold stat-card-value text-success"><%= normal_count %></span>
+          <span class="text-success fw-semibold"><%= t("admin.assets.normal_short") %></span>
+          <span class="text-secondary fs-3">·</span>
+          <span class="fs-3 fw-bold stat-card-value <%= has_damaged ? 'text-danger' : 'text-secondary' %>"><%= damaged_count %></span>
+          <span class="<%= has_damaged ? 'text-danger' : 'text-secondary' %> fw-semibold"><%= t("admin.assets.damaged_short") %></span>
+        <% else %>
+          <span class="fs-3 fw-bold stat-card-value text-secondary">0</span>
+          <span class="text-secondary fw-semibold"><%= t("admin.assets.normal_short") %></span>
+          <span class="text-secondary fs-3">·</span>
+          <span class="fs-3 fw-bold stat-card-value text-secondary">0</span>
+          <span class="text-secondary fw-semibold"><%= t("admin.assets.damaged_short") %></span>
+        <% end %>
       </div>
-      <small class="<%= stats[:damaged_count].to_i.positive? ? 'text-danger fw-semibold' : 'text-secondary' %> mt-1 fst-italic">
-        <% if stats[:damaged_count].to_i.positive? %>
-          <%= stats[:damaged_count] %> <%= t("admin.assets.needs_repair") %>
+      <small class="<%= has_damaged ? 'text-danger fw-semibold' : 'text-secondary' %> mt-1 fst-italic">
+        <% if !has_assets %>
+          <%= t("admin.assets.no_assets") %>
+        <% elsif has_damaged %>
+          <%= damaged_count %> <%= t("admin.assets.needs_repair") %>
         <% else %>
           <%= t("admin.assets.all_good") %>
         <% end %>

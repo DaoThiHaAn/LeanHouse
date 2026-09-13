@@ -8,4 +8,13 @@
     </p>
 
     <%= image_tag "house-key.gif", alt: "House key GIF", width: "200px" %>
+
+    <% if current_user.tenant&.contracts&.any? %>
+      <div class="mt-2">
+        <%= link_to tenant_all_contracts_path, class: "btn btn-outline-primary d-inline-flex align-items-center gap-2 shadow-sm px-3 py-2" do %>
+          <span class="material-symbols-outlined fs-5">history</span>
+          <span><%= t("form.contract.all_contracts") %></span>
+        <% end %>
+      </div>
+    <% end %>
 </div>

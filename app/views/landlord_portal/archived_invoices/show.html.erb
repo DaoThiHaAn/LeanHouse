@@ -1,0 +1,32 @@
+<% content_for :title, "#{t('invoice.self')} #{@invoice.code} - #{@house.name}" %>
+
+<div class="container py-4 invoice-detail-wrapper">
+  <!-- Navigation Top Bar -->
+  <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom d-print-none flex-wrap gap-2">
+    <%= link_to landlord_archived_invoices_path, class: "btn btn-outline-secondary btn-sm d-flex align-items-center gap-1 shadow-sm px-3 rounded-pill" do %>
+      <span class="material-symbols-outlined fs-6">arrow_back</span>
+      <span><%= t("invoice.archive_title") %></span>
+    <% end %>
+
+    <div class="text-center">
+      <h1 class="mb-1"><%= t('invoice.detail') %></h1>
+      <p class="text-secondary small mb-0">
+        #<%= @invoice.code %> - <%= @house.name %>
+        <span class="badge bg-danger-subtle text-danger border border-danger-subtle ms-1"><%= t("form.house.status_deleted") %></span>
+      </p>
+    </div>
+
+    <div class="d-flex gap-2 align-items-center flex-wrap">
+      <button onclick="window.print()" class="btn btn-outline-dark btn-sm d-flex align-items-center gap-1 shadow-sm px-3 rounded-pill">
+        <span class="material-symbols-outlined fs-6">print</span> <%= t('invoice.actions.print') %>
+      </button>
+    </div>
+  </div>
+
+  <div class="alert alert-danger d-flex align-items-center gap-2 mb-3 py-2 px-3 d-print-none">
+    <span class="material-symbols-outlined text-danger fs-5">delete</span>
+    <div class="small fw-semibold"><%= t("invoice.deleted_house_notice") %></div>
+  </div>
+
+  <%= render "layouts/shared_components/invoice_detail_card", invoice: @invoice, bank_account: @bank_account %>
+</div>

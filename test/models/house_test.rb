@@ -112,14 +112,46 @@ class HouseTest < ActiveSupport::TestCase
       tel_verified_at: Time.current
     )
     tenant = Tenant.find_or_create_by!(id: tenant_user.id)
-    vr = VehicleRequest.create!(license_plate: "29A-12345", vehicle_type: "bike")
-    @house_empty.requests.create!(tenant: tenant, requestable: vr, status: :pending)
+    rr = RepairRequest.create!(title: "Bong den hong", content: "Bong den phong 101 bi chay")
+    @house_empty.requests.create!(tenant: tenant, requestable: rr, status: :pending)
 
     assert_not @house_empty.can_delete?
   end
 
-  test "soft_delete! sets is_deleted to true" do
-    @house_empty.soft_delete!
+  test "soft_delete! sets is_deleted to true and increments landlord deleted_houses_count" do
+    assert_difference -> { @landlord.reload.deleted_houses_count }, 1 do
+      @house_empty.soft_delete!
+    end
     assert @house_empty.reload.is_deleted?
+  end
+
+  test "creating house with is_deleted true increments landlord deleted_houses_count" do
+    assert_difference -> { @landlord.reload.deleted_houses_count }, 1 do
+      House.create!(
+        landlord: @landlord,
+        name: "Already Deleted House",
+        mode: :room,
+        address_l1: "4 Gamma St",
+        address_l2: "Ward G",
+        address_l3: "District G",
+        floors_count: 1,
+        inv_creation_date: 1,
+        is_deleted: true
+      )
+    end
+  end
+
+  test "destroying a deleted house decrements landlord deleted_houses_count" do
+    @house_empty.soft_delete!
+    assert_difference -> { @landlord.reload.deleted_houses_count }, -1 do
+      @house_empty.destroy
+    end
+  end
+
+  test "restoring a deleted house decrements landlord deleted_houses_count" do
+    @house_empty.soft_delete!
+    assert_difference -> { @landlord.reload.deleted_houses_count }, -1 do
+      @house_empty.update!(is_deleted: false)
+    end
   end
 end

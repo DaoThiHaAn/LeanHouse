@@ -360,6 +360,10 @@ textarea {
   flex-grow: 1;
 }
 
+.empty.card {
+  border: 2px dashed grey;
+}
+
 /* Polished Turn-Back / Back Navigation Link */
 .turn-back.link {
   display: inline-flex;

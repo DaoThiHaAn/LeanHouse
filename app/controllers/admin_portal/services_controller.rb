@@ -3,7 +3,7 @@ module AdminPortal
     SERVICES_PER_PAGE = 10
 
     def index
-      @house = House.active.includes(
+      @house = House.includes(
         landlord: :user,
         floors: :rooms
       ).find(params[:house_id])

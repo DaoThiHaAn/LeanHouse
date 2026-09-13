@@ -22,6 +22,10 @@ class House < ApplicationRecord
   validates :mode, inclusion: { in: modes.keys }
   validates :inv_creation_date, numericality: { only_integer: true, greater_than_or_equal_to: 1, less_than_or_equal_to: 31 }
 
+  after_create :increment_landlord_deleted_houses_count, if: :is_deleted?
+  after_update :adjust_landlord_deleted_houses_count, if: :saved_change_to_is_deleted?
+  after_destroy :decrement_landlord_deleted_houses_count, if: :is_deleted?
+
   scope :active, -> { where(is_deleted: false) }
   scope :deleted, -> { where(is_deleted: true) }
   scope :sorted, -> { order(name: :asc) }
@@ -222,6 +226,19 @@ class House < ApplicationRecord
       .find_by(rental_unit_id: rental_units, tenant_id: tenant_id)
   end
 
+  # @param tenant_id [int]
+  # @return [TenantStay, nil]: the most recent stay (current or past checkout) of tenant in this house
+  def historical_tenant_stay_for(tenant_id)
+    rental_units = RentalUnit.where(
+      rentable: room? ? rooms : beds
+    )
+
+    TenantStay
+      .where(rental_unit_id: rental_units, tenant_id: tenant_id)
+      .order(checkin_at: :desc, id: :desc)
+      .first
+  end
+
   # @return [Array<Contract>] all contracts of the current staying tenants
   def all_current_contracts
     rentable_records = room? ? rooms : beds
@@ -282,6 +299,32 @@ class House < ApplicationRecord
 
     if regulation_file.byte_size > 50.megabytes
       errors.add(:regulation_file, :too_large)
+    end
+  end
+
+  def increment_landlord_deleted_houses_count
+    return unless landlord_id
+
+    Landlord.increment_counter(:deleted_houses_count, landlord_id)
+    if association(:landlord).loaded?
+      landlord.deleted_houses_count = (landlord.deleted_houses_count || 0) + 1
+    end
+  end
+
+  def decrement_landlord_deleted_houses_count
+    return unless landlord_id
+
+    Landlord.where(id: landlord_id).where("deleted_houses_count > 0").update_all("deleted_houses_count = deleted_houses_count - 1")
+    if association(:landlord).loaded?
+      landlord.deleted_houses_count = [ (landlord.deleted_houses_count || 1) - 1, 0 ].max
+    end
+  end
+
+  def adjust_landlord_deleted_houses_count
+    if is_deleted?
+      increment_landlord_deleted_houses_count
+    else
+      decrement_landlord_deleted_houses_count
     end
   end
 end

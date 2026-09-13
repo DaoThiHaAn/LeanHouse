@@ -28,7 +28,7 @@ module AdminPortal
     private
 
     def set_house
-      @house = House.active.includes(landlord: :user).find(params[:house_id])
+      @house = House.includes(landlord: :user).find(params[:house_id])
     end
 
     def set_invoice

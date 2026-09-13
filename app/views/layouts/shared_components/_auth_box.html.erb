@@ -16,15 +16,18 @@
           <% if current_user.role == "landlord" %>
             <li><%= link_to t("bar.my_profile"), landlord_profile_path, class: "dropdown-item" %></li>
             <li><%= link_to t("bar.my_bank_acc"), landlord_bank_accounts_path, class: "dropdown-item" %></li>
+            <li><%= link_to t("bar.contract_archive"), landlord_archived_contracts_path, class: "dropdown-item" %></li>
+            <li><%= link_to t("bar.invoice_archive"), landlord_archived_invoices_path, class: "dropdown-item" %></li>
           <% else %>
             <li><%= link_to t("bar.my_profile"), tenant_profile_path, class: "dropdown-item" %></li>
             <li><%= link_to t("bar.my_vehicle"), tenant_vehicles_path, class: "dropdown-item" %></li>
             <li><%= link_to t("bar.all_contracts"), tenant_all_contracts_path, class: "dropdown-item" %></li>
           <% end %>
           <li>
-            <%= link_to logout_path, class: "dropdown-item d-flex gap-1 align-items-center" do %>
+            <%= button_to logout_path, method: :delete, data: { turbo_prefetch: false },
+                class: "dropdown-item d-flex gap-1 align-items-center w-100 text-danger" do %>
               <%= t("auth.log_out") %>
-              <span class="material-symbols-outlined">logout</span>
+              <span class="material-symbols-outlined fs-4">logout</span>
             <% end %>
           </li>
         </ul>

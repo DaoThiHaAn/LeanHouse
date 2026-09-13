@@ -2,17 +2,25 @@ module AdminPortal
   class HousesController < BaseController
     def index
       @mode_filter = params[:mode].presence
+      @status_filter = params[:status].presence || "all"
       @query = params[:q].presence
 
-      @houses = House.active
-                     .includes(landlord: :user, floors: :rooms)
-                     .search(@query)
-                     .by_mode(@mode_filter)
-                     .order(created_at: :desc)
+      houses = House.includes(landlord: :user, floors: :rooms)
+                    .search(@query)
+                    .by_mode(@mode_filter)
+
+      case @status_filter
+      when "active"
+        houses = houses.active
+      when "deleted"
+        houses = houses.deleted
+      end
+
+      @houses = houses.order(created_at: :desc)
     end
 
     def show
-      @house = House.active.includes(landlord: :user).find(params[:id])
+      @house = House.includes(landlord: :user).find(params[:id])
       @floors = @house.floors.pos_order
       @total_rooms_count = @house.rooms.active.count
 
