@@ -5,7 +5,7 @@
 %>
 <div class="d-flex gap-4 flex-column d-print-none">
   <% if inv.paid? %>
-    <div class="d-flex gap-3">
+    <div class="d-flex gap-3 align-items-center flex-wrap">
       <p class="badge bg-success px-3 py-2 fs-6">
         <span class="material-symbols-outlined fs-4">price_check</span>
         <%= t('invoice.paid_completed') %>
@@ -28,10 +28,10 @@
       </p>
 
       <% if inv.paid_at.present? %>
-        <div>
+        <p>
           <span class="text-secondary material-symbols-outlined fs-5" title="<%= t("invoice.paid_at_label") %>">history_2</span>
           <span class="text-secondary small"><%= format_datetime(inv.paid_at) %></span>
-        </div>
+        </p>
       <% end %>
 
       <% if inv.paid_by.present? %>

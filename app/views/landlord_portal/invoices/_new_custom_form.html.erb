@@ -16,7 +16,7 @@
     </div>
 
     <button type="button" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1 shadow-sm px-3 py-1 fw-semibold" data-bs-toggle="modal" data-bs-target="#invoiceCreationGuideModal">
-      <span class="material-symbols-outlined fs-6">menu_book</span>
+      <span class="material-symbols-outlined fs-6">help</span>
       <%= t('invoice.guide.btn_title', default: 'Hướng dẫn lập hóa đơn') %>
     </button>
   </div>
@@ -283,7 +283,12 @@
                 <input type="number" min="0" step="0.1" name="invoice[items][add_0][quantity]" value="1" class="form-control form-control-sm font-monospace text-center item-qty invoice-input-qty" data-action="input->invoice-items#calculateRow" />
               </td>
               <td class="text-end">
-                <input type="number" readonly="readonly" name="invoice[items][add_0][amount]" value="0" class="form-control form-control-sm font-monospace text-end item-amount fw-bold text-primary bg-light-subtle invoice-input-amount" />
+                <div class="d-flex justify-content-end">
+                  <input type="hidden" name="invoice[items][add_0][amount]" value="0" class="item-amount" />
+                  <span class="badge bg-primary-subtle text-primary border border-primary-subtle font-monospace px-2 py-1 fw-bold item-amount-display">
+                    0 đ
+                  </span>
+                </div>
               </td>
               <td class="text-center pe-3">
                 <button type="button" class="btn btn-sm btn-outline-danger btn-remove-row p-1 d-inline-flex align-items-center justify-content-center" data-action="click->invoice-items#removeRowClick" title="<%= t('invoice.actions.delete', default: 'Xóa dòng') %>">

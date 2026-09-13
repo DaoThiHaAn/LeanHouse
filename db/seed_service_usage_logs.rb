@@ -13,7 +13,7 @@ names = [
   "Đỗ Thị Nga", "Hồ Văn Phong", "Ngô Thị Quỳnh", "Dương Văn Sơn"
 ]
 
-[ h20, h13 ].compact.each do |house|
+[ h20 ].compact.each do |house|
   puts "Processing House #{house.id}: #{house.name}..."
 
   dien_variant = house.service_variants.joins(:service).where(is_real_time: true, unit: "per_kwh").first ||
@@ -25,35 +25,74 @@ names = [
 
   sample_photo_path = Rails.root.join("app/assets/images/banner.png")
 
+  # Clean up legacy invalid stays attached to whole rooms if house is in bed mode
+  if house.bed?
+    room_unit_ids = RentalUnit.where(rentable: house.rooms).pluck(:id)
+    TenantStay.where(rental_unit_id: room_unit_ids).destroy_all
+  end
+
   rooms = house.rooms.order(:id).to_a
   rooms.each_with_index do |room, idx|
-    # Ensure rental_unit exists
-    rental_unit = room.rental_unit || room.create_rental_unit!(rent: 3_000_000, deposit: 3_000_000)
+    if house.bed?
+      # In bed mode, find the first available bed in the room.
+      # Beds that are already occupied (including manual test data) are strictly preserved!
+      available_bed = room.beds.available.order(:id).first
+      if available_bed
+        rental_unit = available_bed.rental_unit || available_bed.create_rental_unit!(rent: 1_500_000, deposit: 1_500_000)
 
-    # Assign unique tenant stay if none
-    if room.tenant_stays.staying.empty?
-      tel_num = sprintf("0978%02d%04d", house.id, (room.id * 7) % 10000)
-      tenant_user = User.find_or_create_by!(tel: tel_num) do |u|
-        u.fullname = names[idx % names.size]
-        u.role = :tenant
-        u.password = "password123"
-        u.password_confirmation = "password123"
-        u.bday = Date.new(2000, 1, 1)
-        u.address = "Hà Nội"
-        u.sex = "male"
-        u.is_active = true
+        tel_num = sprintf("0978%02d%04d", house.id, (room.id * 7) % 10000)
+        tenant_user = User.find_or_create_by!(tel: tel_num) do |u|
+          u.fullname = names[idx % names.size]
+          u.role = :tenant
+          u.password = "password123"
+          u.password_confirmation = "password123"
+          u.bday = Date.new(2000, 1, 1)
+          u.address = "Hà Nội"
+          u.sex = "male"
+          u.is_active = true
+        end
+        tenant = Tenant.find_or_create_by!(id: tenant_user.id)
+
+        unless TenantStay.staying.where(tenant_id: tenant.id).exists?
+          TenantStay.create!(
+            tenant: tenant,
+            rental_unit: rental_unit,
+            checkin_at: 2.months.ago,
+            has_contract: false
+          )
+          available_bed.tenant_added!
+          puts "  Assigned tenant #{tenant_user.fullname} to Bed #{available_bed.name} in #{room.title_name}"
+        end
       end
-      tenant = Tenant.find_or_create_by!(id: tenant_user.id)
+    else
+      # In room mode, ensure rental unit on room exists
+      rental_unit = room.rental_unit || room.create_rental_unit!(rent: 3_000_000, deposit: 3_000_000)
 
-      # Check if this tenant is already staying anywhere
-      unless TenantStay.staying.where(tenant_id: tenant.id).exists?
-        TenantStay.create!(
-          tenant: tenant,
-          rental_unit: rental_unit,
-          checkin_at: 2.months.ago,
-          has_contract: false
-        )
-        puts "  Assigned tenant #{tenant_user.fullname} to Room #{room.name}"
+      # Assign unique tenant stay if none
+      if room.tenant_stays.staying.empty?
+        tel_num = sprintf("0978%02d%04d", house.id, (room.id * 7) % 10000)
+        tenant_user = User.find_or_create_by!(tel: tel_num) do |u|
+          u.fullname = names[idx % names.size]
+          u.role = :tenant
+          u.password = "password123"
+          u.password_confirmation = "password123"
+          u.bday = Date.new(2000, 1, 1)
+          u.address = "Hà Nội"
+          u.sex = "male"
+          u.is_active = true
+        end
+        tenant = Tenant.find_or_create_by!(id: tenant_user.id)
+
+        unless TenantStay.staying.where(tenant_id: tenant.id).exists?
+          TenantStay.create!(
+            tenant: tenant,
+            rental_unit: rental_unit,
+            checkin_at: 2.months.ago,
+            has_contract: false
+          )
+          room.tenant_added!
+          puts "  Assigned tenant #{tenant_user.fullname} to Room #{room.name}"
+        end
       end
     end
 
@@ -65,11 +104,15 @@ names = [
     end
   end
 
-  # Create logs for Room 1 & Room 2 in House 20
+  # Create logs for Room 1 & Room 2 in House
   r1 = rooms[0]
   r2 = rooms[1]
   r3 = rooms[2]
-  tenant_user1 = r1&.tenant_stays&.staying&.first&.tenant&.user || landlord
+  tenant_user1 = if house.bed?
+                   r1&.beds&.map { |b| b.staying_tenant&.user }&.compact&.first || landlord
+  else
+                   r1&.staying_tenants&.first&.user || landlord
+  end
 
   # August 2026 logs (Confirmed)
   aug_month = Date.new(2026, 8, 1)

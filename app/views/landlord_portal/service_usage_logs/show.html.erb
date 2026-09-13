@@ -1,26 +1,28 @@
 <%= turbo_frame_tag "usage_log_detail_modal" do %>
   <div class="modal fade" id="usageLogDetailModal" tabindex="-1" aria-labelledby="usageLogDetailModalLabel" aria-hidden="true"
         data-controller="modal" data-modal-auto-open-value="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
-      <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+    <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
+      <div class="modal-content px-2 rounded-4 overflow-hidden">
         <!-- Header -->
         <div class="modal-header bg-white border-bottom py-3 px-4 d-flex justify-content-between align-items-center">
-          <div class="d-flex align-items-center gap-2">
-            <span class="material-symbols-outlined text-primary fs-4">electric_meter</span>
-            <div>
-              <h5 class="modal-title fw-bold mb-0" id="usageLogDetailModalLabel">
-                <%= t("service_usage_logs.detail_title", service: @log.service_name, room: @log.room.title_name) %>
-              </h5>
-              <div class="d-flex align-items-center gap-2 mt-1">
-                <span class="badge bg-light text-secondary border">
-                  <%= @log.room.floor.title_name %>
-                </span>
-                <span class="badge bg-light text-secondary border">
-                  <%= t("service_usage_logs.billing_month") %>: <%= @log.billing_month.strftime("%m/%Y") %>
-                </span>
-              </div>
+          <div>
+            <h2 class="modal-title mb-0" id="usageLogDetailModalLabel">
+              <%= t("service_usage_logs.detail_title", service: @log.service_name) %>
+            </h2>
+
+            <div class="d-flex align-items-center gap-2 mt-1 flex-wrap">
+              <span class="badge bg-light text-secondary border fs-6">
+                <%= @log.room.title_name %>,
+                <%= @log.room.floor.title_name %>
+              </span>
+              <span class="badge bg-light text-secondary border fs-6">
+                <%= t("service_usage_logs.billing_month") %>: <%= @log.billing_month.strftime("%m/%Y") %>
+              </span>
+              <%= usage_log_confirmation_badge(@log) %>
+              <%= usage_log_billed_badge(@log) %>
             </div>
           </div>
+
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
 
@@ -30,40 +32,33 @@
             <!-- Left Column: Photo & Upload Timestamp -->
             <div class="col-md-6">
               <div class="card border-0 bg-light rounded-3 p-3 h-100">
-                <h6 class="fw-bold text-dark mb-3 d-flex align-items-center gap-2">
-                  <span class="material-symbols-outlined fs-5 text-primary">photo_camera</span>
+                <h3 class="mb-3 d-flex align-items-center gap-2">
+                  <span class="material-symbols-outlined fs-4">photo_camera</span>
                   <span><%= t("invoice.meter_photo") %></span>
-                </h6>
+                </h3>
 
                 <% if @log.reading_photo.attached? %>
-                  <div class="text-center mb-3">
-                    <%= image_tag @log.reading_photo,
-                                  class: "img-fluid rounded-3 border shadow-sm w-100 usage-log-modal-photo",
-                                  alt: t("invoice.meter_photo") %>
+                  <%= image_tag @log.reading_photo,
+                                class: "img-fluid rounded border mx-auto shadow-sm w-100 usage-log-modal-photo",
+                                alt: t("invoice.meter_photo") %>
+
+                  <div class="d-flex justify-content-between align-items-center my-4 pb-2 border-bottom">
+                    <span class="text-secondary small"><%= t("service_usage_logs.photo_uploaded_at") %>:</span>
+                    <span class="fw-bold text-dark small">
+                      <%= l(@log.reading_photo.blob.created_at, format: :long) %>
+                    </span>
                   </div>
-                  <div class="bg-white p-3 rounded-3 border">
-                    <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
-                      <span class="text-secondary small"><%= t("service_usage_logs.photo_uploaded_at") %>:</span>
-                      <span class="fw-bold text-dark small">
-                        <%= l(@log.reading_photo.blob.created_at, format: :long) %>
-                      </span>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
-                      <span class="text-secondary small"><%= t("service_usage_logs.file_size") %>:</span>
-                      <span class="text-dark small">
-                        <%= number_to_human_size(@log.reading_photo.blob.byte_size) %>
-                      </span>
-                    </div>
-                    <div class="text-center mt-2">
-                      <%= link_to url_for(@log.reading_photo),
-                                  target: "_blank",
-                                  rel: "noopener",
-                                  class: "btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1" do %>
-                        <span class="material-symbols-outlined fs-6">open_in_new</span>
-                        <span><%= t("service_usage_logs.view_full_photo") %></span>
-                      <% end %>
-                    </div>
+
+                  <div class="text-center mt-2">
+                    <%= link_to url_for(@log.reading_photo),
+                                target: "_blank",
+                                rel: "noopener",
+                                class: "btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1" do %>
+                      <span class="material-symbols-outlined fs-6">open_in_new</span>
+                      <span><%= t("service_usage_logs.view_full_photo") %></span>
+                    <% end %>
                   </div>
+
                 <% else %>
                   <div class="d-flex flex-column align-items-center justify-content-center h-75 text-secondary p-4 text-center">
                     <span class="material-symbols-outlined fs-1 text-muted mb-2">no_photography</span>
@@ -77,10 +72,10 @@
             <div class="col-md-6">
               <!-- Usage Metrics Card -->
               <div class="card border-0 bg-light rounded-3 p-3 mb-3">
-                <h6 class="fw-bold text-dark mb-3 d-flex align-items-center gap-2">
-                  <span class="material-symbols-outlined fs-5 text-primary">fact_check</span>
+                <h3 class="mb-3 d-flex align-items-center gap-2">
+                  <span class="material-symbols-outlined fs-4">fact_check</span>
                   <span><%= t("service_usage_logs.meter_details") %></span>
-                </h6>
+                </h3>
 
                 <div class="row g-2 mb-3">
                   <div class="col-6">
@@ -117,10 +112,10 @@
 
               <!-- Audit Trail & Timestamps Card -->
               <div class="card border-0 bg-light rounded-3 p-3">
-                <h6 class="fw-bold text-dark mb-3 d-flex align-items-center gap-2">
-                  <span class="material-symbols-outlined fs-5 text-primary">history</span>
+                <h3 class="mb-3 d-flex align-items-center gap-2">
+                  <span class="material-symbols-outlined fs-4">history</span>
                   <span><%= t("service_usage_logs.audit_info") %></span>
-                </h6>
+                </h3>
 
                 <!-- Submitter & Submission Timestamp -->
                 <div class="bg-white p-2 rounded-2 border mb-2">
@@ -142,18 +137,8 @@
                 <!-- Confirmation Status & Timestamp -->
                 <div class="bg-white p-2 rounded-2 border mb-2">
                   <div class="d-flex justify-content-between align-items-center">
-                    <span class="text-secondary small"><%= t("common.status") %>:</span>
-                    <% if @log.is_confirmed? %>
-                      <span class="badge bg-success-subtle text-success border border-success-subtle d-inline-flex align-items-center gap-1">
-                        <span class="material-symbols-outlined fs-6">check_circle</span>
-                        <%= t("invoice.status_confirmed") %>
-                      </span>
-                    <% else %>
-                      <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle d-inline-flex align-items-center gap-1">
-                        <span class="material-symbols-outlined fs-6">schedule</span>
-                        <%= t("invoice.status_unconfirmed") %>
-                      </span>
-                    <% end %>
+                    <span class="text-secondary small"><%= t("status") %>:</span>
+                    <%= usage_log_confirmation_badge(@log) %>
                   </div>
 
                   <div class="d-flex justify-content-between align-items-center mt-2">
@@ -181,15 +166,7 @@
                 <div class="bg-white p-2 rounded-2 border">
                   <div class="d-flex justify-content-between align-items-center">
                     <span class="text-secondary small"><%= t("service_usage_logs.billing_state") %>:</span>
-                    <% if @log.billed? %>
-                      <span class="badge bg-info-subtle text-info-emphasis border border-info-subtle">
-                        <%= t("invoice.status_billed") %>
-                      </span>
-                    <% else %>
-                      <span class="text-secondary small fst-italic">
-                        <%= t("service_usage_logs.not_billed_yet") %>
-                      </span>
-                    <% end %>
+                    <%= usage_log_billed_badge(@log, show_unbilled: true) %>
                   </div>
                 </div>
 
@@ -215,9 +192,18 @@
             <% unless @log.is_confirmed? %>
               <%= button_to confirm_landlord_house_service_usage_log_path(@house, @log),
                             method: :patch,
-                            class: "btn btn-success btn-sm d-inline-flex align-items-center gap-1" do %>
-                <span class="material-symbols-outlined fs-6">check_circle</span>
-                <span><%= t("invoice.confirm_and_close") %></span>
+                            form: {
+                              data: {
+                                controller: "loading",
+                                loading_text_value: t("invoice.confirming"),
+                                action: "submit->loading#submit"
+                              }
+                            },
+                            class: "custom-primary-btn d-inline-flex gap-1 align-items-center",
+                            data: { loading_target: "button" } do %>
+                <span class="material-symbols-outlined fs-4" data-loading-target="icon">check_circle</span>
+                <span class="material-symbols-outlined spin d-none fs-4" data-loading-target="spinner" aria-hidden="true">progress_activity</span>
+                <span data-loading-target="text"><%= t("invoice.confirm_and_close") %></span>
               <% end %>
             <% end %>
 

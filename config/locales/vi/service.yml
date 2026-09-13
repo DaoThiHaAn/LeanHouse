@@ -2,7 +2,7 @@ vi:
   service:
     self: "Dịch vụ"
     back: "Quay lại Danh sách dịch vụ"
-    mng_note: "Nơi quản lý các dịch vụ trong nhà của bạn"
+    mng_note: "Nơi quản lý và theo dõi các dịch vụ trong nhà của bạn"
     my_note: "Giúp bạn theo dõi các dịch vụ áp dụng trong phòng ở"
     none: "Chưa có dịch vụ nào trong Nhà"
     applied_sv: "Dịch vụ áp dụng"

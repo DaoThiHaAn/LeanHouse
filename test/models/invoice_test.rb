@@ -208,9 +208,29 @@ class InvoiceTest < ActiveSupport::TestCase
     assert_not_includes url, "addInfo="
   end
 
-  test "invoice automatically generates payos_order_code on create" do
+  test "invoice does not generate payos_order_code when payos is not configured" do
+    assert_nil @invoice.payos_order_code
+    assert_equal 0, @invoice.payment_orders.count
+  end
+
+  test "invoice lazily generates payos_order_code and payment_order when payos is configured" do
+    mb_bank = Bank.find_or_create_by!(code: "MB", bin: "970422", short_name: "MB", name: "MB Bank")
+    payos_account = BankAccount.create!(
+      landlord: @landlord,
+      bank: mb_bank,
+      account_number: "0987654321",
+      account_holder: "PAYOS LANDLORD",
+      payos_enabled: true,
+      payos_client_id: "client-id",
+      payos_api_key: "api-key",
+      payos_checksum_key: "checksum-key"
+    )
+    @invoice.update!(bank_account: payos_account)
+
     assert @invoice.payos_order_code.present?
     assert @invoice.payos_order_code.is_a?(Integer)
+    assert_equal 1, @invoice.payment_orders.count
+    assert_equal @invoice.payos_order_code, @invoice.payos_order.order_code
   end
 
   test "vietqr_url uses payos description when bank account is configured for payOS" do
@@ -225,7 +245,7 @@ class InvoiceTest < ActiveSupport::TestCase
       payos_api_key: "api-key",
       payos_checksum_key: "checksum-key"
     )
-
+    @invoice.update!(bank_account: payos_account)
     url = @invoice.vietqr_url(payos_account)
     assert_includes url, "HD%20#{@invoice.payos_order_code}"
   end

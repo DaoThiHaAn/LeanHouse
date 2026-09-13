@@ -40,13 +40,15 @@
 
   <td>
     <% if log.reading_photo.attached? %>
-      <%= link_to landlord_house_service_usage_log_path(house, log), class: "d-inline-block position-relative text-decoration-none", data: { turbo_frame: "usage_log_detail_modal" }, title: t("service_usage_logs.view_detail") do %>
-        <%= image_tag log.reading_photo.variant(resize_to_limit: [50, 50]), class: "rounded border shadow-sm", alt: t("invoice.meter_photo") %>
+      <%= link_to landlord_house_service_usage_log_path(house, log), class: "d-block position-relative text-decoration-none mb-2", data: { turbo_frame: "usage_log_detail_modal" }, title: t("service_usage_logs.view_detail") do %>
+        <%= image_tag log.reading_photo.variant(resize_to_limit: [80, 80]), class: "rounded border shadow-sm", alt: t("invoice.meter_photo") %>
       <% end %>
-      <span class="text-secondary small d-block" title="<%= t('service_usage_logs.photo_uploaded_at') %>">
+
+      <div class="text-secondary small" title="<%= t('service_usage_logs.photo_uploaded_at') %>">
         <span class="material-symbols-outlined fs-6 align-middle text-muted">schedule</span>
-        <%= log.reading_photo.blob.created_at.strftime("%d/%m %H:%M") %>
-      </span>
+        <%= l(log.reading_photo.blob.created_at, format: :default) %>
+      </div>
+
     <% else %>
       <span class="text-secondary small fst-italic"><%= t("invoice.no_photo") %></span>
     <% end %>
@@ -62,27 +64,7 @@
   </td>
 
   <td>
-    <% if log.is_confirmed? %>
-      <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 d-inline-flex align-items-center gap-1">
-        <span class="material-symbols-outlined fs-6">check_circle</span> <%= t("invoice.status_confirmed") %>
-      </span>
-      <% if log.confirmed_at.present? %>
-        <span class="text-secondary small d-block mt-1" title="<%= t('service_usage_logs.confirmed_at_label') %>">
-          <span class="material-symbols-outlined fs-6 align-middle text-muted">done</span>
-          <%= log.confirmed_at.strftime("%d/%m %H:%M") %>
-        </span>
-      <% end %>
-    <% else %>
-      <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle px-2 py-1 d-inline-flex align-items-center gap-1">
-        <span class="material-symbols-outlined fs-6">schedule</span> <%= t("invoice.status_unconfirmed") %>
-      </span>
-    <% end %>
-
-    <% if log.billed? %>
-      <span class="badge bg-info-subtle text-info-emphasis border border-info-subtle px-2 py-1 ms-1">
-        <%= t("invoice.status_billed") %>
-      </span>
-    <% end %>
+    <%= usage_log_status_badges(log) %>
   </td>
 
   <td class="text-center pe-3">

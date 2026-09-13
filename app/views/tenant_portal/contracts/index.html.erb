@@ -9,8 +9,8 @@
       </p>
     </div>
     <% if @active_contract.present? %>
-      <%= link_to tenant_contract_path, class: "btn btn-outline-primary d-inline-flex align-items-center gap-1 shadow-sm" do %>
-        <span class="material-symbols-outlined fs-6">description</span>
+      <%= link_to tenant_contract_path, class: "main-btn d-inline-flex align-items-center gap-1 shadow-sm" do %>
+        <span class="material-symbols-outlined fs-4">description</span>
         <span><%= t("form.contract.current_contract") %></span>
       <% end %>
     <% end %>

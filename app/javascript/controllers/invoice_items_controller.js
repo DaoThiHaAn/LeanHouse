@@ -68,7 +68,12 @@ export default class extends Controller {
         <input type="number" min="0" step="0.1" name="invoice[items][${uid}][quantity]" value="1" class="form-control form-control-sm font-monospace text-center item-qty invoice-input-qty" data-action="input->invoice-items#calculateRow" />
       </td>
       <td class="text-end">
-        <input type="number" readonly="readonly" name="invoice[items][${uid}][amount]" value="0" class="form-control form-control-sm font-monospace text-end item-amount fw-bold text-primary bg-light-subtle invoice-input-amount" />
+        <div class="d-flex justify-content-end">
+          <input type="hidden" name="invoice[items][${uid}][amount]" value="0" class="item-amount" />
+          <span class="badge bg-primary-subtle text-primary border border-primary-subtle font-monospace px-2 py-1 fw-bold item-amount-display">
+            0 đ
+          </span>
+        </div>
       </td>
       <td class="text-center pe-3">
         <button type="button" class="btn btn-sm btn-outline-danger btn-remove-row p-1 d-inline-flex align-items-center justify-content-center" data-action="click->invoice-items#removeRowClick" title="${this.deleteTextValue}">
@@ -111,7 +116,12 @@ export default class extends Controller {
         <input type="number" min="0" step="0.1" name="invoice[items][${uid}][quantity]" value="1" class="form-control form-control-sm font-monospace text-center item-qty invoice-input-qty" data-action="input->invoice-items#calculateRow" />
       </td>
       <td class="text-end">
-        <input type="number" readonly="readonly" name="invoice[items][${uid}][amount]" value="0" class="form-control form-control-sm font-monospace text-end item-amount fw-bold text-danger bg-light-subtle invoice-input-amount" />
+        <div class="d-flex justify-content-end">
+          <input type="hidden" name="invoice[items][${uid}][amount]" value="0" class="item-amount" />
+          <span class="badge bg-danger-subtle text-danger border border-danger-subtle font-monospace px-2 py-1 fw-bold item-amount-display">
+            0 đ
+          </span>
+        </div>
       </td>
       <td class="text-center pe-3">
         <button type="button" class="btn btn-sm btn-outline-danger btn-remove-row p-1 d-inline-flex align-items-center justify-content-center" data-action="click->invoice-items#removeRowClick" title="${this.deleteTextValue}">
@@ -149,20 +159,36 @@ export default class extends Controller {
     const priceInput = row.querySelector(".item-price")
     const qtyInput = row.querySelector(".item-qty")
     const amountInput = row.querySelector(".item-amount")
+    const amountDisplay = row.querySelector(".item-amount-display")
     const prevInput = row.querySelector(".item-prev-reading")
     const latestInput = row.querySelector(".item-latest-reading")
 
+    let amount = 0
     if (target.classList.contains("item-prev-reading") || target.classList.contains("item-latest-reading")) {
       const prev = prevInput ? (parseFloat(prevInput.value) || 0) : 0
       const latest = latestInput ? (parseFloat(latestInput.value) || 0) : 0
       const price = priceInput ? (parseFloat(priceInput.value) || 0) : 0
       const usage = Math.max(0, latest - prev)
       if (qtyInput) qtyInput.value = usage
-      if (amountInput) amountInput.value = Math.round(usage * price)
+      amount = Math.round(usage * price)
     } else {
       const price = priceInput ? (parseFloat(priceInput.value) || 0) : 0
       const qty = qtyInput ? (parseFloat(qtyInput.value) || 0) : 0
-      if (amountInput) amountInput.value = Math.round(price * qty)
+      amount = Math.round(price * qty)
+    }
+
+    if (amountInput) amountInput.value = amount
+    if (amountDisplay) {
+      const formatted = this.formatCurrency(amount)
+      const typeInput = row.querySelector(".item-type-val") || row.querySelector("input[name*='[item_type]']")
+      const itemType = typeInput ? typeInput.value : (row.getAttribute("data-item-type") || "")
+      if (itemType === "discount" && amount > 0) {
+        amountDisplay.textContent = "- " + formatted
+      } else if (itemType === "addition" && amount > 0) {
+        amountDisplay.textContent = "+ " + formatted
+      } else {
+        amountDisplay.textContent = formatted
+      }
     }
 
     this.recalculate()
@@ -177,6 +203,8 @@ export default class extends Controller {
     rows.forEach(row => {
       const check = row.querySelector(".item-select-check")
       const isSelected = check ? check.checked : true
+      row.classList.toggle("opacity-50", !isSelected)
+
       const typeInput = row.querySelector(".item-type-val") || row.querySelector("input[name*='[item_type]']")
       const itemType = typeInput ? typeInput.value : (row.getAttribute("data-item-type") || "fixed_service")
       const amountInput = row.querySelector(".item-amount")

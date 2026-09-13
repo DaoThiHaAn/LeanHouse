@@ -140,6 +140,12 @@ h2 {
   color: #297072;
 }
 
+h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: rgb(15, 41, 82)
+}
+
 em {
   font-style: italic;
 }
@@ -361,7 +367,7 @@ textarea {
 }
 
 .empty.card {
-  border: 2px dashed grey;
+  border: 2px dashed #cbd5e1;
 }
 
 /* Polished Turn-Back / Back Navigation Link */

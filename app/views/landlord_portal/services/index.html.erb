@@ -11,14 +11,14 @@
   <div class="d-flex gap-3 align-items-center">
     <button type="button" class="manual-btn d-flex align-items-center gap-2 px-3 py-2"
           data-bs-toggle="modal" data-bs-target="#serviceGuideModal">
-      <span class="material-symbols-outlined fs-6">menu_book</span>
+      <span class="material-symbols-outlined fs-6">help</span>
       <span class="fw-semibold"><%= t("service.guide.btn_title") %></span>
     </button>
 
     <%= link_to landlord_house_service_usage_logs_path(@house),
         class: "main-btn gap-1 shadow-sm" do %>
       <span class="material-symbols-outlined fs-4">electric_meter</span>
-      <%= t('invoice.house_meter_logs') %>
+      <%= t('service_usage_logs.house_meter_logs') %>
     <% end %>
   </div>
 </div>

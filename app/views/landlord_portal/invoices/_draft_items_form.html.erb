@@ -57,36 +57,23 @@
                   <input type="hidden" name="invoice[items][<%= idx %>][end_date]" value="<%= item[:end_date] %>" />
                 </td>
                 <td>
-                  <% if item[:item_type].to_sym == :rent %>
-                    <input type="text" readonly="readonly" name="invoice[items][<%= idx %>][name]" value="<%= item[:name] %>" class="form-control form-control-sm fw-semibold item-name bg-light-subtle" />
-                  <% else %>
-                    <input type="text" name="invoice[items][<%= idx %>][name]" value="<%= item[:name] %>" class="form-control form-control-sm fw-semibold item-name" />
-                  <% end %>
+                  <input type="text" readonly="readonly" name="invoice[items][<%= idx %>][name]" value="<%= item[:name] %>" class="form-control form-control-sm fw-semibold item-name bg-light-subtle" />
                 </td>
                 <td>
-                  <% if item[:item_type].to_sym == :rent %>
-                    <div class="d-flex justify-content-center">
-                      <input type="hidden" name="invoice[items][<%= idx %>][unit]" value="tháng" class="item-unit" />
-                      <span class="badge bg-secondary-subtle text-secondary-emphasis border px-2 py-1"><%= t('invoice.rent_unit_month') %></span>
-                    </div>
-                  <% else %>
-                    <select name="invoice[items][<%= idx %>][unit]" class="form-select form-select-sm text-center item-unit">
-                      <% unit_options.each do |label, val| %>
-                        <% is_sel = (item[:unit].to_s.downcase == val.downcase || item[:unit].to_s.downcase == label.downcase) %>
-                        <option value="<%= val %>" <%= 'selected' if is_sel %>><%= label %></option>
-                      <% end %>
-                      <% if item[:unit].present? && unit_options.none? { |l, v| v.downcase == item[:unit].to_s.downcase || l.downcase == item[:unit].to_s.downcase } %>
-                        <option value="<%= item[:unit] %>" selected><%= item[:unit] %></option>
-                      <% end %>
-                    </select>
-                  <% end %>
+                  <div class="d-flex justify-content-center">
+                    <input type="hidden" name="invoice[items][<%= idx %>][unit]" value="<%= item[:unit] %>" class="item-unit" />
+                    <span class="badge bg-secondary-subtle text-secondary-emphasis border px-2 py-1">
+                      <%= item[:item_type].to_sym == :rent ? t('invoice.rent_unit_month') : item[:unit] %>
+                    </span>
+                  </div>
                 </td>
                 <td>
-                  <% if item[:item_type].to_sym == :rent %>
-                    <input type="number" readonly="readonly" min="0" step="1000" name="invoice[items][<%= idx %>][unit_price]" value="<%= item[:unit_price] %>" class="form-control form-control-sm font-monospace text-end item-price bg-light-subtle invoice-input-price" data-action="input->invoice-items#calculateRow" />
-                  <% else %>
-                    <input type="number" min="0" step="1000" name="invoice[items][<%= idx %>][unit_price]" value="<%= item[:unit_price] %>" class="form-control form-control-sm font-monospace text-end item-price invoice-input-price" data-action="input->invoice-items#calculateRow" />
-                  <% end %>
+                  <div class="d-flex justify-content-end">
+                    <input type="hidden" readonly="readonly" name="invoice[items][<%= idx %>][unit_price]" value="<%= item[:unit_price] %>" class="item-price" />
+                    <span class="badge bg-secondary-subtle text-secondary-emphasis border font-monospace px-2 py-1 item-price-badge">
+                      <%= number_to_currency(item[:unit_price], unit: 'đ', format: '%n %u', precision: 0) %>
+                    </span>
+                  </div>
                 </td>
                 <td>
                   <% if item[:item_type].to_sym == :rent %>
@@ -108,7 +95,12 @@
                   <% end %>
                 </td>
                 <td class="text-end">
-                  <input type="number" readonly="readonly" name="invoice[items][<%= idx %>][amount]" value="<%= item[:amount] %>" class="form-control form-control-sm font-monospace text-end item-amount fw-bold text-dark bg-light-subtle invoice-input-amount" />
+                  <div class="d-flex justify-content-end">
+                    <input type="hidden" name="invoice[items][<%= idx %>][amount]" value="<%= item[:amount] %>" class="item-amount" />
+                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle font-monospace px-2 py-1 fw-bold item-amount-display">
+                      <%= number_to_currency(item[:amount], unit: 'đ', format: '%n %u', precision: 0) %>
+                    </span>
+                  </div>
                 </td>
                 <td class="text-center pe-3 text-secondary">
                   -
@@ -158,7 +150,12 @@
               <input type="number" min="0" step="0.1" name="invoice[items][add_0][quantity]" value="1" class="form-control form-control-sm font-monospace text-center item-qty invoice-input-qty" data-action="input->invoice-items#calculateRow" />
             </td>
             <td class="text-end">
-              <input type="number" readonly="readonly" name="invoice[items][add_0][amount]" value="0" class="form-control form-control-sm font-monospace text-end item-amount fw-bold text-primary bg-light-subtle invoice-input-amount" />
+              <div class="d-flex justify-content-end">
+                <input type="hidden" name="invoice[items][add_0][amount]" value="0" class="item-amount" />
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle font-monospace px-2 py-1 fw-bold item-amount-display">
+                  0 đ
+                </span>
+              </div>
             </td>
             <td class="text-center pe-3">
               <button type="button" class="btn btn-sm btn-outline-danger btn-remove-row p-1 d-inline-flex align-items-center justify-content-center" data-action="click->invoice-items#removeRowClick" title="<%= t('invoice.actions.delete', default: 'Xóa dòng') %>">
@@ -209,7 +206,12 @@
               <input type="number" min="0" step="0.1" name="invoice[items][disc_0][quantity]" value="1" class="form-control form-control-sm font-monospace text-center item-qty invoice-input-qty" data-action="input->invoice-items#calculateRow" />
             </td>
             <td class="text-end">
-              <input type="number" readonly="readonly" name="invoice[items][disc_0][amount]" value="0" class="form-control form-control-sm font-monospace text-end item-amount fw-bold text-danger bg-light-subtle invoice-input-amount" />
+              <div class="d-flex justify-content-end">
+                <input type="hidden" name="invoice[items][disc_0][amount]" value="0" class="item-amount" />
+                <span class="badge bg-danger-subtle text-danger border border-danger-subtle font-monospace px-2 py-1 fw-bold item-amount-display">
+                  0 đ
+                </span>
+              </div>
             </td>
             <td class="text-center pe-3">
               <button type="button" class="btn btn-sm btn-outline-danger btn-remove-row p-1 d-inline-flex align-items-center justify-content-center" data-action="click->invoice-items#removeRowClick" title="<%= t('invoice.actions.delete', default: 'Xóa dòng') %>">

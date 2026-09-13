@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_13_154525) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_14_041500) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "unaccent"
@@ -192,11 +192,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_13_154525) do
     t.bigint "paid_by_id"
     t.string "paid_by_role"
     t.string "payment_method"
-    t.string "payos_checkout_url"
-    t.bigint "payos_order_code"
-    t.string "payos_payment_link_id"
-    t.text "payos_qr_code"
-    t.string "payos_status"
     t.bigint "room_id", null: false
     t.date "start_date"
     t.string "status", default: "pending", null: false
@@ -217,7 +212,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_13_154525) do
     t.index ["house_id", "billing_month"], name: "index_invoices_on_house_id_and_billing_month"
     t.index ["house_id"], name: "index_invoices_on_house_id"
     t.index ["paid_by_id"], name: "index_invoices_on_paid_by_id"
-    t.index ["payos_order_code"], name: "index_invoices_on_payos_order_code", unique: true
     t.index ["room_id", "billing_month", "invoice_type"], name: "idx_invoices_room_month_type"
     t.index ["room_id"], name: "index_invoices_on_room_id"
     t.index ["status"], name: "index_invoices_on_status"
@@ -284,6 +278,22 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_13_154525) do
     t.datetime "updated_at", null: false
     t.index ["event_id"], name: "index_noticed_notifications_on_event_id"
     t.index ["recipient_type", "recipient_id"], name: "index_noticed_notifications_on_recipient"
+  end
+
+  create_table "payment_orders", force: :cascade do |t|
+    t.string "checkout_url"
+    t.datetime "created_at", null: false
+    t.bigint "invoice_id", null: false
+    t.jsonb "metadata", default: {}
+    t.bigint "order_code", null: false
+    t.string "payment_link_id"
+    t.string "provider", default: "payos", null: false
+    t.text "qr_code"
+    t.string "status", default: "PENDING"
+    t.datetime "updated_at", null: false
+    t.index ["invoice_id", "provider"], name: "index_payment_orders_on_invoice_id_and_provider"
+    t.index ["invoice_id"], name: "index_payment_orders_on_invoice_id"
+    t.index ["order_code"], name: "index_payment_orders_on_order_code", unique: true
   end
 
   create_table "rental_units", force: :cascade do |t|
@@ -477,6 +487,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_13_154525) do
   add_foreign_key "issue_reports", "admins", column: "resolved_by_id"
   add_foreign_key "landlords", "users", column: "id", on_delete: :cascade
   add_foreign_key "maintenance_logs", "assets", on_delete: :cascade
+  add_foreign_key "payment_orders", "invoices", on_delete: :cascade
   add_foreign_key "requests", "houses", on_delete: :cascade
   add_foreign_key "requests", "tenants", on_delete: :cascade
   add_foreign_key "requests", "users", column: "resolved_by_id"

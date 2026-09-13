@@ -88,7 +88,7 @@ class PayosServiceTest < ActiveSupport::TestCase
 
     result = PayosService.create_payment_link(invoice)
     assert_equal false, result[:success]
-    assert_includes result[:error], "not configured"
+    assert_equal I18n.t("invoice.payos.webhook.unconfigured_bank"), result[:error]
   end
 
   test "webhook_url prioritizes PAYOS_WEBHOOK_URL environment variable" do

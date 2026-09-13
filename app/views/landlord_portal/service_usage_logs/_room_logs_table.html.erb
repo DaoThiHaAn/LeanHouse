@@ -11,7 +11,7 @@
   <span hidden data-pagination-total-pages="<%= logs.respond_to?(:total_pages) ? logs.total_pages : 1 %>"></span>
 
   <% if logs.empty? %>
-  <div class="card bg-light border-0 text-center py-5 rounded-4 mx-auto">
+  <div class="empty card bg-light text-center py-5 rounded-4 mx-auto">
     <span class="material-symbols-outlined text-secondary fs-1 mb-2">fact_check</span>
     <p class="fs-5 fw-bold mb-1"><%= t("service_usage_logs.no_logs_room") %></p>
     <p class="text-secondary small"><%= t("service_usage_logs.no_logs_room_hint") %></p>

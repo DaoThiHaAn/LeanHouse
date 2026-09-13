@@ -71,7 +71,9 @@ class LandlordPortal::ServiceUsageLogsControllerTest < ActionDispatch::Integrati
   test "should get house service usage logs index" do
     get landlord_house_service_usage_logs_path(@house)
     assert_response :success
-    assert_select "h1", text: /#{I18n.t('invoice.meter_logs_title')}/
+    assert_select "h1", text: /#{I18n.t('service_usage_logs.house_realtime_summary_title')}/
+    assert_select "nav[aria-label*='readcrumb']", count: 0
+    assert_select "select[name='service_variant_id']", count: 0
   end
 
   test "should get house service usage logs index scoped to service" do
@@ -81,6 +83,9 @@ class LandlordPortal::ServiceUsageLogsControllerTest < ActionDispatch::Integrati
     assert_select "h1", text: /#{@service.name}/
     assert_select "select[name='floor_id']"
     assert_select "select[name='room_id']"
+    assert_select "select[name='service_variant_id']"
+    assert_select ".log-tab", text: /#{I18n.t('service_usage_logs.service_tab_real_time')}/
+    assert_select ".log-tab", text: /#{I18n.t('service_usage_logs.service_tab_fixed')}/
   end
 
   test "should get filtered logs for house with floor_id" do
@@ -172,6 +177,19 @@ class LandlordPortal::ServiceUsageLogsControllerTest < ActionDispatch::Integrati
     assert_select "#usageLogDetailModal"
     assert_select ".modal-title", text: /#{@service.name}/
     assert_select ".badge", text: /#{@floor.title_name}/
+  end
+
+  test "show renders confirm button with loading controller for unconfirmed log" do
+    assert_equal false, @log.is_confirmed?
+    get landlord_house_service_usage_log_path(@house, @log), headers: { "Turbo-Frame" => "usage_log_detail_modal" }
+    assert_response :success
+    assert_select "form[data-controller~='loading'][data-action*='loading#submit']" do
+      assert_select "button[data-loading-target='button']" do
+        assert_select "[data-loading-target='icon']"
+        assert_select "[data-loading-target='spinner']"
+        assert_select "[data-loading-target='text']", text: I18n.t("invoice.confirm_and_close")
+      end
+    end
   end
 
   test "should get dedicated room service usage logs index" do
@@ -272,6 +290,35 @@ class LandlordPortal::ServiceUsageLogsControllerTest < ActionDispatch::Integrati
 
     @log.reload
     assert_equal true, @log.is_confirmed?
+  end
+
+  test "should confirm all logs for specific service only" do
+    water_service = @house.services.create!(name: "Nước")
+    water_variant = water_service.service_variants.create!(unit: "per_m3", fee: 20_000, is_real_time: true)
+    water_log = ServiceUsageLog.create!(
+      room: @room,
+      service: water_service,
+      service_variant: water_variant,
+      service_name: water_service.name,
+      unit: water_variant.human_unit,
+      unit_price: water_variant.fee,
+      prev_reading: 10,
+      latest_reading: 20,
+      billing_month: @billing_month,
+      start_date: @billing_month.beginning_of_month,
+      end_date: @billing_month.end_of_month,
+      is_confirmed: false,
+      submitted_by: @landlord_user
+    )
+
+    assert_equal false, @log.is_confirmed?
+    assert_equal false, water_log.is_confirmed?
+
+    patch confirm_all_landlord_house_service_usage_logs_path(@house, month: @billing_month.strftime("%Y-%m"), service_id: @service.id)
+    assert_redirected_to landlord_house_service_usage_logs_path(@house, service_id: @service.id, month: @billing_month.strftime("%Y-%m"))
+
+    assert_equal true, @log.reload.is_confirmed?
+    assert_equal false, water_log.reload.is_confirmed?
   end
 
   test "should allow landlord to update reading of unbilled log" do

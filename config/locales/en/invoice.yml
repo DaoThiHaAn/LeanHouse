@@ -287,7 +287,15 @@ en:
     payos:
       realtime_badge: "Auto-reconciliation active (payOS)"
       open_checkout: "Open payOS Checkout"
+      open_checkout_url: "Open payOS Payment Portal"
       auto_paid_note: "Auto-reconciled via payOS (Ref: %{ref})"
+      webhook:
+        ping_received: "payOS Webhook received (ping/empty)"
+        no_order_code: "payOS Webhook received (no orderCode)"
+        invoice_not_found: "Invoice not found, ignored"
+        invalid_signature: "Invalid signature"
+        success: "Payment processed successfully"
+        unconfigured_bank: "Bank account not configured for payOS"
     transfer_note: "Transfer Note"
     transfer_note_strict: "Transfer Note (Required exact content)"
     transfer_note_config: "VietQR Transfer Note"
@@ -482,6 +490,7 @@ en:
     current_photo: "Current photo:"
     confirm_and_close: "Confirm and finalize this reading"
     confirm_and_close_now: "Confirm and finalize immediately"
+    confirming: "Confirming..."
     update_meter_log_btn: "Update Reading"
     save_meter_log_btn: "Save Reading"
     billing_month: "Billing month"

@@ -1,28 +1,43 @@
-<% tab_meta = house_usage_logs_tab_meta(@current_tab) %>
-<% content_for :title, "#{tab_meta[:page_title]} - #{@house.name}" %>
+<% content_for :title, "#{t('service_usage_logs.service_title', service: @selected_service.name)} - #{@house.name}" %>
+
+<!-- Breadcrumb back to Services -->
+<nav aria-label="Breadcrumb navigation" class="mb-4">
+  <ol class="breadcrumb mb-0">
+    <li class="breadcrumb-item">
+      <%= back_link_to landlord_house_services_path(@house), t("service_usage_logs.back_to_list") %>
+    </li>
+    <li class="breadcrumb-item active align-self-center" aria-current="page">
+      <%= @selected_service.name %>
+    </li>
+  </ol>
+</nav>
 
 <%= turbo_frame_tag "house_service_logs_section",
       data: {
         controller: "pagination-sync",
         pagination_sync_canonical_url_value: landlord_house_service_usage_logs_path(@house),
-        pagination_sync_default_params_value: { tab: @current_tab, month: @billing_month.strftime("%Y-%m") }.to_json,
-        pagination_sync_query_params_value: ["tab", "month", "floor_id", "room_id", "status"].to_json,
+        pagination_sync_default_params_value: { service_id: @selected_service.id.to_s, tab: @current_tab, month: @billing_month.strftime("%Y-%m") }.to_json,
+        pagination_sync_query_params_value: ["tab", "month", "floor_id", "room_id", "service_id", "service_variant_id", "status"].to_json,
         pagination_sync_total_pages_selector_value: "[data-pagination-total-pages]",
         action: "turbo:frame-load->pagination-sync#updateUrl"
       } do %>
 
   <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3 pb-3 border-bottom">
     <div>
-      <h1 class="mb-2"><%= tab_meta[:title] %></h1>
-      <p class="text-secondary">
-        <%= tab_meta[:subtitle] %>
+      <h1 class="mb-2">
+        <%= t("service_usage_logs.service_title", service: @selected_service.name) %>
+      </h1>
+      <p class="text-secondary mb-0">
+        <%= t("service_usage_logs.service_subtitle", service: @selected_service.name) %>
       </p>
     </div>
 
     <%= render "nav_tabs",
                current_tab: @current_tab,
-               real_time_url: landlord_house_service_usage_logs_path(@house, tab: "real_time", month: @billing_month.strftime("%Y-%m")),
-               fixed_url: landlord_house_service_usage_logs_path(@house, tab: "fixed", month: @billing_month.strftime("%Y-%m")),
+               real_time_url: landlord_house_service_usage_logs_path(@house, service_id: @selected_service.id, tab: "real_time", month: @billing_month.strftime("%Y-%m")),
+               fixed_url: landlord_house_service_usage_logs_path(@house, service_id: @selected_service.id, tab: "fixed", month: @billing_month.strftime("%Y-%m")),
+               real_time_title: t("service_usage_logs.service_tab_real_time"),
+               fixed_title: t("service_usage_logs.service_tab_fixed"),
                unconfirmed_count: @unconfirmed_count,
                fixed_count: @fixed_services_count,
                new_log_url: new_landlord_house_service_usage_log_path(@house, month: @billing_month.strftime("%Y-%m")) %>
@@ -34,9 +49,9 @@
                summary: @fixed_services_summary,
                fixed_services: @fixed_services,
                fixed_variants: @fixed_variants,
-               selected_service: nil %>
+               selected_service: @selected_service %>
   <% else %>
-    <!-- Toolbar lọc tháng, tầng, phòng và trạng thái toàn nhà -->
+    <!-- Toolbar lọc cho dịch vụ cụ thể -->
     <div class="card bg-light border-0 rounded-3 p-3 mb-5">
       <%= form_with url: filtered_landlord_house_service_usage_logs_path(@house),
                     method: :get,
@@ -50,6 +65,7 @@
                     } do |f| %>
 
         <%= f.hidden_field :tab, value: "real_time" %>
+        <%= f.hidden_field :service_id, value: @selected_service.id %>
 
         <!-- Chọn tháng -->
         <div class="d-flex align-items-center gap-2">
@@ -59,6 +75,18 @@
 
         <!-- Chọn tầng & phòng -->
         <%= render "floor_room_selects", f: f, house: @house %>
+
+        <!-- Biến thể của dịch vụ này -->
+        <% if @service_variants.any? %>
+          <div class="d-flex align-items-center gap-2">
+            <%= f.label :service_variant_id, "#{t('service_usage_logs.variant')}:", class: "fw-bold text-nowrap" %>
+            <%= f.select :service_variant_id,
+                         [[t("service_usage_logs.all_variants"), ""]] + @service_variants.map { |v| ["#{v.human_unit} - #{number_with_delimiter(v.fee)}đ", v.id] },
+                         { selected: params[:service_variant_id] },
+                         class: "form-select shadow-sm w-auto",
+                         onchange: "this.form.requestSubmit()" %>
+          </div>
+        <% end %>
 
         <!-- Trạng thái duyệt -->
         <div class="d-flex align-items-center gap-2">
@@ -71,7 +99,7 @@
               ], { selected: params[:status] }, class: "form-select shadow-sm w-auto", onchange: "this.form.requestSubmit()" %>
         </div>
 
-        <%= render "house_confirm_all_btn", house: @house, billing_month: @billing_month, selected_service: nil, count: @unconfirmed_count %>
+        <%= render "house_confirm_all_btn", house: @house, billing_month: @billing_month, selected_service: @selected_service, count: @unconfirmed_count %>
       <% end %>
     </div>
 

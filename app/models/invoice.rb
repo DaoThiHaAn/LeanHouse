@@ -17,11 +17,12 @@ class Invoice < ApplicationRecord
 
   has_many :invoice_items, dependent: :destroy
   has_many :service_usage_logs, dependent: :nullify
+  has_many :payment_orders, dependent: :destroy
+  has_one :payos_order, -> { where(provider: "payos").order(id: :desc) }, class_name: "PaymentOrder"
 
   before_validation :normalize_title
   before_validation :normalize_payment_method
   before_validation :set_default_transfer_note
-  before_validation :assign_payos_order_code, on: :create
 
   validates :code, :billing_month, :due_date, :status, :invoice_type, :title, presence: true
   validates :code, uniqueness: true
@@ -166,17 +167,54 @@ class Invoice < ApplicationRecord
     TransferNoteBuilder.build(house.transfer_note_template, self)
   end
 
-  def payos_configured?
-    bank_account&.payos_configured?
+  def payos_configured?(account = bank_account)
+    account&.payos_configured?
   end
 
-  def payos_transfer_description
-    "HD #{payos_order_code}"
+  def ensure_payos_order!(account = bank_account)
+    return nil unless payos_configured?(account)
+
+    existing = payment_orders.find_by(provider: "payos")
+    if existing
+      association(:payos_order).target = existing
+      return existing
+    end
+
+    order = payment_orders.create!(
+      provider: "payos",
+      order_code: PaymentOrder.generate_order_code,
+      status: "PENDING"
+    )
+    association(:payos_order).target = order
+    order
   end
 
-  def effective_transfer_note
-    if payos_configured?
-      payos_transfer_description
+  def payos_order_code(account = bank_account)
+    return nil unless payos_configured?(account)
+
+    (payos_order || ensure_payos_order!(account))&.order_code
+  end
+
+  def payos_checkout_url
+    payos_order&.checkout_url
+  end
+
+  def payos_qr_code
+    payos_order&.qr_code
+  end
+
+  def payos_status
+    payos_order&.status
+  end
+
+  def payos_transfer_description(account = bank_account)
+    code = payos_order_code(account)
+    code.present? ? "HD #{code}" : transfer_note
+  end
+
+  def effective_transfer_note(account = bank_account)
+    if payos_configured?(account)
+      payos_transfer_description(account)
     else
       transfer_note
     end
@@ -186,7 +224,7 @@ class Invoice < ApplicationRecord
     return unless account
 
     desc = if account.payos_configured?
-             payos_transfer_description
+             payos_transfer_description(account)
     else
              transfer_note
     end
@@ -223,17 +261,6 @@ class Invoice < ApplicationRecord
     self.note = note&.squish
   end
 
-  def assign_payos_order_code
-    return if payos_order_code.present?
-
-    loop do
-      candidate = rand(100_000_000..999_999_999)
-      unless Invoice.exists?(payos_order_code: candidate)
-        self.payos_order_code = candidate
-        break
-      end
-    end
-  end
 
   def set_default_transfer_note
     if transfer_note_mode == "none"

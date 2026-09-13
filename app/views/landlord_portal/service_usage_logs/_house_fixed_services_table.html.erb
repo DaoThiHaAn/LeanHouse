@@ -11,7 +11,7 @@
   <span hidden data-pagination-total-pages="<%= summary.paginated_items.respond_to?(:total_pages) ? summary.paginated_items.total_pages : 1 %>"></span>
 
   <% if summary.items.empty? %>
-    <div class="card bg-light border-0 text-center py-5 rounded-4 mx-auto">
+    <div class="empty card bg-light text-center py-5 rounded-4 mx-auto">
       <span class="material-symbols-outlined text-secondary fs-1 mb-2">lock_open</span>
       <p class="fs-5 fw-bold mb-1"><%= t("service_usage_logs.no_fixed_services_house") %></p>
       <p class="text-secondary small"><%= t("service_usage_logs.no_fixed_services_house_hint") %></p>

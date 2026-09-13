@@ -67,6 +67,14 @@ class OccupiedRoomsQueryTest < ActiveSupport::TestCase
     assert_equal @tenant_user.fullname, room_data[:tenants].first[:name]
   end
 
+  test "excludes room when tenants_count is positive but no active staying tenants exist" do
+    ghost_room = @floor2.rooms.create!(name: "202", max_slots: 2, tenants_count: 1, area: 24.0)
+
+    result = Invoices::OccupiedRoomsQuery.call(@house)
+    assert_not_includes result[:occupied_rooms], ghost_room
+    assert_nil result[:rooms_data].find { |r| r[:id] == ghost_room.id }
+  end
+
   test "in bed mode includes bed name in tenant label" do
     bed_house = House.create!(
       landlord: @landlord,

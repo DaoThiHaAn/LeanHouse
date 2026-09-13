@@ -1,0 +1,35 @@
+<%# locals: (f:, house:) %>
+<%
+  active_rooms = house.rooms.active.sorted
+  available_rooms = if params[:floor_id].present?
+    active_rooms.select { |r| r.floor_id.to_s == params[:floor_id].to_s }
+  else
+    active_rooms
+  end
+%>
+
+<!-- Chọn tầng -->
+<div class="d-flex align-items-center gap-2">
+  <%= f.label :floor_id, "#{t('service_usage_logs.floor')}:", class: "fw-bold text-nowrap" %>
+  <%= f.select :floor_id,
+               [[t("service_usage_logs.all_floors"), ""]] + house.floors.pos_order.map { |fl| [fl.title_name, fl.id] },
+               { selected: params[:floor_id] },
+               class: "form-select shadow-sm w-auto",
+               data: {
+                 filter_floor_room_target: "floor",
+                 action: "change->filter-floor-room#floorChanged"
+               } %>
+</div>
+
+<!-- Chọn phòng -->
+<div class="d-flex align-items-center gap-2">
+  <%= f.label :room_id, "#{t('invoice.room')}:", class: "fw-bold text-nowrap" %>
+  <%= f.select :room_id,
+               [[t("invoice.all_rooms"), ""]] + available_rooms.map { |r| [r.title_name, r.id] },
+               { selected: params[:room_id] },
+               class: "form-select shadow-sm w-auto",
+               data: {
+                 filter_floor_room_target: "room",
+                 action: "change->filter-floor-room#roomChanged"
+               } %>
+</div>

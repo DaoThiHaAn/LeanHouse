@@ -73,9 +73,10 @@ class PayosService
   # Create payment link for an invoice via payOS API
   def self.create_payment_link(invoice, host: nil)
     bank_account = invoice.bank_account
-    return { success: false, error: "Bank account not configured for payOS" } unless bank_account&.payos_configured?
+    return { success: false, error: I18n.t("invoice.payos.webhook.unconfigured_bank", default: "Bank account not configured for payOS") } unless bank_account&.payos_configured?
 
-    order_code = invoice.payos_order_code || invoice.id
+    order = invoice.ensure_payos_order!
+    order_code = order.order_code
     amount = invoice.total_amount.to_i
     description = invoice.payos_transfer_description
     base_url = base_app_url(host: host)
@@ -112,11 +113,11 @@ class PayosService
 
     if response.is_a?(Net::HTTPSuccess) && res_data["code"] == "00" && res_data["data"].present?
       data = res_data["data"]
-      invoice.update_columns(
-        payos_payment_link_id: data["paymentLinkId"],
-        payos_checkout_url: data["checkoutUrl"],
-        payos_qr_code: data["qrCode"],
-        payos_status: data["status"] || "PENDING"
+      order.update!(
+        payment_link_id: data["paymentLinkId"],
+        checkout_url: data["checkoutUrl"],
+        qr_code: data["qrCode"],
+        status: data["status"] || "PENDING"
       )
       { success: true, data: data }
     else

@@ -653,6 +653,26 @@ class LandlordPortal::InvoicesControllerTest < ActionDispatch::IntegrationTest
     assert_select "table#invoice_items_table"
   end
 
+  test "preview endpoint renders standard applied services with readonly unit price and unit badge" do
+    sign_in_as(@landlord_user)
+
+    service1 = @house.services.create!(name: "Dịch vụ Internet")
+    variant1 = service1.service_variants.create!(fee: 100_000, unit: :per_room, is_real_time: false)
+    @room1.room_services.create!(service_variant: variant1)
+
+    get preview_landlord_house_invoices_path(@house, room_id: @room1.id, invoice_type: "room")
+    assert_response :success
+    assert_select "table#invoice_items_table"
+    assert_select "tbody#standard_items_tbody tr.standard-row input.item-price[readonly='readonly']"
+    assert_select "tbody#standard_items_tbody tr.standard-row span.item-price-badge"
+    assert_select "tbody#standard_items_tbody tr.standard-row input.item-amount[type='hidden']"
+    assert_select "tbody#standard_items_tbody tr.standard-row span.item-amount-display"
+    assert_select "tbody#standard_items_tbody tr.standard-row input.item-name[readonly='readonly']"
+    assert_select "tbody#standard_items_tbody tr.standard-row select.item-unit", 0
+    assert_select "tbody#standard_items_tbody tr.standard-row input.item-unit[type='hidden']"
+    assert_select "tbody#standard_items_tbody tr.standard-row input.item-select-check"
+  end
+
   test "individual invoice for room-mode room divides rent equally among staying tenants" do
     # When 2 active occupants are in @room1
     @room1.update!(tenants_count: 2)
