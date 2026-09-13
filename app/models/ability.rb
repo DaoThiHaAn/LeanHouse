@@ -63,15 +63,12 @@ class Ability
   end
 
   def tenant_abilities(user)
-    can :read, House
-    can :read, Floor
-    can :read, Room
-    can :read, Bed
-    can :read, RoomService
-    can :read, Service
+    # Required by TenantPortal::ContractsController
+    can :read, Contract, tenant_id: user.id
+
+    # Scoped to tenant's active stay
     can :read, Invoice, room: { rental_unit: { tenant_stays: { tenant_id: user.id, checkout_at: nil } } }
     can [ :read, :update ], ServiceUsageLog, room: { rental_unit: { tenant_stays: { tenant_id: user.id, checkout_at: nil } } }
-    can :read, Contract, tenant_id: user.id
   end
 
   # def guest_abilities

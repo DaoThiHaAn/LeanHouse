@@ -1,0 +1,7 @@
+<%= render "errors/error_page",
+      status_code: 500,
+      icon: "dns",
+      icon_class: "text-danger",
+      title: t("error_pages.internal_server_error.title"),
+      message: t("error_pages.internal_server_error.message"),
+      back_url: @back_url %>

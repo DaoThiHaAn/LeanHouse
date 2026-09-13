@@ -144,6 +144,12 @@ class LandlordPortal::ArchivedContractsControllerTest < ActionDispatch::Integrat
     log_in_as(@tenant_user)
     get landlord_archived_contracts_path
     assert_response :forbidden
+    assert_select ".error-page-container" do
+      assert_select "h1", text: I18n.t("error_pages.unauthorized.title")
+      assert_select ".error-code-badge", text: "403"
+      assert_select "a", text: /#{I18n.t("error_pages.actions.back")}/
+      assert_select "a", text: /#{I18n.t("error_pages.actions.home")}/
+    end
   end
 
   test "landlord can access contract archive and see only contracts from deleted houses" do

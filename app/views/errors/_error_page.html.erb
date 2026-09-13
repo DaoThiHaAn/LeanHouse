@@ -1,0 +1,40 @@
+<%# Locals: status_code, title, message, icon, icon_class, back_url %>
+
+<%
+  status_code ||= 403
+  icon ||= "gpp_bad"
+  icon_class ||= "text-danger"
+  back_url = local_assigns[:back_url].presence || @back_url.presence || root_path
+%>
+
+<% content_for :title, "#{status_code} - #{title}" %>
+
+<div class="error-page-container container py-5 my-auto d-flex flex-column align-items-center justify-content-center text-center">
+  <div class="error-icon-box rounded-circle d-flex align-items-center justify-content-center mb-3 shadow-xs">
+    <span class="material-symbols-outlined <%= icon_class %> display-3"><%= icon %></span>
+  </div>
+
+  <span class="badge bg-secondary-subtle text-secondary px-3 py-1 rounded-pill mb-3 fw-bold error-code-badge">
+    <%= status_code %>
+  </span>
+
+  <h1 class="fw-bold text-dark mb-2 fs-2">
+    <%= title %>
+  </h1>
+
+  <p class="text-secondary fs-5 mb-4 mx-auto error-message-text">
+    <%= message %>
+  </p>
+
+  <div class="d-flex flex-wrap align-items-center justify-content-center gap-3">
+    <%= link_to back_url, class: "btn btn-primary d-inline-flex align-items-center gap-2 px-4 py-2 rounded-3 shadow-sm" do %>
+      <span class="material-symbols-outlined fs-5">arrow_back</span>
+      <span><%= t("error_pages.actions.back") %></span>
+    <% end %>
+
+    <%= link_to root_path, class: "btn btn-outline-secondary d-inline-flex align-items-center gap-2 px-4 py-2 rounded-3 shadow-sm" do %>
+      <span class="material-symbols-outlined fs-5">home</span>
+      <span><%= t("error_pages.actions.home") %></span>
+    <% end %>
+  </div>
+</div>

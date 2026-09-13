@@ -74,6 +74,24 @@ en:
     log_out: "Log Out"
     auth_fields_reminder: "Note: Full Name and Date of Birth will be used for identity verification when recovering your account (Forgot Password). Please provide accurate information and keep it in mind."
     auth_fields_reminder_html: "Note: <strong>Full Name</strong> and <strong>Date of Birth</strong> will be used for identity verification when recovering your account (Forgot Password). Please provide accurate information and keep it in mind."
+
+  error_pages:
+    actions:
+      back: "Go Back"
+      home: "Back to Home"
+    unauthorized:
+      title: "Access Denied"
+      message: "Your account does not have sufficient permissions to access this page."
+    not_found:
+      title: "Page Not Found"
+      message: "The page you are looking for does not exist or has been moved."
+    unprocessable_entity:
+      title: "Unprocessable Request"
+      message: "Your change was rejected because the submitted data was invalid."
+    internal_server_error:
+      title: "Internal Server Error"
+      message: "An unexpected error occurred on our end. Please try again later."
+
   errors:
     tel_unregistered: "Phone number is not registered!"
     identity_mismatch: "Identity verification failed: Full Name or Date of Birth does not match the account!"

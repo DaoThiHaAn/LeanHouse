@@ -143,6 +143,23 @@ vi:
   guide: "Hướng dẫn"
   open_in_new_tab: "Mở trong tab mới"
 
+  error_pages:
+    actions:
+      back: "Quay lại"
+      home: "Về trang chủ"
+    unauthorized:
+      title: "Truy Cập Bị Từ Chối!"
+      message: "Tài khoản của bạn không có đủ quyền hạn để truy cập vào trang này."
+    not_found:
+      title: "Không tìm thấy trang"
+      message: "Trang bạn đang tìm kiếm không tồn tại hoặc đã được di chuyển."
+    unprocessable_entity:
+      title: "Yêu cầu không thể xử lý"
+      message: "Thay đổi của bạn bị từ chối do dữ liệu không hợp lệ."
+    internal_server_error:
+      title: "Lỗi hệ thống"
+      message: "Đã xảy ra lỗi từ phía hệ thống. Vui lòng thử lại sau ít phút."
+
   errors:
     session_expired: |
       Không tìm thấy số điện thoại đã xác nhận!

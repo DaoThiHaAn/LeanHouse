@@ -579,3 +579,24 @@ thead {
     font-size: 11px;
   }
 }
+
+/* Error Page Component */
+.error-page-container {
+  min-height: 55vh;
+}
+
+.error-page-container .error-icon-box {
+  width: 96px;
+  height: 96px;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.error-page-container .error-code-badge {
+  font-size: 0.95rem;
+  letter-spacing: 0.05em;
+}
+
+.error-page-container .error-message-text {
+  max-width: 520px;
+}

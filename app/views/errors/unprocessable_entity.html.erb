@@ -1,0 +1,7 @@
+<%= render "errors/error_page",
+      status_code: 422,
+      icon: "warning",
+      icon_class: "text-warning",
+      title: t("error_pages.unprocessable_entity.title"),
+      message: t("error_pages.unprocessable_entity.message"),
+      back_url: @back_url %>
