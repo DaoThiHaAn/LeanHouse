@@ -1,8 +1,10 @@
 <%= content_for :title, t("dashboard.self") %>
 
 <div class="house-main-container">
-  <!-- Live Real-Time Turbo Stream Subscription -->
-  <%= turbo_stream_from @landlord, (@selected_house || :all), :dashboard %>
+  <!-- Live Real-Time Turbo Stream Subscription (only for current month to avoid overwriting historical view) -->
+  <% if @is_current_month %>
+    <%= turbo_stream_from @landlord, (@selected_house || :all), :dashboard %>
+  <% end %>
 
   <!-- Dashboard Header -->
   <div class="dashboard-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 pb-3 mt-3 mb-4">
@@ -10,18 +12,33 @@
       <h1 class="mb-3">
         <%= @selected_house ? t('dashboard.landlord.title') : t('dashboard.landlord.title_all_houses') %>
       </h1>
-      <p class="text-secondary">
-        <%= t('dashboard.landlord.month_stats_label', month: Date.current.strftime('%m/%Y')) %>
-      </p>
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <% if @is_current_month %>
+          <p class="text-success-emphasis mb-0">
+            <%= t('dashboard.landlord.month_stats_label', month: @target_date.strftime('%m/%Y')) %>
+          </p>
+        <% else %>
+          <p class="text-secondary mb-0">
+            <%= t('dashboard.landlord.realtime_ops_subtitle') %>
+          </p>
+          <span class="badge rounded-pill bg-warning-subtle text-warning-emphasis border border-warning-subtle d-inline-flex align-items-center gap-1 font-monospace">
+            <span class="material-symbols-outlined fs-6">insights</span>
+            <%= t('dashboard.landlord.viewing_financial_month_badge', month: @target_date.strftime('%m/%Y')) %>
+          </span>
+        <% end %>
+      </div>
     </div>
 
-    <!-- House Selector Dropdown -->
+    <!-- Filter Controls: House Selector -->
     <div>
-      <div class="d-flex align-items-center gap-2">
+      <div class="d-flex align-items-center gap-2 justify-content-md-end">
         <label for="house_id" class="fw-bold text-nowrap">
           <%= t('dashboard.landlord.select_house') %>:
         </label>
         <%= form_with url: landlord_dashboard_path, method: :get, data: { turbo_action: "advance" } do |f| %>
+          <% if params[:month].present? %>
+            <%= f.hidden_field :month, value: params[:month] %>
+          <% end %>
           <%= f.select :house_id,
                       options_for_select(
                         [[t('dashboard.landlord.all_houses'), "all"]] + @houses.map { |h| [h.name, h.id] },
@@ -33,7 +50,7 @@
         <% end %>
       </div>
 
-      <p class="my-3 text-end"><%= t("form.house.num_house", num: @landlord.houses_count) %></p>
+      <p class="my-2 text-end text-muted small"><%= t("form.house.num_house", num: @landlord.houses_count) %></p>
     </div>
   </div>
 

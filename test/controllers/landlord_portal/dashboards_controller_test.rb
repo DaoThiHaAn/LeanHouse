@@ -38,6 +38,7 @@ class LandlordPortal::DashboardsControllerTest < ActionDispatch::IntegrationTest
       floors_count: 1,
       inv_creation_date: 1
     )
+    @floor = Floor.create!(house: @house, name: "Tầng 1", position: 1)
   end
 
   def sign_in_as(user)
@@ -69,8 +70,9 @@ class LandlordPortal::DashboardsControllerTest < ActionDispatch::IntegrationTest
     assert_select "h1", text: I18n.t("dashboard.landlord.title_all_houses")
     assert_select "select[name='house_id']"
     assert_select ".dashboard-stat-card", 6
-    assert_select ".card-teal"
+    assert_select ".card-yellow"
     assert_select ".card-indigo"
+    assert_select ".card-indigo .badge", text: /#{I18n.t("dashboard.landlord.all_houses")}/
   end
 
   test "renders dashboard filtered by specific house" do
@@ -80,8 +82,9 @@ class LandlordPortal::DashboardsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "h1", text: I18n.t("dashboard.landlord.title")
     assert_select ".dashboard-stat-card", 6
-    assert_select ".card-teal"
+    assert_select ".card-yellow"
     assert_select ".card-indigo"
+    assert_select ".card-indigo .badge", text: /#{@house.name}/
   end
 
   test "renders dashboard when house_id is explicitly 'all'" do
@@ -91,7 +94,109 @@ class LandlordPortal::DashboardsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "h1", text: I18n.t("dashboard.landlord.title_all_houses")
     assert_select ".dashboard-stat-card", 6
-    assert_select ".card-teal"
+    assert_select ".card-yellow"
     assert_select ".card-indigo"
+  end
+
+  test "renders dashboard in overall comparison mode by default" do
+    sign_in_as(@landlord_user)
+    get landlord_dashboard_path
+
+    assert_response :success
+    assert_select ".comparison-bar-chart"
+    assert_select ".trend-bar-wrapper", 6
+    assert_select ".chip-avg"
+    assert_select ".chip-max"
+    assert_select ".chip-min"
+  end
+
+  test "renders dashboard in detailed mode when month param is present" do
+    sign_in_as(@landlord_user)
+    past_month = 2.months.ago.beginning_of_month
+    get landlord_dashboard_path, params: { month: past_month.strftime("%Y-%m") }
+
+    assert_response :success
+    assert_select ".comparison-bar-chart"
+    assert_select ".trend-bar-wrapper.is-active", 1
+    assert_select "a", text: /#{I18n.t("dashboard.landlord.back_to_overall")}/
+    assert_select "span", text: I18n.t("dashboard.landlord.total_invoiced")
+  end
+
+  test "displays fully collected badge for past month when all invoices paid" do
+    room = @floor.rooms.create!(name: "Room 101", max_slots: 2, area: 20.0)
+    past_month = 2.months.ago.beginning_of_month
+    Invoice.create!(
+      house: @house,
+      room: room,
+      code: "INV-PAST-01",
+      billing_month: past_month,
+      due_date: past_month + 10.days,
+      created_by_id: @landlord.id,
+      invoice_type: :room,
+      status: :paid,
+      subtotal: 3_000_000,
+      total_amount: 3_000_000,
+      paid_at: past_month + 5.days
+    )
+
+    sign_in_as(@landlord_user)
+    get landlord_dashboard_path, params: { month: past_month.strftime("%Y-%m") }
+
+    assert_response :success
+    assert_select ".revenue-status-badge.bg-success-subtle", text: /#{I18n.t("dashboard.landlord.fully_collected")}/
+  end
+
+  test "displays uncollected debt badge for past month with unpaid invoices" do
+    room = @floor.rooms.create!(name: "Room 102", max_slots: 2, area: 20.0)
+    past_month = 2.months.ago.beginning_of_month
+    Invoice.create!(
+      house: @house,
+      room: room,
+      code: "INV-PAST-02",
+      billing_month: past_month,
+      due_date: past_month + 10.days,
+      created_by_id: @landlord.id,
+      invoice_type: :room,
+      status: :pending,
+      subtotal: 2_500_000,
+      total_amount: 2_500_000
+    )
+
+    sign_in_as(@landlord_user)
+    get landlord_dashboard_path, params: { month: past_month.strftime("%Y-%m") }
+
+    assert_response :success
+    assert_select ".revenue-status-badge.bg-danger-subtle"
+  end
+
+  test "displays pending collection badge for current month with unpaid invoices" do
+    room = @floor.rooms.create!(name: "Room 103", max_slots: 2, area: 20.0)
+    curr_month = Date.current.beginning_of_month
+    Invoice.create!(
+      house: @house,
+      room: room,
+      code: "INV-CURR-02",
+      billing_month: curr_month,
+      due_date: curr_month + 10.days,
+      created_by_id: @landlord.id,
+      invoice_type: :room,
+      status: :pending,
+      subtotal: 2_500_000,
+      total_amount: 2_500_000
+    )
+
+    sign_in_as(@landlord_user)
+    get landlord_dashboard_path, params: { month: curr_month.strftime("%Y-%m") }
+
+    assert_response :success
+    assert_select ".revenue-status-badge.bg-warning-subtle"
+  end
+
+  test "falls back to current month when month param is invalid" do
+    sign_in_as(@landlord_user)
+    get landlord_dashboard_path, params: { month: "not-a-valid-date" }
+
+    assert_response :success
+    assert_select ".comparison-bar-chart"
   end
 end

@@ -413,4 +413,86 @@ class LandlordDashboardStatsServiceTest < ActiveSupport::TestCase
     assert_equal 25.0, stats_h1[:revenue][:service_percentage]
     assert_equal 40.0, stats_h1[:revenue][:portfolio_share]
   end
+
+  test "computes MoM revenue comparison and 6-month historical trend" do
+    curr_month = Date.current.beginning_of_month
+    prev_month = curr_month.prev_month.beginning_of_month
+
+    # Previous month invoice: 4,000,000 paid
+    Invoice.create!(
+      house: @house1,
+      room: @room1,
+      code: "INV-PREV-01",
+      billing_month: prev_month,
+      due_date: prev_month + 10.days,
+      created_by_id: @landlord.id,
+      invoice_type: :room,
+      status: :paid,
+      subtotal: 4_000_000,
+      total_amount: 4_000_000,
+      paid_at: prev_month + 5.days
+    )
+
+    # Current month invoice: 5,000,000 paid
+    Invoice.create!(
+      house: @house1,
+      room: @room1,
+      code: "INV-CURR-01",
+      billing_month: curr_month,
+      due_date: curr_month + 10.days,
+      created_by_id: @landlord.id,
+      invoice_type: :room,
+      status: :paid,
+      subtotal: 5_000_000,
+      total_amount: 5_000_000,
+      paid_at: curr_month + 2.days
+    )
+
+    stats = LandlordDashboardStatsService.call(landlord: @landlord, house_id: @house1.id, target_date: curr_month)
+
+    rev = stats[:revenue]
+    assert_equal 5_000_000, rev[:paid_revenue]
+    assert_equal 4_000_000, rev[:prev_month_paid]
+    assert_equal 1_000_000, rev[:mom_diff]
+    assert_equal 25.0, rev[:mom_percentage]
+    assert rev[:has_prev_data]
+
+    trend = rev[:monthly_trend]
+    assert_equal 6, trend.size
+    curr_item = trend.find { |t| t[:is_target] }
+    assert_not_nil curr_item
+    assert_equal 5_000_000, curr_item[:paid_revenue]
+    assert_equal 100, curr_item[:height_pct]
+
+    macro = rev[:macro_comparison]
+    assert_not_nil macro
+    assert_equal 9_000_000, macro[:total_6m_revenue]
+    assert_equal 1_500_000, macro[:avg_monthly_revenue]
+    assert_equal 5_000_000, macro[:max_month][:paid_revenue]
+    assert_equal 0, macro[:min_month][:paid_revenue]
+  end
+
+  test "computes stats for a historical target_date" do
+    past_date = 2.months.ago.beginning_of_month
+
+    Invoice.create!(
+      house: @house1,
+      room: @room1,
+      code: "INV-PAST-01",
+      billing_month: past_date,
+      due_date: past_date + 10.days,
+      created_by_id: @landlord.id,
+      invoice_type: :room,
+      status: :paid,
+      subtotal: 3_500_000,
+      total_amount: 3_500_000,
+      paid_at: past_date + 3.days
+    )
+
+    stats = LandlordDashboardStatsService.call(landlord: @landlord, house_id: @house1.id, target_date: past_date)
+
+    assert_equal past_date, stats[:target_date]
+    assert_equal 3_500_000, stats[:revenue][:paid_revenue]
+    assert_equal 1, stats[:invoices][:paid]
+  end
 end

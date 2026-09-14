@@ -1,0 +1,304 @@
+<%
+  stats = local_assigns[:stats] || @stats
+  selected_house = local_assigns.key?(:selected_house) ? local_assigns[:selected_house] : @selected_house
+  target_date = local_assigns[:target_date] || stats[:target_date] || @target_date || Date.current
+  view_mode = local_assigns[:view_mode] || @view_mode || (params[:month].present? ? :detailed : :overall)
+
+  rev = stats[:revenue] || {}
+  macro = rev[:macro_comparison] || {}
+  monthly_trend = rev[:monthly_trend] || []
+  y_axis_levels = rev[:y_axis_levels] || []
+  selected_house_id = selected_house&.id || "all"
+  is_detailed = (view_mode.to_sym == :detailed)
+  house_name_display = selected_house ? selected_house.name : t('dashboard.landlord.all_houses')
+%>
+
+<div class="col-12 mb-4">
+  <div class="dashboard-stat-card dashboard-financial-card card-indigo p-3 p-md-4 shadow-sm">
+    <!-- Card Top Header -->
+    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2 mb-3 pb-2 border-bottom border-light-subtle">
+      <div class="d-flex align-items-center gap-3">
+        <span class="material-symbols-filled stat-icon">payments</span>
+        <div>
+          <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
+            <h2 class="stat-card-title mb-0 fs-5 text-indigo-accent">
+              <%= is_detailed ? t('dashboard.landlord.revenue_detail_title', month: target_date.strftime("%m/%Y")) : t('dashboard.landlord.revenue_overview_title') %>
+            </h2>
+            <span class="text-secondary fw-normal"> — </span>
+            <span class="badge bg-white text-indigo-accent border border-indigo-subtle rounded-pill px-3 py-2 font-monospace fw-semibold d-inline-flex align-items-center gap-1 shadow-sm">
+              <span class="material-symbols-filled fs-5 text-indigo-accent">home</span>
+              <span class="fs-6"><%= house_name_display %></span>
+            </span>
+          </div>
+          <p class="stat-subtex">
+            <%= is_detailed ? t('dashboard.landlord.revenue_detail_subtitle') : t('dashboard.landlord.revenue_overview_subtitle') %>
+          </p>
+        </div>
+      </div>
+
+      <div class="d-flex align-items-center gap-2">
+        <% if is_detailed %>
+          <%= link_to landlord_dashboard_path(house_id: selected_house_id),
+                      class: "btn btn-outline-primary btn-sm d-inline-flex align-items-center gap-1 shadow-sm fw-semibold rounded-pill px-3 py-1",
+                      data: { turbo_action: "advance" } do %>
+            <span class="material-symbols-outlined fs-6">arrow_back</span>
+            <span><%= t('dashboard.landlord.back_to_overall') %></span>
+          <% end %>
+        <% else %>
+          <span class="badge bg-white text-secondary border font-monospace px-2 py-1">
+            <%= t('dashboard.landlord.fixed_6m_badge') %>
+          </span>
+        <% end %>
+
+        <% if selected_house %>
+          <%= link_to landlord_house_invoices_path(selected_house, month: target_date.strftime("%Y-%m")), class: "action-arrow-btn", title: t('dashboard.landlord.view_revenue'), data: { turbo_frame: "_top" } do %>
+            <span class="material-symbols-outlined">arrow_forward</span>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Main Card Body: Left (Chart) & Right (Mode content) -->
+    <div class="row g-4 align-items-center">
+      <!-- Left Column: 6-Month Interactive Bar Chart -->
+      <div class="col-12 col-lg-6 border-end-lg pe-lg-4">
+        <p class="text-center fw-bold text-uppercase mb-3">
+          <%= t('dashboard.landlord.six_months_trend_title') %>
+        </p>
+
+        <div class="comparison-bar-chart chart-container-with-y bg-white rounded-3 border border-indigo-subtle p-4">
+          <div class="d-flex h-100 position-relative">
+            <!-- Y-Axis Scale Labels (Left Column) -->
+            <% if y_axis_levels.present? %>
+              <div class="chart-y-axis d-flex flex-column justify-content-between pe-3 text-end">
+                <% y_axis_levels.each do |level| %>
+                  <span class="chart-y-label text-secondary" title="<%= format_money(level[:amount]) %>">
+                    <%= format_money(level[:amount]) %>
+                  </span>
+                <% end %>
+              </div>
+            <% end %>
+
+            <!-- Chart Plot Area with Horizontal Grid Lines & Bars -->
+            <div class="chart-plot-area flex-grow-1 position-relative d-flex align-items-end">
+              <!-- Horizontal Reference Grid Lines -->
+              <div class="chart-grid-lines-layer position-absolute top-0 start-0 w-100 pointer-events-none d-flex flex-column justify-content-between">
+                <% (y_axis_levels.presence || [1, 2, 3, 4, 5]).each do |_| %>
+                  <div class="chart-grid-line"></div>
+                <% end %>
+              </div>
+
+              <!-- Interactive Bars Layer -->
+              <div class="chart-bars-layer position-relative w-100 h-100 d-flex align-items-end justify-content-between gap-2 px-1">
+                <% monthly_trend.each do |trend| %>
+                  <%= link_to landlord_dashboard_path(house_id: selected_house_id, month: trend[:month_param]),
+                              class: "trend-bar-wrapper #{'is-active' if trend[:is_target]}",
+                              title: "#{trend[:month_full]}: #{format_money(trend[:paid_revenue])}",
+                              data: { turbo_action: "advance" } do %>
+                    <div class="trend-bar-col">
+                      <div class="trend-bar-track">
+                        <div class="trend-bar-fill <%= trend[:is_target] ? 'bg-indigo-active' : 'bg-indigo-bar' %>" style="height: <%= trend[:height_pct] %>%;"></div>
+                      </div>
+                      <span class="trend-bar-label font-monospace <%= trend[:is_target] ? 'fw-bold text-primary' : 'text-secondary' %>">
+                        <%= trend[:month_label] %>
+                      </span>
+                    </div>
+                  <% end %>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Mode Content (Overall vs Detailed) -->
+      <div class="col-12 col-lg-6 ps-lg-4">
+        <% if is_detailed %>
+          <!-- DETAILED MONTH MODE -->
+          <div class="d-flex flex-column gap-3">
+            <div class="d-flex flex-wrap align-items-baseline justify-content-between gap-2">
+              <div>
+                <div class="d-flex align-items-center gap-2 mb-1">
+                  <span class="stat-subtext text-secondary fw-semibold">
+                    <%= t('dashboard.landlord.collected_for_month', month: target_date.strftime("%m/%Y")) %>
+                  </span>
+                  <% if rev[:has_prev_data] %>
+                    <% if rev[:mom_diff].positive? %>
+                      <span class="mom-trend-badge badge rounded-pill bg-success-subtle text-success border border-success-subtle" title="<%= t('dashboard.landlord.mom_diff_label', amount: format_money(rev[:mom_diff])) %>">
+                        <span class="material-symbols-outlined align-middle fs-6">trending_up</span>
+                        +<%= rev[:mom_percentage] %>%
+                      </span>
+                    <% elsif rev[:mom_diff].negative? %>
+                      <span class="mom-trend-badge badge rounded-pill bg-danger-subtle text-danger border border-danger-subtle" title="<%= t('dashboard.landlord.mom_diff_label', amount: format_money(rev[:mom_diff])) %>">
+                        <span class="material-symbols-outlined align-middle fs-6">trending_down</span>
+                        <%= rev[:mom_percentage] %>%
+                      </span>
+                    <% else %>
+                      <span class="mom-trend-badge badge rounded-pill bg-secondary-subtle text-secondary border border-secondary-subtle">
+                        0.0%
+                      </span>
+                    <% end %>
+                  <% end %>
+                </div>
+                <span class="stat-value text-indigo-accent font-monospace fs-2">
+                  <%= format_money(rev[:paid_revenue] || 0) %>
+                </span>
+              </div>
+              <div class="text-lg-end">
+                <span class="stat-subtext text-secondary d-block"><%= t('dashboard.landlord.total_invoiced') %></span>
+                <span class="fs-5 fw-bold text-secondary font-monospace"><%= format_money(rev[:total_revenue] || 0) %></span>
+                <% if (rev[:total_revenue] || 0).positive? %>
+                  <div class="mt-1">
+                    <% pending_rev = (rev[:pending_revenue] || (rev[:total_revenue].to_i - rev[:paid_revenue].to_i)).to_i %>
+                    <% if pending_rev <= 0 %>
+                      <span class="revenue-status-badge badge rounded-pill bg-success-subtle text-success border border-success-subtle d-inline-flex align-items-center gap-1 font-monospace">
+                        <span class="material-symbols-outlined">check_circle</span>
+                        <span><%= t('dashboard.landlord.fully_collected') %></span>
+                      </span>
+                    <% elsif target_date < Date.current.beginning_of_month %>
+                      <span class="revenue-status-badge badge rounded-pill bg-danger-subtle text-danger border border-danger-subtle d-inline-flex align-items-center gap-1 font-monospace">
+                        <span class="material-symbols-outlined">error</span>
+                        <span><%= t('dashboard.landlord.uncollected_debt', amount: format_money(pending_rev)) %></span>
+                      </span>
+                    <% else %>
+                      <span class="revenue-status-badge badge rounded-pill bg-warning-subtle text-warning-emphasis border border-warning-subtle d-inline-flex align-items-center gap-1 font-monospace">
+                        <span class="material-symbols-outlined">hourglass_top</span>
+                        <span><%= t('dashboard.landlord.pending_collection', amount: format_money(pending_rev)) %></span>
+                      </span>
+                    <% end %>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+
+            <!-- Breakdown / Portions for selected month -->
+            <% if selected_house %>
+              <div>
+                <div class="financial-progress-container mb-2">
+                  <svg class="financial-progress-svg rounded-pill" viewBox="0 0 100 8" preserveAspectRatio="none" aria-hidden="true">
+                    <rect x="0" y="0" width="100" height="8" class="progress-bg" />
+                    <rect x="0" y="0" width="<%= rev[:rent_percentage] || 0 %>" height="8" class="portion-rent" />
+                    <rect x="<%= rev[:rent_percentage] || 0 %>" y="0" width="<%= rev[:service_percentage] || 0 %>" height="8" class="portion-service" />
+                  </svg>
+                </div>
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 stat-subtext">
+                  <div class="d-flex align-items-center gap-1">
+                    <span class="portion-dot dot-rent"></span>
+                    <span class="text-secondary"><%= t('dashboard.landlord.rent_portion') %>:</span>
+                    <span class="fw-bold  font-monospace"><%= rev[:rent_percentage] || 0 %>% (<%= format_money(rev[:rent_revenue] || 0) %>)</span>
+                  </div>
+                  <div class="d-flex align-items-center gap-1">
+                    <span class="portion-dot dot-service"></span>
+                    <span class="text-secondary"><%= t('dashboard.landlord.service_portion') %>:</span>
+                    <span class="fw-bold  font-monospace"><%= rev[:service_percentage] || 0 %>% (<%= format_money(rev[:service_revenue] || 0) %>)</span>
+                  </div>
+                </div>
+              </div>
+            <% else %>
+              <% if rev[:house_portions].present? && (rev[:paid_revenue] || 0).positive? %>
+                <div>
+                  <div class="financial-progress-container mb-2">
+                    <svg class="financial-progress-svg rounded-pill" viewBox="0 0 100 8" preserveAspectRatio="none" aria-hidden="true">
+                      <rect x="0" y="0" width="100" height="8" class="progress-bg" />
+                      <% offset = 0.0 %>
+                      <% rev[:house_portions].each do |portion| %>
+                        <% if portion[:percentage].positive? %>
+                          <rect x="<%= offset %>" y="0" width="<%= portion[:percentage] %>" height="8" class="portion-house-<%= portion[:color_index] %>" />
+                          <% offset += portion[:percentage] %>
+                        <% end %>
+                      <% end %>
+                    </svg>
+                  </div>
+                  <div class="d-flex flex-wrap gap-2 stat-subtext">
+                    <% rev[:house_portions].each do |portion| %>
+                      <div class="d-flex align-items-center gap-1 house-portion-chip">
+                        <span class="portion-dot bg-house-<%= portion[:color_index] %>"></span>
+                        <span class=" fw-medium"><%= portion[:name] %>:</span>
+                        <span class="fw-bold font-monospace text-secondary"><%= portion[:percentage] %>%</span>
+                      </div>
+                    <% end %>
+                  </div>
+                </div>
+              <% end %>
+            <% end %>
+          </div>
+        <% else %>
+          <!-- OVERALL COMPARISON MODE (Default) -->
+          <div class="d-flex flex-column gap-3">
+            <div class="row g-2">
+              <!-- Average Month Box -->
+              <div class="col-12 col-sm-4">
+                <div class="metric-stat-chip chip-avg p-3 rounded-3 bg-white border h-100 d-flex flex-column justify-content-between">
+                  <div class="d-flex align-items-center gap-1 text-secondary stat-subtext mb-1">
+                    <span class="material-symbols-outlined fs-6 text-primary">equalizer</span>
+                    <span class="fw-semibold"><%= t('dashboard.landlord.avg_revenue_title') %></span>
+                  </div>
+                  <div class="fw-bold font-monospace text-primary fs-5">
+                    <%= format_money(macro[:avg_monthly_revenue] || 0) %>
+                  </div>
+                  <div class="stat-subtext text-muted small mt-1">/ <%= t('dashboard.landlord.per_month') %></div>
+                </div>
+              </div>
+
+              <!-- Max Month Box -->
+              <div class="col-6 col-sm-4">
+                <div class="metric-stat-chip chip-max p-3 rounded-3 bg-white border h-100 d-flex flex-column justify-content-between">
+                  <div class="d-flex align-items-center gap-1 text-success stat-subtext mb-1">
+                    <span class="material-symbols-outlined fs-6">emoji_events</span>
+                    <span class="fw-semibold"><%= t('dashboard.landlord.max_revenue_title') %></span>
+                  </div>
+                  <div class="fw-bold font-monospace text-success fs-6">
+                    <%= macro.dig(:max_month, :month_full) || "—" %>
+                  </div>
+                  <div class="stat-subtext  font-monospace fw-semibold mt-1">
+                    <%= format_money(macro.dig(:max_month, :paid_revenue) || 0) %>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Min Month Box -->
+              <div class="col-6 col-sm-4">
+                <div class="metric-stat-chip chip-min p-3 rounded-3 bg-white border h-100 d-flex flex-column justify-content-between">
+                  <div class="d-flex align-items-center gap-1 text-secondary-emphasis stat-subtext mb-1">
+                    <span class="material-symbols-outlined fs-6">arrow_downward</span>
+                    <span class="fw-semibold"><%= t('dashboard.landlord.min_revenue_title') %></span>
+                  </div>
+                  <div class="fw-bold font-monospace text-secondary fs-6">
+                    <%= macro.dig(:min_month, :month_full) || "—" %>
+                  </div>
+                  <div class="stat-subtext  font-monospace fw-semibold mt-1">
+                    <%= format_money(macro.dig(:min_month, :paid_revenue) || 0) %>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-2 px-3 rounded-2 bg-white bg-opacity-75 border border-light-subtle d-flex align-items-center gap-2">
+              <span class="material-symbols-outlined text-primary fs-5">touch_app</span>
+              <span class="stat-subtext text-secondary">
+                <%= t('dashboard.landlord.click_bar_to_view_details') %>
+              </span>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Card Footer -->
+    <div class="stat-subtext mt-3 pt-2 border-top border-light-subtle d-flex flex-wrap justify-content-between align-items-center gap-2">
+      <div>
+        <span>
+          <% if selected_house %>
+            <%= t('dashboard.landlord.portfolio_share', pct: rev[:portfolio_share] || 100.0) %>
+          <% else %>
+            <%= t('dashboard.landlord.house_portion_title') %>
+          <% end %>
+        </span>
+        <div class="stat-subtext text-muted small mt-1">
+          <%= t('dashboard.landlord.gross_revenue_clarification') %>
+        </div>
+      </div>
+      <span class="badge bg-white text-secondary border font-monospace align-self-start"><%= t('dashboard.landlord.revenue_badge') %></span>
+    </div>
+  </div>
+</div>
