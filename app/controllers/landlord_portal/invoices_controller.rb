@@ -1,7 +1,7 @@
 class LandlordPortal::InvoicesController < LandlordPortal::BaseController
   layout "house_mngment"
 
-  before_action :set_billing_month, only: %i[index filtered new preview]
+  before_action :set_billing_month, only: %i[index filtered new new_custom preview]
   before_action :set_invoice, only: %i[show edit update mark_paid undo_paid cancel]
   before_action :ensure_invoice_editable, only: %i[edit update]
   before_action :ensure_invoice_cancellable, only: %i[cancel]
@@ -28,32 +28,32 @@ class LandlordPortal::InvoicesController < LandlordPortal::BaseController
   end
 
   def new
-    @mode = params[:mode].presence || "standard"
-    if @mode == "custom"
-      load_new_custom_invoice_form_data
-    else
-      load_new_invoice_form_data
-      @room = if params[:room_id].present?
-                @occupied_rooms.find { |r| r.id.to_s == params[:room_id].to_s }
-      end
-      @invoice_type = params[:invoice_type].presence || "room"
-      @tenant = @room&.tenants&.find_by(id: params[:tenant_id])
-      if @tenant.nil? && @invoice_type == "individual" && @room.present?
-        @tenant = @room.tenants.first
-      end
-
-      if @room
-        calculator = Invoices::DraftCalculator.new(
-          room: @room,
-          billing_month: @billing_month,
-          invoice_type: @invoice_type,
-          tenant: @tenant
-        )
-        @draft_items = calculator.build_items
-      else
-        @draft_items = []
-      end
+    if params[:mode] == "custom"
+      new_custom
+      render :new_custom
+      return
     end
+
+    load_new_invoice_form_data
+    @room = if params[:room_id].present?
+              @occupied_rooms.find { |r| r.id.to_s == params[:room_id].to_s }
+    end
+    @invoice_type = params[:invoice_type].presence || "room"
+
+    if @room
+      calculator = Invoices::DraftCalculator.new(
+        room: @room,
+        billing_month: @billing_month,
+        invoice_type: @invoice_type
+      )
+      @draft_items = calculator.build_items
+    else
+      @draft_items = []
+    end
+  end
+
+  def new_custom
+    load_new_custom_invoice_form_data
   end
 
   def preview
@@ -62,7 +62,6 @@ class LandlordPortal::InvoicesController < LandlordPortal::BaseController
         room: nil,
         billing_month: @billing_month,
         invoice_type: params[:invoice_type].presence || "room",
-        tenant: nil,
         draft_items: []
       }
       return
@@ -71,16 +70,11 @@ class LandlordPortal::InvoicesController < LandlordPortal::BaseController
     rooms_query = Invoices::OccupiedRoomsQuery.call(@house)
     @room = rooms_query[:occupied_rooms].find { |r| r.id.to_s == params[:room_id].to_s } || @house.rooms.find(params[:room_id])
     @invoice_type = params[:invoice_type].presence || "room"
-    @tenant = @room.tenants.find_by(id: params[:tenant_id]) if params[:tenant_id].present?
-    if @tenant.nil? && @invoice_type == "individual"
-      @tenant = @room.tenants.first
-    end
 
     calculator = Invoices::DraftCalculator.new(
       room: @room,
       billing_month: @billing_month,
-      invoice_type: @invoice_type,
-      tenant: @tenant
+      invoice_type: @invoice_type
     )
     @draft_items = calculator.build_items
 
@@ -88,41 +82,20 @@ class LandlordPortal::InvoicesController < LandlordPortal::BaseController
       room: @room,
       billing_month: @billing_month,
       invoice_type: @invoice_type,
-      tenant: @tenant,
       draft_items: @draft_items
     }
   end
 
   def create
-    @mode = params[:mode].presence || params.dig(:invoice, :mode).presence || "standard"
-    if @mode == "custom"
-      result = Invoices::CreateCustomService.call(
-        house: @house,
-        landlord: current_user,
-        params: custom_invoice_params
-      )
-
-      if result.success?
-        if result.invoices.size == 1
-          redirect_to landlord_house_invoice_path(@house, result.invoices.first),
-                      notice: I18n.t("invoice.custom_create_success_single", code: result.invoices.first.code, default: "Đã xuất hóa đơn #{result.invoices.first.code} thành công!")
-        else
-          redirect_to landlord_house_invoices_path(@house, month: parse_month(params.dig(:invoice, :billing_month)).strftime("%Y-%m"), tab: "individual"),
-                      notice: I18n.t("invoice.custom_create_success_multiple", count: result.invoices.size, default: "Đã xuất thành công #{result.invoices.size} hóa đơn cho các người thuê được chọn!")
-        end
-      else
-        flash.now[:alert] = result.error_message
-        @billing_month = parse_month(params.dig(:invoice, :billing_month))
-        load_new_custom_invoice_form_data
-        render :new, status: :unprocessable_entity
-      end
+    if params[:mode] == "custom" || params.dig(:invoice, :mode) == "custom"
+      create_custom
       return
     end
 
     @billing_month = parse_month(params.dig(:invoice, :billing_month))
     @room = @house.rooms.find_by(id: params.dig(:invoice, :room_id))
     unless @room
-      flash.now[:alert] = I18n.t("invoice.select_room_prompt", default: "Vui lòng chọn phòng")
+      flash.now[:alert] = t("invoice.select_room_prompt")
       load_new_invoice_form_data
       @invoice_type = params[:invoice]&.[](:invoice_type).presence || "room"
       @draft_items = []
@@ -130,27 +103,65 @@ class LandlordPortal::InvoicesController < LandlordPortal::BaseController
       return
     end
 
-    @invoice = Invoices::IssueService.call(
+    created_invoices = Invoices::IssueService.call(
       room: @room,
       billing_month: @billing_month,
       landlord: current_user,
       params: invoice_params
     )
 
-    redirect_to landlord_house_invoice_path(@house, @invoice), notice: "Đã xuất hóa đơn #{@invoice.code} thành công!"
-  rescue ActiveRecord::RecordInvalid => e
-    flash.now[:alert] = "Không thể tạo hóa đơn: #{e.record.errors.full_messages.to_sentence}"
+    if created_invoices.size == 1
+      @invoice = created_invoices.first
+      redirect_to landlord_house_invoice_path(@house, @invoice), notice: t("invoice.issue_success", code: @invoice.code)
+    else
+      redirect_to landlord_house_invoices_path(@house, month: @billing_month.strftime("%Y-%m"), tab: "room"),
+                  notice: t("invoice.individual_create_success_multiple", count: created_invoices.size, room: @room.title_name)
+    end
+  rescue ArgumentError => e
+    flash.now[:alert] = e.message
     load_new_invoice_form_data
     @invoice_type = params[:invoice]&.[](:invoice_type).presence || "room"
-    @tenant = @room&.tenants&.find_by(id: params[:invoice]&.[](:tenant_id)) if params[:invoice]&.[](:tenant_id).present?
     calculator = Invoices::DraftCalculator.new(
       room: @room,
       billing_month: @billing_month,
-      invoice_type: @invoice_type,
-      tenant: @tenant
+      invoice_type: @invoice_type
     )
     @draft_items = calculator.build_items
     render :new, status: :unprocessable_entity
+  rescue ActiveRecord::RecordInvalid => e
+    flash.now[:alert] = t("invoice.errors.create_failed", error: e.record.errors.full_messages.to_sentence)
+    load_new_invoice_form_data
+    @invoice_type = params[:invoice]&.[](:invoice_type).presence || "room"
+    calculator = Invoices::DraftCalculator.new(
+      room: @room,
+      billing_month: @billing_month,
+      invoice_type: @invoice_type
+    )
+    @draft_items = calculator.build_items
+    render :new, status: :unprocessable_entity
+  end
+
+  def create_custom
+    result = Invoices::CreateCustomService.call(
+      house: @house,
+      landlord: current_user,
+      params: custom_invoice_params
+    )
+
+    if result.success?
+      if result.invoices.size == 1
+        redirect_to landlord_house_invoice_path(@house, result.invoices.first),
+                    notice: t("invoice.custom_create_success_single", code: result.invoices.first.code)
+      else
+        redirect_to landlord_house_invoices_path(@house, month: parse_month(params.dig(:invoice, :billing_month)).strftime("%Y-%m"), tab: "individual"),
+                    notice: t("invoice.custom_create_success_multiple", count: result.invoices.size)
+      end
+    else
+      flash.now[:alert] = result.error_message
+      @billing_month = parse_month(params.dig(:invoice, :billing_month))
+      load_new_custom_invoice_form_data
+      render :new_custom, status: :unprocessable_entity
+    end
   end
 
   def edit
@@ -188,14 +199,15 @@ class LandlordPortal::InvoicesController < LandlordPortal::BaseController
       params: payment_params
     )
 
+    msg = t("invoice.mark_paid_success", code: @invoice.code)
     respond_to do |format|
       format.turbo_stream do
         @billing_month = @invoice.billing_month
         load_invoices_and_stats
-        flash.now[:notice] = "Đã xác nhận thanh toán hóa đơn #{@invoice.code}!"
+        flash.now[:notice] = msg
         render :update
       end
-      format.html { redirect_to landlord_house_invoice_path(@house, @invoice), notice: "Đã xác nhận thanh toán hóa đơn #{@invoice.code}!" }
+      format.html { redirect_to landlord_house_invoice_path(@house, @invoice), notice: msg }
     end
   end
 
@@ -206,14 +218,15 @@ class LandlordPortal::InvoicesController < LandlordPortal::BaseController
       explanation: params[:explanation]
     )
 
+    msg = t("invoice.undo_paid_success", code: @invoice.code)
     respond_to do |format|
       format.turbo_stream do
         @billing_month = @invoice.billing_month
         load_invoices_and_stats
-        flash.now[:notice] = "Đã hủy xác nhận thanh toán cho hóa đơn #{@invoice.code}!"
+        flash.now[:notice] = msg
         render :update
       end
-      format.html { redirect_to landlord_house_invoice_path(@house, @invoice), notice: "Đã hủy xác nhận thanh toán cho hóa đơn #{@invoice.code}!" }
+      format.html { redirect_to landlord_house_invoice_path(@house, @invoice), notice: msg }
     end
   rescue ArgumentError => e
     respond_to do |format|
@@ -227,7 +240,7 @@ class LandlordPortal::InvoicesController < LandlordPortal::BaseController
 
   def cancel
     Invoices::CancelService.call(invoice: @invoice, cancelled_by: current_user)
-    redirect_to landlord_house_invoices_path(@house, month: @invoice.billing_month.strftime("%Y-%m"), tab: (@invoice.custom? ? "individual" : "room")), notice: "Đã hủy hóa đơn #{@invoice.code}!"
+    redirect_to landlord_house_invoices_path(@house, month: @invoice.billing_month.strftime("%Y-%m"), tab: (@invoice.custom? ? "individual" : "room")), notice: t("invoice.cancel_success", code: @invoice.code)
   rescue ArgumentError => e
     redirect_to landlord_house_invoice_path(@house, @invoice), alert: e.message
   end
@@ -239,12 +252,12 @@ class LandlordPortal::InvoicesController < LandlordPortal::BaseController
 
     respond_to do |format|
       format.turbo_stream do
-        flash.now[:alert] = t("invoice.errors.cannot_update_paid", default: "Không thể chỉnh sửa hóa đơn đã xác nhận thanh toán. Vui lòng hủy xác nhận thanh toán trước nếu cần thay đổi.")
+        flash.now[:alert] = t("invoice.errors.cannot_update_paid")
         render :update, status: :unprocessable_entity
       end
       format.html do
         redirect_to landlord_house_invoice_path(@house, @invoice),
-                    alert: t("invoice.errors.cannot_update_paid", default: "Không thể chỉnh sửa hóa đơn đã xác nhận thanh toán. Vui lòng hủy xác nhận thanh toán trước nếu cần thay đổi.")
+                    alert: t("invoice.errors.cannot_update_paid")
       end
     end
   end
@@ -253,7 +266,7 @@ class LandlordPortal::InvoicesController < LandlordPortal::BaseController
     return unless @invoice.paid?
 
     redirect_to landlord_house_invoice_path(@house, @invoice),
-                alert: t("invoice.errors.cannot_cancel_paid", default: "Không thể hủy hóa đơn đã xác nhận thanh toán. Vui lòng hủy xác nhận thanh toán trước.")
+                alert: t("invoice.errors.cannot_cancel_paid")
   end
 
   def payment_params
@@ -315,16 +328,20 @@ class LandlordPortal::InvoicesController < LandlordPortal::BaseController
   end
 
   def invoice_params
-    params.require(:invoice).permit(
+    permitted = params.require(:invoice).permit(
       :room_id, :tenant_id, :bank_account_id, :invoice_type,
       :billing_month, :due_date, :start_date, :end_date, :title, :note,
-      :transfer_note, :transfer_note_mode,
-      items: [
-        :selected, :item_type, :service_variant_id, :service_usage_log_id,
-        :name, :unit, :unit_price, :quantity, :amount,
-        :start_date, :end_date, :prev_reading, :latest_reading, :note
-      ]
+      :transfer_note, :transfer_note_mode
     )
+
+    if params[:invoice][:items].present?
+      permitted[:items] = permit_invoice_items(
+        params[:invoice][:items],
+        %i[selected item_type service_variant_id service_usage_log_id name unit unit_price quantity amount start_date end_date prev_reading latest_reading note]
+      )
+    end
+
+    permitted
   end
 
   def invoice_update_params
@@ -348,13 +365,34 @@ class LandlordPortal::InvoicesController < LandlordPortal::BaseController
   end
 
   def custom_invoice_params
-    params.require(:invoice).permit(
+    permitted = params.require(:invoice).permit(
       :billing_month, :due_date, :start_date, :end_date, :title, :note, :bank_account_id,
       :transfer_note, :transfer_note_mode,
-      tenant_ids: [],
-      items: [
-        :selected, :item_type, :name, :unit, :unit_price, :quantity, :amount, :note
-      ]
+      tenant_ids: []
     )
+
+    if params[:invoice][:items].present?
+      permitted[:items] = permit_invoice_items(
+        params[:invoice][:items],
+        %i[selected item_type name unit unit_price quantity amount note]
+      )
+    end
+
+    permitted
+  end
+
+  def permit_invoice_items(items_param, allowed_keys)
+    keys_as_strings = allowed_keys.map(&:to_s)
+    if items_param.respond_to?(:values)
+      items_param.to_unsafe_h.transform_values do |val|
+        val.is_a?(Hash) ? val.slice(*keys_as_strings) : val
+      end
+    elsif items_param.is_a?(Array)
+      items_param.map do |val|
+        val.respond_to?(:to_unsafe_h) ? val.to_unsafe_h.slice(*keys_as_strings) : (val.is_a?(Hash) ? val.slice(*keys_as_strings) : val)
+      end
+    else
+      items_param
+    end
   end
 end

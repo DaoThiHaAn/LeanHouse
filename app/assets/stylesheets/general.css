@@ -241,7 +241,8 @@ textarea {
 
 .eye {
   cursor: pointer;
-  color: var(--info-text)
+  color: var(--info-text);
+  font-size: 1.3rem
 }
 
 .flash-container {
@@ -377,7 +378,7 @@ textarea {
   justify-content: center;
   gap: 0.4rem;
   width: fit-content;
-  flex-shrink: 0;
+  min-width: 100px;
   padding: 0.375rem 0.875rem;
   border-radius: 50px;
   background-color: rgba(22, 78, 93, 0.05);

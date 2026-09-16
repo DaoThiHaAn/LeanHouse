@@ -1,0 +1,127 @@
+<%
+  card_mode = local_assigns[:mode] || :room
+  is_custom = (card_mode.to_sym == :custom)
+  id_prefix = local_assigns[:id_prefix] || (is_custom ? "custom_inv" : "new_inv")
+  billing_month_val = local_assigns[:billing_month] || Date.current.beginning_of_month
+  accounts = local_assigns[:bank_accounts] || []
+
+  title_val = is_custom ? nil : t('invoice.default_title')
+  title_placeholder = is_custom ? t('invoice.custom_title_placeholder') : t('invoice.title_placeholder')
+  due_date_default = is_custom ? (Date.current + 5.days) : (Date.current + 1.days)
+  due_date_min = is_custom ? nil : (Date.current + 1.days)
+%>
+
+<!-- Card 1: Thông tin chung của hóa đơn -->
+<div class="card invoice-card mb-4 shadow-sm bg-white">
+  <div class="card-header bg-body-secondary py-3 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <div>
+      <h2 class="mb-2 d-flex align-items-center gap-2">
+        <span class="material-symbols-outlined">page_info</span>
+        <span><%= t('general_info') %></span>
+      </h2>
+      <p class="text-info-emphasis ms-4 mb-0"><%= t('invoice.general_info_note') %></p>
+    </div>
+    <span class="text-secondary small">
+      <span class="text-danger">*</span> <%= t('required_fields') %>
+    </span>
+  </div>
+
+  <div class="card-body p-4">
+    <!-- Tiêu đề & Kỳ thanh toán -->
+    <div class="row g-3 mb-4">
+      <div class="col-12 col-lg-6" data-controller="character-counter" data-character-counter-max-value="100">
+        <div class="d-flex justify-content-between align-items-center mb-1">
+          <%= f.label "invoice[title]", class: "form-label fw-semibold mb-0" do %>
+            <%= t('invoice.title') %> <span class="text-danger">*</span>
+          <% end %>
+          <span class="small text-secondary" data-character-counter-target="count">0/100</span>
+        </div>
+        <%= f.text_field "invoice[title]",
+              value: title_val,
+              class: "form-control shadow-sm",
+              placeholder: title_placeholder,
+              required: true,
+              maxlength: 100,
+              data: {
+                character_counter_target: "input",
+                action: "input->character-counter#update"
+              } %>
+      </div>
+
+      <div class="col-6 col-lg-3">
+        <div class="d-flex align-items-center justify-content-between mb-1">
+          <%= f.label "invoice[billing_month]", class: "form-label fw-semibold mb-0" do %>
+            <%= t('invoice.billing_month') %> <span class="text-danger">*</span>
+          <% end %>
+          <span class="material-symbols-outlined fs-6 text-secondary cursor-pointer"
+                tabindex="0"
+                role="button"
+                aria-label="<%= t('invoice.billing_month') %>"
+                <%= tooltip("top", :"invoice.billing_month_tooltip", html: true) %>>
+            info
+          </span>
+        </div>
+        <% month_data = is_custom ? {} : { invoice_form_target: "monthInput", action: "change->invoice-form#monthChanged" } %>
+        <%= f.month_field "invoice[billing_month]",
+              value: billing_month_val.strftime("%Y-%m"),
+              class: "form-control shadow-sm",
+              required: true,
+              data: month_data %>
+      </div>
+
+      <div class="col-6 col-lg-3">
+        <div class="d-flex align-items-center justify-content-between mb-1">
+          <%= f.label "invoice[due_date]", class: "form-label fw-semibold mb-0" do %>
+            <%= t('invoice.due_date') %> <span class="text-danger">*</span>
+          <% end %>
+        </div>
+        <%= f.date_field "invoice[due_date]",
+              value: due_date_default,
+              min: due_date_min,
+              class: "form-control shadow-sm",
+              required: true %>
+      </div>
+    </div>
+
+    <!-- Thông tin thanh toán & Ghi chú -->
+    <div class="row g-3 mb-4">
+      <div class="col-12 col-md-6">
+        <%= f.label "invoice[bank_account_id]", class: "form-label fw-semibold mb-1 d-flex align-items-center gap-2" do %>
+          <span class="material-symbols-outlined fs-5">credit_card</span>
+          <%= t('invoice.bank_account_receive') %>
+        <% end %>
+
+        <% if accounts.any? %>
+          <%= select_tag "invoice[bank_account_id]",
+                options_for_select(
+                  accounts.map { |acc| [acc.is_default? ? "#{acc.display_label} (#{t('bank_account.default_badge')})" : acc.display_label, acc.id] },
+                  accounts.find(&:is_default?)&.id
+                ),
+                class: "form-select shadow-sm" %>
+        <% else %>
+          <div class="d-flex align-items-center gap-2 mt-1">
+            <span class="text-danger small"><%= t('invoice.no_bank_account_landlord') %></span>
+            <%= link_to t('invoice.add_bank_account'), landlord_bank_accounts_path, class: "btn btn-sm btn-outline-primary" %>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="col-12 col-md-6" data-controller="character-counter" data-character-counter-max-value="500">
+        <div class="d-flex justify-content-between align-items-center mb-1">
+          <%= f.label "invoice[note]", t('invoice.note'), class: "form-label fw-semibold mb-0" %>
+          <span class="small text-secondary" data-character-counter-target="count">0/500</span>
+        </div>
+        <%= f.text_field "invoice[note]",
+              placeholder: t('invoice.note_placeholder'),
+              class: "form-control shadow-sm",
+              maxlength: 500,
+              data: {
+                character_counter_target: "input",
+                action: "input->character-counter#update"
+              } %>
+      </div>
+    </div>
+
+    <%= render "landlord_portal/invoices/transfer_note_fields", id_prefix: id_prefix %>
+  </div>
+</div>

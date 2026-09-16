@@ -1,0 +1,41 @@
+<%= turbo_frame_tag "account_delete_modal" do %>
+  <div class="modal fade" id="accountCheckDeleteConfirmModal" tabindex="-1" aria-hidden="true"
+        data-controller="modal" data-modal-auto-open-value="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content px-2">
+        <div class="modal-header border-bottom pb-2">
+          <div class="d-flex align-items-center gap-2 text-danger">
+            <span class="material-symbols-filled fs-3">person_remove</span>
+            <h2 class="modal-title">
+              <%= t("form.profile.delete_confirm_title") %>
+            </h2>
+          </div>
+
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body py-3">
+          <p class="mb-2">
+            <%= t("form.profile.delete_confirm_desc") %>
+          </p>
+          <p class="text-secondary small fst-italic">
+            <%= t("form.profile.delete_confirm_note") %>
+          </p>
+        </div>
+
+        <div class="modal-footer border-top pt-2 d-flex justify-content-end gap-2">
+          <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">
+            <%= t("cancel") %>
+          </button>
+          <%= button_to delete_url,
+                        method: :delete,
+                        data: { turbo_frame: "_top" },
+                        class: "btn btn-danger btn-sm d-flex align-items-center gap-1 fw-semibold" do %>
+            <span class="material-symbols-outlined fs-6">delete</span>
+            <%= t("form.profile.delete_confirm_btn") %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

@@ -83,7 +83,7 @@
   border-left-color: #6d8a0e;
 }
 .card-yellow .stat-icon {
-  color: #758a0e;
+  color: #758a0e !important;
 }
 
 .card-indigo {
@@ -371,6 +371,9 @@
 @media (max-width: 768px) {
   .dashboard-stat-card {
     height: auto;
+  }
+  .dashboard-financial-card {
+    min-height: auto;
   }
 }
 

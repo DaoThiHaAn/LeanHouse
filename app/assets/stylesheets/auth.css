@@ -96,3 +96,52 @@
 .forgot-pw-main-info {
     background-color: rgb(245, 255, 255);
 }
+
+/* Password constraint checklist styling */
+.pw-requirements {
+    margin-top: 0.25rem;
+    margin-bottom: 0.5rem;
+}
+
+.pw-requirement {
+    font-size: 0.85rem;
+    color: var(--info-text, #7e7e7e);
+    transition: color 0.2s ease, transform 0.2s ease;
+    user-select: none;
+}
+
+.pw-requirement .pw-rule-icon {
+    font-size: 1.15rem;
+    color: #9aa5b1;
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.2s ease;
+    font-variation-settings: 'FILL' 0, 'wght' 400;
+}
+
+/* Satisfied state */
+.pw-requirement.is-satisfied {
+    color: #198754;
+    font-weight: 600;
+}
+
+.pw-requirement.is-satisfied .pw-rule-icon {
+    color: #198754;
+    font-variation-settings: 'FILL' 1, 'wght' 500;
+    transform: scale(1.1);
+}
+
+/* Invalid state (touched and unsatisfied) */
+.pw-requirement.is-invalid {
+    color: #dc3545;
+    border: none;
+}
+
+.pw-requirement.is-invalid .pw-rule-icon {
+    color: #dc3545;
+    font-variation-settings: 'FILL' 1, 'wght' 400;
+}
+
+/* Subtle input focus highlight when all requirements are satisfied */
+.form-control.pw-valid:focus {
+    border-color: #198754;
+    box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}

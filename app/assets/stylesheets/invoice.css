@@ -272,8 +272,9 @@
   border-bottom: 1px solid #e0f2fe !important;
 }
 
-.item-row.addition-row {
-  border-left: 3px solid #0ea5e9;
+.item-row.addition-row,
+.item-row.addition-row td:first-child {
+  border-left: 3px solid #0ea5e9 !important;
 }
 
 .item-row.addition-row .form-control,
@@ -299,8 +300,9 @@
   border-bottom: 1px solid #ffe4e6 !important;
 }
 
-.item-row.discount-row {
-  border-left: 3px solid #f43f5e;
+.item-row.discount-row,
+.item-row.discount-row td:first-child {
+  border-left: 3px solid #f43f5e !important;
 }
 
 .item-row.discount-row .form-control,
@@ -316,7 +318,10 @@
 }
 
 /* --- Form Column Widths --- */
-.th-check { width: 45px; }
+.th-check {
+  min-width: 60px;
+  max-width: 100px;
+}
 .th-unit { width: 120px; }
 .th-price { width: 130px; }
 .th-reading { width: 175px; }

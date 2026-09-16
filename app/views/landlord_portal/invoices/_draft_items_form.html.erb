@@ -9,9 +9,8 @@
         <p class="text-secondary mb-0"><%= t('invoice.select_room_first_desc') %></p>
       </div>
     </div>
-  <% else %>
-    <% unit_options = ServiceVariant.display_unit_options %>
 
+  <% else %>
     <div class="card invoice-card mb-4"
          data-controller="invoice-items"
          data-invoice-items-addition-placeholder-value="<%= t('invoice.addition_placeholder') %>"
@@ -21,25 +20,32 @@
       <div class="card-header bg-body-secondary py-3 border-bottom d-flex justify-content-between align-items-center">
         <div>
           <h2 class="mb-2 d-flex align-items-center gap-2">
-            <span class="material-symbols-outlined fs-2">receipt_long</span>
+            <span class="material-symbols-filled fs-3">table</span>
             <span><%= t('invoice.item_or_service') %> (<%= t('common.month', default: 'Tháng') %> <%= billing_month.strftime("%m/%Y") %> - <%= room.title_name %>)</span>
           </h2>
           <p class="w-75 text-info-emphasis ms-4"><%= t('invoice.service_note') %></p>
         </div>
-        <span class="invoice-badge invoice-badge-room flex-shrink-0"><%= t('invoice.auto_calculated_badge', default: 'Tự động tính từ phòng & chỉ số') %></span>
+        <% if local_assigns[:invoice_type] == "individual" %>
+          <span class="invoice-badge invoice-badge-pending flex-shrink-0 d-inline-flex align-items-center gap-1">
+            <span class="material-symbols-outlined fs-6">call_split</span>
+            <%= t('invoice.mode_individual_desc') %> (<%= t('invoice.divided_per_tenant', count: [room.tenants_count, 1].max) %>)
+          </span>
+        <% else %>
+          <span class="invoice-badge invoice-badge-room flex-shrink-0"><%= t('invoice.auto_calculated_badge', default: 'Tự động tính từ phòng & chỉ số') %></span>
+        <% end %>
       </div>
 
       <div class="table-responsive">
         <table class="table invoice-table align-middle mb-0" id="invoice_items_table" data-invoice-items-target="table">
           <thead>
             <tr>
-              <th class="ps-3 text-center th-check"><%= t('invoice.actions.done', default: 'Thu') %></th>
+              <th class="ps-3 text-center th-check"><%= t('invoice.actions.done') %></th>
               <th><%= t('invoice.item_or_service') %></th>
               <th class="th-unit"><%= t('invoice.unit') %></th>
               <th class="th-price"><%= t('invoice.unit_price') %></th>
               <th class="th-reading"><%= t('invoice.reading_or_qty') %></th>
               <th class="text-end th-amount"><%= t('invoice.amount') %></th>
-              <th class="text-center pe-3 th-action"><%= t('invoice.actions.delete', default: 'Xóa') %></th>
+              <th class="text-center pe-3 th-action"><%= t('delete') %></th>
             </tr>
           </thead>
 
@@ -48,60 +54,104 @@
             <% draft_items.each_with_index do |item, idx| %>
               <tr class="item-row standard-row" data-item-type="<%= item[:item_type] %>">
                 <td class="ps-3 text-center">
-                  <input type="hidden" name="invoice[items][<%= idx %>][selected]" value="0" />
-                  <input type="checkbox" name="invoice[items][<%= idx %>][selected]" value="1" <%= 'checked' if item[:selected] != false %> class="form-check-input item-select-check" data-action="change->invoice-items#recalculate" />
-                  <input type="hidden" name="invoice[items][<%= idx %>][item_type]" value="<%= item[:item_type] %>" class="item-type-val" />
-                  <input type="hidden" name="invoice[items][<%= idx %>][service_variant_id]" value="<%= item[:service_variant_id] %>" />
-                  <input type="hidden" name="invoice[items][<%= idx %>][service_usage_log_id]" value="<%= item[:service_usage_log_id] %>" />
-                  <input type="hidden" name="invoice[items][<%= idx %>][start_date]" value="<%= item[:start_date] %>" />
-                  <input type="hidden" name="invoice[items][<%= idx %>][end_date]" value="<%= item[:end_date] %>" />
+                  <%= hidden_field_tag "invoice[items][#{idx}][selected]", "0", id: nil %>
+                  <%= check_box_tag "invoice[items][#{idx}][selected]", "1", (item[:selected] != false),
+                                    id: "invoice_items_#{idx}_selected",
+                                    class: "form-check-input item-select-check",
+                                    data: { action: "change->invoice-items#recalculate" } %>
+                  <%= hidden_field_tag "invoice[items][#{idx}][item_type]", item[:item_type], id: nil, class: "item-type-val" %>
+                  <%= hidden_field_tag "invoice[items][#{idx}][service_variant_id]", item[:service_variant_id], id: nil %>
+                  <%= hidden_field_tag "invoice[items][#{idx}][service_usage_log_id]", item[:service_usage_log_id], id: nil %>
+                  <%= hidden_field_tag "invoice[items][#{idx}][start_date]", item[:start_date], id: nil %>
+                  <%= hidden_field_tag "invoice[items][#{idx}][end_date]", item[:end_date], id: nil %>
                 </td>
+
                 <td>
-                  <input type="text" readonly="readonly" name="invoice[items][<%= idx %>][name]" value="<%= item[:name] %>" class="form-control form-control-sm fw-semibold item-name bg-light-subtle" />
+                  <%= text_field_tag "invoice[items][#{idx}][name]", item[:name],
+                                     id: "invoice_items_#{idx}_name",
+                                     readonly: true,
+                                     autocomplete: "off",
+                                     class: "form-control form-control-sm fw-semibold item-name bg-light-subtle" %>
                 </td>
+
                 <td>
                   <div class="d-flex justify-content-center">
-                    <input type="hidden" name="invoice[items][<%= idx %>][unit]" value="<%= item[:unit] %>" class="item-unit" />
+                    <%= hidden_field_tag "invoice[items][#{idx}][unit]", item[:unit], id: nil, class: "item-unit" %>
                     <span class="badge bg-secondary-subtle text-secondary-emphasis border px-2 py-1">
                       <%= item[:item_type].to_sym == :rent ? t('invoice.rent_unit_month') : item[:unit] %>
                     </span>
                   </div>
                 </td>
+
                 <td>
                   <div class="d-flex justify-content-end">
-                    <input type="hidden" readonly="readonly" name="invoice[items][<%= idx %>][unit_price]" value="<%= item[:unit_price] %>" class="item-price" />
+                    <%= hidden_field_tag "invoice[items][#{idx}][unit_price]", item[:unit_price],
+                                         id: nil,
+                                         readonly: true,
+                                         class: "item-price" %>
                     <span class="badge bg-secondary-subtle text-secondary-emphasis border font-monospace px-2 py-1 item-price-badge">
-                      <%= number_to_currency(item[:unit_price], unit: 'đ', format: '%n %u', precision: 0) %>
+                      <%= format_money(item[:unit_price]) %>
                     </span>
                   </div>
                 </td>
+
                 <td>
                   <% if item[:item_type].to_sym == :rent %>
-                    <input type="number" min="1" step="0.5" name="invoice[items][<%= idx %>][quantity]" value="<%= item[:quantity].presence || 1 %>" class="form-control form-control-sm font-monospace text-center item-qty invoice-input-qty" data-action="input->invoice-items#calculateRow" />
+                    <%= number_field_tag "invoice[items][#{idx}][quantity]", (item[:quantity].presence || 1),
+                                          id: "invoice_items_#{idx}_quantity",
+                                          min: 1,
+                                          autocomplete: "off",
+                                          class: "form-control form-control-sm font-monospace text-center item-qty invoice-input-qty",
+                                          data: { action: "input->invoice-items#calculateRow" } %>
+
                   <% elsif item[:item_type].to_sym == :metered_service %>
                     <div class="d-flex flex-column gap-1">
                       <div class="input-group input-group-sm">
                         <span class="input-group-text py-0 text-secondary invoice-reading-label"><%= t('invoice.prev_reading') %></span>
-                        <input type="number" min="0" name="invoice[items][<%= idx %>][prev_reading]" value="<%= item[:prev_reading] %>" class="form-control font-monospace item-prev-reading" data-action="input->invoice-items#calculateRow" placeholder="<%= t('invoice.prev_reading') %>" />
+                        <%= number_field_tag "invoice[items][#{idx}][prev_reading]", item[:prev_reading],
+                                              id: "invoice_items_#{idx}_prev_reading",
+                                              min: 0,
+                                              autocomplete: "off",
+                                              class: "form-control font-monospace item-prev-reading",
+                                              placeholder: t('invoice.prev_reading'),
+                                              data: { action: "input->invoice-items#calculateRow" } %>
                       </div>
+
                       <div class="input-group input-group-sm">
-                        <span class="input-group-text py-0 text-primary fw-bold invoice-reading-label"><%= t('invoice.latest_reading') %></span>
-                        <input type="number" min="0" name="invoice[items][<%= idx %>][latest_reading]" value="<%= item[:latest_reading] %>" class="form-control font-monospace fw-bold text-primary item-latest-reading" data-action="input->invoice-items#calculateRow" placeholder="<%= t('invoice.latest_reading') %>" />
+                        <span class="input-group-text py-0 text-primary fw-bold invoice-reading-label">
+                          <%= t('invoice.latest_reading') %>
+                        </span>
+                        <%= number_field_tag "invoice[items][#{idx}][latest_reading]", item[:latest_reading],
+                                              id: "invoice_items_#{idx}_latest_reading",
+                                              min: 0,
+                                              autocomplete: "off",
+                                              class: "form-control font-monospace text-primary item-latest-reading",
+                                              placeholder: t('invoice.latest_reading'),
+                                              data: { action: "input->invoice-items#calculateRow" } %>
                       </div>
                     </div>
-                    <input type="hidden" name="invoice[items][<%= idx %>][quantity]" value="<%= item[:quantity] %>" class="item-qty" />
+                    <%= hidden_field_tag "invoice[items][#{idx}][quantity]", item[:quantity], id: nil, class: "item-qty" %>
+
                   <% else %>
-                    <input type="number" min="0" step="0.1" name="invoice[items][<%= idx %>][quantity]" value="<%= item[:quantity] %>" class="form-control form-control-sm font-monospace text-center item-qty invoice-input-qty" data-action="input->invoice-items#calculateRow" />
+                    <%= number_field_tag "invoice[items][#{idx}][quantity]", item[:quantity],
+                                          id: "invoice_items_#{idx}_quantity",
+                                          min: 0,
+                                          step: 0.1,
+                                          autocomplete: "off",
+                                          class: "form-control form-control-sm font-monospace text-center item-qty invoice-input-qty",
+                                          data: { action: "input->invoice-items#calculateRow" } %>
                   <% end %>
                 </td>
+
                 <td class="text-end">
                   <div class="d-flex justify-content-end">
-                    <input type="hidden" name="invoice[items][<%= idx %>][amount]" value="<%= item[:amount] %>" class="item-amount" />
+                    <%= hidden_field_tag "invoice[items][#{idx}][amount]", item[:amount], id: nil, class: "item-amount" %>
                     <span class="badge bg-primary-subtle text-primary border border-primary-subtle font-monospace px-2 py-1 fw-bold item-amount-display">
-                      <%= number_to_currency(item[:amount], unit: 'đ', format: '%n %u', precision: 0) %>
+                      <%= format_money(item[:amount]) %>
                     </span>
                   </div>
                 </td>
+
                 <td class="text-center pe-3 text-secondary">
                   -
                 </td>
@@ -109,117 +159,7 @@
             <% end %>
           </tbody>
 
-        <!-- 2. Section: Phụ phí & Khoản cộng thêm (+) -->
-        <tbody>
-          <tr class="addition-section-header">
-            <td colspan="7" class="py-2 px-3">
-              <div class="d-flex justify-content-between align-items-center">
-                <div class="fw-bold text-primary d-flex align-items-center gap-1">
-                  <span class="material-symbols-outlined fs-5">add_circle</span>
-                  <span><%= t('invoice.addition_section_title', default: 'Phụ phí & Khoản cộng thêm (+)') %></span>
-                </div>
-                <button type="button" class="btn btn-sm btn-primary d-inline-flex align-items-center gap-1 shadow-sm px-2 py-1 fw-semibold" data-action="click->invoice-items#addAddition">
-                  <span class="material-symbols-outlined fs-6">add</span>
-                  <%= t('invoice.actions.add_addition', default: '+ Thêm khoản phụ phí') %>
-                </button>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-        <tbody id="addition_items_container" data-invoice-items-target="additionContainer">
-          <tr class="item-row addition-row align-middle" data-item-type="addition">
-            <td class="ps-3 text-center">
-              <input type="hidden" name="invoice[items][add_0][selected]" value="0" />
-              <input type="checkbox" name="invoice[items][add_0][selected]" value="1" checked class="form-check-input item-select-check" data-action="change->invoice-items#recalculate" />
-              <input type="hidden" name="invoice[items][add_0][item_type]" value="addition" class="item-type-val" />
-            </td>
-            <td>
-              <input type="text" name="invoice[items][add_0][name]" placeholder="<%= t('invoice.addition_placeholder') %>" class="form-control form-control-sm item-name" />
-            </td>
-            <td>
-              <select name="invoice[items][add_0][unit]" class="form-select form-select-sm text-center item-unit">
-                <% unit_options.each do |label, val| %>
-                  <option value="<%= val %>" <%= 'selected' if val.to_s.downcase.include?('lần') %>><%= label %></option>
-                <% end %>
-              </select>
-            </td>
-            <td>
-              <input type="number" min="0" step="1000" name="invoice[items][add_0][unit_price]" value="0" class="form-control form-control-sm font-monospace text-end item-price invoice-input-price" data-action="input->invoice-items#calculateRow" />
-            </td>
-            <td>
-              <input type="number" min="0" step="0.1" name="invoice[items][add_0][quantity]" value="1" class="form-control form-control-sm font-monospace text-center item-qty invoice-input-qty" data-action="input->invoice-items#calculateRow" />
-            </td>
-            <td class="text-end">
-              <div class="d-flex justify-content-end">
-                <input type="hidden" name="invoice[items][add_0][amount]" value="0" class="item-amount" />
-                <span class="badge bg-primary-subtle text-primary border border-primary-subtle font-monospace px-2 py-1 fw-bold item-amount-display">
-                  0 đ
-                </span>
-              </div>
-            </td>
-            <td class="text-center pe-3">
-              <button type="button" class="btn btn-sm btn-outline-danger btn-remove-row p-1 d-inline-flex align-items-center justify-content-center" data-action="click->invoice-items#removeRowClick" title="<%= t('invoice.actions.delete', default: 'Xóa dòng') %>">
-                <span class="material-symbols-outlined fs-6">delete</span>
-              </button>
-            </td>
-          </tr>
-        </tbody>
-
-        <!-- 3. Section: Giảm trừ & Chiết khấu (-) -->
-        <tbody>
-          <tr class="discount-section-header">
-            <td colspan="7" class="py-2 px-3">
-              <div class="d-flex justify-content-between align-items-center">
-                <div class="fw-bold text-danger d-flex align-items-center gap-1">
-                  <span class="material-symbols-outlined fs-5">remove_circle</span>
-                  <span><%= t('invoice.discount_section_title', default: 'Giảm trừ & Khuyến mãi (-)') %></span>
-                </div>
-                <button type="button" class="btn btn-sm btn-danger d-inline-flex align-items-center gap-1 shadow-sm px-2 py-1 fw-semibold" data-action="click->invoice-items#addDiscount">
-                  <span class="material-symbols-outlined fs-6">add</span>
-                  <%= t('invoice.actions.add_discount', default: '+ Thêm khoản giảm trừ') %>
-                </button>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-        <tbody id="discount_items_container" data-invoice-items-target="discountContainer">
-          <tr class="item-row discount-row align-middle" data-item-type="discount">
-            <td class="ps-3 text-center">
-              <input type="hidden" name="invoice[items][disc_0][selected]" value="0" />
-              <input type="checkbox" name="invoice[items][disc_0][selected]" value="1" checked class="form-check-input item-select-check" data-action="change->invoice-items#recalculate" />
-              <input type="hidden" name="invoice[items][disc_0][item_type]" value="discount" class="item-type-val" />
-            </td>
-            <td>
-              <input type="text" name="invoice[items][disc_0][name]" placeholder="<%= t('invoice.discount_placeholder') %>" class="form-control form-control-sm item-name text-danger" />
-            </td>
-            <td>
-              <select name="invoice[items][disc_0][unit]" class="form-select form-select-sm text-center item-unit text-danger">
-                <% unit_options.each do |label, val| %>
-                  <option value="<%= val %>" <%= 'selected' if val.to_s.downcase.include?('lần') %>><%= label %></option>
-                <% end %>
-              </select>
-            </td>
-            <td>
-              <input type="number" min="0" step="1000" name="invoice[items][disc_0][unit_price]" value="0" class="form-control form-control-sm font-monospace text-end item-price text-danger invoice-input-price" data-action="input->invoice-items#calculateRow" />
-            </td>
-            <td>
-              <input type="number" min="0" step="0.1" name="invoice[items][disc_0][quantity]" value="1" class="form-control form-control-sm font-monospace text-center item-qty invoice-input-qty" data-action="input->invoice-items#calculateRow" />
-            </td>
-            <td class="text-end">
-              <div class="d-flex justify-content-end">
-                <input type="hidden" name="invoice[items][disc_0][amount]" value="0" class="item-amount" />
-                <span class="badge bg-danger-subtle text-danger border border-danger-subtle font-monospace px-2 py-1 fw-bold item-amount-display">
-                  0 đ
-                </span>
-              </div>
-            </td>
-            <td class="text-center pe-3">
-              <button type="button" class="btn btn-sm btn-outline-danger btn-remove-row p-1 d-inline-flex align-items-center justify-content-center" data-action="click->invoice-items#removeRowClick" title="<%= t('invoice.actions.delete', default: 'Xóa dòng') %>">
-                <span class="material-symbols-outlined fs-6">delete</span>
-              </button>
-            </td>
-          </tr>
-        </tbody>
+        <%= render "fee_adjustment_sections" %>
       </table>
     </div>
 
@@ -244,7 +184,9 @@
         </div>
 
         <div class="col-md-5 text-md-end">
-          <div class="text-secondary small mb-1"><%= t('invoice.total_need_payment', default: 'TỔNG TIỀN CẦN THANH TOÁN') %>:</div>
+          <div class="text-secondary small mb-1">
+            <%= (local_assigns[:invoice_type] == "individual") ? t('invoice.each_tenant_pays') : t('invoice.total_need_payment', default: 'TỔNG TIỀN CẦN THANH TOÁN') %>:
+          </div>
           <div class="d-inline-flex align-items-center gap-2">
             <span id="summary_total" data-invoice-items-target="totalSummary" class="fs-4 fw-bolder px-3 py-1 rounded-3 font-monospace invoice-badge invoice-badge-pending">
               0 đ

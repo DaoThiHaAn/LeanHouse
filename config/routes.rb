@@ -51,11 +51,12 @@ Rails.application.routes.draw do
 
   # LANDLORD
   namespace :landlord, module: :landlord_portal do
-    resource :profile, only: [ :show, :edit, :update ] do
+    resource :profile, only: [ :show, :edit, :update, :destroy ] do
       patch :update_avatar
       get :new_tel
       post :change_tel
       get :change_password
+      get :check_delete
     end
 
     resource :dashboard, only: [ :show ]
@@ -176,6 +177,8 @@ Rails.application.routes.draw do
         collection do
           get :filtered
           get :preview
+          get :new_custom
+          post :create_custom
         end
         member do
           patch :mark_paid
@@ -196,11 +199,12 @@ Rails.application.routes.draw do
   namespace :tenant, module: :tenant_portal do
     get "/dashboard", to: "dashboard#show", as: :dashboard
 
-    resource :profile, only: [ :show, :edit, :update ] do
+    resource :profile, only: [ :show, :edit, :update, :destroy ] do
       patch :update_avatar
       get :new_tel
       post :change_tel
       get :change_password
+      get :check_delete
     end
 
     resources :invoices, only: [ :show, :index ] do

@@ -9,14 +9,14 @@
         <h1><%= t("auth.sign_up").upcase %></h1>
 
         <%# Form is handled at user#create %>
-        <%= form_with model: @user, local: true, 
+        <%= form_with model: @user, local: true,
                     class:"signup-form d-flex align-items-center flex-column gap-4" do |form| %>
 
             <!-- Role selection -->
             <div data-controller="role-selector" class="form-group gap-2 d-flex flex-column align-items-center mb-2">
                 <%= form.hidden_field :role, data: { role_selector_target: "input" } %>
                 <%= form.label :role, class: "form-label" do %>
-                    <%= t('form.profile.role') + ": "%> 
+                    <%= t('form.profile.role') + ": "%>
                     <span class="asterisk">*</span>
                 <% end %>
 
@@ -41,7 +41,7 @@
                 </div>
             </div>
 
-            <!-- Tel -->   
+            <!-- Tel -->
             <div class="form-group" data-controller="form">
                 <%= form.label :tel , class: "form-label d-flex justify-content-between" do%>
                     <div>
@@ -59,20 +59,20 @@
                     <small><%= t('form.profile.zalo') %></small>
                 </div>
 
-                <%= form.telephone_field :tel, minlength: 10, maxlength: 10, class: "mb-1 form-control #{invalid_class(@user, :tel)}", 
+                <%= form.telephone_field :tel, minlength: 10, maxlength: 10, class: "mb-1 form-control #{invalid_class(@user, :tel)}",
                     placeholder: t('form.profile.tel_placeholder'), required: true, autofocus: true,
                     autocomplete: "tel",
                     data: {
                         form_target: "input",
                         action: "input->form#update"
-                    } 
+                    }
                 %>
                 <%= field_error(@user, :tel) %>
             </div>
 
 
             <!-- Password -->
-            <div class="form-group" data-controller="form">
+            <div class="form-group" data-controller="form password-validation">
                 <%= form.label :password, class: "form-label d-flex justify-content-between" do%>
                     <div>
                         <%= t('form.profile.password') +  ": "%>
@@ -89,13 +89,15 @@
                         class: "form-control pe-5 #{invalid_class(@user, :password)}",
                         placeholder: t('form.profile.pw_placeholder'),
                         autocomplete: "new-password",
+                        aria: { describedby: "password-rules" },
                         data: {
                             form_target: "input",
-                            action: "input->form#update"
-                        } 
+                            password_validation_target: "input",
+                            action: "input->form#update input->password-validation#validate blur->password-validation#onBlur focus->password-validation#onFocus"
+                        }
                     %>
 
-                    <span class="eye position-absolute me-2 top-50 end-0 translate-middle-y material-symbols-outlined password-toggle" 
+                    <span class="eye position-absolute me-2 top-50 end-0 translate-middle-y material-symbols-outlined password-toggle"
                             data-action="click->form#togglePasswordVisibility">
                         visibility
                     </span>
@@ -103,18 +105,33 @@
 
                 <%= field_error(@user, :password) %>
 
-                <div class="field-info m-2 d-flex align-items-center gap-1">
+                <div class="field-info mt-2 mb-1 d-flex align-items-center gap-1">
                     <span class="material-symbols-outlined fs-5">info</span>
-                    <p><%= t('form.profile.required_pw') %></p>
+                    <p class="mb-0"><%= t('form.profile.required_pw') %></p>
                 </div>
 
-                <ul class="field-info d-flex flex-column gap-1 mb-1">
-                    <li><%= t('form.profile.pw_length')%></li>
-                    <li><%= t('form.profile.pw_letters')%></li>
-                    <li><%= t('form.profile.pw_numbers')%></li>
+                <ul class="field-info list-unstyled d-flex flex-column gap-1 mb-1 ps-1 pw-requirements" id="password-rules" aria-live="polite">
+                    <li class="pw-requirement d-flex align-items-center gap-2"
+                        data-password-validation-target="rule"
+                        data-rule="length">
+                        <span class="material-symbols-outlined pw-rule-icon fs-6" data-password-validation-target="icon" aria-hidden="true">radio_button_unchecked</span>
+                        <span class="pw-rule-text"><%= t('form.profile.pw_length')%></span>
+                    </li>
+                    <li class="pw-requirement d-flex align-items-center gap-2"
+                        data-password-validation-target="rule"
+                        data-rule="letter">
+                        <span class="material-symbols-outlined pw-rule-icon fs-6" data-password-validation-target="icon" aria-hidden="true">radio_button_unchecked</span>
+                        <span class="pw-rule-text"><%= t('form.profile.pw_letters')%></span>
+                    </li>
+                    <li class="pw-requirement d-flex align-items-center gap-2"
+                        data-password-validation-target="rule"
+                        data-rule="number">
+                        <span class="material-symbols-outlined pw-rule-icon fs-6" data-password-validation-target="icon" aria-hidden="true">radio_button_unchecked</span>
+                        <span class="pw-rule-text"><%= t('form.profile.pw_numbers')%></span>
+                    </li>
                 </ul>
             </div>
-            
+
             <div class="form-group" data-controller="form">
                 <%= form.label :password_confirmation, class: "form-label d-flex justify-content-between" do%>
                     <div>
@@ -130,15 +147,15 @@
                 <div class="position-relative">
                     <%= form.password_field :password_confirmation, minlength: 8, maxlength: 72, required: true,
                         class: "form-control pe-5 #{invalid_class(@user, :password_confirmation)}",
-                        autocomplete: "new-password",   
+                        autocomplete: "new-password",
                         placeholder: t('form.profile.pw_cf_placeholder'),
                         data: {
                             form_target: "input",
                             action: "input->form#update"
-                        } 
+                        }
                     %>
 
-                    <span class="eye position-absolute me-2 top-50 end-0 translate-middle-y material-symbols-outlined password-toggle" 
+                    <span class="eye position-absolute me-2 top-50 end-0 translate-middle-y material-symbols-outlined password-toggle"
                             data-action="click->form#togglePasswordVisibility">
                         visibility
                     </span>
@@ -159,14 +176,14 @@
                         <span data-form-target="charCount">0</span>
                     </small>
                 <% end %>
-                
-                <%= form.text_field :fullname, maxlength: 50, class: "form-control #{invalid_class(@user, :fullname)}", 
+
+                <%= form.text_field :fullname, maxlength: 50, class: "form-control #{invalid_class(@user, :fullname)}",
                     placeholder: t('form.profile.fullname_placeholder'), required: true,
                     autocomplete: "name",
                     data: {
                         form_target: "input",
                         action: "input->form#update"
-                    } 
+                    }
                 %>
 
                 <%= field_error(@user, :fullname) %>
@@ -185,13 +202,13 @@
                     </small>
                 <% end %>
 
-                <%= form.text_field :address, maxlength: 100, class: "form-control", 
+                <%= form.text_field :address, maxlength: 100, class: "form-control",
                     placeholder: t('form.profile.address_placeholder'), required: true,
                     autocomplete: "street-address",
                     data: {
                         form_target: "input",
                         action: "input->form#update"
-                    } 
+                    }
                 %>
             </div>
 

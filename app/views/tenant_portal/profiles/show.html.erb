@@ -29,7 +29,10 @@
 
       <%= render 'layouts/shared_components/personal_info_form',
             user: @user,
-            update_profile_url: tenant_profile_path %>
+            update_profile_url: tenant_profile_path,
+            check_delete_url: check_delete_tenant_profile_path %>
     </div>
   </div>
+
+  <%= turbo_frame_tag "account_delete_modal" %>
 </div>

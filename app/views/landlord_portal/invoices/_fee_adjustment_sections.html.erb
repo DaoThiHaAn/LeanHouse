@@ -1,0 +1,46 @@
+<%
+  colspan = local_assigns[:colspan] || 7
+  prefix = local_assigns[:id_prefix].present? ? (local_assigns[:id_prefix].to_s.end_with?("_") ? local_assigns[:id_prefix].to_s : "#{local_assigns[:id_prefix]}_") : ""
+%>
+
+<!-- Phụ phí & Khoản cộng thêm (+) -->
+<tbody>
+  <tr class="addition-section-header">
+    <td colspan="<%= colspan %>" class="py-2 px-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="fw-bold text-primary d-flex align-items-center gap-1">
+          <span class="material-symbols-outlined fs-5">add_circle</span>
+          <span><%= t('invoice.addition_section_title') %></span>
+        </div>
+        <button type="button" class="btn btn-sm btn-primary d-inline-flex align-items-center gap-1 shadow-sm px-2 py-1 fw-semibold" data-action="click->invoice-items#addAddition">
+          <span class="material-symbols-outlined fs-6">add</span>
+          <%= t('invoice.actions.add_addition') %>
+        </button>
+      </div>
+    </td>
+  </tr>
+</tbody>
+
+<tbody id="<%= prefix %>addition_items_container" data-invoice-items-target="additionContainer">
+</tbody>
+
+<!-- Giảm trừ & Chiết khấu (-) -->
+<tbody>
+  <tr class="discount-section-header">
+    <td colspan="<%= colspan %>" class="py-2 px-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="fw-bold text-danger d-flex align-items-center gap-1">
+          <span class="material-symbols-outlined fs-5">remove_circle</span>
+          <span><%= t('invoice.discount_section_title') %></span>
+        </div>
+        <button type="button" class="btn btn-sm btn-danger d-inline-flex align-items-center gap-1 shadow-sm px-2 py-1 fw-semibold" data-action="click->invoice-items#addDiscount">
+          <span class="material-symbols-outlined fs-6">remove</span>
+          <%= t('invoice.actions.add_discount') %>
+        </button>
+      </div>
+    </td>
+  </tr>
+</tbody>
+
+<tbody id="<%= prefix %>discount_items_container" data-invoice-items-target="discountContainer">
+</tbody>

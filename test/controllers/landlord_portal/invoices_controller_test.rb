@@ -147,9 +147,10 @@ class LandlordPortal::InvoicesControllerTest < ActionDispatch::IntegrationTest
     get new_landlord_house_invoice_path(@house)
     assert_response :success
 
-    # Card header with required fields indicator
     assert_select ".invoice-card .card-header", text: /#{I18n.t('general_info')}/
-    assert_select "label .text-danger", text: "*", count: 6
+    assert_select "label .text-danger", text: "*", count: 5
+    assert_select "select#tenant_select", count: 0
+    assert_select "div#individual_split_notice"
 
     assert_select "div[data-controller='character-counter'][data-character-counter-max-value='100']" do
       assert_select "span[data-character-counter-target='count']"
@@ -651,6 +652,8 @@ class LandlordPortal::InvoicesControllerTest < ActionDispatch::IntegrationTest
     get preview_landlord_house_invoices_path(@house, room_id: @room1.id)
     assert_response :success
     assert_select "table#invoice_items_table"
+    assert_select "tbody#addition_items_container[data-invoice-items-target='additionContainer']"
+    assert_select "tbody#discount_items_container[data-invoice-items-target='discountContainer']"
   end
 
   test "preview endpoint renders standard applied services with readonly unit price and unit badge" do
@@ -829,7 +832,20 @@ class LandlordPortal::InvoicesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
 
     assert_select ".dropdown .dropdown-toggle", text: /#{I18n.t('invoice.new_invoice')}/
-    assert_select "a[href*='mode=custom']"
+    assert_select "a[href*='new_custom']"
+  end
+
+  test "GET new_custom renders custom invoice form and lists staying tenants" do
+    sign_in_as(@landlord_user)
+
+    get new_custom_landlord_house_invoices_path(@house)
+    assert_response :success
+
+    assert_select "input[name='mode'][value='custom']"
+    assert_select "input[name='invoice[tenant_ids][]'][value='#{@tenant.id}']"
+    assert_select "table#custom_invoice_items_table"
+    assert_select "tbody#custom_addition_items_container[data-invoice-items-target='additionContainer']"
+    assert_select "tbody#custom_discount_items_container[data-invoice-items-target='discountContainer']"
   end
 
   test "GET new with mode: custom renders custom invoice form and lists staying tenants" do
@@ -916,6 +932,37 @@ class LandlordPortal::InvoicesControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :unprocessable_entity
     assert_includes response.body, I18n.t("invoice.errors.no_tenants_selected")
+  end
+
+  test "POST create_custom successfully creates custom invoices using dedicated route" do
+    sign_in_as(@landlord_user)
+
+    assert_difference -> { Invoice.count } => 1, -> { InvoiceItem.count } => 1 do
+      post create_custom_landlord_house_invoices_path(@house), params: {
+        invoice: {
+          billing_month: @billing_month.strftime("%Y-%m"),
+          title: "Phí vệ sinh hành lang riêng",
+          due_date: (Date.current + 5.days).to_s,
+          tenant_ids: [ @tenant.id ],
+          items: {
+            "0" => {
+              selected: "1",
+              item_type: "addition",
+              name: "Phụ phí vệ sinh",
+              unit: "lần",
+              unit_price: "60000",
+              quantity: "1",
+              amount: "60000"
+            }
+          }
+        }
+      }
+    end
+
+    created_invoice = Invoice.order(:created_at).last
+    assert_redirected_to landlord_house_invoice_path(@house, created_invoice)
+    assert_equal "Phí vệ sinh hành lang riêng", created_invoice.title
+    assert_equal 60_000, created_invoice.total_amount
   end
 
   test "tab switching between room invoices and custom individual invoices" do
@@ -1082,6 +1129,92 @@ class LandlordPortal::InvoicesControllerTest < ActionDispatch::IntegrationTest
     # Should display representative room mode, and not attribute the bill to the single tenant
     assert_includes response.body, I18n.t("invoice.room_occupants_notice")
     assert_includes response.body, I18n.t("invoice.badge_representative")
+  end
+
+  test "creating individual invoice creates separate equally-divided invoices for all staying tenants in room without tenant_id" do
+    sign_in_as(@landlord_user)
+
+    bed_house = House.create!(
+      landlord: @landlord,
+      name: "Dorm House Test",
+      mode: :bed,
+      address_l1: "123 Main St",
+      address_l2: "Ward 1",
+      address_l3: "District 1",
+      floors_count: 1,
+      inv_creation_date: 1
+    )
+    floor = bed_house.floors.create!(name: "Floor 1", position: 1, rooms_count: 1)
+    room = floor.rooms.create!(name: "Room 301", max_slots: 2, tenants_count: 2, area: 30.0)
+    bed1 = room.beds.create!(name: "Bed A")
+    bed2 = room.beds.create!(name: "Bed B")
+    ru1 = bed1.create_rental_unit!(rent: 1_500_000, deposit: 1_500_000)
+    ru2 = bed2.create_rental_unit!(rent: 1_500_000, deposit: 1_500_000)
+
+    u1 = User.create!(fullname: "Tenant Mot", tel: "0911112233", password: "Password123", password_confirmation: "Password123", role: "tenant", sex: "male", bday: 22.years.ago.to_date, address: "St 1", tel_verified_at: Time.current)
+    u2 = User.create!(fullname: "Tenant Hai", tel: "0911112244", password: "Password123", password_confirmation: "Password123", role: "tenant", sex: "male", bday: 23.years.ago.to_date, address: "St 2", tel_verified_at: Time.current)
+    t1 = Tenant.find_or_create_by!(id: u1.id)
+    t2 = Tenant.find_or_create_by!(id: u2.id)
+
+    TenantStay.create!(rental_unit: ru1, tenant: t1, checkin_at: 1.month.ago)
+    TenantStay.create!(rental_unit: ru2, tenant: t2, checkin_at: 1.month.ago)
+
+    assert_difference -> { bed_house.invoices.count }, 2 do
+      post landlord_house_invoices_path(bed_house), params: {
+        invoice: {
+          room_id: room.id,
+          invoice_type: "individual",
+          billing_month: @billing_month.strftime("%Y-%m"),
+          due_date: Date.current + 5.days,
+          title: "Hóa đơn chia đều phòng 301",
+          items: [
+            {
+              selected: "1",
+              item_type: "rent",
+              name: "Tiền phòng",
+              unit: "tháng",
+              unit_price: 1_500_000,
+              quantity: 1,
+              amount: 1_500_000
+            }
+          ]
+        }
+      }
+    end
+
+    assert_redirected_to landlord_house_invoices_path(bed_house, month: @billing_month.strftime("%Y-%m"), tab: "room")
+    follow_redirect!
+    assert_response :success
+    assert_includes response.body, I18n.t("invoice.individual_create_success_multiple", count: 2, room: room.title_name)
+
+    created_invoices = bed_house.invoices.order(:created_at).last(2)
+    assert_equal 2, created_invoices.size
+    created_invoices.each do |inv|
+      assert_predicate inv, :individual?
+      assert_includes [ t1.id, t2.id ], inv.tenant_id
+      assert_equal 1_500_000, inv.total_amount
+    end
+    assert_equal [ t1.id, t2.id ].sort, created_invoices.map(&:tenant_id).sort
+  end
+
+  test "creating individual invoice for room with no staying tenants fails and displays alert" do
+    sign_in_as(@landlord_user)
+
+    assert_no_difference -> { @house.invoices.count } do
+      post landlord_house_invoices_path(@house), params: {
+        invoice: {
+          room_id: @room2.id,
+          invoice_type: "individual",
+          billing_month: @billing_month.strftime("%Y-%m"),
+          due_date: Date.current + 5.days,
+          title: "Hóa đơn cá nhân phòng trống",
+          items: []
+        }
+      }
+    end
+
+    assert_response :unprocessable_entity
+    assert_includes response.body, I18n.t("invoice.errors.no_staying_tenants_in_room")
   end
 
   test "landlord invoice show renders service instructions modal and trigger button when invoice has services" do

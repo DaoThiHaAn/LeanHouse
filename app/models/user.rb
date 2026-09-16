@@ -60,7 +60,15 @@ class User < ApplicationRecord
   end
 
   def discard!
-    update!(discarded_at: Time.current)
+    update!(discarded_at: Time.current, is_active: false)
+  end
+
+  def can_delete?
+    AccountDeletionCheck.call(self).can_delete?
+  end
+
+  def deletion_blockers
+    AccountDeletionCheck.call(self).blockers
   end
 
   # @param role ["landlord", "tenant"]

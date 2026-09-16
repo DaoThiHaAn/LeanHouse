@@ -28,15 +28,18 @@ module Invoices
     private
 
     def active_tenants_count
-      @active_tenants_count ||= [ room.tenants_count, 1 ].max
+      @active_tenants_count ||= begin
+        staying_count = house.bed? ? room.all_staying_bed_tenants.size : room.all_staying_tenants.size
+        [ room.tenants_count.to_i, staying_count, 1 ].max
+      end
     end
 
     def build_rent_item
-      if invoice_type == "individual" && tenant.present?
-        stay = house.tenant_stay_for(tenant.id)
-        total_rent = stay&.rental_unit&.rent || 0
+      if invoice_type == "individual"
+        stay = tenant.present? ? house.tenant_stay_for(tenant.id) : nil
+        total_rent = stay&.rental_unit&.rent || room.rental_unit&.rent || 0
         rent_amount = if house.bed?
-          total_rent
+          stay&.rental_unit&.rent || (room.beds.joins(:rental_unit).average("rental_units.rent")&.round) || (room.rental_unit&.rent || 0)
         else
           (total_rent.to_f / active_tenants_count).round
         end
@@ -122,6 +125,8 @@ module Invoices
       when :per_item
         if invoice_type == "individual" && tenant.present?
           room.house.vehicles.where(tenant_id: tenant.id).count.to_f
+        elsif invoice_type == "individual"
+          (room.house.vehicles.where(tenant_id: room.all_staying_tenants.pluck(:id)).count.to_f / active_tenants_count).round(2)
         else
           room.house.vehicles.where(tenant_id: room.tenants.pluck(:id)).count.to_f
         end

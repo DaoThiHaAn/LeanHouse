@@ -27,7 +27,7 @@
         </li>
         <li><hr class="dropdown-divider my-1"></li>
         <li>
-          <%= link_to new_landlord_house_invoice_path(@house, month: @billing_month.strftime("%Y-%m"), mode: "custom"),
+          <%= link_to new_custom_landlord_house_invoices_path(@house, month: @billing_month.strftime("%Y-%m")),
               class: "dropdown-item d-flex align-items-center gap-2" do %>
             <span class="material-symbols-outlined fs-5">tune</span>
             <div>

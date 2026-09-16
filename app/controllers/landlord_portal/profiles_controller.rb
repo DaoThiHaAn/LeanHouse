@@ -64,6 +64,27 @@ class LandlordPortal::ProfilesController < LandlordPortal::BaseController
     redirect_to otp_input_path, notice: t("success_messages.send_otp")
   end
 
+  def check_delete
+    @check = AccountDeletionCheck.call(@user)
+    template = @check.can_delete? ? "account_delete_confirm" : "account_delete_blocked"
+    render "layouts/shared_components/#{template}", locals: {
+      delete_url: landlord_profile_path,
+      resolve_tenants_url: landlord_houses_path,
+      resolve_requests_url: landlord_requests_path,
+      resolve_invoices_url: landlord_houses_path
+    }
+  end
+
+  def destroy
+    result = AccountDeletion.call(@user)
+    if result.success?
+      reset_session
+      redirect_to root_path, notice: t("success_messages.account_deleted")
+    else
+      redirect_to landlord_profile_path, alert: t("errors.account_cant_deleted")
+    end
+  end
+
   private
 
   def set_user

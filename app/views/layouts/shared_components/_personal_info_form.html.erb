@@ -1,4 +1,4 @@
-<%# locals: (user:, update_profile_url:) %>
+<%# locals: (user:, update_profile_url:, check_delete_url:) %>
 <div class="py-4">
   <h2 class="mb-4">
     <span class="material-symbols-filled fs-2">user_attributes</span>
@@ -88,6 +88,11 @@
       <%= field_error(user, :address) %>
     </div>
 
+    <div class="p-2 bg-danger-subtle border border-danger-subtle d-flex align-items-start gap-2 w-100 text-danger-emphasis">
+        <span class="material-symbols-filled fs-5 mt-1">info</span>
+        <small><%= t("auth.auth_fields_reminder_html") %></small>
+    </div>
+
     <!-- Action Buttons -->
     <div class="d-flex justify-content-center gap-3 mt-3">
       <button type="reset" class="cancel-btn d-inline-flex align-items-center gap-1 px-3 py-2">
@@ -104,3 +109,24 @@
   <% end %>
 </div>
 <hr class="mt-2">
+
+<!-- Delete Account -->
+<div class="d-flex gap-2 align-items-center justify-content-between pt-2 mt-4">
+  <div>
+    <h2 class="fs-5 text-danger"><%= t("form.profile.delete_account_title") %></h2>
+    <small class="text-secondary"><%= t("form.profile.delete_account_desc") %></small>
+  </div>
+
+  <%= link_to check_delete_url,
+        data: {
+          controller: "loading",
+          loading_text_value: t("form.profile.checking_delete"),
+          action: "click->loading#start",
+          turbo_frame: "account_delete_modal"
+        },
+        class: "btn btn-outline-danger btn-sm d-flex align-items-center gap-1 text-nowrap" do %>
+    <span class="material-symbols-filled fs-5" data-loading-target="icon">delete</span>
+    <span class="material-symbols-outlined fs-6 spin d-none" data-loading-target="spinner">progress_activity</span>
+    <span class="fw-medium" data-loading-target="text"><%= t("form.profile.delete_account_btn") %></span>
+  <% end %>
+</div>

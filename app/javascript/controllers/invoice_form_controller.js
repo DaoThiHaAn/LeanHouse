@@ -6,6 +6,8 @@ export default class extends Controller {
     "floorSelect",
     "roomSelect",
     "invoiceTypeSelect",
+    "individualNotice",
+    "individualNoticeText",
     "tenantWrapper",
     "tenantSelect"
   ]
@@ -18,7 +20,7 @@ export default class extends Controller {
   }
 
   connect() {
-    this.toggleTenantSelect()
+    this.toggleIndividualNotice()
     if (this.hasRoomSelectTarget && this.roomSelectTarget.value) {
       const room = this.findRoom(this.roomSelectTarget.value)
       if (room && this.hasFloorSelectTarget && !this.floorSelectTarget.value) {
@@ -27,12 +29,16 @@ export default class extends Controller {
     }
   }
 
-  toggleTenantSelect() {
-    if (!this.hasInvoiceTypeSelectTarget || !this.hasTenantWrapperTarget) return
+  toggleIndividualNotice() {
+    if (!this.hasInvoiceTypeSelectTarget || !this.hasIndividualNoticeTarget) return
     const isIndividual = this.invoiceTypeSelectTarget.value === "individual"
-    this.tenantWrapperTarget.classList.toggle("d-none", !isIndividual)
-    if (this.hasTenantSelectTarget) {
-      this.tenantSelectTarget.disabled = !isIndividual
+    this.individualNoticeTarget.classList.toggle("d-none", !isIndividual)
+
+    if (isIndividual && this.hasIndividualNoticeTextTarget && this.hasRoomSelectTarget) {
+      const room = this.findRoom(this.roomSelectTarget.value)
+      if (room && room.tenants_count) {
+        this.individualNoticeTextTarget.textContent = `Hệ thống sẽ tự động chia đều tiền phòng và các dịch vụ chung theo số người đang ở trong phòng (${room.tenants_count} người), và xuất hóa đơn riêng cho từng người thuê.`
+      }
     }
   }
 
@@ -41,7 +47,7 @@ export default class extends Controller {
     const floorId = this.floorSelectTarget.value
     this.filterRoomsByFloor(floorId)
     this.roomSelectTarget.value = ""
-    this.populateTenantsForRoom(null)
+    this.toggleIndividualNotice()
     this.updatePreview()
   }
 
@@ -52,12 +58,12 @@ export default class extends Controller {
     if (room && this.hasFloorSelectTarget && !this.floorSelectTarget.value) {
       this.floorSelectTarget.value = room.floor_id
     }
-    this.populateTenantsForRoom(room)
+    this.toggleIndividualNotice()
     this.updatePreview()
   }
 
   invoiceTypeChanged() {
-    this.toggleTenantSelect()
+    this.toggleIndividualNotice()
     this.updatePreview()
   }
 
@@ -134,13 +140,11 @@ export default class extends Controller {
   }
 
   updatePreview() {
-    this.toggleTenantSelect()
+    this.toggleIndividualNotice()
 
     const month = this.hasMonthInputTarget ? this.monthInputTarget.value : ""
     const roomId = this.hasRoomSelectTarget ? this.roomSelectTarget.value : ""
     const invoiceType = this.hasInvoiceTypeSelectTarget ? this.invoiceTypeSelectTarget.value : "room"
-    const isIndividual = invoiceType === "individual"
-    const tenantId = (isIndividual && this.hasTenantSelectTarget) ? this.tenantSelectTarget.value : ""
 
     if (!this.previewUrlValue) return
 
@@ -148,9 +152,6 @@ export default class extends Controller {
     url.searchParams.set("room_id", roomId)
     url.searchParams.set("month", month)
     url.searchParams.set("invoice_type", invoiceType)
-    if (tenantId) {
-      url.searchParams.set("tenant_id", tenantId)
-    }
 
     fetch(url.toString(), {
       headers: {

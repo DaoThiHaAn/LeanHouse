@@ -5,11 +5,11 @@
         <h1 class="card-title text-center"><%=t('form.profile.reset_pw').upcase %></h1>
 
         <!-- TODO handle-->
-        <%= form_with model: @user, local: true, 
+        <%= form_with model: @user, local: true,
                     class:"signup-form w-100 d-flex align-items-center flex-column gap-4" do |form| %>
 
              <!-- Password -->
-            <div class="form-group w-100" data-controller="form">
+            <div class="form-group w-100" data-controller="form password-validation">
                 <%= form.label :password, class: "form-label d-flex justify-content-between" do%>
                     <div>
                         <%= t('form.profile.password') +  ": "%>
@@ -22,16 +22,18 @@
                 <% end %>
 
                 <div class="position-relative">
-                    <%= form.password_field :password, minLength: 8, maxLength: 72, required: true,
+                    <%= form.password_field :password, minlength: 8, maxlength: 72, required: true,
                         class: "form-control pe-5 #{invalid_class(@user, :password)}",
                         placeholder: t('form.profile.pw_placeholder'),
+                        aria: { describedby: "reset-password-rules" },
                         data: {
                             form_target: "input",
-                            action: "input->form#update"
-                        } 
+                            password_validation_target: "input",
+                            action: "input->form#update input->password-validation#validate blur->password-validation#onBlur focus->password-validation#onFocus"
+                        }
                     %>
 
-                    <span class="eye position-absolute me-2 top-50 end-0 translate-middle-y material-symbols-outlined password-toggle" 
+                    <span class="eye position-absolute me-2 top-50 end-0 translate-middle-y material-symbols-outlined password-toggle"
                             data-action="click->form#togglePasswordVisibility">
                         visibility
                     </span>
@@ -39,18 +41,33 @@
 
                 <%= field_error(@user, :password) %>
 
-                <div class="field-info m-2 d-flex align-items-center gap-1">
-                    <span class="material-symbols-outlined">info</span>
-                    <p><%= t('form.profile.required_pw') %></p>
+                <div class="field-info mt-2 mb-1 d-flex align-items-center gap-1">
+                    <span class="material-symbols-outlined fs-5">info</span>
+                    <p class="mb-0"><%= t('form.profile.required_pw') %></p>
                 </div>
 
-                <ul class="field-info d-flex flex-column gap-1 mb-1">
-                    <li><%= t('form.profile.pw_length')%></li>
-                    <li><%= t('form.profile.pw_letters')%></li>
-                    <li><%= t('form.profile.pw_numbers')%></li>
+                <ul class="field-info list-unstyled d-flex flex-column gap-1 mb-1 ps-1 pw-requirements" id="reset-password-rules" aria-live="polite">
+                    <li class="pw-requirement d-flex align-items-center gap-2"
+                        data-password-validation-target="rule"
+                        data-rule="length">
+                        <span class="material-symbols-outlined pw-rule-icon fs-6" data-password-validation-target="icon" aria-hidden="true">radio_button_unchecked</span>
+                        <span class="pw-rule-text"><%= t('form.profile.pw_length')%></span>
+                    </li>
+                    <li class="pw-requirement d-flex align-items-center gap-2"
+                        data-password-validation-target="rule"
+                        data-rule="letter">
+                        <span class="material-symbols-outlined pw-rule-icon fs-6" data-password-validation-target="icon" aria-hidden="true">radio_button_unchecked</span>
+                        <span class="pw-rule-text"><%= t('form.profile.pw_letters')%></span>
+                    </li>
+                    <li class="pw-requirement d-flex align-items-center gap-2"
+                        data-password-validation-target="rule"
+                        data-rule="number">
+                        <span class="material-symbols-outlined pw-rule-icon fs-6" data-password-validation-target="icon" aria-hidden="true">radio_button_unchecked</span>
+                        <span class="pw-rule-text"><%= t('form.profile.pw_numbers')%></span>
+                    </li>
                 </ul>
             </div>
-            
+
 
             <div class="form-group w-100" data-controller="form">
                 <%= form.label :password_confirmation, class: "form-label d-flex justify-content-between" do%>
@@ -71,10 +88,10 @@
                         data: {
                             form_target: "input",
                             action: "input->form#update"
-                        } 
+                        }
                     %>
 
-                    <span class="eye position-absolute me-2 top-50 end-0 translate-middle-y material-symbols-outlined password-toggle" 
+                    <span class="eye position-absolute me-2 top-50 end-0 translate-middle-y material-symbols-outlined password-toggle"
                             data-action="click->form#togglePasswordVisibility">
                         visibility
                     </span>

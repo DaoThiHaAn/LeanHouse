@@ -1,5 +1,27 @@
 en:
   form:
+    profile:
+      delete_account_title: "Delete Account"
+      delete_account_desc: "Deactivate and archive your account from the system"
+      delete_account_btn: "Delete Account"
+      checking_delete: "Checking..."
+      delete_blocked_title: "Cannot Delete Account at this Time"
+      delete_blocked_desc: "To protect rights and fulfill contractual obligations, please resolve the following items before deleting your account:"
+      delete_confirm_title: "Confirm Account Deletion"
+      delete_confirm_desc: "Are you sure you want to delete this account? This action will disable your access and archive your profile."
+      delete_confirm_note: "Historical contract and payment records will be retained for accounting and compliance purposes."
+      delete_confirm_btn: "Confirm Deletion"
+      i_understand: "I understand"
+      blockers:
+        active_tenants: "There are still %{count} active tenants residing in your properties."
+        active_stay: "You are currently staying in a rental unit. Please complete checkout first."
+        pending_requests: "There are still %{count} requests awaiting resolution."
+        unpaid_invoices: "There are still %{count} unpaid or unsettled invoices."
+      resolutions:
+        view_houses: "View houses and rooms"
+        view_dashboard: "Return to dashboard"
+        view_requests: "View requests"
+        view_invoices: "View invoices"
     house:
       self: "House"
       status_deleted: "Deleted"

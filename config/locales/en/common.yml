@@ -151,6 +151,9 @@ en:
     bed_updated: "Bed updated successfully!"
     house_mode_changed: "House mode changed successfully!"
     house_deleted: "House deleted successfully!"
+    account_deleted: "Account deleted successfully!"
+  errors:
+    account_cant_deleted: "Cannot delete this account while there are still active constraints!"
   form:
     asset:
       stats:

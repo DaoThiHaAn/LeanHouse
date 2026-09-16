@@ -5,22 +5,14 @@
   rev_stats = stats[:revenue] || {}
 %>
 <%= turbo_frame_tag "dashboard_stats" do %>
-  <!-- Row 1: Doanh thu & So sánh 6 tháng gần nhất (Full width 12 cột) -->
-  <%= render "landlord_portal/dashboards/revenue_comparison_card",
-            stats: stats,
-            selected_house: selected_house,
-            view_mode: (@view_mode || (params[:month].present? ? :detailed : :overall)),
-            target_date: stats_date %>
-
-
-  <!-- Row 2: Statistical cards -->
-  <div class="row g-4">
+  <!-- Row 1: Operational Cockpit (4 Compact Cards) -->
+  <div class="row g-3 g-xl-4 mb-4">
     <!-- Card 1: Khách mới & Trả phòng (Grouped) -->
-    <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-      <div class="dashboard-stat-card card-purple p-3 shadow-sm d-flex flex-column justify-content-between ">
+    <div class="col-12 col-sm-6 col-lg-3">
+      <div class="dashboard-stat-card card-purple p-3 shadow-sm d-flex flex-column justify-content-between h-100">
         <div class="d-flex align-items-start justify-content-between">
-          <div class="d-flex gap-4 align-items-center">
-            <%= image_tag 'tenants.png', alt: "People icon", width: "45px" %>
+          <div class="d-flex gap-3 align-items-center">
+            <%= image_tag 'tenants.png', alt: "People icon", width: "42px" %>
             <div>
               <h2 class="stat-card-title"><%= t('dashboard.landlord.tenant_flow_title') %></h2>
               <div class="text-success-emphasis">
@@ -46,11 +38,11 @@
     </div>
 
     <!-- Card 2: Tỉ lệ lấp chỗ trống -->
-    <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-      <div class="dashboard-stat-card card-green p-3 shadow-sm d-flex flex-column justify-content-between ">
+    <div class="col-12 col-sm-6 col-lg-3">
+      <div class="dashboard-stat-card card-green p-3 shadow-sm d-flex flex-column justify-content-between h-100">
         <div class="d-flex align-items-start justify-content-between">
           <div class="d-flex gap-3 align-items-center">
-            <%= image_tag 'occupied.png', alt: "Occupied icon", width: "45px" %>
+            <%= image_tag 'occupied.png', alt: "Occupied icon", width: "42px" %>
             <div>
               <div class="stat-card-title"><%= t('dashboard.landlord.occupied_rate') %></div>
               <div class="stat-value text-success mb-1"><%= stats[:occupancy][:rate] %>%</div>
@@ -76,8 +68,8 @@
     </div>
 
     <!-- Card 3: Yêu cầu chưa xử lý -->
-    <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-      <div class="dashboard-stat-card card-orange p-3 shadow-sm d-flex flex-column justify-content-between ">
+    <div class="col-12 col-sm-6 col-lg-3">
+      <div class="dashboard-stat-card card-orange p-3 shadow-sm d-flex flex-column justify-content-between h-100">
         <div class="d-flex align-items-start justify-content-between">
           <div class="d-flex gap-3 align-items-center">
             <span class="material-symbols-filled stat-icon">pending_actions</span>
@@ -114,8 +106,8 @@
     </div>
 
     <!-- Card 4: Hợp đồng sắp hết hạn & Quá hạn -->
-    <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-      <div class="dashboard-stat-card card-blue p-3 shadow-sm d-flex flex-column justify-content-between ">
+    <div class="col-12 col-sm-6 col-lg-3">
+      <div class="dashboard-stat-card card-blue p-3 shadow-sm d-flex flex-column justify-content-between h-100">
         <div class="d-flex align-items-start justify-content-between">
           <div class="d-flex gap-3 align-items-center">
             <span class="material-symbols-filled stat-icon">assignment_late</span>
@@ -140,89 +132,14 @@
         </div>
       </div>
     </div>
+  </div>
 
-    <!-- Row 3: Quản lý Hóa đơn & Công nợ (Full width 12 cột) -->
-    <div class="col-12">
-      <div class="dashboard-stat-card dashboard-invoice-card card-yellow p-3 p-md-4 shadow-sm d-flex flex-column justify-content-between">
-        <div>
-          <div class="d-flex align-items-start justify-content-between mb-3">
-            <div class="d-flex gap-3 align-items-center">
-              <span class="material-symbols-filled stat-icon">receipt_long</span>
-              <div>
-                <div class="stat-card-title mb-0 fs-5"><%= t('dashboard.landlord.invoices_title') %></div>
-                <div class="stat-subtext text-secondary"><%= t('dashboard.landlord.invoices_period_subtitle', month: stats_date.strftime("%m/%Y")) %></div>
-              </div>
-            </div>
-            <% if selected_house %>
-              <%= link_to landlord_house_invoices_path(selected_house, month: stats_date.strftime("%Y-%m")), class: "action-arrow-btn", title: t('dashboard.landlord.view_invoices'), data: { turbo_frame: "_top" } do %>
-                <span class="material-symbols-outlined">arrow_forward</span>
-              <% end %>
-            <% end %>
-          </div>
-
-          <div class="row g-4 align-items-center">
-            <!-- Cột trái: Chi tiết tình trạng thu -->
-            <div class="col-12 col-md-6 border-end-md">
-              <div class="d-flex flex-column gap-2 pe-md-3">
-                <div class="d-flex align-items-baseline justify-content-between">
-                  <span class="text-success-emphasis fw-semibold">
-                    <%= t('dashboard.landlord.invoices_paid_short').capitalize %>:
-                  </span>
-                  <span class="fw-bold text-success font-monospace">
-                    <%= stats[:invoices][:paid] %>
-                    <%= t('dashboard.landlord.invoices_unit') %>
-                    (<%= format_money(stats[:invoices][:paid_amount]) %>)
-                  </span>
-                </div>
-                <div class="d-flex align-items-baseline justify-content-between">
-                  <span class="text-warning-emphasis fw-semibold">
-                    <%= t('dashboard.landlord.invoices_pending_short').capitalize %>:
-                  </span>
-                  <span class="fw-bold text-warning-emphasis font-monospace">
-                    <%= stats[:invoices][:pending] %>
-                    <%= t('dashboard.landlord.invoices_unit') %>
-                    (<%= format_money(stats[:invoices][:pending_amount]) %>)
-                  </span>
-                </div>
-                <% if stats[:invoices][:overdue].positive? %>
-                  <div class="d-flex align-items-baseline justify-content-between">
-                    <span class="text-danger fw-bold">
-                      <%= t('dashboard.landlord.invoices_overdue_short').capitalize %>:
-                    </span>
-                    <span class="fw-bold text-danger font-monospace">
-                      <%= stats[:invoices][:overdue] %>
-                      <%= t('dashboard.landlord.invoices_unit') %>
-                    </span>
-                  </div>
-                <% end %>
-              </div>
-            </div>
-
-            <!-- Cột phải: Tiến độ thu & Tổng hóa đơn -->
-            <div class="col-12 col-md-6 ps-md-3">
-              <div class="d-flex justify-content-between align-items-baseline mb-1">
-                <span class="text-secondary fw-semibold"><%= t('dashboard.landlord.invoices_collected_rate') %></span>
-                <span class="fw-bold fs-4 text-teal-accent font-monospace"><%= stats[:invoices][:collection_rate] %>%</span>
-              </div>
-              <div class="financial-progress-container mb-2">
-                <svg class="financial-progress-svg rounded-pill" viewBox="0 0 100 8" preserveAspectRatio="none" aria-hidden="true">
-                  <rect x="0" y="0" width="100" height="8" class="progress-bg" />
-                  <rect x="0" y="0" width="<%= [stats[:invoices][:collection_rate], 100.0].min %>" height="8" class="progress-fill-teal" />
-                </svg>
-              </div>
-              <div class="d-flex justify-content-between align-items-center stat-subtext">
-                <span class="text-secondary"><%= t('dashboard.landlord.invoices_total_label') %>:</span>
-                <span class="fw-bold text-dark"><%= t('dashboard.landlord.invoices_total_count', count: stats[:invoices][:total]) %> · <%= format_money(stats[:invoices][:total_amount]) %></span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="stat-subtext mt-3 pt-2 border-top border-light-subtle d-flex justify-content-between align-items-center">
-          <span><%= selected_house ? selected_house.name : t('dashboard.landlord.all_houses') %></span>
-          <span class="badge bg-white text-secondary border font-monospace"><%= t('dashboard.landlord.invoices_badge') %></span>
-        </div>
-      </div>
-    </div>
+  <!-- Row 2: Unified Financial & Invoices Hub Card -->
+  <div class="row g-3 g-xl-4">
+    <%= render "landlord_portal/dashboards/revenue_comparison_card",
+              stats: stats,
+              selected_house: selected_house,
+              view_mode: (@view_mode || (params[:month].present? ? :detailed : :overall)),
+              target_date: stats_date %>
   </div>
 <% end %>

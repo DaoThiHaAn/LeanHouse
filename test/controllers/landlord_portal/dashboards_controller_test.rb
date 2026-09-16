@@ -69,7 +69,7 @@ class LandlordPortal::DashboardsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "h1", text: I18n.t("dashboard.landlord.title_all_houses")
     assert_select "select[name='house_id']"
-    assert_select ".dashboard-stat-card", 6
+    assert_select ".dashboard-stat-card", 5
     assert_select ".card-yellow"
     assert_select ".card-indigo"
     assert_select ".card-indigo .badge", text: /#{I18n.t("dashboard.landlord.all_houses")}/
@@ -81,7 +81,7 @@ class LandlordPortal::DashboardsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "h1", text: I18n.t("dashboard.landlord.title")
-    assert_select ".dashboard-stat-card", 6
+    assert_select ".dashboard-stat-card", 5
     assert_select ".card-yellow"
     assert_select ".card-indigo"
     assert_select ".card-indigo .badge", text: /#{@house.name}/
@@ -93,7 +93,7 @@ class LandlordPortal::DashboardsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "h1", text: I18n.t("dashboard.landlord.title_all_houses")
-    assert_select ".dashboard-stat-card", 6
+    assert_select ".dashboard-stat-card", 5
     assert_select ".card-yellow"
     assert_select ".card-indigo"
   end
