@@ -179,17 +179,26 @@
         <% end %>
       </tbody>
 
-      <tfoot class="table-light">
-        <tr>
-          <td colspan="3" class="ps-4 py-3 fw-bold text-dark">
-            <%= t("service_usage_logs.total_in_cycle") %>
-          </td>
-          <td class="text-end py-3 fw-bold text-primary fs-5">
-            <%= number_with_delimiter(summary.total_amount) %> đ
-          </td>
-          <td class="pe-4"></td>
-        </tr>
-      </tfoot>
+      <% if !summary.paginated_items.respond_to?(:last_page?) || summary.paginated_items.last_page? %>
+        <tfoot class="sum-footer">
+          <tr>
+            <td colspan="3" class="ps-4 py-3">
+              <div class="d-inline-flex align-items-center gap-2">
+                <div class="sum-icon-badge d-inline-flex align-items-center justify-content-center rounded-2">
+                  <span class="material-symbols-outlined fs-5">functions</span>
+                </div>
+                <span class="fw-bold text-dark"><%= t("service_usage_logs.total_in_cycle") %></span>
+              </div>
+            </td>
+            <td class="text-end py-3">
+              <span class="fw-bold custom-text-primary fs-5 font-monospace">
+                <%= number_with_delimiter(summary.total_amount) %> đ
+              </span>
+            </td>
+            <td class="pe-4"></td>
+          </tr>
+        </tfoot>
+      <% end %>
     </table>
   </div>
 

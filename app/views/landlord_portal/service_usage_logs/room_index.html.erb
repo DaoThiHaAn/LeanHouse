@@ -111,8 +111,8 @@
           <div>
             <%= link_to landlord_house_room_service_usage_logs_path(@house, @room, tab: "real_time"),
                         class: "btn btn-outline-secondary btn-sm d-flex align-items-center gap-1" do %>
-              <span class="material-symbols-outlined fs-6">restart_alt</span>
-              <span><%= t("service_usage_logs.reset_filter") %></span>
+              <span class="material-symbols-outlined fs-6">filter_alt_off</span>
+              <span><%= t("clear_filter") %></span>
             <% end %>
           </div>
         <% end %>
@@ -125,7 +125,7 @@
         <%= link_to new_landlord_house_service_usage_log_path(@house, room_id: @room.id, from_room: true),
                     class: "main-btn shadow-sm gap-2",
                     data: { turbo_frame: "_top" } do %>
-          <span class="material-symbols-filled fs-4">add_circle</span>
+          <span class="material-symbols-outlined fs-3">variable_add</span>
           <span><%= t("service_usage_logs.record_reading") %></span>
         <% end %>
       </div>

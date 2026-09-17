@@ -61,6 +61,10 @@ class Room < ApplicationRecord
     I18n.t("form.room.self") + " " + self.name
   end
 
+  def full_title
+    [ title_name, floor&.title_name ].compact.join(", ")
+  end
+
   def has_real_time_service?
     service_variants.any?(&:is_real_time?)
   end

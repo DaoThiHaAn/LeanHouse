@@ -43,21 +43,7 @@
               <% end %>
             </td>
             <td>
-              <% if invoice.room? %>
-                <p class="d-flex align-items-center gap-1 mb-0 fw-semibold text-dark">
-                  <%= invoice.room&.title_name %>, <%= invoice.room&.floor&.title_name %>
-                </p>
-              <% elsif invoice.tenant.present? %>
-                <div class="fw-semibold text-dark"><%= invoice.tenant.user&.fullname %></div>
-                <div class="small text-secondary"><%= invoice.room&.title_name %>, <%= invoice.room&.floor&.title_name %></div>
-                <% if invoice.tenant.user&.tel.present? %>
-                  <small class="text-secondary font-monospace d-block"><%= invoice.tenant.user.tel %></small>
-                <% end %>
-              <% else %>
-                <p class="d-flex align-items-center gap-1 mb-0 fw-semibold text-dark">
-                  <%= invoice.room&.title_name %>, <%= invoice.room&.floor&.title_name %>
-                </p>
-              <% end %>
+              <%= invoice_target_info(invoice) %>
               <div class="mt-1"><%= invoice_type_badge(invoice, show_target: false) %></div>
             </td>
             <td><%= format_month(invoice.billing_month) rescue invoice.billing_month.strftime("%m/%Y") %></td>

@@ -9,7 +9,12 @@
 <div class="modal fade text-start" id="<%= modal_id %>" tabindex="-1" aria-labelledby="<%= modal_id %>Label" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content rounded-4 shadow overflow-hidden">
-      <%= form_with url: undo_paid_landlord_house_invoice_path(hse, inv), method: :patch, local: is_local do |f| %>
+      <%= form_with url: undo_paid_landlord_house_invoice_path(hse, inv), method: :patch, local: is_local,
+                    data: {
+                      controller: "loading",
+                      loading_text_value: "#{t('saving', default: 'Đang xử lý...')}...",
+                      action: "submit->loading#submit"
+                    } do |f| %>
         <div class="modal-header bg-danger border-bottom">
           <h2 class="modal-title fs-5 fw-bold text-white d-flex align-items-center gap-2" id="<%= modal_id %>Label">
             <span class="material-symbols-outlined align-middle">undo</span>
@@ -29,7 +34,12 @@
         </div>
         <div class="modal-footer border-top">
           <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal"><%= t('invoice.actions.close') %></button>
-          <%= f.submit t('invoice.undo_paid_btn'), class: "btn btn-danger btn-sm fw-semibold px-3" %>
+          <%= f.button type: :submit,
+                       class: "btn btn-danger btn-sm fw-semibold px-3 d-inline-flex align-items-center justify-content-center gap-2",
+                       data: { loading_target: "button" } do %>
+            <span data-loading-target="text"><%= t('invoice.undo_paid_btn') %></span>
+            <span class="material-symbols-outlined spin d-none" data-loading-target="spinner">progress_activity</span>
+          <% end %>
         </div>
       <% end %>
     </div>

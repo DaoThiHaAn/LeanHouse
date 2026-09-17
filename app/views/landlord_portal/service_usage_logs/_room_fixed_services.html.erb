@@ -21,7 +21,7 @@
       <div>
         <%= link_to landlord_house_room_service_usage_logs_path(house, room, tab: "fixed"),
                     class: "btn btn-outline-secondary btn-sm d-flex align-items-center gap-1" do %>
-          <span class="material-symbols-outlined fs-6">restart_alt</span>
+          <span class="material-symbols-filled fs-6">event_repeat</span>
           <span><%= t("service_usage_logs.reset_to_current_month") %></span>
         <% end %>
       </div>
@@ -43,13 +43,6 @@
         <span class="material-symbols-outlined fs-4">add_notes</span>
         <span class="fs-6"><%= t("service_usage_logs.create_invoice_for_cycle") %></span>
       <% end %>
-    <% end %>
-
-    <%= link_to edit_landlord_house_room_path(house, room),
-                class: "btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1 rounded-pill px-3",
-                data: { turbo_frame: "edit_room_modal" } do %>
-      <span class="material-symbols-outlined fs-6">tune</span>
-      <span><%= t("service_usage_logs.configure_services_btn") %></span>
     <% end %>
   </div>
 </div>
@@ -154,22 +147,11 @@
 
 <% if summary.items.empty? %>
   <!-- Empty State -->
-  <div class="card border-0 shadow-sm rounded-4 p-5 text-center bg-light">
+  <div class="empty card shadow-sm rounded-4 p-5 text-center bg-light">
     <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-white shadow-sm p-3 mb-3 mx-auto">
-      <span class="material-symbols-outlined fs-1 text-secondary">lock_open</span>
+      <span class="material-symbols-outlined fs-1 text-secondary">block</span>
     </div>
-    <h5 class="fw-bold text-dark mb-2"><%= t("service_usage_logs.no_fixed_services_in_cycle") %></h5>
-    <p class="text-secondary mx-auto mb-4 col-md-8 col-lg-6">
-      <%= t("service_usage_logs.no_fixed_services_hint") %>
-    </p>
-    <div>
-      <%= link_to edit_landlord_house_room_path(house, room),
-                  class: "btn btn-primary d-inline-flex align-items-center gap-2 px-4 py-2 shadow-sm rounded-pill",
-                  data: { turbo_frame: "edit_room_modal" } do %>
-        <span class="material-symbols-outlined fs-5">settings</span>
-        <span><%= t("service_usage_logs.configure_services_btn") %></span>
-      <% end %>
-    </div>
+    <h5 class="fw-bold mb-2"><%= t("service_usage_logs.no_fixed_services_in_cycle") %></h5>
   </div>
 
 <% else %>
@@ -183,7 +165,6 @@
           <th class="py-3 text-center"><%= t("service_usage_logs.applied_quantity") %></th>
           <th class="text-end py-3"><%= t("service_usage_logs.monthly_estimate") %></th>
           <th class="text-center py-3"><%= t("status") %></th>
-          <th class="text-center pe-4 py-3"><%= t("actions") %></th>
         </tr>
       </thead>
 
@@ -191,7 +172,7 @@
         <% summary.paginated_items.each do |item| %>
           <tr>
             <td class="ps-4 py-3">
-              <div class="fw-bold text-dark"><%= item.name %></div>
+              <div class="fw-bold"><%= item.name %></div>
               <% if item.service&.note.present? %>
                 <p class="text-secondary small fst-italic mt-1">
                   <%= item.service.note %>
@@ -200,10 +181,10 @@
             </td>
 
             <td class="py-3">
-              <div class="fw-semibold text-primary">
+              <p>
                 <%= format_money(item.unit_price) %>
-                <span class="text-secondary fw-normal">/ <%= item.unit %></span>
-              </div>
+                / <%= item.unit %>
+              </p>
               <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle rounded-pill small mt-1">
                 <%= t("service_usage_logs.fixed_badge") %>
               </span>
@@ -234,34 +215,32 @@
                 </span>
               <% end %>
             </td>
-
-            <td class="text-center pe-4 py-3">
-              <% if item.variant.present? && item.service.present? %>
-                <%= link_to edit_application_landlord_house_service_service_variant_path(house, item.service, item.variant),
-                            class: "table-action",
-                            data: { turbo_frame: "service_variant_modal" },
-                            title: t("service.variant.edit_application") do %>
-                  <span class="material-symbols-outlined fs-3">edit_note</span>
-                <% end %>
-              <% else %>
-                <span class="text-muted">-</span>
-              <% end %>
-            </td>
           </tr>
         <% end %>
       </tbody>
 
-      <tfoot class="table-light">
-        <tr>
-          <td colspan="3" class="ps-4 py-3 fw-bold text-dark">
-            <%= t("service_usage_logs.total_in_cycle") %>
-          </td>
-          <td class="text-end py-3 fw-bold text-primary fs-5">
-            <%= number_with_delimiter(summary.total_amount) %> đ
-          </td>
-          <td colspan="2" class="pe-4"></td>
-        </tr>
-      </tfoot>
+      <% if !summary.paginated_items.respond_to?(:last_page?) || summary.paginated_items.last_page? %>
+        <tfoot class="sum-footer">
+          <tr>
+            <td colspan="3" class="ps-4 py-3">
+              <div class="d-inline-flex align-items-center gap-2">
+                <div class="sum-icon-badge d-inline-flex align-items-center justify-content-center rounded-2">
+                  <span class="material-symbols-outlined fs-5">functions</span>
+                </div>
+                <span class="fw-bold text-dark"><%= t("service_usage_logs.total_in_cycle") %></span>
+              </div>
+            </td>
+
+            <td class="text-end py-3">
+              <span class="fw-bold custom-text-primary fs-5 font-monospace">
+                <%= number_with_delimiter(summary.total_amount) %> đ
+              </span>
+            </td>
+
+            <td colspan="2" class="pe-4"></td>
+          </tr>
+        </tfoot>
+      <% end %>
     </table>
   </div>
 

@@ -41,33 +41,33 @@
 
           <div class="mb-3">
             <%= f.label :title, class: "form-label fw-semibold" do %>
-              <%= t('invoice.reason') %> <span class="text-danger">*</span>
+              <%= t('invoice.title') %> <span class="text-danger">*</span>
             <% end %>
             <%= f.text_field :title, value: @invoice.title, class: "form-control shadow-sm", placeholder: t('invoice.default_title'), required: true %>
           </div>
 
           <div class="mb-3">
             <div class="d-flex align-items-center gap-1 mb-1">
-              <span class="material-symbols-outlined fs-5 text-primary">calendar_month</span>
               <span class="form-label fw-semibold mb-0"><%= t('invoice.rent_period') %></span>
               <span class="text-danger">*</span>
             </div>
             <div class="row g-2">
               <div class="col-6">
                 <%= f.label :start_date, class: "form-label small text-secondary mb-1" do %>
-                  <%= t('invoice.from_date', default: 'Từ ngày') %> <span class="text-danger">*</span>
+                  <%= t('invoice.from_date') %>
                 <% end %>
                 <%= f.date_field :start_date, value: (@invoice.start_date || @invoice.billing_month.beginning_of_month), class: "form-control shadow-sm", required: true %>
               </div>
               <div class="col-6">
                 <%= f.label :end_date, class: "form-label small text-secondary mb-1" do %>
-                  <%= t('invoice.to_date', default: 'Đến ngày') %> <span class="text-danger">*</span>
+                  <%= t('invoice.to_date') %>
                 <% end %>
                 <%= f.date_field :end_date, value: (@invoice.end_date || @invoice.billing_month.end_of_month), class: "form-control shadow-sm", required: true %>
               </div>
             </div>
-            <div class="form-text text-secondary small mt-1 d-flex align-items-start gap-1">
-              <span class="material-symbols-outlined fs-6 flex-shrink-0">info</span>
+
+            <div class="form-text text-secondary small mx-2 mt-3 d-flex align-items-center gap-2">
+              <span class="material-symbols-outlined fs-6">info</span>
               <span><%= t('invoice.rent_period_hint') %></span>
             </div>
           </div>

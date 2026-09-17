@@ -6,7 +6,12 @@
   </h2>
 
   <%= form_with model: user, url: update_profile_url, method: :patch, local: true,
-        class: "d-flex flex-column gap-3 mx-auto", style: "max-width: 600px;" do |f| %>
+        class: "d-flex flex-column gap-3 mx-auto", style: "max-width: 600px;",
+        data: {
+          controller: "loading",
+          loading_text_value: "#{t('saving')}...",
+          action: "submit->loading#submit"
+        } do |f| %>
 
     <!-- Fullname -->
     <div class="form-group mb-2" data-controller="form">
@@ -100,10 +105,13 @@
         <%= t("cancel") %>
       </button>
 
-      <button type="submit" class="custom-primary-btn d-inline-flex align-items-center gap-2 px-4 py-2">
-        <span class="material-symbols-outlined fs-5">save</span>
-        <%= t("save_changes") %>
-      </button>
+      <%= f.button type: :submit,
+            class: "custom-primary-btn d-inline-flex align-items-center justify-content-center gap-2 px-4 py-2",
+            data: { loading_target: "button" } do %>
+        <span class="material-symbols-outlined fs-5" data-loading-target="icon">save</span>
+        <span class="material-symbols-outlined spin d-none fs-5" data-loading-target="spinner">progress_activity</span>
+        <span data-loading-target="text"><%= t("save_changes") %></span>
+      <% end %>
     </div>
 
   <% end %>

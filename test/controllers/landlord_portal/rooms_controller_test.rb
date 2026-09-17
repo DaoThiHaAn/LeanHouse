@@ -327,10 +327,11 @@ class LandlordPortal::RoomsControllerTest < ActionDispatch::IntegrationTest
     get filtered_landlord_house_rooms_path(@house)
     assert_response :success
 
-    # Check room with real-time service links to tab=real_time
-    assert_select "a[href*='#{landlord_house_room_service_usage_logs_path(@house, @room_occupied)}?tab=real_time']"
+    current_month = Date.current.strftime("%Y-%m")
+    # Check room with real-time service links to tab=real_time and month
+    assert_select "a[href*='#{landlord_house_room_service_usage_logs_path(@house, @room_occupied)}'][href*='tab=real_time'][href*='month=#{current_month}']"
 
-    # Check room with fixed service links to tab=fixed
-    assert_select "a[href*='#{landlord_house_room_service_usage_logs_path(@house, @room_full)}?tab=fixed']"
+    # Check room with fixed service links to tab=fixed and month
+    assert_select "a[href*='#{landlord_house_room_service_usage_logs_path(@house, @room_full)}'][href*='tab=fixed'][href*='month=#{current_month}']"
   end
 end

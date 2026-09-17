@@ -23,16 +23,17 @@
 
           <div class="bg-light p-3 rounded-3 text-start mb-3 border font-monospace small">
             <div class="mb-1"><strong><%= t('invoice.bank_name') %>:</strong> <%= bank_acc.bank.short_name %> (<%= bank_acc.bank.code %>)</div>
-            <div class="mb-1"><strong><%= t('invoice.account_number') %>:</strong> <span class="text-primary fw-bold fs-6"><%= bank_acc.account_number %></span></div>
+            <div class="mb-1"><strong><%= t('invoice.account_number') %>:</strong> <span class="text-primary fw-bold fs-6"><%= inv.effective_bank_account_number(bank_acc) %></span></div>
             <div class="mb-1"><strong><%= t('invoice.account_holder') %>:</strong> <%= bank_acc.account_holder %></div>
             <div class="mb-1"><strong><%= t('invoice.vietqr.amount') %>:</strong> <span class="text-danger fw-bold fs-6"><%= format_money(inv.total_amount) %></span></div>
-            <% if inv.transfer_note.present? %>
+            <% effective_note = inv.effective_transfer_note(bank_acc) %>
+            <% if effective_note.present? %>
               <div class="mb-0" data-controller="clipboard"
                    data-clipboard-copied-text-value="<%= t('invoice.vietqr.copied') %>"
                    data-clipboard-original-text-value="<%= t('invoice.vietqr.copy') %>">
                 <strong><%= t('invoice.transfer_note') %>:</strong>
                 <div class="d-flex justify-content-between align-items-center bg-white p-2 rounded border mt-1">
-                  <span class="fw-bold text-dark" data-clipboard-target="source"><%= inv.transfer_note %></span>
+                  <span class="fw-bold text-dark" data-clipboard-target="source"><%= effective_note %></span>
                   <button type="button" class="btn btn-sm btn-outline-primary d-flex align-items-center gap-1 py-1 px-2" data-action="click->clipboard#copy" data-clipboard-target="button">
                     <%= t('invoice.vietqr.copy') %>
                   </button>

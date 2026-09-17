@@ -6,6 +6,11 @@
 
         <!-- TODO handle-->
         <%= form_with model: @user, local: true,
+                    data: {
+                      controller: "loading",
+                      loading_text_value: "#{t('saving', default: 'Đang lưu')}...",
+                      action: "submit->loading#submit"
+                    },
                     class:"signup-form w-100 d-flex align-items-center flex-column gap-4" do |form| %>
 
              <!-- Password -->
@@ -100,9 +105,12 @@
                 <%= field_error(@user, :password_confirmation) %>
             </div>
 
-            <%= form.button type: :submit, class: "mx-auto custom-primary-btn d-flex align-items-center justify-content-center gap-2" do %>
-              <span class="material-symbols-outlined fs-5">save</span>
-              <span><%= t("save") %></span>
+            <%= form.button type: :submit,
+                  class: "mx-auto custom-primary-btn d-flex align-items-center justify-content-center gap-2",
+                  data: { loading_target: "button" } do %>
+              <span class="material-symbols-outlined fs-5" data-loading-target="icon">save</span>
+              <span class="material-symbols-outlined spin d-none fs-5" data-loading-target="spinner">progress_activity</span>
+              <span data-loading-target="text"><%= t("save") %></span>
             <% end %>
         <%end%>
 

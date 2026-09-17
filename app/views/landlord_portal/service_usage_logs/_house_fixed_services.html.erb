@@ -41,7 +41,7 @@
       <%= f.hidden_field :service_id, value: selected_service.id %>
     <% end %>
 
-    <!-- Biến thể cố định -->
+    <!-- Phiên bản cố định -->
     <% if fixed_variants.any? %>
       <div class="d-flex align-items-center gap-2">
         <%= f.label :service_variant_id, "#{t('service_usage_logs.variant')}:", class: "fw-bold text-nowrap" %>

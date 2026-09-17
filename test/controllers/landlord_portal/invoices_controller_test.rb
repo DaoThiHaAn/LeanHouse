@@ -183,9 +183,6 @@ class LandlordPortal::InvoicesControllerTest < ActionDispatch::IntegrationTest
     # Month field placeholder
     assert_select "input[type='month'][placeholder='YYYY-MM']"
 
-    # Current tenants only checkbox is present and checked by default
-    assert_select "input[type='checkbox'][name='current_tenants_only'][checked='checked']"
-
     # Floor filter
     assert_select "select#floor_id" do
       assert_select "option", text: I18n.t("invoice.all_floors")
@@ -205,18 +202,7 @@ class LandlordPortal::InvoicesControllerTest < ActionDispatch::IntegrationTest
       assert_select "option[value='individual']", text: I18n.t("invoice.mode_self_pay")
     end
 
-    # By default, active tenant invoices are shown, past checked-out tenant is excluded
-    assert_includes response.body, @invoice1.code
-    assert_includes response.body, @invoice2.code
-    assert_not_includes response.body, @past_invoice.code
-  end
-
-  test "unchecking current_tenants_only displays all invoices including past tenants" do
-    sign_in_as(@landlord_user)
-
-    # When unchecked (current_tenants_only: "0")
-    get filtered_landlord_house_invoices_path(@house, current_tenants_only: "0")
-    assert_response :success
+    # By default, all invoices for the month are shown including past tenants
     assert_includes response.body, @invoice1.code
     assert_includes response.body, @invoice2.code
     assert_includes response.body, @past_invoice.code
@@ -268,25 +254,6 @@ class LandlordPortal::InvoicesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_not_includes response.body, @invoice1.code
     assert_includes response.body, @invoice2.code
-  end
-
-  test "checkbox state matches current_tenants_only param" do
-    sign_in_as(@landlord_user)
-
-    # When current_tenants_only=0
-    get landlord_house_invoices_path(@house, current_tenants_only: "0")
-    assert_response :success
-    assert_select "input[type='checkbox'][name='current_tenants_only']:not([checked])"
-
-    # When current_tenants_only=1
-    get landlord_house_invoices_path(@house, current_tenants_only: "1")
-    assert_response :success
-    assert_select "input[type='checkbox'][name='current_tenants_only'][checked='checked']"
-
-    # When current_tenants_only is absent (default)
-    get landlord_house_invoices_path(@house)
-    assert_response :success
-    assert_select "input[type='checkbox'][name='current_tenants_only'][checked='checked']"
   end
 
   test "invoices index includes pagination-sync controller for url synchronization" do
@@ -347,10 +314,10 @@ class LandlordPortal::InvoicesControllerTest < ActionDispatch::IntegrationTest
     assert_select "span[data-pagination-total-pages='2']"
     assert_select "nav.pagination"
 
-    # Page 2 displays remaining 4 invoices (18 valid + 1 cancelled = 19 total)
+    # Page 2 displays remaining 5 invoices (19 valid + 1 cancelled = 20 total)
     get filtered_landlord_house_invoices_path(@house, page: 2)
     assert_response :success
-    assert_select "table.invoice-table tbody tr", 4
+    assert_select "table.invoice-table tbody tr", 5
 
     # On page 2, stats still calculate for all 19 invoices in monthly overview
     assert_select "div.stat-card-teal" do
@@ -1050,7 +1017,7 @@ class LandlordPortal::InvoicesControllerTest < ActionDispatch::IntegrationTest
     assert_not_includes response.body, custom_inv2.code
 
     # Search by tenant phone number
-    get filtered_landlord_house_invoices_path(@house, tab: "individual", q: "0901112233", current_tenants_only: "0")
+    get filtered_landlord_house_invoices_path(@house, tab: "individual", q: "0901112233")
     assert_response :success
     assert_includes response.body, custom_inv2.code
     assert_not_includes response.body, custom_inv1.code
@@ -1258,5 +1225,62 @@ class LandlordPortal::InvoicesControllerTest < ActionDispatch::IntegrationTest
       assert_select "div.fw-semibold", text: @tenant_user.fullname
       assert_select "small.font-monospace", text: @tenant_user.tel
     end
+  end
+
+  test "invoice show renders payos checkout button and dynamic VietQR when payos is configured" do
+    sign_in_as(@landlord_user)
+    bank = Bank.find_or_create_by!(code: "MB") do |b|
+      b.name = "Military Bank"
+      b.short_name = "MB"
+      b.bin = "970422"
+    end
+    bank_account = @landlord.bank_accounts.create!(
+      bank: bank,
+      account_number: "987654321",
+      account_holder: "LANDLORD USER",
+      payos_enabled: true,
+      payos_client_id: "test-client-id",
+      payos_api_key: "test-api-key",
+      payos_checksum_key: "test-checksum-key"
+    )
+    @invoice1.update!(bank_account: bank_account)
+
+    order = @invoice1.payos_order || @invoice1.build_payos_order
+    order.assign_attributes(
+      order_code: 123456,
+      checkout_url: "https://pay.payos.vn/web/test-embed-checkout",
+      status: "PENDING",
+      metadata: { "accountNumber" => "CAS00123", "description" => "HD123" }
+    )
+    order.save!
+
+    get landlord_house_invoice_path(@house, @invoice1)
+    assert_response :success
+    assert_includes response.body, "https://pay.payos.vn/web/test-embed-checkout"
+    assert_includes response.body, CGI.escapeHTML(I18n.t("invoice.payos.open_checkout"))
+    assert_includes response.body, "CAS00123"
+  end
+
+  test "invoice show does not render payos checkout button when invoice is paid" do
+    sign_in_as(@landlord_user)
+    bank = Bank.find_or_create_by!(code: "MB") do |b|
+      b.name = "Military Bank"
+      b.short_name = "MB"
+      b.bin = "970422"
+    end
+    bank_account = @landlord.bank_accounts.create!(
+      bank: bank,
+      account_number: "987654321",
+      account_holder: "LANDLORD USER",
+      payos_enabled: true,
+      payos_client_id: "test-client-id",
+      payos_api_key: "test-api-key",
+      payos_checksum_key: "test-checksum-key"
+    )
+    @invoice1.update!(bank_account: bank_account, status: :paid, paid_at: Time.current)
+
+    get landlord_house_invoice_path(@house, @invoice1)
+    assert_response :success
+    refute_includes response.body, CGI.escapeHTML(I18n.t("invoice.payos.open_checkout"))
   end
 end

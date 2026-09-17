@@ -568,4 +568,61 @@ class TenantPortal::InvoicesControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, 'id="serviceInstructionsModal"'
     assert_includes response.body, CGI.escapeHTML(I18n.t("invoice.service_instructions"))
   end
+
+  test "tenant invoice show renders payos checkout button and dynamic VietQR when payos is configured" do
+    sign_in_as(@tenant_user)
+    bank = Bank.find_or_create_by!(code: "MB") do |b|
+      b.name = "Military Bank"
+      b.short_name = "MB"
+      b.bin = "970422"
+    end
+    bank_account = @landlord.bank_accounts.create!(
+      bank: bank,
+      account_number: "987654321",
+      account_holder: "LANDLORD USER",
+      payos_enabled: true,
+      payos_client_id: "test-client-id",
+      payos_api_key: "test-api-key",
+      payos_checksum_key: "test-checksum-key"
+    )
+    @invoice.update!(bank_account: bank_account)
+
+    order = @invoice.payos_order || @invoice.build_payos_order
+    order.assign_attributes(
+      order_code: 123456,
+      checkout_url: "https://pay.payos.vn/web/test-embed-checkout-tenant",
+      status: "PENDING",
+      metadata: { "accountNumber" => "CAS00123", "description" => "HD123" }
+    )
+    order.save!
+
+    get tenant_invoice_path(@invoice)
+    assert_response :success
+    assert_includes response.body, "https://pay.payos.vn/web/test-embed-checkout-tenant"
+    assert_includes response.body, CGI.escapeHTML(I18n.t("invoice.payos.open_checkout"))
+    assert_includes response.body, "CAS00123"
+  end
+
+  test "tenant invoice show does not render payos checkout button when invoice is paid" do
+    sign_in_as(@tenant_user)
+    bank = Bank.find_or_create_by!(code: "MB") do |b|
+      b.name = "Military Bank"
+      b.short_name = "MB"
+      b.bin = "970422"
+    end
+    bank_account = @landlord.bank_accounts.create!(
+      bank: bank,
+      account_number: "987654321",
+      account_holder: "LANDLORD USER",
+      payos_enabled: true,
+      payos_client_id: "test-client-id",
+      payos_api_key: "test-api-key",
+      payos_checksum_key: "test-checksum-key"
+    )
+    @invoice.update!(bank_account: bank_account, status: :paid, paid_at: Time.current)
+
+    get tenant_invoice_path(@invoice)
+    assert_response :success
+    refute_includes response.body, CGI.escapeHTML(I18n.t("invoice.payos.open_checkout"))
+  end
 end

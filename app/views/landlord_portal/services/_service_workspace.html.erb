@@ -20,7 +20,7 @@
         </div>
         <% if service.note.present? %>
           <div class="d-flex align-items-center gap-1 mt-2 text-secondary small">
-            <span class="material-symbols-outlined fs-6" title="<%= t("note") %>">note</span>
+            <span class="material-symbols-outlined fs-6" title="<%= t("note") %>">notes</span>
             <span><%= service.note %></span>
           </div>
         <% end %>
@@ -30,16 +30,16 @@
     <div class="d-flex align-items-center gap-2">
       <% if variants.any?(&:is_real_time?) %>
         <%= link_to landlord_house_service_usage_logs_path(house, service_id: service.id, tab: "real_time"),
-                    class: "btn btn-outline-primary d-flex align-items-center gap-2 px-3 py-2",
+                    class: "service-workspace-log-btn",
                     data: { turbo_frame: "_top" } do %>
-          <span class="material-symbols-outlined fs-5">electric_meter</span>
+          <span class="material-symbols-outlined">electric_meter</span>
           <span><%= t("service_usage_logs.view_service_logs") %></span>
         <% end %>
       <% elsif variants.any? %>
         <%= link_to landlord_house_service_usage_logs_path(house, service_id: service.id, tab: "fixed"),
-                    class: "btn btn-outline-primary d-flex align-items-center gap-2 px-3 py-2",
+                    class: "service-workspace-log-btn",
                     data: { turbo_frame: "_top" } do %>
-          <span class="material-symbols-outlined fs-5">lock</span>
+          <span class="material-symbols-outlined">fact_check</span>
           <span><%= t("service_usage_logs.view_fixed_service_tracking") %></span>
         <% end %>
       <% end %>
@@ -48,14 +48,14 @@
       <%= link_to new_landlord_house_service_service_variant_path(house, service),
                   class: "custom-primary-btn d-flex align-items-center gap-2 px-3",
                   data: { turbo_frame: "service_variant_modal" } do %>
-        <span class="material-symbols-filled fs-5">variable_add</span>
+        <span class="material-symbols-outlined fs-4">variable_add</span>
         <span class="fs-6"><%= t("service.variant.add") %></span>
       <% end %>
     </div>
   </div>
 
   <%# Variants List %>
-  <div class="flex-grow-1 overflow-y-auto">
+  <div class="flex-grow-1 p-2 overflow-y-auto">
     <div id="service_variants_list" class="w-100 row row-cols-1 row-cols-md-2 row-cols-xl-3 g-2">
       <% if variants.any? %>
         <% variants.each do |variant| %>

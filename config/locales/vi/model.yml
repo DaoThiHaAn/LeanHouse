@@ -120,6 +120,11 @@ vi:
               file_too_big: "Video không được vượt quá %{size}!"
               invalid_content_type: "Chỉ chấp nhận tệp định dạng video (MP4, MOV, WEBM)!"
 
+        service_usage_log:
+          attributes:
+            latest_reading:
+              greater_than_or_equal_to_prev: "phải lớn hơn hoặc bằng chỉ số cũ (%{count})!"
+
       # Global messages
       messages:
         blank: "Không được để trống!"
@@ -129,6 +134,9 @@ vi:
 
     # Attribute translation
     attributes:
+      service_usage_log:
+        latest_reading: "Chỉ số mới"
+        prev_reading: "Chỉ số cũ"
       contract:
         tenant_citizen_id: "Số CCCD của khách thuê"
         landlord_citizen_id: "Số CCCD của chủ nhà"

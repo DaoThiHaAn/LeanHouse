@@ -104,7 +104,7 @@ class RoomFixedServicesSummaryTest < ActiveSupport::TestCase
     billing_month = Date.current.beginning_of_month
     invoice = Invoice.create!(
       code: "INV-ACTIVE-01",
-      title: "HĐ tháng",
+      title: "Hóa đơn tháng",
       house: @house,
       room: @room,
       created_by: @landlord_user,
@@ -230,7 +230,7 @@ class RoomFixedServicesSummaryTest < ActiveSupport::TestCase
     billing_month = Date.current.beginning_of_month
     invoice_t1 = Invoice.create!(
       code: "INV-T1-01",
-      title: "HĐ cá nhân T1",
+      title: "Hóa đơn cá nhân T1",
       house: @house,
       room: @room,
       created_by: @landlord_user,

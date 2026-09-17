@@ -148,6 +148,7 @@ en:
   clear_search: "Clear search"
   turn_back: "Back"
   required_fields: "Required fields"
+  clear_img: "Clear image"
   ago: "ago"
   success_messages:
     room_created: "Room created successfully!"

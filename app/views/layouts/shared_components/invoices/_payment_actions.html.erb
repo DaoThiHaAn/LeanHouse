@@ -3,6 +3,7 @@
   is_tenant = local_assigns[:portal].to_s == "tenant" || (local_assigns[:portal].blank? && current_user&.tenant?)
   proof_target = local_assigns[:proof_modal_id] || (is_tenant ? "tenantViewPaymentProofModal" : "viewPaymentProofModal")
 %>
+
 <div class="d-flex gap-4 flex-column d-print-none">
   <% if inv.paid? %>
     <div class="d-flex gap-3 align-items-center flex-wrap">
@@ -43,14 +44,14 @@
 
   <% else %>
     <% if is_tenant %>
-      <button type="button" class="btn btn-mark-paid-primary px-4 py-2 fw-semibold d-inline-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#tenantMarkPaidModal">
+      <button type="button" class="btn btn-mark-paid-primary" data-bs-toggle="modal" data-bs-target="#tenantMarkPaidModal">
         <span class="material-symbols-outlined fs-5">payments</span>
-        <%= t('invoice.submit_tenant_payment') %>
+        <span><%= t('invoice.submit_tenant_payment') %></span>
       </button>
     <% else %>
-      <button type="button" class="btn btn-mark-paid-primary px-4 py-2 fw-semibold d-inline-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#markPaidModal">
+      <button type="button" class="btn btn-mark-paid-primary" data-bs-toggle="modal" data-bs-target="#markPaidModal">
         <span class="material-symbols-outlined fs-5">check_circle</span>
-        <%= t('invoice.mark_as_paid') %>
+        <span><%= t('invoice.mark_as_paid') %></span>
       </button>
     <% end %>
   <% end %>

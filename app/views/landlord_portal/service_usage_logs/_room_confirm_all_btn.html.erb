@@ -3,10 +3,21 @@
   <% if count.to_i > 0 %>
     <%= button_to confirm_all_landlord_house_room_service_usage_logs_path(house, room),
                   method: :patch,
-                  data: { turbo_confirm: t("service_usage_logs.confirm_all_room_prompt", count: count, room: room.name) },
+                  form: {
+                    data: {
+                      controller: "loading",
+                      loading_text_value: "#{t('saving', default: 'Đang lưu...')}...",
+                      action: "submit->loading#submit"
+                    }
+                  },
+                  data: {
+                    loading_target: "button",
+                    turbo_confirm: t("service_usage_logs.confirm_all_room_prompt", count: count, room: room.name)
+                  },
                   class: "btn btn-success d-flex align-items-center gap-1 shadow-sm" do %>
-      <span class="material-symbols-outlined fs-6">done_all</span>
-      <span><%= t("service_usage_logs.confirm_all_room_btn", count: count) %></span>
+      <span class="material-symbols-outlined fs-6" data-loading-target="icon">done_all</span>
+      <span class="material-symbols-outlined spin d-none fs-6" data-loading-target="spinner">progress_activity</span>
+      <span data-loading-target="text"><%= t("service_usage_logs.confirm_all_room_btn", count: count) %></span>
     <% end %>
   <% end %>
 </div>

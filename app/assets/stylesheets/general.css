@@ -551,9 +551,24 @@ figcaption {
   font-size: 1.5rem;
 }
 
-
 thead {
   vertical-align: middle !important
+}
+
+.sum-footer tr {
+  border-top: 3px double #5678a2 !important;
+}
+
+.sum-footer td {
+  background: linear-gradient(180deg, rgba(15, 141, 172, 0.05) 0%, rgba(15, 141, 172, 0.2) 100%) !important;
+  vertical-align: middle;
+}
+
+.sum-icon-badge {
+  width: 28px;
+  height: 28px;
+  background-color: rgba(15, 141, 172, 0.12);
+  color: var(--custom-primary-text, #0f8dac);
 }
 
 .subtle-view-link {

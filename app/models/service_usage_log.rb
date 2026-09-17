@@ -12,6 +12,8 @@ class ServiceUsageLog < ApplicationRecord
   validates :prev_reading, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   # latest_reading is required immediately if confirmed; optional if awaiting tenant photo/reading
   validates :latest_reading, presence: true, if: :is_confirmed?
+  validates :latest_reading, numericality: { only_integer: true }, allow_nil: true
+  validate :latest_reading_greater_than_or_equal_to_prev_reading
   validate :prevent_modification_when_confirmed, on: :update
 
   before_save :compute_usage
@@ -78,6 +80,16 @@ class ServiceUsageLog < ApplicationRecord
   end
 
   private
+
+  def latest_reading_greater_than_or_equal_to_prev_reading
+    return if latest_reading.blank? || prev_reading.blank?
+    return if errors[:prev_reading].any? || errors[:latest_reading].any?
+    return unless latest_reading.is_a?(Numeric) && prev_reading.is_a?(Numeric)
+
+    if latest_reading < prev_reading
+      errors.add(:latest_reading, :greater_than_or_equal_to_prev, count: prev_reading)
+    end
+  end
 
   def prevent_modification_when_confirmed
     return if allow_landlord_override

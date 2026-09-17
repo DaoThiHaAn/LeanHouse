@@ -16,7 +16,11 @@
     <% end %>
   </p>
 
-  <%= form_with url: handle_landlord_request_path(request), method: :patch, id: "handle_request_form" do |f| %>
+  <%= form_with url: handle_landlord_request_path(request), method: :patch, id: "handle_request_form",
+                data: {
+                  controller: "loading",
+                  action: "submit->loading#submit"
+                } do |f| %>
     <!-- Action buttons container -->
     <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
       <% if request.requestable_type == "RepairRequest" %>
@@ -26,11 +30,13 @@
                 name: "decision",
                 value: "handling",
                 class: "btn btn-primary d-inline-flex align-items-center gap-1 px-3 py-2 fw-bold",
-                data: { 
-                  turbo_confirm: t("request.confirm_start_handling", default: "Bạn có chắc chắn muốn TIẾP NHẬN xử lý yêu cầu sửa chữa này?") 
+                data: {
+                  loading_target: "button",
+                  turbo_confirm: t("request.confirm_start_handling", default: "Bạn có chắc chắn muốn TIẾP NHẬN xử lý yêu cầu sửa chữa này?")
                 } do %>
-            <span class="material-symbols-outlined fs-5">build</span>
-            <%= t("request.start_handling", default: "Tiếp nhận xử lý") %>
+            <span class="material-symbols-outlined fs-5" data-loading-target="icon">build</span>
+            <span class="material-symbols-outlined spin d-none fs-5" data-loading-target="spinner">progress_activity</span>
+            <span data-loading-target="text"><%= t("request.start_handling", default: "Tiếp nhận xử lý") %></span>
           <% end %>
 
           <!-- Toggle Reject section -->
@@ -46,11 +52,13 @@
                 name: "decision",
                 value: "completed",
                 class: "btn btn-success d-inline-flex align-items-center gap-1 px-3 py-2 fw-bold",
-                data: { 
-                  turbo_confirm: t("request.confirm_complete", default: "Bạn có chắc chắn đã HOÀN THÀNH sửa chữa cho yêu cầu này?") 
+                data: {
+                  loading_target: "button",
+                  turbo_confirm: t("request.confirm_complete", default: "Bạn có chắc chắn đã HOÀN THÀNH sửa chữa cho yêu cầu này?")
                 } do %>
-            <span class="material-symbols-outlined fs-5">task_alt</span>
-            <%= t("request.mark_completed", default: "Xác nhận hoàn thành") %>
+            <span class="material-symbols-outlined fs-5" data-loading-target="icon">task_alt</span>
+            <span class="material-symbols-outlined spin d-none fs-5" data-loading-target="spinner">progress_activity</span>
+            <span data-loading-target="text"><%= t("request.mark_completed", default: "Xác nhận hoàn thành") %></span>
           <% end %>
         <% end %>
       <% else %>
@@ -68,11 +76,13 @@
               name: "decision",
               value: "approved",
               class: "btn btn-success d-inline-flex align-items-center gap-1 px-3 py-2 fw-bold",
-              data: { 
+              data: {
+                loading_target: "button",
                 turbo_confirm: approve_confirm
               } do %>
-          <span class="material-symbols-outlined fs-5">check_circle</span>
-          <%= t("request.approve") %>
+          <span class="material-symbols-outlined fs-5" data-loading-target="icon">check_circle</span>
+          <span class="material-symbols-outlined spin d-none fs-5" data-loading-target="spinner">progress_activity</span>
+          <span data-loading-target="text"><%= t("request.approve") %></span>
         <% end %>
 
         <!-- Toggle Reject section -->
@@ -106,12 +116,14 @@
               name: "decision",
               value: "rejected",
               class: "btn btn-sm btn-danger d-inline-flex align-items-center gap-1",
-              data: { 
+              data: {
+                loading_target: "button",
                 action: "click->request-handle#confirmReject",
-                turbo_confirm: t("request.confirm_reject") 
+                turbo_confirm: t("request.confirm_reject")
               } do %>
-          <span class="material-symbols-outlined fs-6">block</span>
-          <%= t("request.reject", default: "Xác nhận từ chối") %>
+          <span class="material-symbols-outlined fs-6" data-loading-target="icon">block</span>
+          <span class="material-symbols-outlined spin d-none fs-6" data-loading-target="spinner">progress_activity</span>
+          <span data-loading-target="text"><%= t("request.reject", default: "Xác nhận từ chối") %></span>
         <% end %>
       </div>
     </div>

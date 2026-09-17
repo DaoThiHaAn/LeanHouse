@@ -3,7 +3,12 @@
 <div class="modal fade text-start" id="<%= modal_id %>" tabindex="-1" aria-labelledby="<%= modal_id %>Label" aria-hidden="true" data-controller="file-preview modal">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content rounded-4 shadow">
-      <%= form_with url: mark_paid_tenant_invoice_path(invoice), method: :patch, multipart: true do |f| %>
+      <%= form_with url: mark_paid_tenant_invoice_path(invoice), method: :patch, multipart: true,
+                    data: {
+                      controller: "loading",
+                      loading_text_value: "#{t('saving', default: 'Đang lưu...')}...",
+                      action: "submit->loading#submit"
+                    } do |f| %>
         <div class="modal-header border-bottom">
           <h5 class="modal-title fw-bold" id="<%= modal_id %>Label">
             <span class="material-symbols-outlined text-primary align-middle">payments</span>
@@ -59,7 +64,12 @@
         </div>
         <div class="modal-footer border-top">
           <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal"><%= t('invoice.actions.close') %></button>
-          <%= f.submit t('invoice.submit_tenant_payment'), class: "btn btn-primary btn-sm fw-semibold px-3" %>
+          <%= f.button type: :submit,
+                       class: "btn btn-primary btn-sm fw-semibold px-3 d-inline-flex align-items-center justify-content-center gap-2",
+                       data: { loading_target: "button" } do %>
+            <span data-loading-target="text"><%= t('invoice.submit_tenant_payment') %></span>
+            <span class="material-symbols-outlined spin d-none" data-loading-target="spinner">progress_activity</span>
+          <% end %>
         </div>
       <% end %>
     </div>

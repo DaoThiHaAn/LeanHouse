@@ -372,3 +372,36 @@
   height: 20px;
   object-fit: contain;
 }
+
+/* Service Usage Logs Button in Service Workspace Header */
+.service-workspace-log-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 6px 20px;
+  border-radius: 40px;
+  border: 1.5px solid var(--primary-text);
+  color: var(--primary-text);
+  background-color: transparent;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.service-workspace-log-btn:hover {
+  box-shadow: 0 4px 10px rgba(22, 78, 93, 0.25);
+  transform: translateY(-1px);
+}
+
+.service-workspace-log-btn .material-symbols-outlined,
+.service-workspace-log-btn .material-symbols-filled {
+  font-size: 1.25rem;
+  transition: transform 0.2s ease;
+}
+
+.service-workspace-log-btn:hover .material-symbols-outlined,
+.service-workspace-log-btn:hover .material-symbols-filled {
+  transform: scale(1.2);
+}

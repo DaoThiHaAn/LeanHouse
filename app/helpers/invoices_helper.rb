@@ -60,16 +60,39 @@ module InvoicesHelper
     ], " ")
   end
 
+  def invoice_target_name(invoice, include_room: true)
+    invoice&.target_name(include_room: include_room)
+  end
+
+  def invoice_target_info(invoice, show_type_badge: false)
+    return "" unless invoice
+
+    room_text = invoice.room_title.presence || invoice.house&.name
+    parts = []
+
+    if (invoice.individual? || invoice.custom?) && invoice.tenant&.user.present?
+      user = invoice.tenant.user
+      parts << content_tag(:div, user.fullname, class: "fw-semibold")
+      parts << content_tag(:div, room_text, class: "small text-secondary") if room_text.present?
+    else
+      parts << content_tag(:p, room_text, class: "d-flex align-items-center gap-1 fw-semibold")
+    end
+
+    parts << content_tag(:div, invoice_type_badge(invoice, show_target: false), class: "mt-1") if show_type_badge
+
+    safe_join(parts)
+  end
+
   def invoice_type_badge(invoice, show_target: true)
     if invoice.custom?
       label = if show_target && (invoice.tenant || invoice.room)
-                "#{t('invoice.badge_custom')}: #{invoice.tenant&.user&.fullname || invoice.room&.title_name}"
+                "#{t('invoice.badge_custom')}: #{invoice.target_name(include_room: false)}"
       else
                 t("invoice.badge_custom")
       end
       content_tag(:span, label, class: "invoice-badge invoice-badge-custom")
     elsif invoice.individual? && invoice.tenant
-      label = show_target ? "#{t('invoice.badge_self_pay')}: #{invoice.tenant.user.fullname}" : t("invoice.badge_self_pay")
+      label = show_target ? "#{t('invoice.badge_self_pay')}: #{invoice.target_name(include_room: false)}" : t("invoice.badge_self_pay")
       content_tag(:span, label, class: "invoice-badge invoice-badge-individual")
     else
       content_tag(:span, t("invoice.badge_representative"), class: "invoice-badge invoice-badge-room")

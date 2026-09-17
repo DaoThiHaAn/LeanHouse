@@ -18,17 +18,23 @@
     <%= form_with model: floor,
                   url: landlord_house_floor_path(house, floor),
                   method: :patch,
-                  class: "d-flex align-items-center flex-grow-1 gap-2 position-relative" do |f| %>
+                  class: "d-flex align-items-center flex-grow-1 gap-2 position-relative",
+                  data: {
+                    controller: "loading",
+                    action: "submit->loading#submit"
+                  } do |f| %>
 
         <%= f.text_field :name, placeholder: t("form.floor.name_placeholder"),
               class: "form-control #{invalid_class(floor, :name)}",
               maxlength: 50, required: true,
               id: "floor_#{floor.id}_name" %>
-        
+
         <%# Save btn %>
-        <%= f.button type: :submit, class: "icon rounded-circle floor-bar-save p-1",
-                    title: t("save")  do %>
-          <span class="material-symbols-filled fs-4">save</span>
+        <%= f.button type: :submit, class: "icon rounded-circle floor-bar-save p-1 d-inline-flex align-items-center justify-content-center",
+                    title: t("save"),
+                    data: { loading_target: "button" } do %>
+          <span class="material-symbols-filled fs-4" data-loading-target="icon">save</span>
+          <span class="material-symbols-outlined spin d-none fs-4" data-loading-target="spinner">progress_activity</span>
         <%end%>
     <% end %>
 

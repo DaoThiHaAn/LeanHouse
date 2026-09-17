@@ -84,8 +84,6 @@ class LandlordPortal::ServiceUsageLogsControllerTest < ActionDispatch::Integrati
     assert_select "select[name='floor_id']"
     assert_select "select[name='room_id']"
     assert_select "select[name='service_variant_id']"
-    assert_select ".log-tab", text: /#{I18n.t('service_usage_logs.service_tab_real_time')}/
-    assert_select ".log-tab", text: /#{I18n.t('service_usage_logs.service_tab_fixed')}/
   end
 
   test "should get filtered logs for house with floor_id" do
@@ -344,7 +342,7 @@ class LandlordPortal::ServiceUsageLogsControllerTest < ActionDispatch::Integrati
   test "should not destroy billed log and show error alert" do
     invoice = Invoice.create!(
       code: "INV-TEST-BILLED",
-      title: "HĐ test",
+      title: "Hóa đơn test",
       house: @house,
       room: @room,
       created_by: @landlord_user,
@@ -696,5 +694,42 @@ class LandlordPortal::ServiceUsageLogsControllerTest < ActionDispatch::Integrati
     assert_response :success
     assert_select "turbo-frame#house_fixed_services_table"
     assert_select "td", text: /Gửi Xe/
+  end
+
+  test "cannot create service usage log when latest_reading is less than prev_reading" do
+    next_month = 4.months.from_now.beginning_of_month
+    assert_no_difference("ServiceUsageLog.count") do
+      post landlord_house_service_usage_logs_path(@house), params: {
+        service_usage_log: {
+          billing_month: next_month.strftime("%Y-%m"),
+          room_id: @room.id,
+          service_id: @service.id,
+          service_variant_id: @variant.id,
+          service_name: @service.name,
+          unit: @variant.human_unit,
+          unit_price: @variant.fee,
+          prev_reading: 200,
+          latest_reading: 150,
+          is_confirmed: true,
+          start_date: next_month,
+          end_date: next_month.end_of_month
+        }
+      }
+    end
+    assert_response :unprocessable_entity
+    assert_select ".alert-danger", text: /phải lớn hơn hoặc bằng chỉ số cũ/
+  end
+
+  test "cannot update service usage log when latest_reading is less than prev_reading" do
+    patch landlord_house_service_usage_log_path(@house, @log), params: {
+      service_usage_log: {
+        prev_reading: 200,
+        latest_reading: 100
+      }
+    }
+    assert_response :unprocessable_entity
+    assert_select ".alert-danger", text: /phải lớn hơn hoặc bằng chỉ số cũ/
+    @log.reload
+    assert_equal 220, @log.latest_reading
   end
 end

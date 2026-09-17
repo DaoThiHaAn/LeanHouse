@@ -249,4 +249,31 @@ class InvoiceTest < ActiveSupport::TestCase
     url = @invoice.vietqr_url(payos_account)
     assert_includes url, "HD%20#{@invoice.payos_order_code}"
   end
+
+  test "room_title returns room and floor title" do
+    assert_equal "#{@room.title_name}, #{@floor.title_name}", @invoice.room_title
+  end
+
+  test "target_name returns room and floor for room invoice" do
+    assert_equal "#{@room.title_name}, #{@floor.title_name}", @invoice.target_name
+  end
+
+  test "target_name returns tenant name and room for individual or custom invoice" do
+    tenant_user = User.create!(
+      fullname: "Nguyễn Văn A",
+      tel: "0901234567",
+      password: "Password123",
+      password_confirmation: "Password123",
+      role: "tenant",
+      sex: "male",
+      bday: 20.years.ago.to_date,
+      address: "123 Test St",
+      tel_verified_at: Time.current
+    )
+    tenant = Tenant.find_or_create_by!(id: tenant_user.id)
+    @invoice.update!(invoice_type: :individual, tenant: tenant)
+
+    assert_equal "Nguyễn Văn A (#{@room.title_name}, #{@floor.title_name})", @invoice.target_name
+    assert_equal "Nguyễn Văn A", @invoice.target_name(include_room: false)
+  end
 end

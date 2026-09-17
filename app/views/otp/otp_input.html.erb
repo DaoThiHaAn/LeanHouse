@@ -25,8 +25,13 @@
             data-controller="otp"
             data-otp-length-value="6">
 
-            <%= form_with url: verify_otp_path, method: :post, local: false, 
-                            data: { otp_target: "form" }, 
+            <%= form_with url: verify_otp_path, method: :post, local: false,
+                            data: {
+                              otp_target: "form",
+                              controller: "loading",
+                              loading_text_value: "#{t('form.profile.verifying_otp', default: 'Đang xác thực...')}...",
+                              action: "submit->loading#submit"
+                            },
                             class: "d-flex flex-column gap-3 mb-5 align-items-center" do |f| %>
 
                 <%# The hidden field that will hold the combined 6 digits %>
@@ -47,7 +52,12 @@
                 <% end %>
                 </div>
 
-                <button type="submit" class="custom-primary-btn"><%= t('form.profile.verify') %></button>
+                <%= f.button type: :submit,
+                      class: "custom-primary-btn d-inline-flex align-items-center justify-content-center gap-2",
+                      data: { loading_target: "button" } do %>
+                  <span data-loading-target="text"><%= t('form.profile.verify') %></span>
+                  <span class="material-symbols-outlined spin d-none" data-loading-target="spinner">progress_activity</span>
+                <% end %>
             <% end %>
         </div>
 

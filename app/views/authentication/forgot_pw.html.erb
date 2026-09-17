@@ -5,6 +5,11 @@
         <h1 class="text-center"><%= t('form.profile.forgot_pw_title').upcase %></h1>
 
         <%= form_with model: @user, url: handle_forgot_pw_path, local: true,
+              data: {
+                controller: "loading",
+                loading_text_value: "#{t('form.profile.sending_otp', default: 'Đang gửi OTP...')}...",
+                action: "submit->loading#submit"
+              },
               class: "signup-form d-flex align-items-center justify-content-center flex-column gap-3" do |f| %>
 
             <div class="p-4 border rounded w-100 forgot-pw-main-info">
@@ -46,7 +51,7 @@
 
             <p class="fw-bold mt-2 fs-5"><%= t("form.profile.sec_questions") %></p>
             <p class="fw-semibold text-danger"><%= t("form.profile.sec_questions_note") %></p>
-            
+
             <!-- Fullname -->
             <div class="form-floating w-100">
                 <%= f.text_field :fullname,
@@ -54,7 +59,7 @@
                     required: true,
                     class: "form-control",
                     placeholder: t("form.profile.fname_ans") %>
-                
+
                 <%= f.label :fullname, class: "form-label" do %>
                     <%= t("form.profile.fullname") %>:<span class="asterisk">*</span>
                 <% end %>
@@ -69,7 +74,12 @@
                 <% end %>
             </div>
 
-            <%= f.submit t("form.profile.send_otp"), class: "mx-auto custom-primary-btn" %>
+            <%= f.button type: :submit,
+                  class: "mx-auto custom-primary-btn d-inline-flex align-items-center justify-content-center gap-2",
+                  data: { loading_target: "button" } do %>
+              <span data-loading-target="text"><%= t("form.profile.send_otp") %></span>
+              <span class="material-symbols-outlined spin d-none" data-loading-target="spinner">progress_activity</span>
+            <% end %>
 
         <% end %>
 

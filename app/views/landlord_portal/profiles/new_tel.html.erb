@@ -8,7 +8,12 @@
     </div>
 
     <%= form_with url: change_tel_landlord_profile_path, method: :post, local: true,
-          class: "px-5 d-flex align-items-center flex-column gap-4" do |f| %>
+          class: "px-5 d-flex align-items-center flex-column gap-4",
+          data: {
+            controller: "loading",
+            loading_text_value: "#{t('sending', default: 'Đang gửi')}...",
+            action: "submit->loading#submit"
+          } do |f| %>
 
       <!-- Tel -->
       <div class="form-group w-75" data-controller="form">
@@ -37,7 +42,12 @@
         <%= field_error(@user, :tel) %>
       </div>
 
-      <%= f.submit t("form.profile.send_otp"), class: "mx-auto custom-primary-btn" %>
+      <%= f.button type: :submit,
+            class: "mx-auto custom-primary-btn d-inline-flex align-items-center justify-content-center gap-2",
+            data: { loading_target: "button" } do %>
+        <span data-loading-target="text"><%= t("form.profile.send_otp") %></span>
+        <span class="material-symbols-outlined spin d-none" data-loading-target="spinner">progress_activity</span>
+      <% end %>
     <% end %>
 
     <div class="mt-3">

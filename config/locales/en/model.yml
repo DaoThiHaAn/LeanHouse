@@ -12,6 +12,15 @@ en:
               blank: "Account holder name cannot be blank!"
             consent_accepted:
               accepted: "You must agree to the terms of collecting and displaying bank account information."
+        service_usage_log:
+          attributes:
+            latest_reading:
+              greater_than_or_equal_to_prev: "must be greater than or equal to previous reading (%{count})!"
+
+    attributes:
+      service_usage_log:
+        latest_reading: "Latest reading"
+        prev_reading: "Previous reading"
 
   enums:
     room_service:

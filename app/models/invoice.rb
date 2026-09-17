@@ -103,6 +103,23 @@ class Invoice < ApplicationRecord
     end
   end
 
+  def room_title
+    room&.full_title
+  end
+
+  def target_name(include_room: true)
+    room_str = room_title
+
+    if (individual? || custom?) && tenant&.user.present?
+      name = tenant.user.fullname
+      (include_room && room_str.present?) ? "#{name} (#{room_str})" : name
+    elsif room_str.present?
+      room_str
+    else
+      house&.name
+    end
+  end
+
   def rent_items
     invoice_items.select(&:rent?)
   end
@@ -207,14 +224,31 @@ class Invoice < ApplicationRecord
     payos_order&.status
   end
 
+  def ensure_payos_payment_link!(account = bank_account)
+    return nil unless payos_configured?(account)
+    return payos_order if payos_order&.checkout_url.present?
+    return nil if paid? || cancelled?
+
+    PayosService.create_payment_link(self)
+    payos_order
+  end
+
   def payos_transfer_description(account = bank_account)
     code = payos_order_code(account)
     code.present? ? "HD #{code}" : transfer_note
   end
 
+  def effective_bank_account_number(account = bank_account)
+    if payos_configured?(account) && payos_order&.metadata&.dig("accountNumber").present?
+      payos_order.metadata["accountNumber"]
+    else
+      account&.account_number
+    end
+  end
+
   def effective_transfer_note(account = bank_account)
     if payos_configured?(account)
-      payos_transfer_description(account)
+      payos_order&.metadata&.dig("description").presence || payos_transfer_description(account)
     else
       transfer_note
     end
@@ -222,6 +256,21 @@ class Invoice < ApplicationRecord
 
   def vietqr_url(account = bank_account)
     return unless account
+
+    if payos_configured?(account) && payos_order&.checkout_url.present? && payos_order.metadata&.dig("accountNumber").present?
+      bin = payos_order.metadata["bin"].presence || account.bank&.bin
+      acc_num = payos_order.metadata["accountNumber"]
+      desc = payos_order.metadata["description"].presence || payos_transfer_description(account)
+      acc_name = payos_order.metadata["accountName"].presence || account.account_holder
+
+      return VietqrService.generate_raw_url(
+        bin: bin,
+        account_number: acc_num,
+        account_holder: acc_name,
+        amount: total_amount,
+        description: desc
+      )
+    end
 
     desc = if account.payos_configured?
              payos_transfer_description(account)

@@ -10,13 +10,18 @@
 
         <%# Form is handled at user#create %>
         <%= form_with model: @user, local: true,
+                    data: {
+                      controller: "loading",
+                      loading_text_value: "#{t('saving', default: 'Đang lưu')}...",
+                      action: "submit->loading#submit"
+                    },
                     class:"signup-form d-flex align-items-center flex-column gap-4" do |form| %>
 
             <!-- Role selection -->
             <div data-controller="role-selector" class="form-group gap-2 d-flex flex-column align-items-center mb-2">
                 <%= form.hidden_field :role, data: { role_selector_target: "input" } %>
                 <%= form.label :role, class: "form-label" do %>
-                    <%= t('form.profile.role') + ": "%>
+                    <%= t('form.profile.role') + ": " %>
                     <span class="asterisk">*</span>
                 <% end %>
 
@@ -24,7 +29,7 @@
                     <div
                         class="role-option selected d-flex flex-column align-items-center gap-1 px-2 py-1"
                         data-action="click->role-selector#select"
-                        data-role-selector-value="<%=User.roles[:tenant]%>"
+                        data-role-selector-value="<%= User.roles[:tenant] %>"
                     >
                         <%= image_tag "tenant-icon.png", alt: "Tenant Icon" %>
                         <p><%= t('role.tenant') %></p>
@@ -33,7 +38,7 @@
                     <div
                         class="role-option d-flex flex-column align-items-center gap-1 px-2 py-1"
                         data-action="click->role-selector#select"
-                        data-role-selector-value="<%=User.roles[:landlord]%>"
+                        data-role-selector-value="<%= User.roles[:landlord] %>"
                     >
                         <%= image_tag "landlord-icon.png", alt: "Landlord Icon" %>
                         <p><%= t('role.landlord') %></p>
@@ -43,9 +48,9 @@
 
             <!-- Tel -->
             <div class="form-group" data-controller="form">
-                <%= form.label :tel , class: "form-label d-flex justify-content-between" do%>
+                <%= form.label :tel , class: "form-label d-flex justify-content-between" do %>
                     <div>
-                        <%= t('form.profile.tel') +  ": "%>
+                        <%= t('form.profile.tel') +  ": " %>
                         <span class="asterisk">*</span>
                     </div>
 
@@ -73,9 +78,9 @@
 
             <!-- Password -->
             <div class="form-group" data-controller="form password-validation">
-                <%= form.label :password, class: "form-label d-flex justify-content-between" do%>
+                <%= form.label :password, class: "form-label d-flex justify-content-between" do %>
                     <div>
-                        <%= t('form.profile.password') +  ": "%>
+                        <%= t('form.profile.password') +  ": " %>
                         <span class="asterisk">*</span>
                     </div>
 
@@ -115,27 +120,27 @@
                         data-password-validation-target="rule"
                         data-rule="length">
                         <span class="material-symbols-outlined pw-rule-icon fs-6" data-password-validation-target="icon" aria-hidden="true">radio_button_unchecked</span>
-                        <span class="pw-rule-text"><%= t('form.profile.pw_length')%></span>
+                        <span class="pw-rule-text"><%= t('form.profile.pw_length') %></span>
                     </li>
                     <li class="pw-requirement d-flex align-items-center gap-2"
                         data-password-validation-target="rule"
                         data-rule="letter">
                         <span class="material-symbols-outlined pw-rule-icon fs-6" data-password-validation-target="icon" aria-hidden="true">radio_button_unchecked</span>
-                        <span class="pw-rule-text"><%= t('form.profile.pw_letters')%></span>
+                        <span class="pw-rule-text"><%= t('form.profile.pw_letters') %></span>
                     </li>
                     <li class="pw-requirement d-flex align-items-center gap-2"
                         data-password-validation-target="rule"
                         data-rule="number">
                         <span class="material-symbols-outlined pw-rule-icon fs-6" data-password-validation-target="icon" aria-hidden="true">radio_button_unchecked</span>
-                        <span class="pw-rule-text"><%= t('form.profile.pw_numbers')%></span>
+                        <span class="pw-rule-text"><%= t('form.profile.pw_numbers') %></span>
                     </li>
                 </ul>
             </div>
 
             <div class="form-group" data-controller="form">
-                <%= form.label :password_confirmation, class: "form-label d-flex justify-content-between" do%>
+                <%= form.label :password_confirmation, class: "form-label d-flex justify-content-between" do %>
                     <div>
-                        <%= t('form.profile.password_confirmation') +  ": "%>
+                        <%= t('form.profile.password_confirmation') +  ": " %>
                         <span class="asterisk">*</span>
                     </div>
 
@@ -166,9 +171,9 @@
 
             <!-- Fullname -->
             <div class="form-group" data-controller="form">
-                <%= form.label :fullname, class: "form-label d-flex justify-content-between" do%>
+                <%= form.label :fullname, class: "form-label d-flex justify-content-between" do %>
                     <div>
-                        <%= t('form.profile.fullname') +  ": "%>
+                        <%= t('form.profile.fullname') +  ": " %>
                         <span class="asterisk">*</span>
                     </div>
 
@@ -191,9 +196,9 @@
 
             <!-- Address -->
             <div class="form-group" data-controller="form">
-                <%= form.label :address, class: "form-label d-flex justify-content-between" do%>
+                <%= form.label :address, class: "form-label d-flex justify-content-between" do %>
                     <div>
-                        <%= t('form.profile.address') +  ": "%>
+                        <%= t('form.profile.address') +  ": " %>
                         <span class="asterisk">*</span>
                     </div>
 
@@ -232,8 +237,8 @@
 
             <!-- Birthday -->
             <div class="form-group d-flex align-items-center gap-3">
-                <%= form.label :bday, class: "form-label flex-shrink-0" do%>
-                        <%= t('form.profile.bday') +  ": "%>
+                <%= form.label :bday, class: "form-label flex-shrink-0" do %>
+                        <%= t('form.profile.bday') +  ": " %>
                         <span class="asterisk">*</span>
                 <% end %>
                 <%= form.date_field :bday, max: 15.years.ago.to_date, class: "date form-control", required: true %>
@@ -259,7 +264,12 @@
                 </div>
             </div>
 
-            <button type="submit" class="custom-primary-btn"><%= t("form.profile.create_acc") %></button>
+            <%= form.button type: :submit,
+                  class: "custom-primary-btn d-inline-flex align-items-center justify-content-center gap-2",
+                  data: { loading_target: "button" } do %>
+              <span data-loading-target="text"><%= t("form.profile.create_acc") %></span>
+              <span class="material-symbols-outlined spin d-none" data-loading-target="spinner">progress_activity</span>
+            <% end %>
         <% end %>
 
         <%= render "layouts/shared_components/new_tel_owner" %>

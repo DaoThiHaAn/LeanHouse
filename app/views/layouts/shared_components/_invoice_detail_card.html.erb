@@ -375,7 +375,7 @@
           <span class="material-symbols-outlined fs-3">account_balance</span>
           <span><%= t('invoice.bank_transfer_info') %></span>
         </h2>
-        <% if invoice.payos_configured? %>
+        <% if invoice.payos_configured?(bank_account) %>
           <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1-5 d-inline-flex align-items-center gap-1 shadow-sm">
             <span class="material-symbols-outlined fs-6">bolt</span>
             <span class="fw-semibold"><%= t('invoice.payos.realtime_badge') %></span>
@@ -398,16 +398,16 @@
 
               <%= image_tag qr_url, alt: t('invoice.vietqr.qr_alt'), class: "d-block mx-auto", width: "200px" %>
 
-              <% if invoice.payos_checkout_url.present? %>
-                <div class="text-center d-print-none mb-1">
-                  <a href="<%= invoice.payos_checkout_url %>" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-success d-inline-flex align-items-center gap-1 px-3 py-1 rounded-pill">
-                    <span><%= t('invoice.payos.open_checkout') %></span>
+              <% if invoice.payos_configured?(bank_account) && invoice.payos_checkout_url.present? && !invoice.paid? %>
+                <div class="text-center d-print-none mb-1 w-100">
+                  <a href="<%= invoice.payos_checkout_url %>" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-success d-inline-flex align-items-center justify-content-center gap-1 px-3 py-1-5 rounded-pill w-100 fw-semibold">
                     <span class="material-symbols-outlined fs-6">open_in_new</span>
+                    <span><%= t('invoice.payos.open_checkout') %></span>
                   </a>
                 </div>
               <% end %>
 
-              <div class="bg-light p-3 rounded-3 border small font-monospace">
+              <div class="bg-light p-3 rounded-3 border small font-monospace w-100">
                 <div class="d-flex justify-content-between align-items-center mb-1">
                   <span class="text-secondary"><%= t('invoice.bank_name') %>:</span>
                   <strong class="text-dark"><%= bank_account.bank.short_name %> (<%= bank_account.bank.code %>)</strong>
@@ -417,7 +417,7 @@
                       data-clipboard-original-text-value="<%= t('invoice.vietqr.copy') %>">
                   <span class="text-secondary"><%= t('invoice.account_number') %>:</span>
                   <div class="d-flex align-items-center gap-1">
-                    <strong class="text-primary fs-6" data-clipboard-target="source"><%= bank_account.account_number %></strong>
+                    <strong class="text-primary fs-6" data-clipboard-target="source"><%= invoice.effective_bank_account_number(bank_account) %></strong>
                     <button type="button" class="btn btn-copy-quick d-print-none" data-action="click->clipboard#copy" data-clipboard-target="button">
                       <%= t('invoice.vietqr.copy') %>
                     </button>
@@ -428,14 +428,14 @@
                   <strong class="text-dark"><%= bank_account.account_holder %></strong>
                 </div>
 
-                <% effective_note = invoice.effective_transfer_note %>
+                <% effective_note = invoice.effective_transfer_note(bank_account) %>
                 <% if effective_note.present? %>
                   <div class="border-top pt-2 mt-2" data-controller="clipboard"
                         data-clipboard-copied-text-value="<%= t('invoice.vietqr.copied') %>"
                         data-clipboard-original-text-value="<%= t('invoice.vietqr.copy') %>">
                     <div class="text-secondary mb-1 d-flex align-items-center justify-content-between">
                       <span><%= t('invoice.transfer_note_strict') %>:</span>
-                      <% if invoice.payos_configured? %>
+                      <% if invoice.payos_configured?(bank_account) %>
                         <span class="badge bg-success-subtle text-success border border-success-subtle small">payOS</span>
                       <% end %>
                     </div>

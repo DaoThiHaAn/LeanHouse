@@ -76,7 +76,7 @@
         <!-- Chọn tầng & phòng -->
         <%= render "floor_room_selects", f: f, house: @house %>
 
-        <!-- Biến thể của dịch vụ này -->
+        <!-- Phiên bản của dịch vụ này -->
         <% if @service_variants.any? %>
           <div class="d-flex align-items-center gap-2">
             <%= f.label :service_variant_id, "#{t('service_usage_logs.variant')}:", class: "fw-bold text-nowrap" %>

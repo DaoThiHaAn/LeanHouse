@@ -17,7 +17,6 @@ class LandlordPortal::InvoicesController < LandlordPortal::BaseController
       invoices: @invoices,
       stats: @stats,
       billing_month: @billing_month,
-      current_tenants_only: @current_tenants_only,
       current_tab: @current_tab
     }
   end
@@ -25,6 +24,7 @@ class LandlordPortal::InvoicesController < LandlordPortal::BaseController
   def show
     @items = @invoice.invoice_items.order(created_at: :asc)
     @bank_account = @invoice.bank_account || @landlord.bank_accounts.default_first.first
+    @invoice.ensure_payos_payment_link!(@bank_account)
   end
 
   def new
@@ -298,14 +298,13 @@ class LandlordPortal::InvoicesController < LandlordPortal::BaseController
 
   def load_invoices_and_stats
     @current_tab = params[:tab].presence || "room"
-    @current_tenants_only = params[:current_tenants_only].nil? || params[:current_tenants_only] == "1"
 
     # 1. Base monthly scope for tab badge counts (complete monthly overview)
     all_month_invoices = @house.invoices.kept.for_month(@billing_month)
     @room_count = all_month_invoices.where(invoice_type: %w[room individual]).count
     @individual_count = all_month_invoices.where(invoice_type: "custom").count
 
-    # 2. Dashboard stats: stable monthly overview for the active tab (INDEPENDENT of toolbar filters and current_tenants_only)
+    # 2. Dashboard stats: stable monthly overview for the active tab (INDEPENDENT of toolbar filters)
     tab_overview_scope = if @current_tab == "individual"
                            all_month_invoices.where(invoice_type: "custom")
     else
@@ -313,12 +312,11 @@ class LandlordPortal::InvoicesController < LandlordPortal::BaseController
     end
     @stats = Invoices::StatsService.call(invoices: tab_overview_scope)
 
-    # 3. Invoices table: filtered by active tab + all toolbar filters (floor, room, payment_mode/invoice_type, status, q, current_tenants_only, page)
+    # 3. Invoices table: filtered by active tab + all toolbar filters (floor, room, payment_mode/invoice_type, status, q, page)
     filtered_scope = Invoices::FilterService.call(
       house: @house,
       params: params.merge(tab: @current_tab),
-      billing_month: @billing_month,
-      current_tenants_only: @current_tenants_only
+      billing_month: @billing_month
     )
     @invoices = filtered_scope.page(params[:page]).per(INVOICES_PER_PAGE)
   end

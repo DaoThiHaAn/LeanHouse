@@ -18,7 +18,13 @@
   </div>
 
   <!-- Login Form -->
-  <%= form_with url: admin_handle_login_path, method: :post, class: "d-flex flex-column gap-3" do |f| %>
+  <%= form_with url: admin_handle_login_path, method: :post,
+                class: "d-flex flex-column gap-3",
+                data: {
+                  controller: "loading",
+                  loading_text_value: "#{t('auth.log_in')}...",
+                  action: "submit->loading#submit"
+                } do |f| %>
 
     <!-- Email -->
     <div>
@@ -64,7 +70,11 @@
     </div>
 
     <!-- Submit Button -->
-    <%= f.submit t("auth.log_in"),
-        class: "btn admin-btn-primary px-4 mx-auto py-2 shadow-sm" %>
+    <%= f.button type: :submit,
+        class: "btn admin-btn-primary px-4 mx-auto py-2 shadow-sm d-inline-flex align-items-center justify-content-center gap-2",
+        data: { loading_target: "button" } do %>
+      <span data-loading-target="text"><%= t("auth.log_in") %></span>
+      <span class="material-symbols-outlined spin d-none" data-loading-target="spinner">progress_activity</span>
+    <% end %>
   <% end %>
 </div>

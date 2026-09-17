@@ -93,7 +93,12 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
 
-          <%= form_with url: landlord_house_vehicle_path(house, vehicle), method: :delete do |f| %>
+          <%= form_with url: landlord_house_vehicle_path(house, vehicle), method: :delete,
+                        data: {
+                          controller: "loading",
+                          loading_text_value: "#{t('deleting', default: 'Đang xóa...')}...",
+                          action: "submit->loading#submit"
+                        } do |f| %>
             <div class="modal-body p-3">
               <div class="alert alert-light border rounded-3 p-2 mb-3">
                 <div class="fw-semibold"><%= vehicle.human_type %> - <%= vehicle.license_plate %></div>
@@ -120,9 +125,12 @@
               <button type="button" class="btn btn-secondary px-3" data-bs-dismiss="modal">
                 <%= t("cancel") %>
               </button>
-              <%= f.submit t("vehicle.delete"),
-                    class: "btn btn-danger px-3",
-                    data: { bs_dismiss: "modal" } %>
+              <%= f.button type: :submit,
+                    class: "btn btn-danger px-3 d-inline-flex align-items-center justify-content-center gap-2",
+                    data: { loading_target: "button" } do %>
+                <span data-loading-target="text"><%= t("vehicle.delete") %></span>
+                <span class="material-symbols-outlined spin d-none" data-loading-target="spinner">progress_activity</span>
+              <% end %>
             </div>
           <% end %>
         </div>

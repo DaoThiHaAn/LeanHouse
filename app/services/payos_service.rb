@@ -117,7 +117,8 @@ class PayosService
         payment_link_id: data["paymentLinkId"],
         checkout_url: data["checkoutUrl"],
         qr_code: data["qrCode"],
-        status: data["status"] || "PENDING"
+        status: data["status"] || "PENDING",
+        metadata: data
       )
       { success: true, data: data }
     else
@@ -127,6 +128,47 @@ class PayosService
     end
   rescue StandardError => e
     Rails.logger.error("[PayosService] Exception creating payment link: #{e.message}")
+    { success: false, error: e.message }
+  end
+
+  # Cancel payment link for an invoice via payOS API
+  def self.cancel_payment_link(invoice, reason: nil)
+    bank_account = invoice.bank_account
+    return { success: false, error: "Bank account not configured for payOS" } unless bank_account&.payos_configured?
+
+    order = invoice.payos_order
+    return { success: true, message: "No payOS order to cancel" } unless order && (order.payment_link_id.present? || order.order_code.present?)
+
+    target_id = order.order_code || order.payment_link_id
+    reason_text = reason.presence || "Hóa đơn đã bị hủy trên hệ thống"
+
+    uri = URI("#{PAYOS_API_URL}/#{target_id}/cancel")
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = (uri.scheme == "https")
+    http.open_timeout = 10
+    http.read_timeout = 15
+
+    request = Net::HTTP::Post.new(uri.request_uri)
+    request["Content-Type"] = "application/json"
+    request["x-client-id"] = bank_account.payos_client_id
+    request["x-api-key"] = bank_account.payos_api_key
+    request.body = { "cancellationReason" => reason_text }.to_json
+
+    response = http.request(request)
+    res_data = JSON.parse(response.body) rescue {}
+
+    if response.is_a?(Net::HTTPSuccess) && res_data["code"] == "00"
+      order.update!(status: "CANCELLED")
+      { success: true, data: res_data["data"] }
+    else
+      err_msg = res_data["desc"] || "Failed to cancel payOS payment link (HTTP #{response.code})"
+      Rails.logger.warn("[PayosService] API cancel error for invoice ##{invoice.id}: #{err_msg}")
+      order.update!(status: "CANCELLED")
+      { success: false, error: err_msg, response: res_data }
+    end
+  rescue StandardError => e
+    Rails.logger.error("[PayosService] Exception cancelling payment link: #{e.message}")
+    order&.update!(status: "CANCELLED") rescue nil
     { success: false, error: e.message }
   end
 end

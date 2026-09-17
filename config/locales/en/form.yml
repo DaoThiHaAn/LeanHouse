@@ -135,8 +135,8 @@ en:
         tip1_desc: "Tenants can log into the Tenant Portal to photograph and submit their own monthly readings, saving landlords time."
         tip2_title: "Detect Abnormal Usage"
         tip2_desc: "If consumption spikes unexpectedly compared to the previous month, review the meter photo before confirming to catch water leaks or meter typos early."
-        tip3_title: "Per-Person Services"
-        tip3_desc: "For services billed per person (e.g., water at 100k/person), the system multiplies by the active tenant count in that room's contract automatically."
+        tip3_title: "Split Invoices by Tenant"
+        tip3_desc: "When issuing invoices in Individual Payment mode (split invoice), the system automatically divides room rent and shared services equally among active tenants in the room."
 
     contract:
       self: "Contract"

@@ -15,7 +15,13 @@
             <%= t("form.contract.close_cf", id: @contract.id, name: @contract.tenant.user.fullname) %>
           </p>
 
-          <%= form_with url: landlord_house_contract_path(@house, @contract), method: :delete, data: { turbo_frame: "_top" } do |f| %>
+          <%= form_with url: landlord_house_contract_path(@house, @contract), method: :delete,
+                        data: {
+                          turbo_frame: "_top",
+                          controller: "loading",
+                          loading_text_value: "#{t('saving', default: 'Đang xử lý...')}...",
+                          action: "submit->loading#submit"
+                        } do |f| %>
             <!-- Optional checkbox to remove the tenant out of the house too -->
             <div class="form-check my-3 p-3 bg-light rounded border">
               <%= f.check_box :remove_tenant, class: "form-check-input ms-0 me-2", id: "removeTenantCheck" %>
@@ -33,7 +39,12 @@
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                 <%= t("cancel") %>
               </button>
-              <%= f.submit t("form.contract.close"), class: "btn btn-danger fw-bold border-none" %>
+              <%= f.button type: :submit,
+                           class: "btn btn-danger fw-bold border-none d-inline-flex align-items-center justify-content-center gap-2",
+                           data: { loading_target: "button" } do %>
+                <span data-loading-target="text"><%= t("form.contract.close") %></span>
+                <span class="material-symbols-outlined spin d-none" data-loading-target="spinner">progress_activity</span>
+              <% end %>
             </div>
           <% end %>
         </div>

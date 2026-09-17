@@ -43,8 +43,7 @@
                      room_id: params[:room_id].presence,
                      invoice_type: params[:invoice_type].presence,
                      status: params[:status].presence,
-                     q: params[:q].presence,
-                     current_tenants_only: (local_assigns[:current_tenants_only] == false || params[:current_tenants_only] == "0" ? "0" : "1")
+                     q: params[:q].presence
                    } %>
     </div>
   <% end %>

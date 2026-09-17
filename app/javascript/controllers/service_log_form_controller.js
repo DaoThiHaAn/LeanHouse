@@ -1,12 +1,14 @@
 import { Controller } from "@hotwired/stimulus"
 
 // Stimulus controller to dynamically toggle the required state and asterisk
-// of latest_reading based on the confirmation mode radio selection (confirm now vs await tenant submission).
+// of latest_reading based on the confirmation mode radio selection (confirm now vs await tenant submission),
+// and dynamically constrain latest_reading to be greater than or equal to prev_reading.
 export default class extends Controller {
-  static targets = ["latestReadingInput", "latestReadingAsterisk"]
+  static targets = ["latestReadingInput", "latestReadingAsterisk", "prevReadingInput"]
 
   connect() {
     this.updateRequirement()
+    this.updateMinReading()
   }
 
   // Triggered when switching between "Xác nhận & chốt số ngay" and "Chờ người thuê chụp ảnh / nộp số"
@@ -26,6 +28,18 @@ export default class extends Controller {
 
     if (this.hasLatestReadingAsteriskTarget) {
       this.latestReadingAsteriskTarget.classList.toggle("d-none", !isConfirmed)
+    }
+  }
+
+  // Ensures latest_reading input has its HTML5 min attribute set to current prev_reading value
+  updateMinReading() {
+    if (this.hasPrevReadingInputTarget && this.hasLatestReadingInputTarget) {
+      const prevVal = this.prevReadingInputTarget.value
+      if (prevVal !== "" && !isNaN(prevVal)) {
+        this.latestReadingInputTarget.min = prevVal
+      } else {
+        this.latestReadingInputTarget.removeAttribute("min")
+      }
     }
   }
 }

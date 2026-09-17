@@ -606,6 +606,7 @@
   height: 100%;
 }
 
+
 .invoice-guidance-card {
   background-color: #f8fafc;
   border: 1px solid #e2e8f0;
@@ -690,13 +691,33 @@
 }
 
 .btn-mark-paid-primary {
-  background-color: #0f766e;
+  background-color: var(--primary-text, #1b7a42);
   color: #ffffff;
+  border: none;
+  border-radius: 40px;
+  padding: 10px 26px;
+  font-size: 1rem;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(27, 122, 66, 0.35);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  transition: all 0.25s ease-in-out;
 }
 
 .btn-mark-paid-primary:hover {
-  background-color: #115e59;
+  background-color: var(--primary-bg, #145a32);
   color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(27, 122, 66, 0.45);
+}
+
+.btn-mark-paid-primary:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 6px rgba(27, 122, 66, 0.3);
 }
 
 /* Invoice statistical card */
@@ -744,6 +765,12 @@
   #invoice-printable .d-print-none {
     display: none !important;
     visibility: hidden !important;
+  }
+
+  .d-print-block,
+  #invoice-printable .d-print-block {
+    display: block !important;
+    visibility: visible !important;
   }
 
   #invoice-printable .table-responsive {
@@ -835,11 +862,13 @@
 }
 
 .payment-proof-preview-img {
-  width: 110px;
-  height: 110px;
+  width: 210px;
+  height: 210px;
   object-fit: cover;
   border-radius: 0.5rem;
   border: 1px solid #cbd5e1;
+  margin-top: 1rem;
+  margin-left: 1rem;
 }
 
 .payment-proof-clear-btn {

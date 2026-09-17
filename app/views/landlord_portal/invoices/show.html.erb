@@ -27,9 +27,11 @@
     </div>
   </div>
 
-  <%= render "layouts/shared_components/invoice_detail_card", invoice: @invoice, bank_account: @bank_account do %>
-    <%= render "layouts/shared_components/invoices/payment_actions", invoice: @invoice, portal: :landlord %>
-  <% end %>
+  <div id="invoice_detail_card_<%= @invoice.id %>">
+    <%= render "layouts/shared_components/invoice_detail_card", invoice: @invoice, bank_account: @bank_account do %>
+      <%= render "layouts/shared_components/invoices/payment_actions", invoice: @invoice, portal: :landlord %>
+    <% end %>
+  </div>
 </div>
 
 <%= turbo_frame_tag "edit_invoice_modal" %>

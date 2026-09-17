@@ -120,10 +120,113 @@ class PayosServiceTest < ActiveSupport::TestCase
       ENV["PAYOS_WEBHOOK_URL"] = nil
       ENV["APP_HOST"] = "production.leanhouse.vn"
       url = PayosService.webhook_url(nil)
-      assert_includes url, "production.leanhouse.vn/webhooks/payos"
+      assert_equal "http://production.leanhouse.vn/webhooks/payos", url
     ensure
       ENV["PAYOS_WEBHOOK_URL"] = original_webhook
       ENV["APP_HOST"] = original_host
     end
+  end
+
+  test "cancel_payment_link returns error when bank account is not configured" do
+    user = User.create!(
+      fullname: "Landlord Test Two",
+      tel: "0988776654",
+      password: "Password123",
+      password_confirmation: "Password123",
+      role: "landlord",
+      sex: "male",
+      bday: 30.years.ago.to_date,
+      address: "Hanoi",
+      tel_verified_at: Time.current
+    )
+    landlord = Landlord.find_or_create_by!(id: user.id)
+    bank = Bank.create!(name: "Vietcombank", code: "VCB2", bin: "970437", short_name: "VCB2")
+    bank_account = landlord.bank_accounts.create!(
+      bank: bank,
+      account_number: "0011008888",
+      account_holder: "TEST USER"
+    )
+    house = House.create!(
+      landlord: landlord,
+      name: "Test House 2",
+      mode: :room,
+      address_l1: "123 Street",
+      address_l2: "Ward 1",
+      address_l3: "District 1",
+      floors_count: 1,
+      inv_creation_date: 1
+    )
+    floor = house.floors.create!(name: "Floor 1", position: 1, rooms_count: 1)
+    room = floor.rooms.create!(name: "102", max_slots: 2, tenants_count: 0, area: 20.0)
+    invoice = house.invoices.create!(
+      room: room,
+      created_by: user,
+      bank_account: bank_account,
+      billing_month: Date.current.beginning_of_month,
+      due_date: Date.current + 5.days,
+      invoice_type: :room,
+      title: "Tiền phòng",
+      subtotal: 3000000,
+      total_amount: 3000000,
+      status: "pending",
+      code: "HD-TEST-124"
+    )
+
+    result = PayosService.cancel_payment_link(invoice)
+    assert_equal false, result[:success]
+    assert_includes result[:error], "not configured"
+  end
+
+  test "cancel_payment_link returns early when invoice has no payos order" do
+    user = User.create!(
+      fullname: "Landlord Test Three",
+      tel: "0988776653",
+      password: "Password123",
+      password_confirmation: "Password123",
+      role: "landlord",
+      sex: "male",
+      bday: 30.years.ago.to_date,
+      address: "Hanoi",
+      tel_verified_at: Time.current
+    )
+    landlord = Landlord.find_or_create_by!(id: user.id)
+    bank = Bank.create!(name: "MB Bank", code: "MB3", bin: "970422", short_name: "MB3")
+    bank_account = landlord.bank_accounts.create!(
+      bank: bank,
+      account_number: "0011007777",
+      account_holder: "TEST USER",
+      payos_enabled: true,
+      payos_client_id: "client_id",
+      payos_api_key: "api_key",
+      payos_checksum_key: "checksum_key"
+    )
+    house = House.create!(
+      landlord: landlord,
+      name: "Test House 3",
+      mode: :room,
+      address_l1: "123 Street",
+      address_l2: "Ward 1",
+      address_l3: "District 1",
+      floors_count: 1,
+      inv_creation_date: 1
+    )
+    floor = house.floors.create!(name: "Floor 1", position: 1, rooms_count: 1)
+    room = floor.rooms.create!(name: "103", max_slots: 2, tenants_count: 0, area: 20.0)
+    invoice = house.invoices.create!(
+      room: room,
+      created_by: user,
+      bank_account: bank_account,
+      billing_month: Date.current.beginning_of_month,
+      due_date: Date.current + 5.days,
+      invoice_type: :room,
+      title: "Tiền phòng",
+      subtotal: 3000000,
+      total_amount: 3000000,
+      status: "pending",
+      code: "HD-TEST-125"
+    )
+
+    result = PayosService.cancel_payment_link(invoice)
+    assert_equal true, result[:success]
   end
 end

@@ -312,6 +312,9 @@ vi:
       realtime_badge: "Tự động nhận diện thanh toán (payOS)"
       open_checkout: "Mở trang thanh toán payOS"
       open_checkout_url: "Mở cổng thanh toán payOS"
+      embedded_tab: "Cổng payOS (QR Động)"
+      native_tab: "VietQR & STK"
+      open_in_new_tab: "Mở trong tab mới"
       auto_paid_note: "Tự động gạch nợ qua payOS (Mã GD: %{ref})"
       webhook:
         ping_received: "Đã nhận webhook payOS (ping/dữ liệu trống)"
@@ -386,7 +389,7 @@ vi:
     no_payment_proof: "Không có ảnh minh chứng"
     payment_proof_view: "Xem ảnh minh chứng"
     payment_proof_zoom: "Ảnh minh chứng thanh toán"
-    confirm_paid_title: "Xác nhận thanh toán hóa đơn #%{code}"
+    confirm_paid_title_html: "Xác nhận thanh toán hóa đơn<br/>#%{code}"
     confirm_paid_desc: "Xác nhận rằng hóa đơn này đã được thanh toán thành công."
     confirm_paid_tenant_desc: "Vui lòng đính kèm ảnh minh chứng chuyển khoản thành công để chủ nhà tiện đối soát."
     submit_payment_confirmation: "Xác nhận đã thanh toán"

@@ -15,6 +15,9 @@ module Invoices
         # Unlink any associated service usage logs
         ServiceUsageLog.where(invoice_id: invoice.id).update_all(invoice_id: nil)
 
+        # Cancel payOS payment link if exists
+        cancel_payos_payment_link(invoice, cancelled_by)
+
         # Deliver notification to target tenants
         tenant_users = invoice.target_users
         if tenant_users.present? && tenant_users.any?
@@ -30,6 +33,16 @@ module Invoices
 
         invoice
       end
+    end
+
+    def self.cancel_payos_payment_link(invoice, cancelled_by)
+      return unless invoice.payos_configured?
+      return unless invoice.payos_order.present?
+
+      reason = "Hóa đơn #{invoice.code} đã bị hủy bởi #{cancelled_by.fullname}"
+      PayosService.cancel_payment_link(invoice, reason: reason)
+    rescue StandardError => e
+      Rails.logger.error("[Invoices::CancelService] Error cancelling payOS link: #{e.message}")
     end
   end
 end

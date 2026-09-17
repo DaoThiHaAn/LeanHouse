@@ -94,7 +94,8 @@
             <%= f.label :prev_reading, class: "form-label fw-semibold" do %>
               <%= t("invoice.prev_reading_label", unit: @log.unit) %> <span class="text-danger">*</span>
             <% end %>
-            <%= f.number_field :prev_reading, class: "form-control shadow-sm", required: true %>
+            <%= f.number_field :prev_reading, class: "form-control shadow-sm", required: true, min: 0,
+                               data: { service_log_form_target: "prevReadingInput", action: "input->service-log-form#updateMinReading" } %>
           </div>
 
           <div class="col-md-6">
@@ -105,6 +106,7 @@
             <%= f.number_field :latest_reading, class: "form-control shadow-sm fw-bold",
                                placeholder: t("invoice.reading_placeholder"),
                                required: true,
+                               min: @log.prev_reading,
                                data: { service_log_form_target: "latestReadingInput" } %>
           </div>
 

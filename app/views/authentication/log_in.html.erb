@@ -8,13 +8,20 @@
         </div>
         <h1><%= t("auth.log_in").upcase %></h1>
 
-        <%= form_with(model: @user, url: handle_login_path, method: :post, data: { turbo: false }, class: "signup-form w-100 d-flex align-items-center justify-content-center flex-column gap-4") do |f| %>
+        <%= form_with(model: @user, url: handle_login_path, method: :post,
+                      data: {
+                        turbo: false,
+                        controller: "loading",
+                        loading_text_value: "#{t('auth.log_in')}...",
+                        action: "submit->loading#submit"
+                      },
+                      class: "signup-form w-100 d-flex align-items-center justify-content-center flex-column gap-4") do |f| %>
 
             <!-- Role selection -->
             <div data-controller="role-selector" class="form-group gap-2 d-flex flex-column align-items-center mb-2">
                 <%= f.hidden_field :role, data: { role_selector_target: "input" } %>
                 <%= f.label :role, class: "form-label" do %>
-                    <%= t('form.profile.role') + ": "%> 
+                    <%= t('form.profile.role') + ": " %>
                     <span class="asterisk">*</span>
                 <% end %>
 
@@ -45,9 +52,9 @@
             <div class="form-group">
                 <%= f.label :tel, t('form.profile.tel') + ":", class: "form-label" %> <span class="asterisk">*</span>
                 <%= f.telephone_field :tel,
-                    autocomplete: "tel", 
-                    class: "form-control #{invalid_class(@user, :tel)}", 
-                    placeholder: t('form.profile.tel_login_placeholder'), 
+                    autocomplete: "tel",
+                    class: "form-control #{invalid_class(@user, :tel)}",
+                    placeholder: t('form.profile.tel_login_placeholder'),
                     required: true, autofocus: true %>
 
                 <%= field_error(@user, :tel, classes: "mt-2") %>
@@ -55,8 +62,8 @@
 
             <!-- Password -->
             <div class="pw form-group" data-controller="form">
-                <%= f.label :password, class: "form-label" do%>
-                        <%= t('form.profile.password') +  ": "%>
+                <%= f.label :password, class: "form-label" do %>
+                        <%= t('form.profile.password') +  ": " %>
                         <span class="asterisk">*</span>
                 <% end %>
 
@@ -68,10 +75,10 @@
                         data: {
                             form_target: "input",
                             action: "input->form#update"
-                        } 
+                        }
                     %>
 
-                    <span class="eye position-absolute me-2 top-50 end-0 translate-middle-y material-symbols-outlined password-toggle" 
+                    <span class="eye position-absolute me-2 top-50 end-0 translate-middle-y material-symbols-outlined password-toggle"
                             data-action="click->form#togglePasswordVisibility">
                         visibility
                     </span>
@@ -81,12 +88,17 @@
 
             <%= link_to t('form.profile.forgot_pw'), forgot_pw_path, class: "forgot-pw link" %>
 
-            <%= f.submit t("auth.log_in"), class: "mx-auto custom-primary-btn" %>
+            <%= f.button type: :submit,
+                  class: "mx-auto custom-primary-btn d-inline-flex align-items-center justify-content-center gap-2",
+                  data: { loading_target: "button" } do %>
+              <span data-loading-target="text"><%= t("auth.log_in") %></span>
+              <span class="material-symbols-outlined spin d-none" data-loading-target="spinner">progress_activity</span>
+            <% end %>
         <% end %>
 
-        <div class="d-flex flex-wrap gap-2"> 
-            <%= t('form.profile.not_have_acc')%> 
-            <%= link_to t('form.profile.reg_now'), signup_path, class: "fw-bold link" %> 
+        <div class="d-flex flex-wrap gap-2">
+            <%= t('form.profile.not_have_acc') %>
+            <%= link_to t('form.profile.reg_now'), signup_path, class: "fw-bold link" %>
         </div>
     </div>
 </div>

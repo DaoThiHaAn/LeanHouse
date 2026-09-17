@@ -11,7 +11,7 @@
   <%# Actions %>
   <td class="text-center">
       <% target_tab = room.has_real_time_service? ? "real_time" : "fixed" %>
-      <%= link_to landlord_house_room_service_usage_logs_path(house, room, tab: target_tab),
+      <%= link_to landlord_house_room_service_usage_logs_path(house, room, tab: target_tab, month: Date.current.strftime("%Y-%m")),
                   class: "table-action",
                   data: { turbo_frame: "_top" },
                   title: t("service_usage_logs.room_logs_action"),

@@ -296,6 +296,9 @@ en:
       realtime_badge: "Auto-reconciliation active (payOS)"
       open_checkout: "Open payOS Checkout"
       open_checkout_url: "Open payOS Payment Portal"
+      embedded_tab: "payOS Portal (Dynamic QR)"
+      native_tab: "VietQR & Bank Info"
+      open_in_new_tab: "Open in new tab"
       auto_paid_note: "Auto-reconciled via payOS (Ref: %{ref})"
       webhook:
         ping_received: "payOS Webhook received (ping/empty)"
@@ -367,6 +370,7 @@ en:
     payment_proof_view: "View proof image"
     payment_proof_zoom: "Payment Proof Image"
     confirm_paid_title: "Confirm Payment for Invoice #%{code}"
+    confirm_paid_title_html: "Confirm Payment for Invoice<br/>#%{code}"
     confirm_paid_desc: "Confirm that this invoice has been paid."
     confirm_paid_tenant_desc: "Please attach a payment proof screenshot for landlord verification."
     submit_payment_confirmation: "Confirm Payment"

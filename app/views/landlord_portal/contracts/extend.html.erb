@@ -21,7 +21,12 @@
             <%= @contract.formatted_period %>
           </p>
 
-          <%= form_with model: @contract, url: extend_landlord_house_contract_path(@house, @contract), method: :post do |f| %>
+          <%= form_with model: @contract, url: extend_landlord_house_contract_path(@house, @contract), method: :post,
+                        data: {
+                          controller: "loading",
+                          loading_text_value: "#{t('saving', default: 'Đang lưu...')}...",
+                          action: "submit->loading#submit"
+                        } do |f| %>
             <% if @contract.errors.any? %>
               <div class="alert alert-danger py-2 px-3 mb-3">
                 <ul class="mb-0 ps-3">
@@ -51,7 +56,12 @@
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                 <%= t("cancel") %>
               </button>
-              <%= f.submit t("form.contract.extend"), class: "btn btn-primary fw-bold border-none" %>
+              <%= f.button type: :submit,
+                           class: "btn btn-primary fw-bold border-none d-inline-flex align-items-center justify-content-center gap-2",
+                           data: { loading_target: "button" } do %>
+                <span data-loading-target="text"><%= t("form.contract.extend") %></span>
+                <span class="material-symbols-outlined spin d-none" data-loading-target="spinner">progress_activity</span>
+              <% end %>
             </div>
           <% end %>
         </div>

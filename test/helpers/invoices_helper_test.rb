@@ -246,4 +246,31 @@ class InvoicesHelperTest < ActionView::TestCase
     assert_equal 3, options.length
     assert_equal [ "system", "custom", "none" ], options.map { |o| o[:value] }
   end
+
+  test "invoice_target_name returns correct target name" do
+    inv = @house.invoices.build(room: @room, invoice_type: :room)
+    assert_equal "#{@room.title_name}, #{@floor.title_name}", invoice_target_name(inv)
+    assert_nil invoice_target_name(nil)
+  end
+
+  test "invoice_target_info renders room title for room invoice" do
+    inv = @house.invoices.build(room: @room, invoice_type: :room)
+    result = invoice_target_info(inv)
+    assert_includes result, "#{@room.title_name}, #{@floor.title_name}"
+    assert_includes result, "fw-semibold text-dark"
+  end
+
+  test "invoice_target_info renders tenant name, room and tel for individual invoice" do
+    inv = @house.invoices.build(room: @room, invoice_type: :individual, tenant: @tenant)
+    result = invoice_target_info(inv)
+    assert_includes result, @tenant_user.fullname
+    assert_includes result, "#{@room.title_name}, #{@floor.title_name}"
+    assert_includes result, @tenant_user.tel
+  end
+
+  test "invoice_target_info includes type badge when show_type_badge is true" do
+    inv = @house.invoices.build(room: @room, invoice_type: :room)
+    result = invoice_target_info(inv, show_type_badge: true)
+    assert_includes result, "invoice-badge-room"
+  end
 end
