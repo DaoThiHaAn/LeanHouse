@@ -5,7 +5,7 @@
 <!-- Used by stimulus to update url -->
 <span hidden data-pagination-total-pages="<%= signed_tenants.total_pages %>"></span>
 
-<h2 class="table-caption my-4"><%= t("form.tenant.list") %></h2>
+<h2 class="table-caption my-4"><%= t("form.tenant.contract_signed_list") %></h2>
 
 <div class="table-responsive border rounded m-auto">
   <table class="table table-bordered table-hover align-middle mb-0">
@@ -21,80 +21,8 @@
       </tr>
     </thead>
 
-    <tbody>
-      <% signed_tenants.each do |tenant|
-        latest_contract = tenant.latest_contract
-      %>
-        <tr>
-          <td><%= vn_name(tenant.user.fullname) %></td>
-          <td><%= tenant.user.tel %></td>
-          <td><%= tenant.current_staying_info %></td>
-
-          <td>
-            <div class="d-flex justify-content-center gap-1">
-              <% if latest_contract.deposit_paid %>
-                <span class="material-symbols-filled">check_circle</span>
-              <% else %>
-                <span class="material-symbols-filled" title="<%= t("not_yet") %>">x_circle</span>
-              <% end %>
-            </div>
-          </td>
-
-          <td>
-            <div class="d-flex flex-column justify-content-center align-items-center gap-2">
-              <% if latest_contract.temp_resid_registered? %>
-                <%= latest_contract.temp_resid_due_date.strftime("%d/%m/%Y") %>
-                <%= due_status_icon_label(latest_contract.temp_resid_due_status) %>
-              <% else %>
-                <span class="material-symbols-filled">x_circle</span>
-              <% end %>
-            </div>
-          </td>
-
-          <td>
-            <div class="d-flex flex-column justify-content-center align-items-center gap-2">
-              <%= latest_contract.due_date.strftime("%d/%m/%Y") %>
-              <%= due_status_icon_label(latest_contract.due_status) %>
-            </div>
-          </td>
-
-          <%# Actions %>
-          <td>
-            <div class="d-flex align-items-center justify-content-center gap-2">
-              <%= link_to landlord_house_tenant_path(house, tenant),
-                        class: "table-action px-1 py-0",
-                        data: { turbo_frame: "tenant_detail_modal" },
-                        title: t("view_detail"),
-                        aria: { label: t("view_detail") } do %>
-                <span class="material-symbols-filled" aria-hidden="true">visibility</span>
-              <% end %>
-
-              <%= link_to move_landlord_house_tenant_path(house, tenant),
-                        title: t("form.tenant.move"),
-                        aria: { label: t("form.tenant.move") },
-                        data: {
-                          turbo_frame: "move_tenant_modal"
-                        },
-                        class: "table-action" do %>
-                <span class="material-symbols-filled" aria-hidden="true">move_location</span>
-              <% end %>
-
-              <%= button_to landlord_house_tenant_path(house, tenant), method: :delete,
-                    data: {
-                      turbo_confirm: [
-                        t("form.tenant.remove_cf"),
-                        [t("form.tenant.remove_warning_1"), t("form.tenant.remove_warning_2"), t("form.tenant.remove_warning_3")].join("\n")
-                      ].join("\n\n")
-                    },
-                    title: t("form.tenant.remove"),
-                    aria: { label: t("form.tenant.remove") },
-                    class: "table-action" do %>
-                <span class="material-symbols-filled text-danger-emphasis" aria-hidden="true">person_remove</span>
-              <% end %>
-            </div>
-          </td>
-        </tr>
-      <% end %>
+    <tbody id="tenant_table_body">
+      <%= render partial: "landlord_portal/tenants/tenant_row", collection: signed_tenants, as: :tenant, locals: { house: house } %>
     </tbody>
   </table>
 </div>

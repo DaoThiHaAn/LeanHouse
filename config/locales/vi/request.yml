@@ -46,6 +46,8 @@ vi:
       car: "Ô tô"
     house_filter: "Nhà"
     current_house: "nhà hiện tại"
+    past_house: "Nhà cũ"
+    past_house_notice: "Đây là yêu cầu lưu trữ từ nhà bạn đã từng thuê (chỉ xem)."
     sent_time: "Thời gian gửi"
     sent_month: "Tháng"
     sent_year: "Năm"

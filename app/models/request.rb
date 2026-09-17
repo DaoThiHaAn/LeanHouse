@@ -23,6 +23,9 @@ class Request < ApplicationRecord
   validate :validate_status_transition, on: :update
 
   after_commit :broadcast_dashboard_update
+  after_create_commit :broadcast_landlord_badge_on_create
+  after_update_commit :broadcast_landlord_badge_on_update, if: -> { saved_change_to_status? || saved_change_to_house_id? }
+  after_destroy_commit :broadcast_landlord_badge_on_destroy
 
   scope :pending, -> { where(status: :pending) }
   scope :recent, -> { order(created_at: :desc) }
@@ -203,5 +206,28 @@ class Request < ApplicationRecord
 
   def broadcast_dashboard_update
     LandlordDashboardBroadcaster.broadcast_later(house_id)
+  end
+
+  def broadcast_landlord_badge_on_create
+    broadcast_landlord_badge
+  end
+
+  def broadcast_landlord_badge_on_update
+    broadcast_landlord_badge
+  end
+
+  def broadcast_landlord_badge_on_destroy
+    broadcast_landlord_badge
+  end
+
+  def broadcast_landlord_badge
+    target_landlord = house&.landlord || House.unscoped.find_by(id: house_id)&.landlord
+    LandlordRequestBadgeBroadcaster.broadcast_now(target_landlord) if target_landlord
+
+    if saved_change_to_house_id?
+      old_house = House.unscoped.find_by(id: house_id_before_last_save)
+      old_landlord = old_house&.landlord
+      LandlordRequestBadgeBroadcaster.broadcast_now(old_landlord) if old_landlord && old_landlord != target_landlord
+    end
   end
 end

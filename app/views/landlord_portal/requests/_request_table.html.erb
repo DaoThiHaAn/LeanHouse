@@ -28,7 +28,7 @@
         <% if requests.empty? %>
           <tr>
             <td colspan="8" class="text-center py-4 text-secondary fw-semibold">
-              <%= (params[:house_id].present? || params[:from_date].present? || (params[:to_date].present? && params[:to_date] != Date.current.to_s) || params[:month].present? || params[:year].present? || params[:status].present? || params[:request_type].present?) ? t("request.filter_empty") : t("request.none") %>
+              <%= (params[:house_id].present? || params[:from_date].present? || (params[:to_date].present? && params[:to_date] != Date.current.to_s) || params[:status].present? || params[:request_type].present?) ? t("request.filter_empty") : t("request.none") %>
             </td>
           </tr>
         <% else %>
@@ -48,8 +48,6 @@
               house_id: params[:house_id],
               from_date: params[:from_date],
               to_date: params[:to_date],
-              month: params[:month],
-              year: params[:year],
               status: params[:status],
               request_type: params[:request_type]
             } %>

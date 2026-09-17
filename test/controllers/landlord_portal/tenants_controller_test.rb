@@ -31,6 +31,9 @@ class LandlordPortal::TenantsControllerTest < ActionDispatch::IntegrationTest
     @room2 = @floor.rooms.create!(name: "102", max_slots: 2, tenants_count: 0, area: 25)
     @rental_unit2 = @room2.create_rental_unit!(rent: 3000000, deposit: 3000000)
 
+    @room3 = @floor.rooms.create!(name: "103", max_slots: 2, tenants_count: 0, area: 25)
+    @rental_unit3 = @room3.create_rental_unit!(rent: 3000000, deposit: 3000000)
+
     # Tenant 1: with contract
     @tenant_user1 = User.create!(
       fullname: "Nguyen Van A",
@@ -127,6 +130,30 @@ class LandlordPortal::TenantsControllerTest < ActionDispatch::IntegrationTest
     sign_in_as(@landlord_user)
     delete landlord_house_tenant_path(@house, @tenant2)
     assert_redirected_to landlord_house_tenants_path(@house)
+    assert_equal I18n.t("success_messages.tenant_removed"), flash[:notice]
+  end
+
+  test "destroy fails and redirects with alert when tenant has pending invoices" do
+    sign_in_as(@landlord_user)
+
+    @house.invoices.create!(
+      code: "HD-PENDING-TENANT-02",
+      title: "Hóa đơn test chưa thanh toán",
+      room: @room2,
+      tenant: @tenant2,
+      created_by: @landlord_user,
+      billing_month: Date.current.beginning_of_month,
+      due_date: Date.current + 5.days,
+      invoice_type: :custom,
+      status: :pending,
+      subtotal: 500_000,
+      total_amount: 500_000
+    )
+
+    delete landlord_house_tenant_path(@house, @tenant2)
+    assert_redirected_to landlord_house_tenants_path(@house)
+    assert_equal I18n.t("errors.tenant_has_pending_invoices", count: 1), flash[:alert]
+    assert_nil @stay2.reload.checkout_at
   end
 
   test "show renders tenant detail modal with citizen_id, staying info, and contract info" do
@@ -137,5 +164,78 @@ class LandlordPortal::TenantsControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "Nguyen Van A"
     assert_includes response.body, "123456789012"
     assert_includes response.body, "HD-01"
+  end
+
+  test "execute_move moves tenant and redirects to index via html" do
+    sign_in_as(@landlord_user)
+    post move_landlord_house_tenant_path(@house, @tenant1), params: { rental_unit_id: @rental_unit3.id }
+    assert_redirected_to landlord_house_tenants_path(@house)
+    assert_equal I18n.t("success_messages.tenant_moved"), flash[:notice]
+    assert_equal @rental_unit3, @tenant1.reload.current_stay.rental_unit
+  end
+
+  test "execute_move via turbo_stream replaces row, stats, unsigned banner, closes modal, and updates flash" do
+    sign_in_as(@landlord_user)
+    post move_landlord_house_tenant_path(@house, @tenant1), params: { rental_unit_id: @rental_unit3.id }, as: :turbo_stream
+    assert_response :success
+    assert_equal "text/vnd.turbo-stream.html; charset=utf-8", response.content_type
+    assert_select "turbo-stream[action='replace'][target='#{ActionView::RecordIdentifier.dom_id(@tenant1)}']"
+    assert_select "turbo-stream[action='replace'][target='tenant_stats_grid']"
+    assert_select "turbo-stream[action='update'][target='unsigned_tenants_wrapper']"
+    assert_select "turbo-stream[action='append'][target='events']"
+    assert_select "turbo-stream[action='update'][target='flash']"
+    assert_equal @rental_unit3, @tenant1.reload.current_stay.rental_unit
+  end
+
+  test "execute_move failure via turbo_stream returns unprocessable_entity and updates flash" do
+    sign_in_as(@landlord_user)
+    post move_landlord_house_tenant_path(@house, @tenant1), params: { rental_unit_id: 999_999 }, as: :turbo_stream
+    assert_response :unprocessable_entity
+    assert_select "turbo-stream[action='update'][target='flash']"
+    assert_equal I18n.t("errors.rental_unit_unavailable"), flash[:alert]
+  end
+
+  test "destroy via turbo_stream removes row, updates stats, unsigned banner, and flash" do
+    sign_in_as(@landlord_user)
+    delete landlord_house_tenant_path(@house, @tenant1), as: :turbo_stream
+    assert_response :success
+    assert_equal "text/vnd.turbo-stream.html; charset=utf-8", response.content_type
+    assert_select "turbo-stream[action='remove'][target='#{ActionView::RecordIdentifier.dom_id(@tenant1)}']"
+    assert_select "turbo-stream[action='replace'][target='tenant_stats_grid']"
+    assert_select "turbo-stream[action='update'][target='unsigned_tenants_wrapper']"
+    assert_select "turbo-stream[action='update'][target='flash']"
+    assert_equal I18n.t("success_messages.tenant_removed"), flash[:notice]
+  end
+
+  test "destroy last tenant redirects to index even when requested as turbo_stream" do
+    @stay2.update!(checkout_at: Time.current)
+    @room2.update!(tenants_count: 0)
+
+    sign_in_as(@landlord_user)
+    delete landlord_house_tenant_path(@house, @tenant1), as: :turbo_stream
+    assert_redirected_to landlord_house_tenants_path(@house)
+  end
+
+  test "destroy failure via turbo_stream returns unprocessable_entity and updates flash when pending invoices" do
+    sign_in_as(@landlord_user)
+
+    @house.invoices.create!(
+      code: "HD-PENDING-TENANT-02-TURBO",
+      title: "Hóa đơn test chưa thanh toán",
+      room: @room2,
+      tenant: @tenant2,
+      created_by: @landlord_user,
+      billing_month: Date.current.beginning_of_month,
+      due_date: Date.current + 5.days,
+      invoice_type: :custom,
+      status: :pending,
+      subtotal: 500_000,
+      total_amount: 500_000
+    )
+
+    delete landlord_house_tenant_path(@house, @tenant2), as: :turbo_stream
+    assert_response :unprocessable_entity
+    assert_select "turbo-stream[action='update'][target='flash']"
+    assert_equal I18n.t("errors.tenant_has_pending_invoices", count: 1), flash[:alert]
   end
 end

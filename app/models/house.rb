@@ -88,6 +88,29 @@ class House < ApplicationRecord
     end
   end
 
+  scope :by_invoice_status, ->(status) do
+    return all if status.blank?
+
+    case status
+    when "has_unpaid"
+      where(
+        id: Invoice.kept
+                   .where(status: %w[pending overdue])
+                   .select(:house_id)
+      )
+    when "all_paid"
+      with_invoices = Invoice.kept.select(:house_id)
+      with_unpaid = Invoice.kept.where(status: %w[pending overdue]).select(:house_id)
+      where(id: with_invoices).where.not(id: with_unpaid)
+    else
+      all
+    end
+  end
+
+  def unpaid_invoices_count
+    invoices.kept.where(status: %w[pending overdue]).count
+  end
+
   # MODEL METHODS
 
   def reach_max_floors?

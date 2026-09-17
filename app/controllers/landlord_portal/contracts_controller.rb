@@ -153,6 +153,9 @@ class LandlordPortal::ContractsController < LandlordPortal::BaseController
 
     redirect_to landlord_house_contracts_path(@house),
                 notice: t("success_messages.contract_closed")
+  rescue Checkout::PendingInvoicesError => e
+    redirect_to landlord_house_contracts_path(@house),
+                alert: t("errors.tenant_has_pending_invoices", count: e.invoices.size)
   end
 
   private

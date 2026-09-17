@@ -101,8 +101,6 @@ class LandlordPortal::RequestsControllerTest < ActionDispatch::IntegrationTest
     assert_select "input[name='from_date'][max='#{Date.current}']"
     assert_select "input[name='to_date'][max='#{Date.current}'][value='#{Date.current}']"
     assert_select "select[name='house_id']"
-    assert_select "select[name='month']"
-    assert_select "select[name='year']"
     assert_select "select[name='status']"
     assert_select "select[name='request_type']"
     assert_select "turbo-frame#requests_table"
@@ -283,5 +281,68 @@ class LandlordPortal::RequestsControllerTest < ActionDispatch::IntegrationTest
     get landlord_requests_path
     assert_response :forbidden
     assert_includes response.body, "Truy Cập Bị Từ Chối!"
+  end
+
+  test "landlord approving leave house request fails when tenant has pending invoices" do
+    leave_req = LeaveHouseRequest.create!
+    leave_request = Request.create!(
+      tenant: @tenant,
+      house: @house,
+      requestable: leave_req,
+      status: :pending
+    )
+
+    @house.invoices.create!(
+      code: "HD-LEAVE-PENDING-01",
+      title: "Hóa đơn rời nhà chưa trả",
+      room: @room,
+      tenant: @tenant,
+      created_by: @landlord_user,
+      billing_month: Date.current.beginning_of_month,
+      due_date: Date.current + 5.days,
+      invoice_type: :custom,
+      status: :pending,
+      subtotal: 500_000,
+      total_amount: 500_000
+    )
+
+    sign_in_as(@landlord_user)
+
+    patch handle_landlord_request_path(leave_request),
+          params: { decision: "approved" },
+          as: :turbo_stream
+
+    assert_response :unprocessable_entity
+    assert_equal "pending", leave_request.reload.status
+    assert_nil @tenant_stay.reload.checkout_at
+  end
+
+  test "navbar renders dynamic badge with pending count for landlord when pending requests exist" do
+    sign_in_as(@landlord_user)
+    get landlord_requests_path
+
+    assert_response :success
+    assert_select "#landlord_requests_nav_badge .admin-nav-badge", text: "1"
+    assert_select "turbo-cable-stream-source[signed-stream-name]"
+  end
+
+  test "navbar renders empty badge container when no pending requests" do
+    @landlord_request.update!(status: :approved, resolved_by: @landlord_user, resolved_at: Time.current)
+    sign_in_as(@landlord_user)
+    get landlord_requests_path
+
+    assert_response :success
+    assert_select "#landlord_requests_nav_badge"
+    assert_select "#landlord_requests_nav_badge .admin-nav-badge", count: 0
+  end
+
+  test "handle turbo stream replaces landlord_requests_nav_badge" do
+    sign_in_as(@landlord_user)
+    patch handle_landlord_request_path(@landlord_request),
+          params: { decision: "approved" },
+          as: :turbo_stream
+
+    assert_response :success
+    assert_select "turbo-stream[action='replace'][target='landlord_requests_nav_badge']"
   end
 end

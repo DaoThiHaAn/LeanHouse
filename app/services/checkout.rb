@@ -1,7 +1,30 @@
 # Remove a tenant from a rental unit
 class Checkout
+  class PendingInvoicesError < StandardError
+    attr_reader :invoices
+
+    def initialize(invoices = [])
+      @invoices = invoices
+      super(I18n.t("errors.tenant_has_pending_invoices", count: invoices.size))
+    end
+  end
+
   def self.call(...)
     new(...).call
+  end
+
+  def self.pending_invoices_for(house:, tenant:, room: nil)
+    unpaid_scope = house.invoices.kept.where(status: %w[pending overdue])
+    tenant_unpaid_ids = unpaid_scope.where(tenant_id: tenant.id).pluck(:id)
+
+    room_unpaid_ids = if room.present? && room.active_staying_tenant_users.count <= 1
+                        unpaid_scope.where(room_id: room.id, invoice_type: "room").pluck(:id)
+    else
+                        []
+    end
+
+    all_unpaid_ids = (tenant_unpaid_ids + room_unpaid_ids).uniq
+    house.invoices.where(id: all_unpaid_ids)
   end
 
   def initialize(house:, tenant_stay:, end_contract: true, send_noti: true)
@@ -12,6 +35,15 @@ class Checkout
   end
 
   def call
+    pending = self.class.pending_invoices_for(
+      house: house,
+      tenant: tenant_stay.tenant,
+      room: tenant_stay.rental_unit&.room
+    )
+    if pending.any?
+      raise PendingInvoicesError.new(pending)
+    end
+
     TenantStay.transaction do
       auto_approve_pending_requests!
       checkout_stay!

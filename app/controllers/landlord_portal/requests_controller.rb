@@ -46,7 +46,11 @@ class LandlordPortal::RequestsController < LandlordPortal::BaseController
         redirect_to landlord_requests_path, notice: flash_message
       end
     end
-  rescue ActiveRecord::RecordInvalid, ArgumentError => e
+  rescue ActiveRecord::RecordInvalid => e
+    record_errors = e.record&.errors&.full_messages&.to_sentence
+    flash.now[:alert] = record_errors.presence || @request.errors.full_messages.to_sentence.presence || e.message
+    render_modal_error
+  rescue ArgumentError, Checkout::PendingInvoicesError => e
     flash.now[:alert] = @request.errors.full_messages.to_sentence.presence || e.message
     render_modal_error
   end

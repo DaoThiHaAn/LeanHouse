@@ -1,6 +1,8 @@
 vi:
   activerecord:
     errors:
+      messages:
+        record_invalid: "%{errors}"
       models:
         # For model-specific error messages
         user:

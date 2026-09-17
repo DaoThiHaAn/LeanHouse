@@ -9,12 +9,17 @@ class LeaveHouseRequest < ApplicationRecord
       # 1. Checkout tenant from house and end active contract if any
       tenant_stay = request.house.tenant_stay_for(request.tenant_id)
       if tenant_stay.present?
-        Checkout.call(
-          house: request.house,
-          tenant_stay: tenant_stay,
-          end_contract: true,
-          send_noti: false # RequestResolvedNotifier is sent by RequestHandling
-        )
+        begin
+          Checkout.call(
+            house: request.house,
+            tenant_stay: tenant_stay,
+            end_contract: true,
+            send_noti: false # RequestResolvedNotifier is sent by RequestHandling
+          )
+        rescue Checkout::PendingInvoicesError => e
+          request.errors.add(:base, I18n.t("errors.leave_request_has_pending_invoices", count: e.invoices.size))
+          raise ActiveRecord::RecordInvalid.new(request)
+        end
       end
 
       # 2. Update Request status

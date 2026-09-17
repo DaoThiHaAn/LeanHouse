@@ -67,6 +67,44 @@ class ProfilesDeleteAccountTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "#accountCheckDeleteBlockedModal"
+    assert_select "a[href*='state=not_empty']"
+  end
+
+  test "landlord check_delete renders blocked modal with invoice_status=has_unpaid link when unpaid invoices exist" do
+    @house.invoices.create!(
+      code: "HD-UNPAID-BLOCKER",
+      title: "Hóa đơn test",
+      room: @room,
+      created_by: @landlord_user,
+      billing_month: Date.current.beginning_of_month,
+      due_date: Date.current + 5.days,
+      invoice_type: :room,
+      status: :pending,
+      subtotal: 1_000_000,
+      total_amount: 1_000_000
+    )
+    sign_in_as(@landlord_user)
+    get check_delete_landlord_profile_path
+
+    assert_response :success
+    assert_select "#accountCheckDeleteBlockedModal"
+    assert_select "a[href*='invoice_status=has_unpaid']"
+  end
+
+  test "landlord check_delete renders blocked modal with pending request link when pending requests exist" do
+    rr = RepairRequest.create!(title: "Broken tap", content: "Need fix")
+    Request.create!(
+      tenant: @tenant,
+      house: @house,
+      requestable: rr,
+      status: :pending
+    )
+    sign_in_as(@landlord_user)
+    get check_delete_landlord_profile_path
+
+    assert_response :success
+    assert_select "#accountCheckDeleteBlockedModal"
+    assert_select "a[href*='status=pending']"
   end
 
   test "landlord successfully deletes account when no blockers" do
@@ -116,6 +154,45 @@ class ProfilesDeleteAccountTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "#accountCheckDeleteBlockedModal"
+    assert_select "a[href='#{tenant_dashboard_path}']"
+  end
+
+  test "tenant check_delete renders blocked modal with pending request link when pending requests exist" do
+    rr = RepairRequest.create!(title: "Broken tap", content: "Need fix")
+    Request.create!(
+      tenant: @tenant,
+      house: @house,
+      requestable: rr,
+      status: :pending
+    )
+    sign_in_as(@tenant_user)
+    get check_delete_tenant_profile_path
+
+    assert_response :success
+    assert_select "#accountCheckDeleteBlockedModal"
+    assert_select "a[href*='status=pending']"
+  end
+
+  test "tenant check_delete renders blocked modal with unpaid invoice link when unpaid invoices exist" do
+    @house.invoices.create!(
+      code: "HD-TENANT-BLOCKER",
+      title: "Hóa đơn test",
+      room: @room,
+      tenant: @tenant,
+      created_by: @landlord_user,
+      billing_month: Date.current.beginning_of_month,
+      due_date: Date.current + 5.days,
+      invoice_type: :custom,
+      status: :pending,
+      subtotal: 500_000,
+      total_amount: 500_000
+    )
+    sign_in_as(@tenant_user)
+    get check_delete_tenant_profile_path
+
+    assert_response :success
+    assert_select "#accountCheckDeleteBlockedModal"
+    assert_select "a[href*='status=pending']"
   end
 
   test "tenant successfully deletes account when unlinked" do

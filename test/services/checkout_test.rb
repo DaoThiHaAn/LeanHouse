@@ -90,4 +90,141 @@ class CheckoutTest < ActiveSupport::TestCase
     assert_not_nil req.resolved_at
     assert_equal @landlord_user.id, req.resolved_by_id
   end
+
+  test "checkout raises PendingInvoicesError when tenant has pending individual or custom invoices" do
+    inv = @house.invoices.create!(
+      code: "HD-PENDING-01",
+      title: "Hóa đơn dịch vụ cá nhân",
+      room: @room,
+      tenant: @tenant,
+      created_by: @landlord_user,
+      billing_month: Date.current.beginning_of_month,
+      due_date: Date.current + 5.days,
+      invoice_type: :custom,
+      status: :pending,
+      subtotal: 500_000,
+      total_amount: 500_000
+    )
+
+    error = assert_raises(Checkout::PendingInvoicesError) do
+      Checkout.call(house: @house, tenant_stay: @tenant_stay)
+    end
+
+    assert_includes error.invoices, inv
+    assert_nil @tenant_stay.reload.checkout_at
+  end
+
+  test "checkout raises PendingInvoicesError when room has pending invoice and tenant is only occupant left" do
+    inv = @house.invoices.create!(
+      code: "HD-ROOM-PENDING-01",
+      title: "Hóa đơn phòng 101",
+      room: @room,
+      created_by: @landlord_user,
+      billing_month: Date.current.beginning_of_month,
+      due_date: Date.current + 5.days,
+      invoice_type: :room,
+      status: :pending,
+      subtotal: 3_000_000,
+      total_amount: 3_000_000
+    )
+
+    assert_equal 1, @room.active_staying_tenant_users.count
+
+    error = assert_raises(Checkout::PendingInvoicesError) do
+      Checkout.call(house: @house, tenant_stay: @tenant_stay)
+    end
+
+    assert_includes error.invoices, inv
+    assert_nil @tenant_stay.reload.checkout_at
+  end
+
+  test "checkout succeeds with pending room invoice if another occupant remains, but blocks the last occupant" do
+    bed_house = House.create!(
+      landlord: @landlord,
+      name: "Bed House Test",
+      mode: :bed,
+      address_l1: "123 Main St",
+      address_l2: "Ward 1",
+      address_l3: "District 1",
+      floors_count: 1,
+      inv_creation_date: 1
+    )
+    floor = bed_house.floors.create!(name: "Floor 1", position: 1, rooms_count: 1)
+    room = floor.rooms.create!(name: "Room 201", max_slots: 2, tenants_count: 2, area: 25.0)
+    bed1 = room.beds.create!(name: "Bed 1")
+    bed2 = room.beds.create!(name: "Bed 2")
+    ru1 = bed1.create_rental_unit!(rent: 1_500_000, deposit: 1_500_000)
+    ru2 = bed2.create_rental_unit!(rent: 1_500_000, deposit: 1_500_000)
+
+    u1 = User.create!(fullname: "Tenant Mot", tel: "0908887766", password: "Password123", password_confirmation: "Password123", role: "tenant", sex: "male", bday: 24.years.ago.to_date, address: "St", tel_verified_at: Time.current)
+    t1 = Tenant.find_or_create_by!(id: u1.id)
+    u2 = User.create!(fullname: "Tenant Hai", tel: "0909998877", password: "Password123", password_confirmation: "Password123", role: "tenant", sex: "female", bday: 23.years.ago.to_date, address: "St", tel_verified_at: Time.current)
+    t2 = Tenant.find_or_create_by!(id: u2.id)
+
+    stay1 = TenantStay.create!(rental_unit: ru1, tenant: t1, checkin_at: Date.current)
+    stay2 = TenantStay.create!(rental_unit: ru2, tenant: t2, checkin_at: Date.current)
+
+    inv = bed_house.invoices.create!(
+      code: "HD-BED-ROOM-01",
+      title: "Hóa đơn điện nước chung phòng 201",
+      room: room,
+      created_by: @landlord_user,
+      billing_month: Date.current.beginning_of_month,
+      due_date: Date.current + 5.days,
+      invoice_type: :room,
+      status: :pending,
+      subtotal: 400_000,
+      total_amount: 400_000
+    )
+
+    # When 2 occupants are staying in the room, checking out tenant 1 succeeds because tenant 2 remains
+    assert_equal 2, room.active_staying_tenant_users.count
+    assert_nothing_raised do
+      Checkout.call(house: bed_house, tenant_stay: stay1)
+    end
+    assert_not_nil stay1.reload.checkout_at
+
+    # Now only tenant 2 remains in room 201. Checking out tenant 2 must be blocked by the pending room invoice!
+    assert_equal 1, room.active_staying_tenant_users.count
+    assert_raises(Checkout::PendingInvoicesError) do
+      Checkout.call(house: bed_house, tenant_stay: stay2)
+    end
+    assert_nil stay2.reload.checkout_at
+  end
+
+  test "checkout succeeds when invoices are paid or cancelled" do
+    @house.invoices.create!(
+      code: "HD-PAID-01",
+      title: "Hóa đơn đã thanh toán",
+      room: @room,
+      tenant: @tenant,
+      created_by: @landlord_user,
+      billing_month: Date.current.beginning_of_month,
+      due_date: Date.current + 5.days,
+      invoice_type: :custom,
+      status: :paid,
+      paid_at: Time.current,
+      payment_method: "cash",
+      subtotal: 500_000,
+      total_amount: 500_000
+    )
+    @house.invoices.create!(
+      code: "HD-CANCELLED-01",
+      title: "Hóa đơn đã hủy",
+      room: @room,
+      tenant: @tenant,
+      created_by: @landlord_user,
+      billing_month: Date.current.beginning_of_month,
+      due_date: Date.current + 5.days,
+      invoice_type: :custom,
+      status: :cancelled,
+      subtotal: 300_000,
+      total_amount: 300_000
+    )
+
+    assert_nothing_raised do
+      Checkout.call(house: @house, tenant_stay: @tenant_stay)
+    end
+    assert_not_nil @tenant_stay.reload.checkout_at
+  end
 end

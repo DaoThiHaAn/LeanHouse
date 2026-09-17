@@ -25,11 +25,11 @@ module NavHelper
   end
 
 
-  def nav_item(real_text, label, word: nil, path: nil, icon: nil, is_img: false, img_src: nil, img_active_src: nil)
+  def nav_item(real_text, label, word: nil, path: nil, icon: nil, is_img: false, img_src: nil, img_active_src: nil, badge: nil)
     li_classes = [ "flex-shrink-0 nav-item custom d-lg-flex align-items-center m-1" ]
     a_classes  = [ "nav-link text-center d-flex align-items-center px-2 flex-wrap justify-content-md-center" ]
 
-    is_current_page = word.present? ? request.path.include?(word) :current_page?(path)
+    is_current_page = word.present? ? request.path.include?(word) : current_page?(path)
     if is_current_page
       li_classes << "active"
       a_classes << "fw-bold active" # keep Bootstrap behavior for <a>
@@ -46,7 +46,7 @@ module NavHelper
                           content_tag(:span, icon, class: "material-symbols-filled me-1")
           end
 
-        safe_join([ icon_or_img, real_text ].compact)
+        safe_join([ icon_or_img, real_text, badge ].compact)
       end
     end
   end
@@ -75,6 +75,12 @@ module NavHelper
 
   def pending_requests_count
     @pending_requests_count ||= Request.pending.count
+  end
+
+  def landlord_pending_requests_count
+    return 0 unless current_user&.landlord? && current_user.landlord
+
+    @landlord_pending_requests_count ||= current_user.landlord.requests.pending.count
   end
 
   def pending_issue_reports_count

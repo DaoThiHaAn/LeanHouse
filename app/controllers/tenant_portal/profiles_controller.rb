@@ -70,8 +70,8 @@ class TenantPortal::ProfilesController < TenantPortal::BaseController
     render "layouts/shared_components/#{template}", locals: {
       delete_url: tenant_profile_path,
       resolve_stay_url: tenant_dashboard_path,
-      resolve_requests_url: tenant_requests_path,
-      resolve_invoices_url: tenant_invoices_path
+      resolve_requests_url: tenant_requests_path(status: "pending"),
+      resolve_invoices_url: tenant_invoices_path(status: "pending")
     }
   end
 

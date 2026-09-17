@@ -1,0 +1,6 @@
+<span id="landlord_requests_nav_badge">
+  <% count = local_assigns[:count].to_i %>
+  <% if count > 0 %>
+    <span class="admin-nav-badge ms-2" aria-hidden="true"><%= noti_count(count) %></span>
+  <% end %>
+</span>

@@ -19,7 +19,7 @@
 
           <div class="d-flex flex-column gap-2">
             <% @check.blockers.each do |blocker| %>
-              <div class="p-2 rounded bg-light border border-danger-subtle d-flex align-items-center justify-content-between">
+              <div class="p-2 rounded bg-blocker border border-danger-subtle d-flex align-items-center justify-content-between gap-2">
                 <div class="d-flex align-items-center gap-2 text-danger">
                   <span class="material-symbols-filled fs-5">cancel</span>
                   <span class="small fw-medium">
@@ -29,29 +29,39 @@
 
                 <div>
                   <% case blocker.key %>
+                  <%# There is still tenant link to the house %>
                   <% when :active_tenants %>
                     <% if local_assigns[:resolve_tenants_url] %>
-                      <%= link_to t("form.profile.resolutions.view_houses"), resolve_tenants_url,
+                      <%= link_to t("form.profile.resolutions.view_house"), resolve_tenants_url,
+                            target: "_blank",
                             data: { turbo_frame: "_top" },
-                            class: "btn btn-outline-primary btn-sm py-0 px-2" %>
+                            class: "block-detail-link" %>
                     <% end %>
+
+                  <%# The tenant is still staying %>
                   <% when :active_stay %>
                     <% if local_assigns[:resolve_stay_url] %>
                       <%= link_to t("form.profile.resolutions.view_dashboard"), resolve_stay_url,
                             data: { turbo_frame: "_top" },
-                            class: "btn btn-outline-primary btn-sm py-0 px-2" %>
+                            class: "block-detail-link" %>
                     <% end %>
+
+                  <%# At least 1 request is pending %>
                   <% when :pending_requests %>
                     <% if local_assigns[:resolve_requests_url] %>
                       <%= link_to t("form.profile.resolutions.view_requests"), resolve_requests_url,
+                            target: "_blank",
                             data: { turbo_frame: "_top" },
-                            class: "btn btn-outline-primary btn-sm py-0 px-2" %>
+                            class: "block-detail-link" %>
                     <% end %>
+
+                  <%# At least 1 invoice is pending %>
                   <% when :unpaid_invoices %>
                     <% if local_assigns[:resolve_invoices_url] %>
                       <%= link_to t("form.profile.resolutions.view_invoices"), resolve_invoices_url,
+                            target: "_blank",
                             data: { turbo_frame: "_top" },
-                            class: "btn btn-outline-primary btn-sm py-0 px-2" %>
+                            class: "block-detail-link" %>
                     <% end %>
                   <% end %>
                 </div>

@@ -39,9 +39,23 @@ class LandlordPortal::TenantsController < LandlordPortal::BaseController
       tenant_stay: @tenant_stay,
       rental_unit_id: params.expect(:rental_unit_id)
     )
-    redirect_to landlord_house_tenants_path(@house), notice: t("success_messages.tenant_moved")
+
+    @house.reload
+    @tenant.reload
+    @stats = @house.tenant_summary_stats
+    @unsigned_tenants = @house.all_linked_tenants(signed_contract: false)
+    flash.now[:notice] = t("success_messages.tenant_moved")
+
+    respond_to do |format|
+      format.html { redirect_to landlord_house_tenants_path(@house), notice: t("success_messages.tenant_moved") }
+      format.turbo_stream
+    end
   rescue ActiveRecord::RecordNotFound, ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique
-    redirect_to landlord_house_tenants_path(@house), alert: t("errors.rental_unit_unavailable")
+    flash.now[:alert] = t("errors.rental_unit_unavailable")
+    respond_to do |format|
+      format.html { redirect_to landlord_house_tenants_path(@house), alert: flash.now[:alert] }
+      format.turbo_stream { render :move_error, status: :unprocessable_entity }
+    end
   end
 
   def new
@@ -92,8 +106,29 @@ class LandlordPortal::TenantsController < LandlordPortal::BaseController
       tenant_stay: @tenant_stay
     )
 
-    redirect_to landlord_house_tenants_path(@house),
-              notice: t("success_messages.tenant_removed")
+    @house.reload
+    if @house.occupied_slots.zero?
+      respond_to do |format|
+        format.html { redirect_to landlord_house_tenants_path(@house), notice: t("success_messages.tenant_removed"), status: :see_other }
+        format.turbo_stream { redirect_to landlord_house_tenants_path(@house), notice: t("success_messages.tenant_removed"), status: :see_other }
+      end
+      return
+    end
+
+    @stats = @house.tenant_summary_stats
+    @unsigned_tenants = @house.all_linked_tenants(signed_contract: false)
+    flash.now[:notice] = t("success_messages.tenant_removed")
+
+    respond_to do |format|
+      format.html { redirect_to landlord_house_tenants_path(@house), notice: t("success_messages.tenant_removed") }
+      format.turbo_stream
+    end
+  rescue Checkout::PendingInvoicesError => e
+    flash.now[:alert] = t("errors.tenant_has_pending_invoices", count: e.invoices.size)
+    respond_to do |format|
+      format.html { redirect_to landlord_house_tenants_path(@house), alert: flash.now[:alert] }
+      format.turbo_stream { render :destroy_error, status: :unprocessable_entity }
+    end
   end
 
   private

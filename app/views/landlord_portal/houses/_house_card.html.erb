@@ -1,54 +1,112 @@
 <%# Local variables: house %>
 
-<div class="d-flex gap-1 align-items-center detailed-house-card w-100">
-  <%# Detail %>
-  <div class="house-content d-flex flex-column gap-2">
-      <div class="d-flex align-items-center justify-content-start gap-1">
-        <span class="material-symbols-filled">location_home</span>
-
-        <%# Turbo link to open modal on click %>
+<div class="detailed-house-card d-flex flex-column justify-content-between h-100 shadow-sm">
+  <div>
+    <%# Top header: House Icon, Name, and Rental Mode Badge %>
+    <div class="d-flex align-items-start justify-content-between gap-2 mb-2">
+      <div class="d-flex align-items-center gap-2 min-w-0">
+        <div class="house-icon-wrapper flex-shrink-0">
+          <span class="material-symbols-filled fs-4">roofing</span>
+        </div>
         <%= link_to house.name, landlord_house_path(house),
                     title: t("form.house.open_modal"),
-                    data: { turbo_frame: "house_detail_modal" }, 
-                    class: "title text-clamp-2 text-decoration-none fw-bold" %>
+                    data: { turbo_frame: "house_detail_modal" },
+                    class: "d-block custom-text-primary title text-clamp-2 text-decoration-none" %>
       </div>
 
-      <p class="text-clamp-2"><%= house.full_address %></p>
+      <span class="house-mode-pill d-inline-flex align-items-center gap-1 flex-shrink-0" title="<%= house_mode(house) %>">
+        <span class="material-symbols-filled fs-6"><%= house_mode_icon(house) %></span>
+        <span><%= house_mode(house).tr("()", "") %></span>
+      </span>
+    </div>
 
-      <div class="d-flex flex-column flex-lg-row align-items-lg-center">
-        <div class="d-flex align-items-center text-nowrap gap-1">
-          <span class="material-symbols-outlined">group</span>
-          <%= occupied_rate_format(house) %>
-        </div>
-        <p class="ms-lg-4 mt-1 mt-lg-0 fst-italic text-secondary text-nowrap"><%= house_mode(house) %></p>
+    <%# Address %>
+    <div class="d-flex align-items-start gap-1 text-secondary small mb-3" title="<%= house.full_address %>">
+      <span class="material-symbols-outlined fs-6 text-muted flex-shrink-0 mt-1">location_on</span>
+      <span class="text-clamp-2"><%= house.full_address %></span>
+    </div>
+
+    <%# Metrics & Occupancy %>
+    <div class="house-metrics-box d-flex align-items-center justify-content-between mb-2">
+      <div class="d-flex align-items-center gap-1 small">
+        <span class="material-symbols-outlined fs-6 text-primary-bg">group</span>
+        <span class="fw-bold text-dark"><%= occupied_rate_format(house) %></span>
+        <span class="text-secondary"><%= house.room? ? t("form.house.occupant") : t("form.bed.self") %></span>
       </div>
+
+      <%# Status badge %>
+      <% occupied_slots = house.occupied_slots.to_i %>
+      <% total_slots = house.total_slots.to_i %>
+      <% if occupied_slots == 0 %>
+        <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle small fw-normal">
+          <%= t("form.house.state_empty") %>
+        </span>
+      <% elsif total_slots > 0 && occupied_slots >= total_slots %>
+        <span class="badge bg-danger-subtle text-danger border border-danger-subtle small fw-normal">
+          <%= t("form.house.state_full") %>
+        </span>
+      <% else %>
+        <span class="badge bg-success-subtle text-success border border-success-subtle small fw-normal">
+          <%= t("form.house.state_available") %>
+        </span>
+      <% end %>
+    </div>
+
+    <%# Unpaid Invoices Alert Badge %>
+    <% unpaid_count = local_assigns[:unpaid_count] || (@unpaid_invoices_counts ? @unpaid_invoices_counts[house.id].to_i : house.unpaid_invoices_count) %>
+    <% if unpaid_count > 0 %>
+      <div class="mb-2">
+        <%= link_to landlord_house_invoices_path(house, status: "pending"),
+                    class: "badge bg-danger-subtle text-danger border border-danger-subtle text-decoration-none d-inline-flex align-items-center gap-1 py-1 px-2 rounded-2",
+                    data: { turbo_frame: "_top" },
+                    title: t("form.house.unpaid_invoices_tooltip", count: unpaid_count) do %>
+          <span class="material-symbols-filled fs-6">receipt_long</span>
+          <span><%= t("form.house.unpaid_invoices_badge", count: unpaid_count) %></span>
+        <% end %>
+      </div>
+    <% end %>
   </div>
 
-  <%# Buttons %>
-  <div class="house-actions d-flex flex-column align-items-center gap-1 ms-auto">
+  <%# Action Toolbar %>
+  <div class="house-actions-toolbar d-flex align-items-center justify-content-between">
+    <div class="d-flex align-items-center gap-1">
+      <%= link_to landlord_house_path(house),
+            class: "house-btn",
+            data: {
+              turbo_frame: "house_detail_modal",
+              **tooltip("top", :"form.house.open_modal")
+            } do %>
+        <span class="material-symbols-filled">visibility</span>
+      <% end %>
+
       <%= link_to edit_landlord_house_path(house),
-            data: { 
-              turbo_frame: "_top", # force Rails to direct to a new page
-              **tooltip("right", :"edit") 
-            },
-            class: "house-btn p-2 rounded-circle" do %>
+            class: "house-btn",
+            data: {
+              turbo_frame: "_top",
+              **tooltip("top", :"edit")
+            } do %>
         <span class="material-symbols-filled">edit</span>
       <% end %>
 
       <%= link_to check_deletion_landlord_house_path(house),
-                class: "house-btn p-2 rounded-circle",
-                data: {turbo_frame: "house_delete_modal"} do %>
+                class: "house-btn delete-btn",
+                data: {
+                  turbo_frame: "house_delete_modal",
+                  **tooltip("top", :"form.house.delete")
+                } do %>
         <span class="material-symbols-filled">delete</span>
       <% end %>
+    </div>
 
-      <%= link_to landlord_house_rooms_path(house), 
-                data: { 
-                  turbo_frame: "_top", # force Rails to direct to a new page
-                  **tooltip("right", :"form.house.enter") 
-                },
-                class: "house-btn p-2 rounded-circle d-flex align-items-center justify-content-center" do %>
-        <span class="material-symbols-filled">arrow_right_alt</span>
-      <% end %>
+    <%= link_to landlord_house_rooms_path(house),
+              class: "house-enter-btn",
+              data: {
+                turbo_frame: "_top",
+                **tooltip("top", :"form.house.enter")
+              } do %>
+      <span><%= t("form.house.enter") %></span>
+      <span class="material-symbols-filled fs-6">arrow_forward</span>
+    <% end %>
   </div>
 </div>
 

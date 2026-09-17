@@ -206,4 +206,27 @@ class LandlordPortal::ContractsControllerTest < ActionDispatch::IntegrationTest
     assert_select "tr#contract_#{@contract.id} a[href='#{edit_landlord_house_contract_path(@house, @contract)}']", 0
     assert_select "tr#contract_#{@contract.id} a[href='#{extend_landlord_house_contract_path(@house, @contract)}']", 1
   end
+
+  test "landlord destroying contract with remove_tenant fails when tenant has pending invoices" do
+    @house.invoices.create!(
+      code: "HD-CONTRACT-CLOSE-01",
+      title: "Hóa đơn hợp đồng chưa thanh toán",
+      room: @room,
+      tenant: @tenant,
+      created_by: @landlord_user,
+      billing_month: Date.current.beginning_of_month,
+      due_date: Date.current + 5.days,
+      invoice_type: :custom,
+      status: :pending,
+      subtotal: 500_000,
+      total_amount: 500_000
+    )
+
+    sign_in_as(@landlord_user)
+
+    delete landlord_house_contract_path(@house, @contract), params: { remove_tenant: "1" }
+    assert_redirected_to landlord_house_contracts_path(@house)
+    assert_equal I18n.t("errors.tenant_has_pending_invoices", count: 1), flash[:alert]
+    assert_nil @tenant_stay.reload.checkout_at
+  end
 end

@@ -69,9 +69,9 @@ class LandlordPortal::ProfilesController < LandlordPortal::BaseController
     template = @check.can_delete? ? "account_delete_confirm" : "account_delete_blocked"
     render "layouts/shared_components/#{template}", locals: {
       delete_url: landlord_profile_path,
-      resolve_tenants_url: landlord_houses_path,
-      resolve_requests_url: landlord_requests_path,
-      resolve_invoices_url: landlord_houses_path
+      resolve_tenants_url: landlord_houses_path(state: "not_empty"),
+      resolve_requests_url: landlord_requests_path(status: "pending"),
+      resolve_invoices_url: landlord_houses_path(invoice_status: "has_unpaid")
     }
   end
 

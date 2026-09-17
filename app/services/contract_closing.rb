@@ -20,6 +20,15 @@ class ContractClosing
 
       # 2. If remove_tenant is checked, checkout the tenant stay
       if @remove_tenant && tenant_stay
+        pending = Checkout.pending_invoices_for(
+          house: house,
+          tenant: tenant_stay.tenant,
+          room: tenant_stay.rental_unit&.room
+        )
+        if pending.any?
+          raise Checkout::PendingInvoicesError.new(pending)
+        end
+
         tenant_stay.update!(checkout_at: Time.current)
         tenant_stay.rental_unit.tenant_removed! # Decrements room.tenants_count, frees up bed
       end

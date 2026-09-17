@@ -1,4 +1,5 @@
 require "test_helper"
+require "minitest/mock"
 
 class RequestTest < ActiveSupport::TestCase
   setup do
@@ -177,5 +178,39 @@ class RequestTest < ActiveSupport::TestCase
     @request.update!(status: :approved, resolved_by: @landlord_user, resolved_at: Time.current)
     assert_nil @request.expiry_status
     assert_nil @request.remaining_expiry_days
+  end
+
+  test "creating a request broadcasts landlord badge" do
+    called = false
+    LandlordRequestBadgeBroadcaster.stub :broadcast_now, ->(landlord) {
+      called = true
+      assert_equal @landlord, landlord
+    } do
+      repair_req = RepairRequest.create!(title: "Sửa vòi", content: "Hỏng vòi")
+      Request.create!(tenant: @tenant, house: @house, requestable: repair_req, status: :pending)
+      assert called
+    end
+  end
+
+  test "updating request status broadcasts landlord badge" do
+    called = false
+    LandlordRequestBadgeBroadcaster.stub :broadcast_now, ->(landlord) {
+      called = true
+      assert_equal @landlord, landlord
+    } do
+      @request.update!(status: :approved, resolved_by: @landlord_user, resolved_at: Time.current)
+      assert called
+    end
+  end
+
+  test "destroying a request broadcasts landlord badge" do
+    called = false
+    LandlordRequestBadgeBroadcaster.stub :broadcast_now, ->(landlord) {
+      called = true
+      assert_equal @landlord, landlord
+    } do
+      @request.destroy!
+      assert called
+    end
   end
 end

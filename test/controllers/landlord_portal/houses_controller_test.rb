@@ -84,6 +84,38 @@ class LandlordPortal::HousesControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, I18n.t("form.house.no_houses_found")
   end
 
+  test "show modal displays asset summary stats when assets exist" do
+    sign_in_as(@landlord_user)
+
+    room1 = @house1.rooms.first
+    room1.assets.create!(
+      category: "air_con",
+      price: 5_000_000,
+      status: :normal
+    )
+    room1.assets.create!(
+      category: "fridge",
+      price: 3_000_000,
+      status: :damaged
+    )
+
+    get landlord_house_path(@house1)
+    assert_response :success
+    assert_includes response.body, I18n.t("form.asset.stats.total_assets")
+    assert_includes response.body, "2 #{I18n.t('form.asset.stats.unit')}"
+    assert_includes response.body, I18n.t("form.asset.stats.good_condition")
+    assert_includes response.body, I18n.t("form.asset.stats.damaged_condition")
+    assert_includes response.body, "8,000,000"
+  end
+
+  test "show modal displays none message when house has no assets" do
+    sign_in_as(@landlord_user)
+
+    get landlord_house_path(@house2)
+    assert_response :success
+    assert_includes response.body, I18n.t("form.asset.none")
+  end
+
   test "landlord can change mode of empty house" do
     sign_in_as(@landlord_user)
 
@@ -123,5 +155,61 @@ class LandlordPortal::HousesControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to edit_landlord_house_path(@house1)
     assert_equal I18n.t("errors.house_cant_deleted"), flash[:alert]
     assert_not @house1.reload.is_deleted?
+  end
+
+  test "landlord can filter houses by invoice_status and see unpaid invoice badge" do
+    sign_in_as(@landlord_user)
+
+    floor1 = @house1.floors.first
+    room1 = floor1.rooms.first
+    @house1.invoices.create!(
+      code: "HD-H1-01",
+      title: "Tiền phòng",
+      room: room1,
+      created_by: @landlord_user,
+      billing_month: Date.current.beginning_of_month,
+      due_date: Date.current + 5.days,
+      invoice_type: :room,
+      status: :pending,
+      subtotal: 2_000_000,
+      total_amount: 2_000_000
+    )
+
+    floor2 = @house2.floors.first
+    room2 = floor2.rooms.first
+    @house2.invoices.create!(
+      code: "HD-H2-01",
+      title: "Tiền phòng cũ",
+      room: room2,
+      created_by: @landlord_user,
+      billing_month: Date.current.beginning_of_month,
+      due_date: Date.current + 5.days,
+      invoice_type: :room,
+      status: :paid,
+      paid_at: Time.current,
+      payment_method: "cash",
+      subtotal: 2_000_000,
+      total_amount: 2_000_000
+    )
+
+    # 1. Default index displays both and shows badge on house1
+    get landlord_houses_path
+    assert_response :success
+    assert_select "select[name='invoice_status']"
+    assert_includes response.body, "Sunrise Mansion"
+    assert_includes response.body, "Moonlight Villa"
+    assert_includes response.body, I18n.t("form.house.unpaid_invoices_badge", count: 1)
+
+    # 2. Filter has_unpaid shows only house1
+    get landlord_houses_path, params: { invoice_status: "has_unpaid" }
+    assert_response :success
+    assert_includes response.body, "Sunrise Mansion"
+    assert_not_includes response.body, "Moonlight Villa"
+
+    # 3. Filter all_paid shows only house2
+    get landlord_houses_path, params: { invoice_status: "all_paid" }
+    assert_response :success
+    assert_includes response.body, "Moonlight Villa"
+    assert_not_includes response.body, "Sunrise Mansion"
   end
 end

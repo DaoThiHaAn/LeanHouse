@@ -18,6 +18,7 @@
           <tr>
             <th scope="col" class="py-3 px-3"><%= t("request.id") %></th>
             <th scope="col" class="py-3 px-3"><%= t("request.type") %></th>
+            <th scope="col" class="py-3 px-3"><%= t("request.house_filter", default: "Nhà") %></th>
             <th scope="col" class="py-3 px-3 text-center"><%= t("request.status") %></th>
             <th scope="col" class="py-3 px-3 text-center"><%= t("request.sent_at") %></th>
             <th scope="col" class="py-3 px-3 text-center"><%= t("request.updated_at") %></th>
@@ -39,6 +40,14 @@
                       data: { turbo_frame: "request_detail_modal" },
                       title: t("request.detail_title") do %>
                   <%= request.human_request_type %>
+                <% end %>
+              </td>
+
+              <!-- House -->
+              <td class="px-3">
+                <span class="fw-medium text-dark"><%= request.house.name %></span>
+                <% if @house.blank? || request.house_id != @house.id %>
+                  <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle small fw-normal ms-1" style="font-size: 0.7rem;"><%= t("request.past_house") %></span>
                 <% end %>
               </td>
 

@@ -1,5 +1,12 @@
 <%# Local variables: request %>
 
+<% if @house.blank? || request.house_id != @house.id %>
+  <div class="alert alert-secondary py-2 px-3 small d-flex align-items-center gap-2 mb-3 rounded-3">
+    <span class="material-symbols-outlined fs-5 flex-shrink-0">history</span>
+    <span><%= t("request.past_house_notice") %></span>
+  </div>
+<% end %>
+
 <!-- Request Meta Info Card -->
 <div class="meta-request card border-0 rounded-3 p-4 mb-3">
   <h2 class="fs-5 fw-bold mb-3 d-flex align-items-center gap-2">
@@ -12,8 +19,13 @@
     <div class="col-12 col-md-6">
       <span class="material-symbols-filled text-secondary fs-5">roofing</span>
       <span class="text-secondary small"><%= t("request.house") %>:</span>
-      <p class="fw-semibold"><%= request.house.name %></p>
-      <p class="text-secondary d-block">(<%= request.house.full_address %>)</p>
+      <p class="fw-semibold mb-1">
+        <%= request.house.name %>
+        <% if @house.blank? || request.house_id != @house.id %>
+          <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle small fw-normal ms-1"><%= t("request.past_house") %></span>
+        <% end %>
+      </p>
+      <p class="text-secondary small d-block mb-0">(<%= request.house.full_address %>)</p>
     </div>
 
     <!-- Request Type -->

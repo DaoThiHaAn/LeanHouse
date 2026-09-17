@@ -139,4 +139,49 @@ class TenantPortal::RequestsControllerTest < ActionDispatch::IntegrationTest
     assert_response :forbidden
     assert_includes response.body, "Truy Cập Bị Từ Chối!"
   end
+
+  test "filtered displays house column and past house badge when request is from past house" do
+    old_house = House.create!(
+      landlord: @landlord,
+      name: "Old House",
+      mode: :room,
+      address_l1: "456 Past St",
+      address_l2: "Ward 2",
+      address_l3: "District 2",
+      floors_count: 1,
+      inv_creation_date: 1
+    )
+    repair_req = RepairRequest.create!(title: "Sửa cửa", content: "Kẹt cửa")
+    old_request = Request.create!(tenant: @tenant, house: old_house, requestable: repair_req, status: :completed)
+
+    sign_in_as(@tenant_user)
+
+    get filtered_tenant_requests_path, params: { house_id: "" }, headers: { "Turbo-Frame" => "requests_table" }
+    assert_response :success
+    assert_select "table tbody tr", count: 2
+    assert_select "td", text: /Old House/
+    assert_select "span.badge", text: I18n.t("request.past_house")
+  end
+
+  test "request detail modal displays past house badge and notice when viewing request from past house" do
+    old_house = House.create!(
+      landlord: @landlord,
+      name: "Old House",
+      mode: :room,
+      address_l1: "456 Past St",
+      address_l2: "Ward 2",
+      address_l3: "District 2",
+      floors_count: 1,
+      inv_creation_date: 1
+    )
+    repair_req = RepairRequest.create!(title: "Sửa cửa", content: "Kẹt cửa")
+    old_request = Request.create!(tenant: @tenant, house: old_house, requestable: repair_req, status: :completed)
+
+    sign_in_as(@tenant_user)
+
+    get tenant_request_path(old_request), headers: { "Turbo-Frame" => "request_detail_modal" }
+    assert_response :success
+    assert_select ".badge", text: I18n.t("request.past_house")
+    assert_select ".alert", text: /#{Regexp.escape(I18n.t("request.past_house_notice"))}/
+  end
 end

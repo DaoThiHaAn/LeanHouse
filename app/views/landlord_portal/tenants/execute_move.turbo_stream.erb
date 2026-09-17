@@ -1,0 +1,19 @@
+<%= turbo_stream.replace ActionView::RecordIdentifier.dom_id(@tenant) do %>
+  <%= render "landlord_portal/tenants/tenant_row", tenant: @tenant, house: @house %>
+<% end %>
+
+<%= turbo_stream.replace "tenant_stats_grid" do %>
+  <%= render "landlord_portal/tenants/stats_cards", stats: @stats, house: @house %>
+<% end %>
+
+<%= turbo_stream.update "unsigned_tenants_wrapper" do %>
+  <%= render "landlord_portal/tenants/unsigned_banner", unsigned_tenants: @unsigned_tenants, house: @house %>
+<% end %>
+
+<%= turbo_stream.append "events" do %>
+  <%= render "layouts/shared_components/event", event: "close-modal" %>
+<% end %>
+
+<%= turbo_stream.update "flash" do %>
+  <%= render "layouts/shared_components/flash_message" %>
+<% end %>

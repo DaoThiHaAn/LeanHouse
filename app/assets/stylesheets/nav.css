@@ -355,3 +355,40 @@
         padding: 10px 20px;
     }
 }
+
+.admin-nav-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  line-height: 1;
+  min-width: 1.75rem;
+  height: 1.75rem;
+  padding: 0 0.35rem;
+  border-radius: 50rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  background-color: #dc3545;
+  color: #ffffff;
+  font-family: var(--bs-font-monospace);
+  box-shadow:
+    0 0 0 1px rgba(220, 53, 69, 0.2),
+    0 0 10px 6px rgba(220, 53, 69, 0.6),
+    0 0 20px 12px rgba(220, 53, 69, 0.3);
+  animation: aura-pulse 1s infinite alternate ease-in-out;
+}
+
+@keyframes aura-pulse {
+  0% {
+    box-shadow:
+      0 0 0 1px rgba(220, 53, 69, 0.4),
+      0 0 8px 4px rgba(220, 53, 69, 0.4),
+      0 0 16px 8px rgba(220, 53, 69, 0.2);
+  }
+  100% {
+    box-shadow:
+      0 0 0 1px rgba(220, 53, 69, 0.6),
+      0 0 12px 8px rgba(220, 53, 69, 0.8),
+      0 0 24px 14px rgba(220, 53, 69, 0.4);
+  }
+}

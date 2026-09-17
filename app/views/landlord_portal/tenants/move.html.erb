@@ -27,8 +27,7 @@
           <h2 class="mt-3"><%= t("form.tenant.new_rental_unit") %></h2>
           <%= form_with url: move_landlord_house_tenant_path(@house, @tenant), method: :post,
                   class:"px-3 py-2 mx-auto mb-2" ,
-                  data: { 
-                    turbo_frame: "_top",
+                  data: {
                     controller: "loading",
                     loading_text_value: t("form.tenant.moving") + "...",
                     action: "submit->loading#submit"
@@ -43,7 +42,7 @@
               <%= render 'rental_unit_fields', house: @house, floors: @available_slots.floors %>
             </div>
 
-            <%= f.button :submit, 
+            <%= f.button :submit,
                   class: "mt-2 custom-primary-btn mx-auto main-form d-flex align-items-center justify-content-center gap-2",
                   data: { loading_target: "button" } do %>
                   <span data-loading-target="text"><%= t("form.tenant.move") %></span>

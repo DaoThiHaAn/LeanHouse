@@ -8,8 +8,18 @@
     authorize_resource # only: [ :create ]
 
     def index
-      # Get all active houses sorted by name, matching query and state filter
-      @houses = @landlord.houses.active.sorted.search(params[:query]).by_state(params[:state])
+      # Get all active houses sorted by name, matching query, state, and invoice_status filter
+      @houses = @landlord.houses
+                         .active
+                         .sorted
+                         .search(params[:query])
+                         .by_state(params[:state])
+                         .by_invoice_status(params[:invoice_status])
+
+      @unpaid_invoices_counts = Invoice.kept
+                                       .where(house_id: @houses.select(:id), status: %w[pending overdue])
+                                       .group(:house_id)
+                                       .count
     end
 
 
@@ -17,6 +27,7 @@
       # Render a modal
       @floors = @house.floors.select(:id, :house_id, :name, :rooms_count)
       @services = @house.services.includes(:service_variants)
+      @asset_stats = @house.asset_summary_stats
     end
 
     def new

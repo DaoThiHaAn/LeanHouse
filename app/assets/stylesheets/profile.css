@@ -32,3 +32,17 @@
   min-width: 180px;
   max-width: 220px;
 }
+
+.bg-blocker {
+  background-color: rgb(248, 231, 231);
+}
+
+.block-detail-link {
+  font-style: italic;
+  font-size: 0.9rem;
+  color: grey
+}
+
+.block-detail-link:hover {
+  text-decoration: underline;
+}

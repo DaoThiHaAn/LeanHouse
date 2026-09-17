@@ -10,6 +10,10 @@
   <%= render "landlord_portal/requests/stats_cards", stats: @request_stats %>
 <% end %>
 
+<%= turbo_stream.replace "landlord_requests_nav_badge" do %>
+  <%= render "landlord_portal/requests/nav_badge", count: @request_stats[:pending_count] %>
+<% end %>
+
 <%= turbo_stream.update "flash" do %>
   <%= render "layouts/shared_components/flash_message" %>
 <% end %>
