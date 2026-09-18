@@ -299,7 +299,7 @@ vi:
     vietqr_scan_prompt: "Mở ứng dụng ngân hàng bất kỳ để quét mã thanh toán tự động"
     warning_check: "Hãy kiểm tra kỹ nội dung hóa đơn trước khi chuyển khoản."
     warning_report: "Nếu có sai sót, hãy báo lại với chủ nhà."
-    warning_proof: "Sau khi chuyển khoản, hãy chụp màn hình minh chứng và trở lại hệ thống để xác nhận."
+    warning_proof: "Nếu quét mã VietQR tĩnh, sau khi chuyển khoản, hãy chụp màn hình minh chứng và trở lại hệ thống để xác nhận. Nếu chủ nhà có liên kết với payOS, hệ thống sẽ tự động xác thận thanh toán hóa đơn thành công."
     mark_as_paid: "Xác nhận đã thanh toán"
     mark_as_paid_cash: "Xác nhận Đã Thu Tiền Mặt"
     mark_as_paid_transfer: "Xác nhận Đã Nhận Chuyển Khoản"
