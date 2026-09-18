@@ -200,7 +200,7 @@
 
       <!-- 2. Phí dịch vụ (Services Table) -->
       <% if invoice.service_items.any? %>
-        <h3><%= t("service.list")%></h3>
+        <h3><%= t("service.list") %></h3>
 
         <div class="table-responsive rounded-3 border mb-3 overflow-hidden">
           <table class="table table-hover align-middle mb-0 invoice-items-table">
@@ -276,7 +276,7 @@
                     <%= t('invoice.addition_items') %>
                   </span>
                   <span class="fw-bold text-primary small">
-                    +<%= number_to_currency(invoice.additions_total, unit: "₫", precision: 0) %>
+                    +<%= format_money(invoice.additions_total) %>
                   </span>
                 </div>
                 <div class="table-responsive">
@@ -388,22 +388,39 @@
         <div class="col-12 col-md-6">
           <% if bank_account && qr_url %>
             <div class="invoice-bank-card gap-3 d-flex flex-column align-items-center justify-content-center">
-              <button type="button"
-                      class="btn btn-link text-decoration-none btn-sm p-0 text-secondary d-flex align-items-center gap-1 d-print-none"
-                      data-bs-toggle="modal" data-bs-target="#zoomQrModal"
-                      title="<%= t('invoice.vietqr.click_to_zoom') %>">
-                <span class="material-symbols-outlined fs-6">zoom_in</span>
-                <span class="small"><%= t('invoice.vietqr.click_to_zoom') %></span>
-              </button>
+              <div class="d-flex align-items-center <%= invoice.payos_configured?(bank_account) ? 'justify-content-between' : 'justify-content-center' %> w-100 d-print-none">
+                <button type="button"
+                        class="btn btn-link text-decoration-none btn-sm p-0 text-secondary d-flex align-items-center gap-1"
+                        data-bs-toggle="modal" data-bs-target="#zoomQrModal"
+                        title="<%= t('invoice.vietqr.click_to_zoom') %>">
+                  <span class="material-symbols-outlined fs-6">zoom_in</span>
+                  <span class="small"><%= t('invoice.vietqr.click_to_zoom') %></span>
+                </button>
+
+                <% if invoice.payos_configured?(bank_account) %>
+                  <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle px-2 py-1 small d-inline-flex align-items-center gap-1">
+                    <span class="material-symbols-outlined fs-6">qr_code_2</span>
+                    <span><%= t('invoice.payos.static_qr_badge') %></span>
+                  </span>
+                <% end %>
+              </div>
 
               <%= image_tag qr_url, alt: t('invoice.vietqr.qr_alt'), class: "d-block mx-auto", width: "200px" %>
 
-              <% if invoice.payos_configured?(bank_account) && invoice.payos_checkout_url.present? && !invoice.paid? %>
-                <div class="text-center d-print-none mb-1 w-100">
-                  <a href="<%= invoice.payos_checkout_url %>" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-success d-inline-flex align-items-center justify-content-center gap-1 px-3 py-1-5 rounded-pill w-100 fw-semibold">
-                    <span class="material-symbols-outlined fs-6">open_in_new</span>
-                    <span><%= t('invoice.payos.open_checkout') %></span>
-                  </a>
+              <% if invoice.payos_configured?(bank_account) && !invoice.paid? %>
+                <div class="alert alert-info border border-info-subtle bg-info-subtle text-dark p-3 rounded-3 w-100 small d-print-none mb-1">
+                  <div class="d-flex align-items-start gap-2 <%= 'mb-2' if invoice.payos_checkout_url.present? %>">
+                    <span class="material-symbols-outlined text-info-emphasis fs-5 flex-shrink-0 mt-0.5">info</span>
+                    <div class="text-secondary small">
+                      <%= sanitize(t('invoice.payos.static_qr_notice_html')) %>
+                    </div>
+                  </div>
+                  <% if invoice.payos_checkout_url.present? %>
+                    <a href="<%= invoice.payos_checkout_url %>" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-success text-white d-inline-flex align-items-center justify-content-center gap-1 px-3 py-2 rounded-pill w-100 fw-semibold shadow-sm">
+                      <span class="material-symbols-outlined fs-6">open_in_new</span>
+                      <span><%= t('invoice.payos.open_checkout') %></span>
+                    </a>
+                  <% end %>
                 </div>
               <% end %>
 

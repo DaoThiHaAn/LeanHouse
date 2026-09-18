@@ -72,10 +72,11 @@ module InvoicesHelper
 
     if (invoice.individual? || invoice.custom?) && invoice.tenant&.user.present?
       user = invoice.tenant.user
-      parts << content_tag(:div, user.fullname, class: "fw-semibold")
+      parts << content_tag(:div, user.fullname, class: "fw-semibold text-dark")
       parts << content_tag(:div, room_text, class: "small text-secondary") if room_text.present?
+      parts << content_tag(:small, user.tel, class: "text-secondary font-monospace d-block") if user.tel.present?
     else
-      parts << content_tag(:p, room_text, class: "d-flex align-items-center gap-1 fw-semibold")
+      parts << content_tag(:p, room_text, class: "d-flex align-items-center gap-1 mb-0 fw-semibold text-dark")
     end
 
     parts << content_tag(:div, invoice_type_badge(invoice, show_target: false), class: "mt-1") if show_type_badge

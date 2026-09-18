@@ -10,7 +10,7 @@
       <%= invoice_type_badge(inv, show_target: false) %>
     </div>
   </td>
-  <td class="fw-semibold"><%= t('month') %> <%= format_month(inv.billing_month) %></td>
+  <td class="fw-medium"><%= t('month') %> <%= format_month(inv.billing_month) %></td>
   <td>
     <span class="<%= 'text-danger fw-bold' if inv.overdue? %>">
       <%= format_date(inv.due_date) %>
@@ -45,7 +45,7 @@
     </div>
 
     <% if inv.pending? || inv.overdue? %>
-      <%= render "tenant_portal/invoices/payment_modal", invoice: inv %>
+      <%= render "layouts/shared_components/invoices/payment_modal", invoice: inv %>
     <% end %>
   </td>
 </tr>

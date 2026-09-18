@@ -1,7 +1,7 @@
 <%= turbo_frame_tag "row_modals_#{inv.id}" do %>
   <%# Row-level Mark Paid Modal %>
   <% if inv.pending? || inv.overdue? %>
-    <%= render "landlord_portal/invoices/mark_paid_modal",
+    <%= render "layouts/shared_components/invoices/payment_modal",
                house: house,
                invoice: inv,
                modal_id: "rowMarkPaidModal_#{inv.id}" %>

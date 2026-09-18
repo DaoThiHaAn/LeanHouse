@@ -294,6 +294,8 @@ en:
     paid_completed: "Payment Completed"
     payos:
       realtime_badge: "Auto-reconciliation active (payOS)"
+      static_qr_badge: "Static VietQR"
+      static_qr_notice_html: "This QR code is a <strong>static VietQR</strong> (manual transfer). To be <strong>automatically confirmed in real-time</strong>, please open the payOS checkout link."
       open_checkout: "Open payOS Checkout"
       open_checkout_url: "Open payOS Payment Portal"
       embedded_tab: "payOS Portal (Dynamic QR)"
@@ -458,7 +460,7 @@ en:
       payos_intro_html: "For invoices marked with the %{badge} badge, immediately after you complete the bank transfer on your mobile banking app:"
       payos_bullet_1_html: "The system will <strong>automatically verify payment within 1-3 seconds</strong>."
       payos_bullet_2_html: "The invoice page will immediately update to <strong>\"Paid\"</strong> status without needing a page refresh or uploading transfer receipts."
-      payos_note_html: "*Note: Please keep the pre-filled <strong>Transfer note</strong> intact on the QR code so the system can reconcile your payment accurately!"
+      payos_note_html: "*Note: The QR code displayed on the invoice is a static VietQR. To be automatically confirmed in real-time via payOS, please open the payOS checkout link."
       btn_close: "Got it"
     no_invoices: "No invoices in %{month}"
     no_invoices_hint: "Click \"Issue New Invoice\" to generate bills for rooms."

@@ -1,15 +1,18 @@
 <%
   inv = local_assigns[:invoice] || local_assigns[:inv] || @invoice
-  hse = local_assigns[:house] || local_assigns[:hse] || @house
-  modal_id = local_assigns[:modal_id] || "markPaidModal"
-  is_local = local_assigns.key?(:local) ? local_assigns[:local] : (modal_id == "markPaidModal")
+  hse = local_assigns[:house] || local_assigns[:hse] || @house || inv&.house
+  is_tenant = local_assigns[:portal].to_s == "tenant" || (local_assigns[:portal].blank? && (controller_path.start_with?("tenant") || (current_user&.tenant? && !current_user&.landlord?)))
+  default_modal_id = is_tenant ? "tenantMarkPaidModal_#{inv.id}" : "markPaidModal"
+  modal_id = local_assigns[:modal_id] || default_modal_id
+  is_local = local_assigns.key?(:local) ? local_assigns[:local] : (!is_tenant && modal_id == "markPaidModal")
+  submit_url = is_tenant ? mark_paid_tenant_invoice_path(inv) : mark_paid_landlord_house_invoice_path(hse, inv)
 %>
 
-<!-- Modal Xác nhận thanh toán hóa đơn (Chủ trọ) -->
-<div class="modal fade text-start" id="<%= modal_id %>" tabindex="-1" aria-labelledby="<%= modal_id %>Label" aria-hidden="true" data-controller="file-preview">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content rounded-4 shadow">
-      <%= form_with url: mark_paid_landlord_house_invoice_path(hse, inv), method: :patch, multipart: true, local: is_local,
+<!-- Modal Xác nhận thanh toán hóa đơn (Dùng chung cho Tenant & Landlord) -->
+<div class="modal fade text-start" id="<%= modal_id %>" tabindex="-1" aria-labelledby="<%= modal_id %>Label" aria-hidden="true" data-controller="file-preview modal">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content rounded-4 shadow px-2">
+      <%= form_with url: submit_url, method: :patch, multipart: true, local: is_local,
                     data: {
                       controller: "loading",
                       loading_text_value: "#{t('saving')}...",
@@ -27,9 +30,7 @@
           <div class="bg-light p-3 rounded-3 mb-3 border">
             <div class="d-flex justify-content-between mb-1">
               <span class="text-secondary small"><%= t('invoice.room_or_target') %>:</span>
-              <span class="fw-semibold text-dark">
-                <%= inv.target_name %>
-              </span>
+              <span class="fw-semibold text-dark"><%= inv.target_name %></span>
             </div>
             <div class="d-flex justify-content-between">
               <span class="text-secondary small"><%= t('invoice.total') %>:</span>
@@ -53,14 +54,14 @@
 
           <div class="mb-3">
             <label for="<%= modal_id %>_payment_proof" class="form-label fw-semibold"><%= t('invoice.payment_proof') %></label>
-            <span class="text-secondary small d-block mb-1"><%= t('invoice.payment_proof_hint') %></span>
+            <p class="text-secondary smal mb-1"><%= t('invoice.payment_proof_hint') %></p>
             <%= f.file_field :payment_proof, id: "#{modal_id}_payment_proof", accept: "image/*",
                   class: "form-control shadow-sm",
                   data: {
                     file_preview_target: "input",
                     action: "change->file-preview#preview" } %>
 
-            <div class="payment-proof-preview-wrapper mt-2 d-none" data-file-preview-target="container">
+            <div class="payment-proof-preview-wrapper d-none" data-file-preview-target="container">
               <img src="" alt="Proof Preview" class="payment-proof-preview-img" data-file-preview-target="preview">
               <button type="button" class="btn btn-danger btn-sm payment-proof-clear-btn"
                       data-action="click->file-preview#clear" title="<%= t("clear_img") %>">
@@ -74,10 +75,11 @@
             <%= f.text_area :note, id: "#{modal_id}_note", rows: 2, class: "form-control shadow-sm", placeholder: t('invoice.payment_note_placeholder') %>
           </div>
         </div>
+
         <div class="modal-footer border-top">
           <button type="button" class="btn btn-outline-secondary btn-sm me-3" data-bs-dismiss="modal"><%= t('invoice.actions.close') %></button>
           <%= f.button type: :submit,
-                       class: "custom-primary-btn px-4 d-inline-flex gap-2 fs-6",
+                       class: "custom-primary-btn px-4 d-inline-flex align-items-center justify-content-center gap-2 fs-6",
                        data: { loading_target: "button" } do %>
             <span data-loading-target="text"><%= t('invoice.submit_payment_confirmation') %></span>
             <span class="material-symbols-outlined spin d-none" data-loading-target="spinner">progress_activity</span>

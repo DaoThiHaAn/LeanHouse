@@ -310,6 +310,8 @@ vi:
 
     payos:
       realtime_badge: "Tự động nhận diện thanh toán (payOS)"
+      static_qr_badge: "VietQR tĩnh"
+      static_qr_notice_html: "Mã QR này là <strong>VietQR tĩnh</strong> (chuyển khoản thông thường). Để hệ thống <strong>tự động nhận diện và gạch nợ tức thì</strong>, vui lòng mở liên kết thanh toán payOS."
       open_checkout: "Mở trang thanh toán payOS"
       open_checkout_url: "Mở cổng thanh toán payOS"
       embedded_tab: "Cổng payOS (QR Động)"
@@ -477,7 +479,7 @@ vi:
       payos_intro_html: "Đối với các hóa đơn có biểu tượng %{badge}, ngay sau khi bạn hoàn tất chuyển khoản thành công trên ứng dụng ngân hàng:"
       payos_bullet_1_html: "Hệ thống sẽ <strong>tự động nhận diện thanh toán trong 1-3 giây</strong>."
       payos_bullet_2_html: "Trang hóa đơn sẽ lập tức cập nhật sang trạng thái <strong>\"Đã thanh toán\"</strong> mà không cần tải lại trang hay gửi ảnh biên lai chuyển tiền."
-      payos_note_html: "*Lưu ý: Hãy giữ nguyên <strong>Nội dung chuyển khoản</strong> được điền sẵn trên mã QR để hệ thống gạch nợ chính xác!"
+      payos_note_html: "*Lưu ý: Mã QR hiển thị trực tiếp trên hóa đơn là VietQR tĩnh. Để được tự động nhận diện thanh toán tức thì qua payOS, vui lòng mở liên kết thanh toán payOS."
       btn_close: "Đã hiểu"
 
     no_invoices: "Chưa có hóa đơn nào trong tháng %{month}"

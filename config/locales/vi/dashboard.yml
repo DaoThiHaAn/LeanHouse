@@ -52,6 +52,8 @@ vi:
       invoices_unit: "hóa đơn"
       invoices_none_month: "Chưa lập hóa đơn tháng này"
       invoices_badge: "Công nợ"
+      invoices_no_house_title: "Chưa chọn nhà cụ thể"
+      invoices_no_house_hint: "Hóa đơn và công nợ được quản lý chi tiết theo từng nhà. Vui lòng chọn một nhà để theo dõi tiến độ thu tiền."
       view_invoices: "Xem danh sách hóa đơn"
 
       # Card 6: Revenue & Comparison

@@ -8,7 +8,7 @@
 <%= render "layouts/shared_components/invoices/invoice_info_modal",
            invoice: (local_assigns[:invoice] || @invoice) %>
 
-<%= render "tenant_portal/invoices/payment_modal",
+<%= render "layouts/shared_components/invoices/payment_modal",
            invoice: (local_assigns[:invoice] || @invoice),
            modal_id: "tenantMarkPaidModal" %>
 

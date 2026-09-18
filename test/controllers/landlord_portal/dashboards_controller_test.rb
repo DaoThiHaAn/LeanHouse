@@ -69,8 +69,12 @@ class LandlordPortal::DashboardsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "h1", text: I18n.t("dashboard.landlord.title_all_houses")
     assert_select "select[name='house_id']"
-    assert_select ".dashboard-stat-card", 5
     assert_select ".card-yellow"
+    assert_select ".card-yellow", text: /#{I18n.t("dashboard.landlord.invoices_collected_rate")}/
+    assert_select ".card-yellow a", count: 0
+    assert_select ".house-main-container a[href*='invoices']", count: 0
+    assert_select ".trend-bar-wrapper.is-current-month", 1
+    assert_select ".current-month-badge", text: I18n.t("dashboard.landlord.current_month_btn")
     assert_select ".card-indigo"
     assert_select ".card-indigo .badge", text: /#{I18n.t("dashboard.landlord.all_houses")}/
   end
@@ -83,6 +87,9 @@ class LandlordPortal::DashboardsControllerTest < ActionDispatch::IntegrationTest
     assert_select "h1", text: I18n.t("dashboard.landlord.title")
     assert_select ".dashboard-stat-card", 5
     assert_select ".card-yellow"
+    assert_select ".card-yellow a[href*='invoices']", count: 1
+    assert_select ".house-main-container a[href*='invoices']", count: 2
+    assert_select ".card-yellow", text: /#{I18n.t("dashboard.landlord.invoices_collected_rate")}/
     assert_select ".card-indigo"
     assert_select ".card-indigo .badge", text: /#{@house.name}/
   end
@@ -95,6 +102,9 @@ class LandlordPortal::DashboardsControllerTest < ActionDispatch::IntegrationTest
     assert_select "h1", text: I18n.t("dashboard.landlord.title_all_houses")
     assert_select ".dashboard-stat-card", 5
     assert_select ".card-yellow"
+    assert_select ".card-yellow", text: /#{I18n.t("dashboard.landlord.invoices_collected_rate")}/
+    assert_select ".card-yellow a", count: 0
+    assert_select ".house-main-container a[href*='invoices']", count: 0
     assert_select ".card-indigo"
   end
 
@@ -105,6 +115,8 @@ class LandlordPortal::DashboardsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select ".comparison-bar-chart"
     assert_select ".trend-bar-wrapper", 6
+    assert_select ".trend-bar-wrapper.is-current-month", 1
+    assert_select ".trend-bar-footer .current-month-badge", text: I18n.t("dashboard.landlord.current_month_btn")
     assert_select ".chip-avg"
     assert_select ".chip-max"
     assert_select ".chip-min"

@@ -600,6 +600,7 @@ class TenantPortal::InvoicesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_includes response.body, "https://pay.payos.vn/web/test-embed-checkout-tenant"
     assert_includes response.body, CGI.escapeHTML(I18n.t("invoice.payos.open_checkout"))
+    assert_includes response.body, I18n.t("invoice.payos.static_qr_badge")
     assert_includes response.body, "CAS00123"
   end
 
@@ -624,5 +625,6 @@ class TenantPortal::InvoicesControllerTest < ActionDispatch::IntegrationTest
     get tenant_invoice_path(@invoice)
     assert_response :success
     refute_includes response.body, CGI.escapeHTML(I18n.t("invoice.payos.open_checkout"))
+    refute_includes response.body, I18n.t("invoice.payos.static_qr_notice_html")
   end
 end

@@ -219,6 +219,7 @@ module Invoices
       if tenant_users.present? && tenant_users.any?
         InvoiceIssuedNotifier.with(
           invoice: invoice,
+          invoice_id: invoice.id,
           code: invoice.code,
           room_name: @room.title_name,
           month: invoice.billing_month.strftime("%m/%Y"),

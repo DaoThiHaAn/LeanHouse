@@ -52,6 +52,8 @@ en:
       invoices_unit: "invoice(s)"
       invoices_none_month: "No invoices this month"
       invoices_badge: "Receivables"
+      invoices_no_house_title: "No house selected"
+      invoices_no_house_hint: "Invoices and receivables are managed per house. Please select a specific house to track collection progress."
       view_invoices: "View invoices list"
 
       # Card 6: Revenue & Comparison

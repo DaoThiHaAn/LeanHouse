@@ -10,16 +10,39 @@
     <div class="modal-dialog modal-dialog-centered modal-vietqr-dialog">
       <div class="modal-content rounded-4 shadow border-0">
         <div class="modal-header border-bottom bg-light">
-          <h5 class="modal-title fw-bold text-dark d-flex align-items-center gap-1" id="zoomQrModalLabel">
-            <span class="material-symbols-outlined text-danger">qr_code_2</span>
+          <h2 class="modal-title d-flex align-items-center gap-1" id="zoomQrModalLabel">
+            <span class="material-symbols-outlined fs-3">qr_code_2</span>
             <%= t('invoice.vietqr.title') %>
-          </h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </h2>
+          <% if inv.payos_configured?(bank_acc) %>
+            <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle px-2 py-1 small ms-auto me-2 d-inline-flex align-items-center gap-1">
+              <span class="material-symbols-outlined fs-6">qr_code_2</span>
+              <span><%= t('invoice.payos.static_qr_badge') %></span>
+            </span>
+          <% end %>
+          <button type="button" class="btn-close <%= 'ms-0' if inv.payos_configured?(bank_acc) %>" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body text-center p-4">
           <div class="p-2 border rounded-3 bg-white shadow-sm d-inline-block mb-3">
             <img src="<%= qr %>" alt="<%= t('invoice.vietqr.qr_zoomed_alt') %>" class="rounded vietqr-modal-img">
           </div>
+
+          <% if inv.payos_configured?(bank_acc) && !inv.paid? %>
+            <div class="alert alert-info border border-info-subtle bg-info-subtle text-dark p-3 rounded-3 text-start small mb-3">
+              <div class="d-flex align-items-start gap-2 <%= 'mb-2' if inv.payos_checkout_url.present? %>">
+                <span class="material-symbols-outlined text-info-emphasis fs-5 flex-shrink-0 mt-0.5">info</span>
+                <div class="text-secondary small">
+                  <%= sanitize(t('invoice.payos.static_qr_notice_html')) %>
+                </div>
+              </div>
+              <% if inv.payos_checkout_url.present? %>
+                <a href="<%= inv.payos_checkout_url %>" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-success text-white d-inline-flex align-items-center justify-content-center gap-1 px-3 py-2 rounded-pill w-100 fw-semibold shadow-sm">
+                  <span class="material-symbols-outlined fs-6">open_in_new</span>
+                  <span><%= t('invoice.payos.open_checkout') %></span>
+                </a>
+              <% end %>
+            </div>
+          <% end %>
 
           <div class="bg-light p-3 rounded-3 text-start mb-3 border font-monospace small">
             <div class="mb-1"><strong><%= t('invoice.bank_name') %>:</strong> <%= bank_acc.bank.short_name %> (<%= bank_acc.bank.code %>)</div>

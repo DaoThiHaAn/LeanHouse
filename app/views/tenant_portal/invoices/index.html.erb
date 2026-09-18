@@ -6,7 +6,7 @@
   <div class="d-flex flex-column flex-lg-row justify-content-center justify-content-lg-between align-items-center mb-4 pb-2 border-bottom gap-3">
     <div class="text-center text-lg-start">
       <h1 class="mb-2"><%= t('invoice.my_invoices') %></h1>
-      <p class="text-secondary mb-0"><%= t('invoice.my_invoices_subtitle') %></p>
+      <p class="text-secondary"><%= t('invoice.my_invoices_subtitle') %></p>
     </div>
     <div class="d-flex gap-3 align-items-center">
       <button type="button" class="manual-btn d-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#tenantInvoiceGuideModal">
@@ -16,7 +16,7 @@
   </div>
 
   <!-- 2 Tabs: Theo phòng & Tùy chọn -->
-  <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4 mx-4">
+  <div class="d-flex justify-content-center flex-wrap gap-3 mb-4 mx-4">
     <div class="d-inline-flex bg-light p-1 rounded-pill border gap-1 shadow-sm fs-5">
       <%= link_to tenant_invoices_path(tab: "room", month: params[:month]),
                   class: "log-tab d-flex align-items-center gap-1 px-3 py-1 rounded-pill small text-decoration-none fw-semibold transition #{current_tab == 'room' ? 'active shadow-sm' : 'text-secondary'}",

@@ -634,9 +634,13 @@ class LandlordPortal::InvoicesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "table#invoice_items_table"
     assert_select "tbody#standard_items_tbody tr.standard-row input.item-price[readonly='readonly']"
-    assert_select "tbody#standard_items_tbody tr.standard-row span.item-price-badge"
+    assert_select "tbody#standard_items_tbody tr.standard-row span.item-price-badge" do |elements|
+      assert_match(/100,000 đ/, elements.text)
+    end
     assert_select "tbody#standard_items_tbody tr.standard-row input.item-amount[type='hidden']"
-    assert_select "tbody#standard_items_tbody tr.standard-row span.item-amount-display"
+    assert_select "tbody#standard_items_tbody tr.standard-row span.item-amount-display" do |elements|
+      assert_match(/100,000 đ/, elements.text)
+    end
     assert_select "tbody#standard_items_tbody tr.standard-row input.item-name[readonly='readonly']"
     assert_select "tbody#standard_items_tbody tr.standard-row select.item-unit", 0
     assert_select "tbody#standard_items_tbody tr.standard-row input.item-unit[type='hidden']"
@@ -1258,6 +1262,7 @@ class LandlordPortal::InvoicesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_includes response.body, "https://pay.payos.vn/web/test-embed-checkout"
     assert_includes response.body, CGI.escapeHTML(I18n.t("invoice.payos.open_checkout"))
+    assert_includes response.body, I18n.t("invoice.payos.static_qr_badge")
     assert_includes response.body, "CAS00123"
   end
 
@@ -1282,5 +1287,6 @@ class LandlordPortal::InvoicesControllerTest < ActionDispatch::IntegrationTest
     get landlord_house_invoice_path(@house, @invoice1)
     assert_response :success
     refute_includes response.body, CGI.escapeHTML(I18n.t("invoice.payos.open_checkout"))
+    refute_includes response.body, I18n.t("invoice.payos.static_qr_notice_html")
   end
 end

@@ -503,7 +503,7 @@
 
 .chart-y-axis {
   width: 85px;
-  height: calc(100% - 24px);
+  height: calc(100% - 38px);
   padding-bottom: 2px;
   font-size: 0.7rem;
   flex-shrink: 0;
@@ -522,7 +522,7 @@
 }
 
 .chart-grid-lines-layer {
-  height: calc(100% - 24px) !important;
+  height: calc(100% - 38px) !important;
   pointer-events: none;
 }
 
@@ -542,7 +542,7 @@
   align-items: center;
   height: 100%;
   cursor: pointer;
-  border-radius: 2px;
+  border-radius: 6px;
   padding: 4px 2px;
   transition: background-color 0.2s ease, transform 0.15s ease;
   text-decoration: none;
@@ -558,6 +558,20 @@
   border: 1px solid rgba(79, 70, 229, 0.25);
 }
 
+.trend-bar-wrapper.is-current-month {
+  background-color: rgba(79, 70, 229, 0.06);
+  border: 1px dashed rgba(79, 70, 229, 0.4);
+}
+
+.trend-bar-wrapper.is-current-month.is-active {
+  background-color: rgba(79, 70, 229, 0.14);
+  border: 1.5px solid rgba(79, 70, 229, 0.6);
+}
+
+.trend-bar-wrapper.is-current-month .trend-bar-track {
+  background-color: rgba(79, 70, 229, 0.08);
+}
+
 .trend-bar-col {
   width: 100%;
   height: 100%;
@@ -565,18 +579,49 @@
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
-  gap: 5px;
 }
 
 .trend-bar-track {
   width: 28px;
   max-width: 36px;
-  height: calc(100% - 24px);
+  height: calc(100% - 38px);
   background-color: rgba(79, 70, 229, 0.04);
   border-radius: 6px;
   display: flex;
   align-items: flex-end;
   overflow: hidden;
+}
+
+.trend-bar-footer {
+  height: 38px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 4px;
+}
+
+.trend-bar-label {
+  font-size: 0.75rem;
+  line-height: 1;
+  letter-spacing: -0.2px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.current-month-badge {
+  font-size: 0.55rem;
+  line-height: 1.2;
+  padding: 1px 5px;
+  background-color: #4F46E5;
+  color: #ffffff;
+  border-radius: 9999px;
+  white-space: nowrap;
+  letter-spacing: -0.2px;
+  font-weight: 600;
+  margin-top: 2px;
 }
 
 .trend-bar-fill {

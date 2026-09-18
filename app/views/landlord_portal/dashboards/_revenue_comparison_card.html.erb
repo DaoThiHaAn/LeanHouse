@@ -51,9 +51,13 @@
           </span>
         <% end %>
 
-        <% invoices_nav_path = selected_house ? landlord_house_invoices_path(selected_house, month: target_date.strftime("%Y-%m")) : (landlord_houses_path) %>
-        <%= link_to invoices_nav_path, class: "action-arrow-btn", title: t('dashboard.landlord.view_invoices'), data: { turbo_frame: "_top" } do %>
-          <span class="material-symbols-outlined">arrow_forward</span>
+        <% if selected_house %>
+          <%= link_to landlord_house_invoices_path(selected_house, month: target_date.strftime("%Y-%m")),
+                      class: "action-arrow-btn",
+                      title: t('dashboard.landlord.view_invoices'),
+                      data: { turbo_frame: "_top" } do %>
+            <span class="material-symbols-outlined">arrow_forward</span>
+          <% end %>
         <% end %>
       </div>
     </div>
@@ -97,17 +101,25 @@
 
                 <div class="chart-bars-layer position-relative w-100 h-100 d-flex align-items-end justify-content-between gap-2 px-1">
                   <% monthly_trend.each do |trend| %>
+                    <% is_curr = trend[:is_current] %>
                     <%= link_to landlord_dashboard_path(house_id: selected_house_id, month: trend[:month_param]),
-                                class: "trend-bar-wrapper #{'is-active' if trend[:is_target]}",
-                                title: "#{trend[:month_full]}: #{format_money(trend[:paid_revenue])}",
+                                class: "trend-bar-wrapper #{'is-active' if trend[:is_target]} #{'is-current-month' if is_curr} position-relative",
+                                title: "#{trend[:month_full]}: #{format_money(trend[:paid_revenue])}#{' (' + t('dashboard.landlord.current_month_btn') + ')' if is_curr}",
                                 data: { turbo_action: "advance" } do %>
                       <div class="trend-bar-col">
                         <div class="trend-bar-track">
-                          <div class="trend-bar-fill <%= trend[:is_target] ? 'bg-indigo-active' : 'bg-indigo-bar' %>" style="height: <%= trend[:height_pct] %>%;"></div>
+                          <div class="trend-bar-fill <%= (trend[:is_target] || is_curr) ? 'bg-indigo-active' : 'bg-indigo-bar' %>" style="height: <%= trend[:height_pct] %>%;"></div>
                         </div>
-                        <span class="trend-bar-label font-monospace <%= trend[:is_target] ? 'fw-bold text-primary' : 'text-secondary' %>">
-                          <%= trend[:month_label] %>
-                        </span>
+                        <div class="trend-bar-footer">
+                          <span class="trend-bar-label font-monospace <%= (trend[:is_target] || is_curr) ? 'fw-bold text-primary' : 'text-secondary' %>">
+                            <%= trend[:month_label] %>
+                          </span>
+                          <% if is_curr %>
+                            <span class="current-month-badge shadow-xs">
+                              <%= t('dashboard.landlord.current_month_btn') %>
+                            </span>
+                          <% end %>
+                        </div>
                       </div>
                     <% end %>
                   <% end %>
@@ -308,7 +320,7 @@
               </span>
             </div>
 
-            <!-- Body Hóa đơn -->
+            <!-- Body Hóa đơn: Luôn hiển thị thống kê hóa đơn ở cả chế độ tất cả nhà và từng nhà -->
             <div class="d-flex flex-column gap-3">
               <!-- Khối 1: Tiến độ thu tiền & Tổng số -->
               <div class="p-3 bg-white bg-opacity-85 rounded-3 border border-light-subtle shadow-xs">
@@ -370,15 +382,17 @@
             </div>
           </div>
 
-          <!-- Quick Action Button at bottom of right panel -->
-          <div class="mt-4 w-100 pt-3 border-top border-light-subtle d-flex justify-content-center">
-            <%= link_to invoices_nav_path,
-                        class: "btn btn-outline-dark d-flex align-items-center justify-content-center gap-1 rounded-pill fw-semibold shadow-xs px-3",
-                        data: { turbo_frame: "_top" } do %>
-              <span><%= t('dashboard.landlord.view_invoices') %> (<%= target_date.strftime("%m/%Y") %>)</span>
-              <span class="material-symbols-outlined fs-6">arrow_forward</span>
-            <% end %>
-          </div>
+          <% if selected_house %>
+            <!-- Quick Action Button at bottom of right panel (chỉ hiện khi đã chọn nhà cụ thể) -->
+            <div class="mt-4 w-100 pt-3 border-top border-light-subtle d-flex justify-content-center">
+              <%= link_to landlord_house_invoices_path(selected_house, month: target_date.strftime("%Y-%m")),
+                          class: "btn btn-outline-dark d-flex align-items-center justify-content-center gap-1 rounded-pill fw-semibold shadow-xs px-3",
+                          data: { turbo_frame: "_top" } do %>
+                <span><%= t('dashboard.landlord.view_invoices') %> (<%= target_date.strftime("%m/%Y") %>)</span>
+                <span class="material-symbols-outlined fs-6">arrow_forward</span>
+              <% end %>
+            </div>
+          <% end %>
         </div>
       </div>
     </div>

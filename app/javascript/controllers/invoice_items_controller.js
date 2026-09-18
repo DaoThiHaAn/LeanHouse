@@ -230,6 +230,6 @@ export default class extends Controller {
   }
 
   formatCurrency(amount) {
-    return new Intl.NumberFormat('vi-VN').format(Math.round(amount || 0)) + ' đ'
+    return new Intl.NumberFormat('en-US').format(Math.round(amount || 0)) + ' đ'
   }
 }

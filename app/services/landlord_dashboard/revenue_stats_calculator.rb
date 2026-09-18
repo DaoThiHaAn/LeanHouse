@@ -126,7 +126,8 @@ module LandlordDashboard
           month_full: m.strftime("%m/%Y"),
           month_param: m.strftime("%Y-%m"),
           paid_revenue: amount,
-          is_target: (m == target_date.beginning_of_month)
+          is_target: (m == target_date.beginning_of_month),
+          is_current: (m == Date.current.beginning_of_month)
         }
       end
 

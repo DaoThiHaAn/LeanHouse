@@ -39,6 +39,6 @@
 <%= render "layouts/shared_components/invoices/zoom_qr_modal", invoice: @invoice, bank_account: @bank_account %>
 <%= render "layouts/shared_components/invoices/service_instructions_modal" %>
 <%= render "layouts/shared_components/invoices/invoice_info_modal", invoice: @invoice %>
-<%= render "landlord_portal/invoices/mark_paid_modal", house: @house, invoice: @invoice %>
+<%= render "layouts/shared_components/invoices/payment_modal", house: @house, invoice: @invoice %>
 <%= render "landlord_portal/invoices/undo_paid_modal", house: @house, invoice: @invoice %>
 <%= render "layouts/shared_components/invoices/payment_proof_modal", invoice: @invoice, modal_id: "viewPaymentProofModal" %>

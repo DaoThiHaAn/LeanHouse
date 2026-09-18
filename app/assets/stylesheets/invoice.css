@@ -158,8 +158,8 @@
 
 .invoice-amount-pill {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-weight: 700;
-  color: #0f172a;
+  font-weight: 600;
+  color: #223767;
 }
 
 .invoice-code-tag {
@@ -859,29 +859,43 @@
 .payment-proof-preview-wrapper {
   position: relative;
   display: inline-block;
+  margin-top: 1.5rem;
+  margin-left: 1rem;
 }
 
 .payment-proof-preview-img {
   width: 210px;
-  height: 210px;
+  height: auto;
+  display: block;
   object-fit: cover;
   border-radius: 0.5rem;
   border: 1px solid #cbd5e1;
-  margin-top: 1rem;
-  margin-left: 1rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
 }
 
 .payment-proof-clear-btn {
   position: absolute;
   top: -8px;
   right: -8px;
-  width: 24px;
-  height: 24px;
+  width: 26px;
+  height: 26px;
   padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
+  background-color: #dc3545;
+  color: #ffffff;
+  border: 1px solid #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  z-index: 5;
+  transition: transform 0.15s ease-in-out, background-color 0.15s ease-in-out;
+}
+
+.payment-proof-clear-btn:hover {
+  transform: scale(1.1);
+  background-color: #bb2d3b;
 }
 
 .undo-reason-banner {
