@@ -1,8 +1,8 @@
 <%= content_for :title, t("dashboard.self") %>
 
 <div class="house-main-container">
-  <!-- Live Real-Time Turbo Stream Subscription (only for current month to avoid overwriting historical view) -->
-  <% if @is_current_month %>
+  <!-- Live Real-Time Turbo Stream Subscription (only for current month overall view to avoid overwriting historical or detailed view) -->
+  <% if @is_current_month && !@has_month_param %>
     <%= turbo_stream_from @landlord, (@selected_house || :all), :dashboard %>
   <% end %>
 
@@ -13,7 +13,7 @@
         <%= @selected_house ? t('dashboard.landlord.title') : t('dashboard.landlord.title_all_houses') %>
       </h1>
       <div class="d-flex align-items-center gap-2 flex-wrap">
-        <% if @is_current_month %>
+        <% if @view_mode == :overall %>
           <p class="text-success-emphasis mb-0">
             <%= t('dashboard.landlord.month_stats_label', month: @target_date.strftime('%m/%Y')) %>
           </p>
@@ -36,8 +36,8 @@
           <%= t('dashboard.landlord.select_house') %>:
         </label>
         <%= form_with url: landlord_dashboard_path, method: :get, data: { turbo_action: "advance" } do |f| %>
-          <% if params[:month].present? %>
-            <%= f.hidden_field :month, value: params[:month] %>
+          <% if @has_month_param %>
+            <%= f.hidden_field :month, value: @target_date.strftime("%Y-%m") %>
           <% end %>
           <%= f.select :house_id,
                       options_for_select(

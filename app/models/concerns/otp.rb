@@ -3,6 +3,13 @@ module Otp
 
   OTP_EXPIRY = 5.minutes
 
+  class << self
+    def demo_mode?
+      Rails.env.development? || ENV["SHOW_DEMO_OTP"].to_s.downcase.in?(%w[true 1 yes])
+    end
+  end
+
+
   def generate_otp!
     self.otp_code = SecureRandom.random_number(1_000_000).to_s.rjust(6, "0")
     self.otp_sent_at = Time.current

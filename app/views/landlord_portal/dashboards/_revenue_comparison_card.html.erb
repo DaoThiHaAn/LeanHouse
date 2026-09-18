@@ -41,7 +41,7 @@
         <% if is_detailed %>
           <%= link_to landlord_dashboard_path(house_id: selected_house_id),
                       class: "btn btn-outline-primary btn-sm d-inline-flex align-items-center gap-1 shadow-sm fw-semibold rounded-pill px-3 py-1",
-                      data: { turbo_action: "advance" } do %>
+                      data: { turbo_frame: "_top", turbo_action: "advance" } do %>
             <span class="material-symbols-outlined fs-6">arrow_back</span>
             <span><%= t('dashboard.landlord.back_to_overall') %></span>
           <% end %>
@@ -105,7 +105,7 @@
                     <%= link_to landlord_dashboard_path(house_id: selected_house_id, month: trend[:month_param]),
                                 class: "trend-bar-wrapper #{'is-active' if trend[:is_target]} #{'is-current-month' if is_curr} position-relative",
                                 title: "#{trend[:month_full]}: #{format_money(trend[:paid_revenue])}#{' (' + t('dashboard.landlord.current_month_btn') + ')' if is_curr}",
-                                data: { turbo_action: "advance" } do %>
+                                data: { turbo_frame: "_top", turbo_action: "advance" } do %>
                       <div class="trend-bar-col">
                         <div class="trend-bar-track">
                           <div class="trend-bar-fill <%= (trend[:is_target] || is_curr) ? 'bg-indigo-active' : 'bg-indigo-bar' %>" style="height: <%= trend[:height_pct] %>%;"></div>

@@ -7,7 +7,7 @@
 <div class="d-flex gap-4 flex-column d-print-none">
   <% if inv.paid? %>
     <div class="d-flex gap-3 align-items-center flex-wrap">
-      <p class="badge bg-success px-3 py-2 fs-6">
+      <p class="badge bg-success px-3 py-2 fs-6 mb-0">
         <span class="material-symbols-outlined fs-4">price_check</span>
         <%= t('invoice.paid_completed') %>
       </p>
@@ -20,8 +20,8 @@
       <% end %>
     </div>
 
-    <div class="d-flex gap-3 align-items-center">
-      <p>
+    <div class="d-flex gap-3 align-items-center flex-wrap">
+      <p class="mb-0">
         <%= t('invoice.payment_method_label') %>:
         <span class="badge bg-light text-dark border p-2 fs-6">
           <%= inv.cash? ? t('invoice.payment_methods.cash') : t('invoice.payment_methods.transfer') %>
@@ -29,13 +29,18 @@
       </p>
 
       <% if inv.paid_at.present? %>
-        <p>
+        <p class="mb-0">
           <span class="text-secondary material-symbols-outlined fs-5" title="<%= t("invoice.paid_at_label") %>">history_2</span>
           <span class="text-secondary small"><%= format_datetime(inv.paid_at) %></span>
         </p>
       <% end %>
 
-      <% if inv.paid_by.present? %>
+      <% if inv.paid_via_payos? %>
+        <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 small d-inline-flex align-items-center gap-1">
+          <span class="material-symbols-outlined fs-6">bolt</span>
+          <%= t('invoice.payos.paid_via_payos_badge') %>
+        </span>
+      <% elsif inv.paid_by.present? %>
         <span class="badge bg-light text-primary border px-2 py-1 small">
           <%= t('invoice.paid_by_label') %>: <%= inv.paid_by.fullname %> (<%= inv.paid_by_role == 'landlord' ? t('invoice.paid_by_landlord') : t('invoice.paid_by_tenant') %>)
         </span>
@@ -44,12 +49,12 @@
 
   <% else %>
     <% if is_tenant %>
-      <button type="button" class="btn btn-mark-paid-primary" data-bs-toggle="modal" data-bs-target="#tenantMarkPaidModal">
+      <button type="button" class="btn-mark-paid-primary" data-bs-toggle="modal" data-bs-target="#tenantMarkPaidModal">
         <span class="material-symbols-outlined fs-5">payments</span>
         <span><%= t('invoice.submit_tenant_payment') %></span>
       </button>
     <% else %>
-      <button type="button" class="btn btn-mark-paid-primary" data-bs-toggle="modal" data-bs-target="#markPaidModal">
+      <button type="button" class="btn-mark-paid-primary" data-bs-toggle="modal" data-bs-target="#markPaidModal">
         <span class="material-symbols-outlined fs-5">check_circle</span>
         <span><%= t('invoice.mark_as_paid') %></span>
       </button>

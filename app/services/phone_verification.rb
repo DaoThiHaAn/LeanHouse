@@ -44,7 +44,9 @@ class PhoneVerification
     user = User.kept.find_by!(tel: @tel, role: @role)
 
     return Result.new(user, :expired_otp) if user.otp_expired?
-    return Result.new(user, :invalid_otp) unless code == user.otp_code
+
+    normalized_code = code.to_s.strip
+    return Result.new(user, :invalid_otp) unless normalized_code == user.otp_code
 
     begin
       ActiveRecord::Base.transaction do

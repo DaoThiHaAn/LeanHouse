@@ -10,7 +10,7 @@ class UsersController < ApplicationController
       session[:pending_tel]  = result.user.tel
       session[:pending_role] = result.user.role
       session[:is_reset_password] = false
-      flash[:development_otp] = result.otp if Rails.env.development?
+      flash[:development_otp] = result.otp if show_demo_otp?
       redirect_to otp_input_path, notice: t("success_messages.send_otp")
     else
       @user = result.user

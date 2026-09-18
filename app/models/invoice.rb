@@ -48,7 +48,7 @@ class Invoice < ApplicationRecord
     self.paid_at = Time.current
     self.payment_method = method
     self.paid_by = by_user
-    self.paid_by_role = by_user&.role
+    self.paid_by_role = by_user&.role || (payment_note.to_s.include?("payOS") ? "payos" : nil)
     self.undo_reason = nil
     if payment_note.present?
       self.note = [ note, payment_note ].compact_blank.join("\n")
@@ -222,6 +222,10 @@ class Invoice < ApplicationRecord
 
   def payos_status
     payos_order&.status
+  end
+
+  def paid_via_payos?
+    paid? && (paid_by_role == "payos" || payos_order&.status == "PAID" || note.to_s.include?("payOS"))
   end
 
   def ensure_payos_payment_link!(account = bank_account)

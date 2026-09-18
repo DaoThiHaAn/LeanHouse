@@ -2,8 +2,7 @@ class LandlordPortal::DashboardsController < LandlordPortal::BaseController
   def show
     @houses = @landlord.houses.active.sorted
     @selected_house_id = params[:house_id].presence
-    @has_month_param = params[:month].present?
-    @target_date = parse_month(params[:month])
+    @target_date, @has_month_param = parse_month(params[:month])
     @is_current_month = (@target_date.year == Date.current.year && @target_date.month == Date.current.month)
     @view_mode = @has_month_param ? :detailed : :overall
 
@@ -19,11 +18,11 @@ class LandlordPortal::DashboardsController < LandlordPortal::BaseController
 
   def parse_month(month_param)
     if month_param.present?
-      Date.strptime(month_param.to_s, "%Y-%m").beginning_of_month
+      [ Date.strptime(month_param.to_s, "%Y-%m").beginning_of_month, true ]
     else
-      Date.current.beginning_of_month
+      [ Date.current.beginning_of_month, false ]
     end
   rescue ArgumentError, Date::Error
-    Date.current.beginning_of_month
+    [ Date.current.beginning_of_month, false ]
   end
 end

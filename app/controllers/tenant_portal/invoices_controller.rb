@@ -1,4 +1,6 @@
 class TenantPortal::InvoicesController < TenantPortal::BaseController
+  prepend_before_action :redirect_payos_return, only: :show, if: :payos_redirect_params?
+
   before_action :set_room
   before_action :set_invoice, only: %i[show mark_paid]
 
@@ -90,5 +92,13 @@ class TenantPortal::InvoicesController < TenantPortal::BaseController
 
   def set_room
     @room = @tenant_stay.rental_unit.room
+  end
+
+  def payos_redirect_params?
+    params[:orderCode].present? || (params[:status].present? && params[:code].present?)
+  end
+
+  def redirect_payos_return
+    redirect_to payments_payos_return_path(invoice_id: params[:id], **request.query_parameters.except(:id))
   end
 end

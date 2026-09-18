@@ -80,8 +80,8 @@ class PayosService
     amount = invoice.total_amount.to_i
     description = invoice.payos_transfer_description
     base_url = base_app_url(host: host)
-    return_url = "#{base_url}/tenant/invoices/#{invoice.id}"
-    cancel_url = return_url
+    return_url = "#{base_url}/payments/payos/return/#{invoice.id}"
+    cancel_url = "#{base_url}/payments/payos/cancel/#{invoice.id}"
 
     # Data to sign for payment request
     request_data = {
@@ -170,5 +170,66 @@ class PayosService
     Rails.logger.error("[PayosService] Exception cancelling payment link: #{e.message}")
     order&.update!(status: "CANCELLED") rescue nil
     { success: false, error: e.message }
+  end
+
+  # Fetch payment link info from payOS API
+  def self.fetch_payment_link_info(order_code_or_id, bank_account)
+    return { success: false, error: "Bank account not configured for payOS" } unless bank_account&.payos_configured?
+    return { success: false, error: "No order code or payment link ID" } if order_code_or_id.blank?
+
+    uri = URI("#{PAYOS_API_URL}/#{order_code_or_id}")
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = (uri.scheme == "https")
+    http.open_timeout = 5
+    http.read_timeout = 10
+
+    request = Net::HTTP::Get.new(uri.request_uri)
+    request["x-client-id"] = bank_account.payos_client_id
+    request["x-api-key"] = bank_account.payos_api_key
+
+    response = http.request(request)
+    res_data = JSON.parse(response.body) rescue {}
+
+    if response.is_a?(Net::HTTPSuccess) && res_data["code"] == "00" && res_data["data"].present?
+      { success: true, data: res_data["data"] }
+    else
+      err_msg = res_data["desc"] || "Failed to fetch payOS payment info (HTTP #{response.code})"
+      { success: false, error: err_msg, response: res_data }
+    end
+  rescue StandardError => e
+    Rails.logger.error("[PayosService] Exception fetching payment link info: #{e.message}")
+    { success: false, error: e.message }
+  end
+
+  # Reconcile invoice payment with payOS if paid on gateway but pending in LeanHouse
+  def self.reconcile_payment!(invoice)
+    return invoice if invoice.paid?
+    return invoice unless invoice.payos_configured?
+
+    order = invoice.payos_order
+    target_id = order&.order_code || order&.payment_link_id
+    return invoice if target_id.blank?
+
+    res = fetch_payment_link_info(target_id, invoice.bank_account)
+    if res[:success] && res[:data]["status"] == "PAID"
+      data = res[:data]
+      reference = data["transactions"]&.last&.dig("reference") || data["id"]
+      payment_note = I18n.t("invoice.payos.auto_paid_note", ref: reference, default: "Tự động gạch nợ qua payOS (Mã GD: #{reference})")
+
+      Invoices::MarkPaidService.call(
+        invoice: invoice,
+        paid_by: nil,
+        params: {
+          payment_method: "transfer",
+          note: payment_note
+        }
+      )
+      order&.update!(status: "PAID")
+      invoice.reload
+    end
+    invoice
+  rescue StandardError => e
+    Rails.logger.error("[PayosService] Reconcile error: #{e.message}")
+    invoice
   end
 end

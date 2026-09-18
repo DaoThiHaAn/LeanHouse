@@ -27,6 +27,9 @@
 }
 
 .admin-btn-primary {
+  --bs-btn-disabled-bg: var(--primary-text);
+  --bs-btn-disabled-border-color: transparent;
+  --bs-btn-disabled-color: #ffffff;
   background-color: var(--primary-text);
   border: none;
   border-radius: 8px;
@@ -39,6 +42,16 @@
 .admin-btn-primary:hover {
   background-color: var(--primary-bg);
   color: #ffffff;
+}
+
+.admin-btn-primary:disabled,
+.admin-btn-primary.disabled {
+  background-color: var(--primary-text) !important;
+  color: #ffffff !important;
+  border: none !important;
+  opacity: 0.75 !important;
+  box-shadow: none !important;
+  pointer-events: none !important;
 }
 
 .admin-security-box {

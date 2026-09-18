@@ -54,7 +54,7 @@ class AuthenticationController < ApplicationController
     return render_login_error(t("errors.inactive_acc")) unless existing_acc.active?
     return render_login_error(t("errors.wrong_pw")) unless existing_acc.authenticate(user_params[:password])
 
-    log_in(existing_acc)
+    log_in(existing_acc, remember_me: user_params[:remember_me].in?(%w[1 true yes]))
     flash[:notice] = t("success_messages.login")
 
     redirect_after_login
@@ -67,7 +67,7 @@ class AuthenticationController < ApplicationController
       session[:pending_tel] = result.user.tel
       session[:pending_role] = result.user.role
       session[:is_reset_pw] = true
-      flash[:development_otp] = result.otp if Rails.env.development?
+      flash[:development_otp] = result.otp if show_demo_otp?
 
       redirect_to otp_input_path, notice: t("success_messages.send_otp")
     else
@@ -79,7 +79,7 @@ class AuthenticationController < ApplicationController
   private
 
   def login_params
-    params.require(:user).permit(:tel, :password, :role)
+    params.require(:user).permit(:tel, :password, :role, :remember_me)
   end
 
   def forgot_pw_params

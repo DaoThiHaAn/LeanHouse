@@ -22,14 +22,16 @@ module Invoices
                          I18n.t("invoice.payment_methods.transfer", default: "Chuyển khoản")
         end
 
+        paid_by_role = paid_by ? paid_by.role : "payos"
+
         InvoicePaidNotifier.with(
           invoice: invoice,
           invoice_id: invoice.id,
           house_id: invoice.house_id,
           code: invoice.code,
-          room_name: invoice.room.title_name,
+          room_name: invoice.room&.title_name || invoice.target_name,
           amount: ApplicationController.helpers.format_money(invoice.total_amount),
-          paid_by_role: paid_by&.role || "system",
+          paid_by_role: paid_by_role,
           paid_by_id: paid_by&.id,
           actor_name: paid_by&.fullname || "payOS",
           method_label: method_label

@@ -4,7 +4,13 @@ class InvoicePaidNotifier < ApplicationNotifier
 
   notification_methods do
     def title
-      if recipient.landlord?
+      if params[:paid_by_role].in?(%w[payos system])
+        if recipient.landlord?
+          t("noti.titles.invoice_paid_payos_landlord", code: params[:code])
+        else
+          t("noti.titles.invoice_paid_payos_tenant", code: params[:code])
+        end
+      elsif recipient.landlord?
         if params[:paid_by_role] == "landlord"
           t("noti.titles.invoice_paid_landlord_self", code: params[:code])
         else
@@ -22,7 +28,21 @@ class InvoicePaidNotifier < ApplicationNotifier
     end
 
     def message
-      if recipient.landlord?
+      if params[:paid_by_role].in?(%w[payos system])
+        if recipient.landlord?
+          t("noti.messages.invoice_paid_payos_landlord",
+            code: params[:code],
+            room_name: params[:room_name],
+            amount: params[:amount],
+            method: params[:method_label])
+        else
+          t("noti.messages.invoice_paid_payos_tenant",
+            code: params[:code],
+            room_name: params[:room_name],
+            amount: params[:amount],
+            method: params[:method_label])
+        end
+      elsif recipient.landlord?
         if params[:paid_by_role] == "landlord"
           t("noti.messages.invoice_paid_landlord_self",
             code: params[:code],

@@ -627,4 +627,16 @@ class TenantPortal::InvoicesControllerTest < ActionDispatch::IntegrationTest
     refute_includes response.body, CGI.escapeHTML(I18n.t("invoice.payos.open_checkout"))
     refute_includes response.body, I18n.t("invoice.payos.static_qr_notice_html")
   end
+
+  test "tenant invoice show renders payos indicator when invoice is paid via payos" do
+    sign_in_as(@tenant_user)
+    @invoice.update!(status: :paid, paid_at: Time.current, paid_by_role: "payos", payment_method: "transfer")
+
+    get tenant_invoice_path(@invoice)
+    assert_response :success
+    assert_includes response.body, I18n.t("invoice.payos.paid_via_payos_badge")
+    assert_includes response.body, I18n.t("invoice.payment_methods.transfer")
+    refute_includes response.body, I18n.t("invoice.payos.paid_banner_title")
+    refute_includes response.body, I18n.t("invoice.payos.paid_via_payos_method")
+  end
 end

@@ -142,7 +142,7 @@
           <div class="col-12 d-flex justify-content-end gap-2 mt-3 pt-2 border-top">
             <%= link_to t("bank_account.cancel"), landlord_bank_accounts_path, class: "btn btn-sm btn-outline-secondary d-inline-flex align-items-center" %>
             <%= f.button type: :submit,
-                  class: "btn btn-sm custom-primary-btn d-inline-flex align-items-center justify-content-center gap-2",
+                  class: "custom-primary-btn d-inline-flex align-items-center justify-content-center gap-2",
                   data: { loading_target: "button" } do %>
               <span data-loading-target="text"><%= t("bank_account.update_button") %></span>
               <span class="material-symbols-outlined spin d-none" data-loading-target="spinner">

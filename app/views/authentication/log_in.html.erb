@@ -85,8 +85,11 @@
                 </div>
             </div>
 
-
-            <%= link_to t('form.profile.forgot_pw'), forgot_pw_path, class: "forgot-pw link" %>
+            <!-- Remember Me -->
+            <div class="form-check d-flex align-items-center gap-2 mb-0">
+                <%= f.check_box :remember_me, class: "form-check-input m-0", checked: true, id: "user_remember_me" %>
+                <%= f.label :remember_me, t('form.profile.remember_me'), class: "form-check-label", for: "user_remember_me" %>
+            </div>
 
             <%= f.button type: :submit,
                   class: "mx-auto custom-primary-btn d-inline-flex align-items-center justify-content-center gap-2",
@@ -95,6 +98,11 @@
               <span class="material-symbols-outlined spin d-none" data-loading-target="spinner">progress_activity</span>
             <% end %>
         <% end %>
+
+        <!-- Forgot Password  -->
+        <div class="form-group d-flex flex-column align-items-center w-100">
+            <%= link_to t('form.profile.forgot_pw'), forgot_pw_path, class: "forgot-pw link" %>
+        </div>
 
         <div class="d-flex flex-wrap gap-2">
             <%= t('form.profile.not_have_acc') %>

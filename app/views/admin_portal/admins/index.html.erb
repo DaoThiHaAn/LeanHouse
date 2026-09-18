@@ -13,13 +13,13 @@
       <span class="material-symbols-filled fs-3">badge</span>
       <span><%= t("admin.admins.list") %></span>
     </h2>
-    <span class="badge bg-light text-dark border p-2">
+    <span class="badge bg-light border p-2">
       <%= t("admin.admins.total_admins", count: @admins.count) %>
     </span>
   </div>
 
   <%= link_to new_admin_admin_path, class: "main-btn d-flex align-items-center gap-2 shadow-sm" do %>
-    <span class="material-symbols-outlined fs-3">person_add</span>
+    <span class="material-symbols-filled fs-3">person_add</span>
     <%= t("admin.admins.add_admin") %>
   <% end %>
 </div>

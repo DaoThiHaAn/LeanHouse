@@ -13,6 +13,20 @@ en:
 
     titles:
       service_usage_log_confirmed: "Meter Reading Confirmed"
+      invoice_paid_landlord_self: "Payment Confirmed for %{code}"
+      invoice_paid_tenant_submit: "Tenant Paid Invoice %{code}"
+      invoice_paid_roommate_submit: "Invoice %{code} Paid"
+      invoice_paid_landlord_confirmed: "Invoice %{code} Payment Confirmed"
+      invoice_paid_tenant_self: "Payment Confirmation Sent for %{code}"
+      invoice_paid_payos_landlord: "Invoice %{code} Paid via payOS"
+      invoice_paid_payos_tenant: "Invoice %{code} Paid via payOS"
 
     messages:
       service_usage_log_confirmed: "Landlord has confirmed %{service_name} reading for %{room_name} (month %{month})."
+      invoice_paid_landlord_self: "You confirmed payment for invoice %{code} (%{room_name}) for %{amount} via %{method}."
+      invoice_paid_tenant_submit: "Tenant %{actor_name} (%{room_name}) submitted payment confirmation for invoice %{code} for %{amount} via %{method}. Please check your account."
+      invoice_paid_roommate_submit: "Your roommate %{actor_name} paid invoice %{code} (%{room_name}) for %{amount} via %{method}."
+      invoice_paid_landlord_confirmed: "Landlord confirmed payment for invoice %{code} (%{room_name}) for %{amount} via %{method}."
+      invoice_paid_tenant_self: "You have successfully submitted payment confirmation for invoice %{code} (%{room_name}) for %{amount} via %{method}."
+      invoice_paid_payos_landlord: "Invoice %{code} (%{room_name}) has been successfully paid for %{amount} via payOS."
+      invoice_paid_payos_tenant: "Invoice %{code} (%{room_name}) has been successfully paid for %{amount} via payOS."

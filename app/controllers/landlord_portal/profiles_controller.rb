@@ -45,7 +45,7 @@ class LandlordPortal::ProfilesController < LandlordPortal::BaseController
       session[:pending_role] = @user.role
       session[:pending_new_tel] = new_tel
       session[:is_change_tel] = true
-      flash[:development_otp] = otp if Rails.env.development?
+      flash[:development_otp] = otp if show_demo_otp?
 
       redirect_to otp_input_path, notice: t("success_messages.send_otp")
     else
@@ -59,7 +59,7 @@ class LandlordPortal::ProfilesController < LandlordPortal::BaseController
     session[:pending_tel] = @user.tel
     session[:pending_role] = @user.role
     session[:is_reset_pw] = true
-    flash[:development_otp] = otp if Rails.env.development?
+    flash[:development_otp] = otp if show_demo_otp?
 
     redirect_to otp_input_path, notice: t("success_messages.send_otp")
   end

@@ -49,6 +49,12 @@ Rails.application.routes.draw do
     post "payos", to: "payos#receive"
   end
 
+  # PAYMENTS
+  namespace :payments do
+    get "payos/return(/:invoice_id)", to: "payos#return", as: :payos_return
+    get "payos/cancel(/:invoice_id)", to: "payos#cancel", as: :payos_cancel
+  end
+
   # LANDLORD
   namespace :landlord, module: :landlord_portal do
     resource :profile, only: [ :show, :edit, :update, :destroy ] do

@@ -5,8 +5,8 @@ class User < ApplicationRecord
   scope :active, -> { kept.where(is_active: true) }
   scope :name_sorted, -> { order(fullname: :asc) }
 
-  # Virtual attribute
-  attr_accessor :terms_accepted
+  # Virtual attributes
+  attr_accessor :terms_accepted, :remember_me
   has_secure_password   # 2 virtual attributes: password, password_confirmation
 
   has_one_attached :avatar

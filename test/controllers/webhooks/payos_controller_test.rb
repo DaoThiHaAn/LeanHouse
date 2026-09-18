@@ -84,9 +84,18 @@ class Webhooks::PayosControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     @invoice.reload
     assert @invoice.paid?
+    assert @invoice.paid_via_payos?
     assert_equal "transfer", @invoice.payment_method
     assert_equal "PAID", @invoice.payos_status
     assert_includes @invoice.note, "FT2609099999"
+
+    sign_in_as(@user)
+    get landlord_house_invoice_path(@house, @invoice)
+    assert_response :success
+    assert_includes response.body, I18n.t("invoice.payos.paid_via_payos_badge")
+    assert_includes response.body, I18n.t("invoice.payment_methods.transfer")
+    refute_includes response.body, I18n.t("invoice.payos.paid_banner_title")
+    refute_includes response.body, I18n.t("invoice.payos.paid_via_payos_method")
   end
 
   test "receive rejects webhook when signature is invalid" do
@@ -121,5 +130,17 @@ class Webhooks::PayosControllerTest < ActionDispatch::IntegrationTest
     }, as: :json
 
     assert_response :success
+  end
+
+  private
+
+  def sign_in_as(user)
+    post handle_login_path, params: {
+      user: {
+        tel: user.tel,
+        password: "Password123",
+        role: user.role
+      }
+    }
   end
 end

@@ -113,8 +113,11 @@ class LandlordPortal::DashboardsControllerTest < ActionDispatch::IntegrationTest
     get landlord_dashboard_path
 
     assert_response :success
+    assert_select ".dashboard-header p.text-success-emphasis", text: I18n.t("dashboard.landlord.month_stats_label", month: Date.current.strftime("%m/%Y"))
+    assert_select ".dashboard-header .badge", count: 0
     assert_select ".comparison-bar-chart"
     assert_select ".trend-bar-wrapper", 6
+    assert_select ".trend-bar-wrapper[data-turbo-frame='_top']", 6
     assert_select ".trend-bar-wrapper.is-current-month", 1
     assert_select ".trend-bar-footer .current-month-badge", text: I18n.t("dashboard.landlord.current_month_btn")
     assert_select ".chip-avg"
@@ -128,9 +131,12 @@ class LandlordPortal::DashboardsControllerTest < ActionDispatch::IntegrationTest
     get landlord_dashboard_path, params: { month: past_month.strftime("%Y-%m") }
 
     assert_response :success
+    assert_select ".dashboard-header p.text-secondary", text: I18n.t("dashboard.landlord.realtime_ops_subtitle")
+    assert_select ".dashboard-header .badge", text: /#{I18n.t("dashboard.landlord.viewing_financial_month_badge", month: past_month.strftime("%m/%Y"))}/
     assert_select ".comparison-bar-chart"
     assert_select ".trend-bar-wrapper.is-active", 1
-    assert_select "a", text: /#{I18n.t("dashboard.landlord.back_to_overall")}/
+    assert_select ".trend-bar-wrapper[data-turbo-frame='_top']", 6
+    assert_select "a[data-turbo-frame='_top']", text: /#{I18n.t("dashboard.landlord.back_to_overall")}/
     assert_select "span", text: I18n.t("dashboard.landlord.total_invoiced")
   end
 
@@ -204,11 +210,23 @@ class LandlordPortal::DashboardsControllerTest < ActionDispatch::IntegrationTest
     assert_select ".revenue-status-badge.bg-warning-subtle"
   end
 
+  test "renders header with financial badge when current month is explicitly selected in detailed mode" do
+    sign_in_as(@landlord_user)
+    curr_month = Date.current.beginning_of_month
+    get landlord_dashboard_path, params: { month: curr_month.strftime("%Y-%m") }
+
+    assert_response :success
+    assert_select ".dashboard-header p.text-secondary", text: I18n.t("dashboard.landlord.realtime_ops_subtitle")
+    assert_select ".dashboard-header .badge", text: /#{I18n.t("dashboard.landlord.viewing_financial_month_badge", month: curr_month.strftime("%m/%Y"))}/
+  end
+
   test "falls back to current month when month param is invalid" do
     sign_in_as(@landlord_user)
     get landlord_dashboard_path, params: { month: "not-a-valid-date" }
 
     assert_response :success
+    assert_select ".dashboard-header p.text-success-emphasis", text: I18n.t("dashboard.landlord.month_stats_label", month: Date.current.strftime("%m/%Y"))
+    assert_select ".dashboard-header .badge", count: 0
     assert_select ".comparison-bar-chart"
   end
 end

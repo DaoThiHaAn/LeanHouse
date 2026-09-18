@@ -8,7 +8,7 @@
 .greeting p {
     font-family: "Playpen Sans", system-ui, sans-serif;
     font-size: 1.2rem;
-    color: #185363;
+    color: var(--primary-bg);
 }
 
 .greeting :first-child {
@@ -30,11 +30,9 @@
 }
 
 .form-wrapper:hover {
-    background-color: #f9f9f9f3;
+    background-color: #f9f9f9de;
 }
-.form-wrapper h1 {
-    color: var(--primary-button-bg);
-}
+
 
 .role-option {
     border: 1px solid #E8E8E8;
@@ -76,6 +74,12 @@
 .signup-form .form-group {
     width: 50%;
     min-width: 250px;
+}
+
+.remember-me-group .form-check-input,
+.remember-me-group .form-check-label {
+    cursor: pointer;
+    user-select: none;
 }
 
 .forgot-pw.link {

@@ -691,6 +691,9 @@
 }
 
 .btn-mark-paid-primary {
+  --bs-btn-disabled-bg: var(--primary-text, #1b7a42);
+  --bs-btn-disabled-border-color: transparent;
+  --bs-btn-disabled-color: #ffffff;
   background-color: var(--primary-text, #1b7a42);
   color: #ffffff;
   border: none;
@@ -718,6 +721,16 @@
 .btn-mark-paid-primary:active {
   transform: translateY(1px);
   box-shadow: 0 2px 6px rgba(27, 122, 66, 0.3);
+}
+
+.btn-mark-paid-primary:disabled,
+.btn-mark-paid-primary.disabled {
+  background-color: var(--primary-text, #1b7a42) !important;
+  color: #ffffff !important;
+  border: none !important;
+  opacity: 0.75 !important;
+  box-shadow: none !important;
+  pointer-events: none !important;
 }
 
 /* Invoice statistical card */

@@ -1,0 +1,118 @@
+<%
+  is_success = !@is_cancelled && (@invoice&.paid? || params[:status] == "PAID" || params[:code] == "00")
+  page_title = if is_success
+                 t("invoice.payos.result.title_success")
+               elsif @is_cancelled
+                 t("invoice.payos.result.title_cancelled")
+               else
+                 t("invoice.payos.result.title_pending")
+               end
+  content_for :title, page_title
+%>
+
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6">
+      <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+        <!-- Header status banner -->
+        <div class="p-4 text-center <%= is_success ? 'bg-success-subtle text-success-emphasis border-bottom border-success-subtle' : (@is_cancelled ? 'bg-warning-subtle text-warning-emphasis border-bottom border-warning-subtle' : 'bg-info-subtle text-info-emphasis border-bottom border-info-subtle') %>">
+          <div class="d-inline-flex align-items-center justify-content-center p-3 rounded-circle mb-3 <%= is_success ? 'bg-success text-white' : (@is_cancelled ? 'bg-warning text-dark' : 'bg-info text-white') %> shadow-sm">
+            <span class="material-symbols-outlined fs-1">
+              <%= is_success ? 'check_circle' : (@is_cancelled ? 'cancel' : 'hourglass_top') %>
+            </span>
+          </div>
+          <h2 class="fw-bold mb-2"><%= page_title %></h2>
+          <p class="mb-0 text-secondary-emphasis small">
+            <% if is_success %>
+              <%= t("invoice.payos.result.subtitle_success") %>
+            <% elsif @is_cancelled %>
+              <%= t("invoice.payos.result.subtitle_cancelled") %>
+            <% else %>
+              <%= t("invoice.payos.result.subtitle_pending") %>
+            <% end %>
+          </p>
+        </div>
+
+        <!-- Body content -->
+        <div class="card-body p-4">
+          <% if @invoice.present? %>
+            <div class="bg-light p-3 rounded-3 mb-4 border">
+              <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                <span class="text-secondary small"><%= t("invoice.payos.result.invoice_code") %></span>
+                <span class="fw-bold font-monospace"><%= @invoice.code %></span>
+              </div>
+
+              <% if @invoice.house.present? %>
+                <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                  <span class="text-secondary small"><%= t("invoice.payos.result.house") %></span>
+                  <span class="fw-semibold"><%= @invoice.house.name %></span>
+                </div>
+              <% end %>
+
+              <% if @invoice.room.present? %>
+                <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                  <span class="text-secondary small"><%= t("invoice.payos.result.room") %></span>
+                  <span class="fw-semibold"><%= @invoice.room.name %></span>
+                </div>
+              <% end %>
+
+              <% if @invoice.billing_month.present? %>
+                <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                  <span class="text-secondary small"><%= t("invoice.payos.result.billing_month") %></span>
+                  <span><%= format_month(@invoice.billing_month) %></span>
+                </div>
+              <% end %>
+
+              <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                <span class="text-secondary small"><%= t("invoice.payos.result.amount") %></span>
+                <span class="fs-5 fw-bold text-success"><%= format_money(@invoice.total_amount) %></span>
+              </div>
+
+              <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                <span class="text-secondary small"><%= t("invoice.payos.result.payment_method") %></span>
+                <span class="badge bg-success-subtle text-success border border-success-subtle">
+                  <%= t("invoice.payos.result.payment_method_val") %>
+                </span>
+              </div>
+
+              <% if @invoice.paid_at.present? %>
+                <div class="d-flex justify-content-between align-items-center py-2">
+                  <span class="text-secondary small"><%= t("invoice.payos.result.paid_at") %></span>
+                  <span class="small text-secondary"><%= format_datetime(@invoice.paid_at) %></span>
+                </div>
+              <% elsif params[:orderCode].present? %>
+                <div class="d-flex justify-content-between align-items-center py-2">
+                  <span class="text-secondary small"><%= t("invoice.payos.result.order_code") %></span>
+                  <span class="small font-monospace text-secondary">#<%= params[:orderCode] %></span>
+                </div>
+              <% end %>
+            </div>
+          <% else %>
+            <div class="alert alert-secondary text-center mb-4">
+              <%= t("invoice.payos.result.not_found") %>
+            </div>
+          <% end %>
+
+          <!-- Action buttons -->
+          <div class="d-flex flex-column gap-2">
+            <% if logged_in? %>
+              <%= link_to root_path, class: "btn btn-primary d-flex align-items-center justify-content-center gap-2 py-2 fw-semibold" do %>
+                <span class="material-symbols-outlined fs-5">home</span>
+                <span><%= t("invoice.payos.result.back_to_home") %></span>
+              <% end %>
+            <% else %>
+              <%= link_to login_path, class: "btn btn-primary d-flex align-items-center justify-content-center gap-2 py-2 fw-semibold" do %>
+                <span class="material-symbols-outlined fs-5">login</span>
+                <span><%= t("invoice.payos.result.login_btn") %></span>
+              <% end %>
+              <%= link_to root_path, class: "btn btn-outline-secondary d-flex align-items-center justify-content-center gap-2 py-2" do %>
+                <span class="material-symbols-outlined fs-5">home</span>
+                <span><%= t("invoice.payos.result.back_to_home") %></span>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

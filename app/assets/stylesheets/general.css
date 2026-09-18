@@ -137,7 +137,7 @@ h1 {
 h2 {
   font-size: 1.4rem;
   font-weight: 700;
-  color: #297072;
+  color: var(--primary-bg);
 }
 
 h3 {
@@ -162,7 +162,92 @@ button {
 /*  Override Bootstrap handles the pointer events */
 button.disabled, button:disabled {
   cursor: not-allowed !important;
-  opacity: 60%;
+  opacity: 75% !important;
+}
+
+/* Ensure custom submit buttons never turn transparent when disabled or waiting for DB response */
+.custom-primary-btn:disabled,
+.custom-primary-btn.disabled,
+.btn.custom-primary-btn:disabled,
+.btn.custom-primary-btn.disabled,
+button.custom-primary-btn:disabled,
+button.custom-primary-btn.disabled {
+  background-color: var(--primary-text) !important;
+  color: #ffffff !important;
+  border: none !important;
+  opacity: 0.75 !important;
+  box-shadow: none !important;
+  pointer-events: none !important;
+}
+
+.admin-btn-primary:disabled,
+.admin-btn-primary.disabled,
+.btn.admin-btn-primary:disabled,
+.btn.admin-btn-primary.disabled,
+button.admin-btn-primary:disabled,
+button.admin-btn-primary.disabled {
+  background-color: var(--primary-text) !important;
+  color: #ffffff !important;
+  border: none !important;
+  opacity: 0.75 !important;
+  box-shadow: none !important;
+  pointer-events: none !important;
+}
+
+.btn-mark-paid-primary:disabled,
+.btn-mark-paid-primary.disabled,
+.btn.btn-mark-paid-primary:disabled,
+.btn.btn-mark-paid-primary.disabled {
+  background-color: var(--primary-text, #1b7a42) !important;
+  color: #ffffff !important;
+  border: none !important;
+  opacity: 0.75 !important;
+  box-shadow: none !important;
+  pointer-events: none !important;
+}
+
+.custom-secondary-btn:disabled,
+.custom-secondary-btn.disabled,
+.btn.custom-secondary-btn:disabled,
+.btn.custom-secondary-btn.disabled {
+  background-color: #ffffff !important;
+  color: var(--info-text) !important;
+  border: 1px solid var(--info-text) !important;
+  opacity: 0.75 !important;
+  pointer-events: none !important;
+}
+
+.main-btn:disabled,
+.main-btn.disabled,
+.btn.main-btn:disabled,
+.btn.main-btn.disabled {
+  background-color: rgb(232, 255, 246) !important;
+  color: var(--primary-bg) !important;
+  border: 1px solid rgb(196, 247, 227) !important;
+  opacity: 0.75 !important;
+  pointer-events: none !important;
+}
+
+.issue-report-submit-btn:disabled,
+.issue-report-submit-btn.disabled,
+.btn.issue-report-submit-btn:disabled,
+.btn.issue-report-submit-btn.disabled {
+  background-color: rgb(115, 26, 26) !important;
+  color: #ffffff !important;
+  border: none !important;
+  opacity: 0.75 !important;
+  pointer-events: none !important;
+}
+
+.cancel-btn:disabled,
+.cancel-btn.disabled,
+.btn.cancel-btn:disabled,
+.btn.cancel-btn.disabled {
+  background-color: rgb(240, 240, 240) !important;
+  color: var(--info-text) !important;
+  border: 1px solid rgb(201, 201, 201) !important;
+  opacity: 0.75 !important;
+  pointer-events: none !important;
 }
 
 a {
@@ -273,6 +358,9 @@ textarea {
 }
 
 .custom-primary-btn {
+  --bs-btn-disabled-bg: var(--primary-text);
+  --bs-btn-disabled-border-color: transparent;
+  --bs-btn-disabled-color: #ffffff;
   width: fit-content;
   padding: 5px 30px;
   border: none;

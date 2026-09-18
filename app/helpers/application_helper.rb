@@ -149,4 +149,9 @@ module ApplicationHelper
     url = payos_webhook_url
     url.include?("localhost") || url.include?("127.0.0.1") || url.include?("0.0.0.0")
   end
+
+  # Check whether OTP demo sandbox mode is active
+  def show_demo_otp?
+    Otp.demo_mode?
+  end
 end

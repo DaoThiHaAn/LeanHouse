@@ -1,13 +1,12 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["digit", "hidden", "form"]
+  static targets = ["digit", "hidden", "form", "copyLabel"]
   static values = { length: Number }
 
   connect() {
     const firstEmpty = this.digitTargets.find(i => !i.value)
     if (firstEmpty) firstEmpty.focus()
-    console.log("OTP Controller connected")
   }
 
   input(e) {
@@ -79,5 +78,37 @@ export default class extends Controller {
   next(input) {
     const i = this.digitTargets.indexOf(input)
     return i < this.digitTargets.length - 1 ? this.digitTargets[i + 1] : null
+  }
+
+  fillDemo(e) {
+    const code = e.currentTarget.dataset.otpCode || ""
+    if (!code) return
+
+    this.digitTargets.forEach((input, i) => {
+      input.value = code[i] || ""
+    })
+
+    this.updateHidden()
+
+    const last = this.digitTargets[this.digitTargets.length - 1]
+    if (last) last.focus()
+  }
+
+  copyDemo(e) {
+    const code = e.currentTarget.dataset.otpCode || ""
+    if (!code) return
+
+    const btn = e.currentTarget
+    const labelSpan = btn.querySelector("[data-otp-target='copyLabel']") || btn
+    const originalText = labelSpan.innerText
+
+    navigator.clipboard.writeText(code).then(() => {
+      labelSpan.innerText = btn.dataset.copiedText || "Đã chép!"
+      setTimeout(() => {
+        labelSpan.innerText = originalText
+      }, 2000)
+    }).catch(err => {
+      console.warn("Clipboard write failed:", err)
+    })
   }
 }

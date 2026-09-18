@@ -1,7 +1,8 @@
 class OtpController < ApplicationController
   def input
     expires_at = calculate_expires_at
-    render "otp_input", locals: { tel: session[:pending_tel], expires_at: expires_at }
+    demo_otp = resolve_demo_otp
+    render "otp_input", locals: { tel: session[:pending_tel], expires_at: expires_at, demo_otp: demo_otp }
   end
 
   def create
@@ -14,12 +15,12 @@ class OtpController < ApplicationController
     if (session[:is_change_tel] || session[:is_reset_pw]) && logged_in?
       otp = current_user.generate_otp!
       flash[:notice] = t("success_messages.resend_otp")
-      flash[:development_otp] = otp if Rails.env.development?
+      flash[:development_otp] = otp if show_demo_otp?
     else
       verification = PhoneVerification.new(tel: session[:pending_tel], role: session[:pending_role])
       result = verification.resend_otp
       flash[:notice] = t("success_messages.resend_otp")
-      flash[:development_otp] = result.otp if Rails.env.development?
+      flash[:development_otp] = result.otp if show_demo_otp?
     end
 
     redirect_to otp_input_path
@@ -53,9 +54,11 @@ class OtpController < ApplicationController
       return render_otp_error(t("errors.expired_otp"))
     end
 
-    unless params[:otp].to_s.strip == current_user.otp_code
+    entered_code = params[:otp].to_s.strip
+    unless entered_code == current_user.otp_code
       return render_otp_error(t("errors.wrong_otp"))
     end
+
 
     new_tel = session[:pending_new_tel]
 
@@ -127,9 +130,16 @@ class OtpController < ApplicationController
 
       format.html do
         expires_at = calculate_expires_at
-        render "otp_input", locals: { tel: session[:pending_tel], expires_at: expires_at }, status: :unprocessable_entity
+        demo_otp = resolve_demo_otp
+        render "otp_input", locals: { tel: session[:pending_tel], expires_at: expires_at, demo_otp: demo_otp }, status: :unprocessable_entity
       end
     end
     flash.discard
+  end
+
+  def resolve_demo_otp
+    return nil unless show_demo_otp?
+
+    flash[:development_otp] || current_pending_user&.otp_code
   end
 end
