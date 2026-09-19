@@ -7,6 +7,10 @@ class InvoiceDueTodayJob < ApplicationJob
            .where(due_date: Date.current)
            .includes(:house, :room, :tenant, :created_by)
            .find_each do |invoice|
+      invoice.reload
+      # Guard against concurrent payment, cancellation, or due_date changes
+      next unless invoice.kept? && invoice.pending? && invoice.due_date == Date.current
+
       formatted_amount = ApplicationController.helpers.format_money(invoice.total_amount)
       landlord_user = invoice.house&.landlord&.user || invoice.created_by
       tenant_users = invoice.target_users

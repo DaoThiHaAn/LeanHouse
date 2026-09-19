@@ -21,9 +21,9 @@
   width: 100%;
 }
 
-.main-info-zone .person-icon {
-  color: #CCFFBA;
-  font-size: 2.5rem;
+.main-info-zone .icon {
+  font-size: 4rem;
+  align-self: center;
 }
 
 .upload-img-btn {

@@ -10,6 +10,10 @@ class ContractDueReminderJob < ApplicationJob
             .where(due_date: target_date)
             .includes(tenant: :user, landlord: :user, house: {})
             .find_each do |contract|
+      contract.reload
+      # Guard against concurrent updates or extensions
+      next if contract.finished? || contract.due_date != target_date
+
       recipients = [ contract.tenant.user, contract.landlord.user ].compact.uniq
 
       ContractExpiringSoonNotifier.with(

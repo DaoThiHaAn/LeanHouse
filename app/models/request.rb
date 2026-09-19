@@ -85,6 +85,7 @@ class Request < ApplicationRecord
   end
 
   def mark_as_overdue!
+    reload
     return unless pending?
 
     transaction do

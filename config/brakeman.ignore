@@ -26,13 +26,13 @@
     {
       "warning_type": "Mass Assignment",
       "warning_code": 105,
-      "fingerprint": "af0ba237c69d863c4ed106c697ccb5e6688a4e08d38ce558ea7ee36601b8363a",
+      "fingerprint": "7ff034afdb31a6b10a0e50f41626a5d269f133e33ce5a86466ddece0078df089",
       "check_name": "PermitAttributes",
       "message": "Potentially dangerous key allowed for mass assignment",
       "file": "app/controllers/authentication_controller.rb",
       "line": 82,
       "link": "https://brakemanscanner.org/docs/warning_types/mass_assignment/",
-      "code": "params.require(:user).permit(:tel, :password, :role)",
+      "code": "params.require(:user).permit(:tel, :password, :role, :remember_me)",
       "render_path": null,
       "location": {
         "type": "method",
@@ -44,7 +44,7 @@
       "cwe_id": [
         915
       ],
-      "note": "Role is used during authentication lookup"
+      "note": "Role and remember_me are used during authentication lookup"
     },
     {
       "warning_type": "Mass Assignment",

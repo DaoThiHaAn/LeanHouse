@@ -73,58 +73,306 @@
   color: #0d8395;
 }
 
-/* Tenant View */
-.tenant-room .border-bottom {
-  border-color: #6E8BA0
-}
+/* ==========================================================================
+   Tenant Room View Modern Styles
+   ========================================================================== */
 
-.tenant-room h2 {
-  font-size: 1.2rem
-}
-
-.main-info-zone {
-  background-color: var(--primary-text);
-  color: white;
+.tenant-room-container {
+  max-width: 1200px;
   margin: 0 auto;
-  max-width: 700px;
 }
 
-.main-info-zone .room-name {
-  color: #74e6ee;
-  background-color: #2e788d;
+/* Modern Hero Room Info Zone */
+.main-info-zone {
+  background: linear-gradient(145deg, #164E5D 0%, #1e6475 50%, #308195 100%);
+  color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px -4px rgba(22, 78, 93, 0.25);
+  margin-bottom: 1.5rem;
+}
+
+.main-info-zone .house-icon-wrapper {
+  width: 52px;
+  height: 52px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  backdrop-filter: blur(8px);
+}
+
+.main-info-zone .zone-house-name {
+  font-size: 1.4rem;
+  letter-spacing: -0.02em;
+  color: #0becce;
+  font-weight: 700;
+}
+
+.main-info-zone .zone-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.2rem 0.65rem;
+  border-radius: 9999px;
+  background: rgba(46, 213, 115, 0.2);
+  border: 1px solid rgba(46, 213, 115, 0.4);
+  color: #88f5b8;
+}
+
+.main-info-zone .zone-status-badge .status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #2ed573;
+  box-shadow: 0 0 6px #2ed573;
+}
+
+.main-info-zone .zone-address {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.9rem;
+}
+
+.main-info-zone .zone-room-badge {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  backdrop-filter: blur(8px);
+  font-size: 0.95rem;
+  letter-spacing: 0.01em;
+}
+
+.main-info-zone .zone-checkin-badge {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgb(198, 214, 203);
+  font-size: 0.9rem;
+}
+
+.main-info-zone .zone-bg-decoration {
+  position: absolute;
+  right: -5px;
+  bottom: -30px;
+  opacity: 0.05;
+  pointer-events: none;
+  line-height: 1.5;
+}
+
+.main-info-zone .zone-bg-decoration .material-symbols-outlined {
+  font-size: 180px;
+}
+
+/* Tenant Room Cards */
+.tenant-room-card {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tenant-room-card:hover {
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06) !important;
+}
+
+.tenant-room-card .contact-icon-box {
+  width: 48px;
+  height: 48px;
+  background-color: #e6f7f5;
+  color: #0e8a7a;
+}
+
+.tenant-room-card .regulation-icon-box {
+  width: 48px;
+  height: 48px;
+  background-color: #ede9db;
+  color: #5c4b16;
+}
+
+/* Tenant Room Stat Cards */
+.tenant-room-stat-card {
+  border: 1px solid transparent;
+  border-left: 4px solid transparent;
+  border-radius: 16px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 100px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+}
+
+.tenant-room-stat-card:hover {
+  transform: translateY(-4px);
+}
+
+/* Stat Titles & Icons */
+.tenant-room-stat-card .stat-card-title {
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #555555;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.tenant-room-stat-card .stat-icon-wrapper {
+  width: 2.7rem;
+  height: 2.7rem;
+  border-radius: 12px;
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  transition: transform 0.2s ease;
+}
+
+.tenant-room-stat-card:hover .stat-icon-wrapper {
+  transform: scale(1.08);
+}
+
+.tenant-room-stat-card .stat-value {
+  font-size: 1.55rem;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.25rem;
+}
+
+.tenant-room-stat-card .stat-subtext {
+  font-size: 0.85rem;
+  color: #64748b;
+  line-height: 1.3;
+}
+
+/* Badge for Area Card */
+.tenant-room-stat-card .stat-subtext-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.25rem 0.65rem;
+  border-radius: 9999px;
   width: fit-content;
 }
 
-.main-info-zone .location {
-    font-size: 6rem;
-    display:block;
-    line-height: .9;
+.tenant-room-stat-card .stat-subtext-pill .material-symbols-outlined {
+  font-size: 0.95rem !important;
+  line-height: 1;
 }
 
-.main-info-zone .title {
-    color: #CCFFBA;
-    font-weight: 800;
+/* 1. Monthly Rent Theme (Green Pastel) */
+.tenant-room-stat-card.card-rent {
+  background-color: #EAF8F1;
+  border-color: #b0d2c1;
+}
+.tenant-room-stat-card.card-rent .stat-icon-wrapper {
+  color: #198754;
+}
+.tenant-room-stat-card.card-rent .rent-value {
+  color: #146c43;
 }
 
-.main-info-zone .checkin {
-    color: rgb(196, 196, 196)
+/* 2. Deposit Theme (Teal Pastel) */
+.tenant-room-stat-card.card-deposit {
+  background-color: #E6F7F5;
+  border-color: #9bbdc6;
+}
+.tenant-room-stat-card.card-deposit .stat-icon-wrapper {
+  color: #0e7e8a;
+}
+.tenant-room-stat-card.card-deposit .deposit-value {
+  color: #0e798a;
+}
+.tenant-room-stat-card.card-deposit .deposit-paid-pill {
+  background-color: #ffffff;
+  color: #0e778a;
+  border: 1px solid #A3E0D8;
+  box-shadow: 0 1px 4px rgba(14, 138, 122, 0.08);
+}
+.tenant-room-stat-card.card-deposit .deposit-unpaid-pill {
+  background-color: #ffffff;
+  color: #D97706;
+  border: 1px solid #FDE68A;
+  box-shadow: 0 1px 4px rgba(217, 119, 6, 0.08);
 }
 
-.tenant-room .call-icon {
-  font-size: 1.4rem;
+/* 3. Area & Capacity Theme (Indigo Pastel) */
+.tenant-room-stat-card.card-area {
+  background-color: #EEF2FF;
+  border-color: #a8b4e5;
+}
+.tenant-room-stat-card.card-area .stat-icon-wrapper {
+  color: #4F46E5;
+}
+.tenant-room-stat-card.card-area .area-value {
+  color: #3730a3;
+}
+.tenant-room-stat-card.card-area .area-pill {
+  background-color: #ffffff;
+  color: #4F46E5;
+  border: 1px solid #C7D2FE;
+  box-shadow: 0 1px 4px rgba(79, 70, 229, 0.08);
 }
 
-.tenant-room h3 {
-  font-size: 1.2rem;
-  color: #2e6878
+/* 4. Invoice Date Theme (Orange Pastel) */
+.tenant-room-stat-card.card-invoice-date {
+  background-color: #FFF3EB;
+  border-color: #dbbba7;
+}
+.tenant-room-stat-card.card-invoice-date .stat-icon-wrapper {
+  color: #DC6B2F;
+}
+.tenant-room-stat-card.card-invoice-date .invoice-value {
+  color: #c2410c;
 }
 
-.tenant-room .table-responsive {
-  max-height: 400px
+/* Roommate Cards */
+.roommate-card {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+}
+
+.roommate-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.roommate-avatar {
+  background: linear-gradient(135deg, #164E5D 0%, #206d80 100%) !important;
+}
+
+/* Asset Table */
+.tenant-asset-table thead th {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: #64748b;
+  font-weight: 700;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.tenant-asset-table tbody td {
+  font-size: 0.95rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.asset-cat-icon {
+  width: 32px;
+  height: 32px;
+  background-color: #eaf8f1;
+  color: #164E5D;
 }
 
 @media (max-width: 768px) {
   .custom-room.table-responsive {
     width: 100% !important;
+  }
+
+  .main-info-zone .zone-bg-decoration {
+    display: none;
   }
 }

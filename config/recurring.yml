@@ -14,21 +14,11 @@ production:
     command: "SolidQueue::Job.clear_finished_in_batches(sleep_between_batches: 0.3)"
     schedule: every hour at minute 12
 
-  contract_due_reminder:
-    class: ContractDueReminderJob
-    schedule: every day at 1am
-
-  invoice_creation_reminder:
-    class: InvoiceCreationReminderJob
-    schedule: every day at 1am
-
-  contract_due_today:
-    class: ContractDueTodayJob
-    schedule: every day at 2am
-
+  # 1. Deep Night Silent Maintenance Batch (03:00 AM - 03:30 AM)
+  # Runs when human activity is zero. Mutates data states and cleans up records without user notifications.
   contract_overdue_close:
     class: ContractOverdueCloseJob
-    schedule: every day at 2am
+    schedule: every day at 3am
 
   request_overdue_expire:
     class: RequestOverdueExpireJob
@@ -39,10 +29,26 @@ production:
     args: [ { read_days: 30, unread_days: 180 } ]
     schedule: every day at 3:30am
 
+  # 2. Early Morning User Notification Window (06:30 AM)
+  # Prepares notifications so users see fresh alerts right as they wake up.
+  contract_due_reminder:
+    class: ContractDueReminderJob
+    schedule: every day at 6:30am
+
+  contract_due_today:
+    class: ContractDueTodayJob
+    schedule: every day at 6:30am
+
+  invoice_creation_reminder:
+    class: InvoiceCreationReminderJob
+    schedule: every day at 6:30am
+
+  # 3. Morning Financial Notification Window (07:00 AM - 07:15 AM)
+  # Alerts landlords and tenants during active banking & payment hours.
   invoice_due_today:
     class: InvoiceDueTodayJob
     schedule: every day at 7am
 
   invoice_overdue_check:
     class: InvoiceOverdueCheckJob
-    schedule: every day at 7:30am
+    schedule: every day at 7:15am

@@ -37,6 +37,14 @@ class Invoice < ApplicationRecord
   scope :by_status,  ->(s) { where(status: s) if s.present? && statuses.key?(s.to_s) }
   scope :sorted,     -> { order(billing_month: :desc, created_at: :desc) }
 
+  def kept?
+    discarded_at.nil?
+  end
+
+  def discarded?
+    discarded_at.present?
+  end
+
   def payment_method=(val)
     val = "transfer" if val.to_s == "bank_transfer"
     super(val)

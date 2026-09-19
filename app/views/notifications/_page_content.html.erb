@@ -23,7 +23,7 @@
   </div>
 
   <div id="mark_all_read_btn_container">
-    <% if unread_count.to_i > 0 %>
+    <% if filter.to_s != "read" && unread_count.to_i > 0 %>
       <%= button_to mark_all_as_read_notifications_path(filter: filter), method: :patch,
             class: "btn btn-outline-danger btn-sm d-flex align-items-center gap-1 shadow-sm" do %>
         <span class="material-symbols-outlined fs-6">done_all</span>

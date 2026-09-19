@@ -17,7 +17,7 @@
     <% end %>
   </div>
 
-  <%= render 'landlord_portal/contracts/detail',
+  <%= render 'layouts/shared_components/contracts/detail',
              contract: @contract,
              house: @house,
              tenant_stay: (@tenant_stay&.rental_unit&.house&.id == @contract.house_id ? @tenant_stay : nil) %>

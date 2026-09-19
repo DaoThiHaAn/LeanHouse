@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_19_010001) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_19_203909) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "unaccent"
@@ -122,6 +122,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_19_010001) do
     t.string "tenant_citizen_id", null: false
     t.bigint "tenant_id", null: false
     t.datetime "updated_at", null: false
+    t.index ["end_date", "due_date"], name: "index_contracts_on_end_date_and_due_date"
     t.index ["house_id"], name: "index_contracts_on_house_id"
     t.index ["landlord_id"], name: "index_contracts_on_landlord_id"
     t.index ["tenant_id"], name: "index_contracts_on_tenant_id"
@@ -214,6 +215,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_19_010001) do
     t.index ["paid_by_id"], name: "index_invoices_on_paid_by_id"
     t.index ["room_id", "billing_month", "invoice_type"], name: "idx_invoices_room_month_type"
     t.index ["room_id"], name: "index_invoices_on_room_id"
+    t.index ["status", "due_date"], name: "index_invoices_on_status_and_due_date"
     t.index ["status"], name: "index_invoices_on_status"
     t.index ["tenant_id"], name: "index_invoices_on_tenant_id"
     t.index ["undone_by_id"], name: "index_invoices_on_undone_by_id"

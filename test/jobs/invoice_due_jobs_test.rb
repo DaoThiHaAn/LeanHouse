@@ -128,4 +128,22 @@ class InvoiceDueJobsTest < ActiveJob::TestCase
 
     assert_equal "overdue", @invoice_overdue_1day.reload.status
   end
+
+  test "InvoiceDueTodayJob skips if invoice was concurrently paid" do
+    @invoice_due_today.update!(status: :paid, paid_at: Time.current, payment_method: "transfer")
+
+    assert_no_enqueued_jobs(only: Noticed::EventJob) do
+      InvoiceDueTodayJob.perform_now
+    end
+  end
+
+  test "InvoiceOverdueCheckJob skips if invoice was concurrently paid" do
+    @invoice_overdue_1day.update!(status: :paid, paid_at: Time.current, payment_method: "transfer")
+
+    assert_no_enqueued_jobs(only: Noticed::EventJob) do
+      InvoiceOverdueCheckJob.perform_now
+    end
+
+    assert_equal "paid", @invoice_overdue_1day.reload.status
+  end
 end

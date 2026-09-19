@@ -3,7 +3,7 @@
 <% end %>
 
 <%= turbo_stream.replace "contract_detail" do %>
-  <%= render "landlord_portal/contracts/detail", house: @house, contract: @contract, tenant_stay: @tenant_stay %>
+  <%= render "layouts/shared_components/contracts/detail", house: @house, contract: @contract, tenant_stay: @tenant_stay %>
 <% end %>
 
 <%= turbo_stream.append "events" do %>

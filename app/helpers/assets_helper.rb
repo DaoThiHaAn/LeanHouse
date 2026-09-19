@@ -33,4 +33,22 @@ module AssetsHelper
     cost = cost_or_logs.respond_to?(:sum) ? cost_or_logs.sum(&:cost) : cost_or_logs
     content_tag(:span, format_money(cost), class: "badge bg-primary-subtle text-primary border border-primary-subtle d-inline-flex align-items-center justify-content-center")
   end
+
+  # Material symbol icon for asset category
+  # @param category [String, Symbol]
+  def asset_category_icon(category)
+    case category.to_s
+    when "fridge" then "kitchen"
+    when "air_con" then "ac_unit"
+    when "camera" then "videocam"
+    when "elec_stove" then "countertops"
+    when "wash_mach" then "local_laundry_service"
+    when "dryer" then "dry"
+    when "smart_door" then "lock"
+    when "water_heater" then "water_heater"
+    when "tv" then "tv"
+    when "microwave" then "microwave"
+    else "inventory_2"
+    end
+  end
 end

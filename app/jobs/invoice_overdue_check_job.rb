@@ -7,6 +7,11 @@ class InvoiceOverdueCheckJob < ApplicationJob
            .where("due_date < ?", Date.current)
            .includes(:house, :room, :tenant, :created_by)
            .find_each do |invoice|
+      invoice.reload
+      # Guard against concurrent payment, cancellation, or due_date extension
+      next unless invoice.kept? && (invoice.pending? || invoice.overdue?)
+      next unless invoice.due_date < Date.current
+
       # Mark pending invoices as overdue
       invoice.update_columns(status: :overdue) if invoice.pending?
 

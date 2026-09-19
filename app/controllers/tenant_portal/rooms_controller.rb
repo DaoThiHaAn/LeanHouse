@@ -5,5 +5,6 @@ class TenantPortal::RoomsController < TenantPortal::BaseController
     @room = @rental_unit.room
     @assets = @room.assets.sorted
     @roommates = @room.formatted_roommates(@house, @tenant.id)
+    @contract = @tenant_stay.contract
   end
 end

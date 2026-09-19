@@ -58,15 +58,17 @@ class NotificationsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select ".notifications-page .notification-full-message", text: /0909999991/, count: 1
     assert_select ".notifications-page .notification-full-message", text: /0909999992/, count: 0
+    assert_select "#mark_all_read_btn_container form", count: 1
   end
 
-  test "index filter=read shows only read notifications" do
+  test "index filter=read shows only read notifications and hides mark all as read button" do
     sign_in_as(@user)
 
     get notifications_path, params: { filter: "read" }
     assert_response :success
     assert_select ".notifications-page .notification-full-message", text: /0909999992/, count: 1
     assert_select ".notifications-page .notification-full-message", text: /0909999991/, count: 0
+    assert_select "#mark_all_read_btn_container form", count: 0
   end
 
   test "mark_as_read marks a notification as read via HTML" do

@@ -1,9 +1,10 @@
 <%# Show the general info of contract %>
 <div class="main-info-zone py-3 ps-4 pe-5 d-flex gap-3">
-  <span class="material-symbols-filled location align-self-center">contract</span>
+  <span class="material-symbols-filled icon">contract</span>
+
   <div class="d-flex flex-column gap-2">
     <div class="d-flex gap-3 align-items-center">
-      <p class="title fs-4"><%= contract.title_name %></p>
+      <h2 class="text-white fs-4"><%= contract.title_name %></h2>
       <%= contract_state_tag(contract.due_status) %>
     </div>
 
@@ -22,11 +23,11 @@
       <%= contract.formatted_end_date %>
     </p>
 
-    <p class="checkin fst-italic">
-     <span class="material-symbols-outlined fs-5"
-      title="<%= t("last_updated") %>">
-      update
-    </span>
+    <p class="small text-white-50 fst-italic">
+      <span class="material-symbols-outlined fs-5"
+        title="<%= t("last_updated") %>">
+        update
+      </span>
       <%= format_datetime(contract.updated_at) %>
     </p>
   </div>

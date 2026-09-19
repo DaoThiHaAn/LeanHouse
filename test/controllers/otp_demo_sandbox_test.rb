@@ -77,5 +77,4 @@ class OtpDemoSandboxTest < ActionDispatch::IntegrationTest
       assert_select ".badge.bg-warning", count: 0
     end
   end
-
 end

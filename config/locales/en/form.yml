@@ -53,6 +53,9 @@ en:
       unpaid_invoices_badge: "%{count} unpaid"
       unpaid_invoices_tooltip: "This property has %{count} unpaid invoice(s)"
       no_houses_found: "No houses found matching filters."
+      no_regulations_attached: "No house regulation document attached"
+      inv_date_display: "Day %{day}"
+      monthly_cycle: "Monthly billing"
       add: "Add house"
       house_list: "Properties List"
       num_house: "You have %{num} properties"
@@ -83,10 +86,23 @@ en:
       area: "Area"
       no_tenant: "Not recorded"
       per_bed: "/ bed"
+      per_month: "/ month"
+      deposit_secured: "Secured deposit"
+      deposit_paid: "Deposit paid"
+      deposit_unpaid: "Deposit unpaid"
+      waiting_for_contract: "Awaiting contract registration"
+      area_sqm: "%{area} m²"
+      max_tenants_unit: "Max %{count} tenants"
+      single_occupancy: "You are currently living alone in this room"
+      single_occupancy_desc: "There are currently no other roommates in this room."
       select_floor: "Select Floor"
       unfound: "No rooms found!"
       confirm_delete: "Are you sure you want to delete room %{name}?"
       cannot_delete_has_tenants: "Cannot delete room because it currently has active tenants."
+
+    asset:
+      no_assets_assigned: "No assets have been assigned to this room yet"
+      no_assets_assigned_desc: "Equipment assigned by the landlord will be displayed here."
 
     service:
       self: "Service"

@@ -153,6 +153,9 @@ vi:
       unpaid_invoices_badge: "%{count} chưa thu"
       unpaid_invoices_tooltip: "Nhà này có %{count} hóa đơn chưa thanh toán"
       no_houses_found: "Không tìm thấy nhà nào phù hợp với bộ lọc."
+      no_regulations_attached: "Chưa có văn bản nội quy đính kèm"
+      inv_date_display: "Ngày %{day}"
+      monthly_cycle: "Chu kỳ hàng tháng"
 
     floor:
       self: "Tầng"
@@ -204,6 +207,15 @@ vi:
       unfound: "Không tìm thấy phòng nào!"
       confirm_delete: "Bạn có chắc chắn muốn xóa phòng %{name} không?"
       cannot_delete_has_tenants: "Không thể xóa phòng vì hiện đang có khách thuê đang ở."
+      per_month: "/ tháng"
+      deposit_secured: "Đặt cọc bảo đảm"
+      deposit_paid: "Đã thanh toán cọc"
+      deposit_unpaid: "Chưa thanh toán cọc"
+      waiting_for_contract: "Chờ đăng ký hợp đồng"
+      area_sqm: "%{area} m²"
+      max_tenants_unit: "Tối đa %{count} người"
+      single_occupancy: "Bạn đang ở một mình trong phòng này"
+      single_occupancy_desc: "Hiện chưa có thêm thành viên nào khác trong phòng."
 
 
     tenant:
@@ -300,6 +312,8 @@ vi:
       delete_cf: "Bạn có chắc chắn muốn xóa tài sản này?"
       unfound: "Không tìm thấy tài sản nào!"
       status: "Tình trạng"
+      no_assets_assigned: "Chưa có tài sản nào được bàn giao trong phòng này"
+      no_assets_assigned_desc: "Các trang thiết bị được chủ nhà giao sẽ hiển thị tại đây."
       stats:
         metric: "Chỉ số"
         value: "Số lượng / Giá trị"

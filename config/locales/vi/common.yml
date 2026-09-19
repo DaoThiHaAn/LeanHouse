@@ -144,6 +144,7 @@ vi:
   open_in_new_tab: "Mở trong tab mới"
   required_fields: "Thông tin bắt buộc"
   clear_img: "Xóa ảnh"
+  staying: "Đang thuê"
 
   error_pages:
     actions:
@@ -384,3 +385,14 @@ vi:
     description_placeholder: "Vui lòng mô tả cụ thể sự cố, các bước tái hiện hoặc thông báo lỗi (tối thiểu 10 ký tự)..."
     submit: "Gửi báo cáo sự cố"
     created_success: "Cảm ơn bạn đã gửi báo cáo sự cố! Ban quản trị đã tiếp nhận thông tin và sẽ phản hồi sớm nhất qua email của bạn."
+
+  single_occupancy: "Bạn đang ở một mình trong phòng này"
+  single_occupancy_desc: "Hiện chưa có thêm thành viên nào khác trong phòng."
+  no_assets_assigned: "Chưa có tài sản nào được bàn giao trong phòng này"
+  no_assets_assigned_desc: "Các trang thiết bị được chủ nhà giao sẽ hiển thị tại đây."
+  deposit_secured: "Đặt cọc bảo đảm"
+  deposit_paid: "Đã thanh toán cọc"
+  deposit_unpaid: "Chưa thanh toán cọc"
+  waiting_for_contract: "Chờ đăng ký hợp đồng"
+  person_unit: "người"
+  month: "tháng"

@@ -103,16 +103,11 @@
               <%= t("invoice.latest_reading_label", unit: @log.unit) %>
               <span class="text-danger" data-service-log-form-target="latestReadingAsterisk">*</span>
             <% end %>
-            <%= f.number_field :latest_reading, class: "form-control shadow-sm fw-bold",
+            <%= f.number_field :latest_reading, class: "form-control shadow-sm",
                                placeholder: t("invoice.reading_placeholder"),
                                required: true,
                                min: @log.prev_reading,
                                data: { service_log_form_target: "latestReadingInput" } %>
-          </div>
-
-          <div class="col-md-6">
-            <%= f.label :reading_photo, t("invoice.meter_photo"), class: "form-label fw-semibold" %>
-            <%= f.file_field :reading_photo, accept: "image/*", class: "form-control shadow-sm" %>
           </div>
 
           <div class="col-md-6">
@@ -134,7 +129,9 @@
             <label class="form-label fw-semibold mb-2">
               <%= t("invoice.confirmation_mode_label") %> <span class="text-danger">*</span>
             </label>
+
             <div class="row g-3">
+              <!-- Landlord confirm -->
               <div class="col-md-6">
                 <div class="card h-100 confirmation-radio-card p-3 border rounded-3 bg-light cursor-pointer">
                   <div class="form-check d-flex align-items-start gap-2 mb-0">
@@ -155,6 +152,7 @@
                 </div>
               </div>
 
+              <!-- Wait for tenant to upload the image -->
               <div class="col-md-6">
                 <div class="card h-100 confirmation-radio-card p-3 border rounded-3 bg-light cursor-pointer">
                   <div class="form-check d-flex align-items-start gap-2 mb-0">
@@ -175,6 +173,12 @@
                 </div>
               </div>
             </div>
+          </div>
+
+          <!-- Photo upload -->
+          <div class="col-md-6" data-service-log-form-target="photoUploadWrapper">
+            <%= f.label :reading_photo, t("invoice.meter_photo"), class: "form-label fw-semibold" %>
+            <%= f.file_field :reading_photo, accept: "image/*", class: "form-control shadow-sm" %>
           </div>
 
           <div class="col-12 mt-4 text-end">

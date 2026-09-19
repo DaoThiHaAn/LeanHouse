@@ -567,6 +567,7 @@ class LandlordPortal::ServiceUsageLogsControllerTest < ActionDispatch::Integrati
     assert_response :success
     assert_select "input[type=radio][name='service_usage_log[is_confirmed]'][value='true']"
     assert_select "input[type=radio][name='service_usage_log[is_confirmed]'][value='false']"
+    assert_select "div[data-service-log-form-target='photoUploadWrapper'] input[type=file][name='service_usage_log[reading_photo]']"
   end
 
   test "new log form renders floor and dependent room fields as an input group" do
