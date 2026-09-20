@@ -90,6 +90,10 @@ class TenantPortal::ServiceUsageLogsController < TenantPortal::BaseController
       return
     end
 
+    if params[:service_usage_log]&.[](:purge_reading_photo) == "1" && params[:service_usage_log]&.[](:reading_photo).blank?
+      @log.reading_photo.purge if @log.reading_photo.attached?
+    end
+
     # Photo is required if not previously attached
     if !@log.reading_photo.attached? && params[:service_usage_log]&.[](:reading_photo).blank?
       @log.errors.add(:reading_photo, t("invoice.reading_photo_required", default: "vui lòng chụp hoặc đính kèm ảnh công tơ thực tế"))
@@ -102,12 +106,19 @@ class TenantPortal::ServiceUsageLogsController < TenantPortal::BaseController
 
     @log.submitted_by = current_user
     if @log.update(tenant_log_params)
-      flash.now[:notice] = t("invoice.submit_reading_success", default: "Đã gửi chỉ số và ảnh chụp công tơ thành công! Đang chờ chủ trọ duyệt.")
+      notice_msg = t("invoice.submit_reading_success", default: "Đã gửi chỉ số và ảnh chụp công tơ thành công! Đang chờ chủ trọ duyệt.")
+      flash[:notice] = notice_msg
       respond_to do |format|
-        format.turbo_stream
         format.html do
-          redirect_to tenant_service_usage_logs_path(month: @log.billing_month.strftime("%Y-%m")),
-                      notice: t("invoice.submit_reading_success", default: "Đã gửi chỉ số và ảnh chụp công tơ thành công! Đang chờ chủ trọ duyệt.")
+          redirect_to tenant_service_usage_logs_path(month: @log.billing_month.strftime("%Y-%m")), notice: notice_msg
+        end
+        format.turbo_stream do
+          if request.headers["Turbo-Frame"] == "_top"
+            redirect_to tenant_service_usage_logs_path(month: @log.billing_month.strftime("%Y-%m")), notice: notice_msg
+          else
+            flash.now[:notice] = notice_msg
+            render :update
+          end
         end
       end
     else

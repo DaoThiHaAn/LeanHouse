@@ -13,6 +13,7 @@ en:
 
     titles:
       service_usage_log_confirmed: "Meter Reading Confirmed"
+      service_usage_log_requested: "Meter Reading Submission Requested"
       invoice_paid_landlord_self: "Payment Confirmed for %{code}"
       invoice_paid_tenant_submit: "Tenant Paid Invoice %{code}"
       invoice_paid_roommate_submit: "Invoice %{code} Paid"
@@ -23,6 +24,7 @@ en:
 
     messages:
       service_usage_log_confirmed: "Landlord has confirmed %{service_name} reading for %{room_name} (month %{month})."
+      service_usage_log_requested: "Landlord requested %{service_name} meter reading for %{room_name} (month %{month}). Please take a meter photo and submit readings."
       invoice_paid_landlord_self: "You confirmed payment for invoice %{code} (%{room_name}) for %{amount} via %{method}."
       invoice_paid_tenant_submit: "Tenant %{actor_name} (%{room_name}) submitted payment confirmation for invoice %{code} for %{amount} via %{method}. Please check your account."
       invoice_paid_roommate_submit: "Your roommate %{actor_name} paid invoice %{code} (%{room_name}) for %{amount} via %{method}."

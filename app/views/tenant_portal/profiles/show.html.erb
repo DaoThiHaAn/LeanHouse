@@ -1,11 +1,11 @@
 <% content_for :title, t("bar.my_profile") %>
 
-<div class="profile main-container w-75">
+<div class="main-container">
   <h1 class="w-100 text-center mb-5"><%= t("bar.my_profile") %></h1>
 
-  <div class="d-flex gap-5 px-3">
+  <div class="d-flex flex-column flex-sm-row gap-5 px-3">
     <%# Sidebar %>
-    <div class="d-flex flex-column gap-3">
+    <div class="d-flex flex-column gap-3 align-items-center">
       <%# Avatar %>
       <div class="avatar-container d-flex flex-column align-items-center gap-3 p-3 pb-2">
         <%= render "avatar", user: @user %>

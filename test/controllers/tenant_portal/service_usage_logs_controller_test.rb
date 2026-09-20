@@ -623,22 +623,24 @@ class TenantPortal::ServiceUsageLogsControllerTest < ActionDispatch::Integration
     assert_select "turbo-frame##{frame_id}.table-row-frame"
   end
 
-  test "GET edit with Turbo-Frame header returns inline table row form" do
+  test "GET edit renders edit form" do
     sign_in_as(@tenant_user)
-    frame_id = ActionView::RecordIdentifier.dom_id(@during_stay_log)
 
-    get edit_tenant_service_usage_log_path(@during_stay_log), headers: { "Turbo-Frame" => frame_id }
+    get edit_tenant_service_usage_log_path(@during_stay_log)
     assert_response :success
 
-    assert_select "turbo-frame##{frame_id}.table-row-frame" do
-      assert_select "form" do
-        assert_select "input[name='service_usage_log[latest_reading]']"
-        assert_select "input[type=file][name='service_usage_log[reading_photo]']"
-        assert_select "a[href='#{tenant_service_usage_log_path(@during_stay_log)}']", text: /#{I18n.t('invoice.actions.back')}/
+    assert_select "form" do
+      assert_select "input[name='service_usage_log[latest_reading]']"
+      assert_select "input[type=file][name='service_usage_log[reading_photo]']"
+      assert_select "[data-controller~='file-preview']" do
+        assert_select "input[type=file][data-file-preview-target='input'][data-action*='file-preview#preview']"
+        assert_select "[data-file-preview-target='container']" do
+          assert_select "img[data-file-preview-target='preview']"
+          assert_select "button[data-action*='file-preview#clear']"
+        end
       end
     end
-    assert_includes response.body, "table-light"
-    assert_includes response.body, "colspan=\"8\""
+    assert_select "a[href='#{tenant_service_usage_log_path(@during_stay_log)}']", text: /#{I18n.t('invoice.actions.back')}/
   end
 
   test "GET show with Turbo-Frame header restores normal row partial" do
@@ -684,9 +686,8 @@ class TenantPortal::ServiceUsageLogsControllerTest < ActionDispatch::Integration
     assert_equal 380, @during_stay_log.latest_reading
   end
 
-  test "PATCH update with validation error via turbo_stream re-renders inline form with 422" do
+  test "PATCH update with validation error re-renders edit form with 422" do
     sign_in_as(@tenant_user)
-    frame_id = ActionView::RecordIdentifier.dom_id(@during_stay_log)
 
     patch tenant_service_usage_log_path(@during_stay_log),
           params: {
@@ -694,11 +695,67 @@ class TenantPortal::ServiceUsageLogsControllerTest < ActionDispatch::Integration
               latest_reading: 380,
               reading_photo: nil
             }
+          }
+
+    assert_response :unprocessable_entity
+    assert_select "form"
+    assert_includes response.body, I18n.t("invoice.reading_photo_required")
+  end
+
+  test "GET edit on log with attached photo renders preview container visible with existing photo" do
+    sign_in_as(@tenant_user)
+    @during_stay_log.reading_photo.attach(
+      io: File.open(Rails.root.join("test/fixtures/files/normal.png")),
+      filename: "normal.png",
+      content_type: "image/png"
+    )
+
+    get edit_tenant_service_usage_log_path(@during_stay_log)
+    assert_response :success
+    assert_select "[data-file-preview-target='container']" do |containers|
+      assert_not_includes containers.first["class"], "d-none"
+    end
+    assert_select "img[data-file-preview-target='preview']"
+    assert_select "button[data-action*='file-preview#clear']"
+  end
+
+  test "PATCH update with purge_reading_photo=1 purges photo and requires photo if none provided" do
+    sign_in_as(@tenant_user)
+    @during_stay_log.reading_photo.attach(
+      io: File.open(Rails.root.join("test/fixtures/files/normal.png")),
+      filename: "normal.png",
+      content_type: "image/png"
+    )
+    assert @during_stay_log.reading_photo.attached?
+
+    patch tenant_service_usage_log_path(@during_stay_log),
+          params: {
+            service_usage_log: {
+              latest_reading: 380,
+              purge_reading_photo: "1"
+            }
           },
           as: :turbo_stream
 
     assert_response :unprocessable_entity
-    assert_select "turbo-frame##{frame_id}.table-row-frame"
+    assert_not @during_stay_log.reload.reading_photo.attached?
     assert_includes response.body, I18n.t("invoice.reading_photo_required")
+  end
+
+  test "PATCH update from form with Turbo-Frame _top redirects to tenant_service_usage_logs_path" do
+    sign_in_as(@tenant_user)
+    file = fixture_file_upload("normal.png", "image/png")
+
+    patch tenant_service_usage_log_path(@during_stay_log),
+          params: {
+            service_usage_log: {
+              latest_reading: 380,
+              reading_photo: file
+            }
+          },
+          headers: { "Turbo-Frame" => "_top" },
+          as: :turbo_stream
+
+    assert_redirected_to tenant_service_usage_logs_path(month: @during_stay_log.billing_month.strftime("%Y-%m"))
   end
 end

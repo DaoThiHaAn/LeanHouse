@@ -56,7 +56,7 @@ vi:
       sec_questions_note: "Bạn có tối đa 3 lần thử"
       staff_name_placeholder: "Nhập họ và tên nhân viên"
       delete_account_title: "Xóa tài khoản"
-      delete_account_desc: "Hủy kích hoạt và chuyển tài khoản của bạn vào trạng thái lưu trữ"
+      delete_account_desc: "Xoá tài khoản và tất cả dữ liệu liên quan"
       delete_account_btn: "Xóa tài khoản"
       checking_delete: "Đang kiểm tra..."
       delete_blocked_title: "Chưa thể xóa tài khoản lúc này"
@@ -66,6 +66,9 @@ vi:
       delete_confirm_note: "Dữ liệu lịch sử hợp đồng và thanh toán sẽ được giữ lại theo quy định lưu trữ để đối soát."
       delete_confirm_btn: "Xác nhận xóa"
       i_understand: "Tôi đã hiểu"
+      change_tel_cf: "Bạn có chắc chắn muốn thay đổi số điện thoại?"
+      change_pw_cf: "Bạn có chắc chắn muốn thay đổi mật khẩu?"
+
       blockers:
         active_tenants: "Vẫn còn %{count} khách thuê đang ở trong các nhà của bạn."
         active_stay: "Bạn hiện đang thuê và ở trong phòng/giường trọ. Vui lòng làm thủ tục trả phòng (Checkout) trước."

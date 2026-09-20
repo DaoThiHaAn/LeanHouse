@@ -16,7 +16,8 @@ class Invoice < ApplicationRecord
   belongs_to :undone_by, class_name: "User", optional: true
 
   has_many :invoice_items, dependent: :destroy
-  has_many :service_usage_logs, dependent: :nullify
+  has_many :invoice_service_usage_logs, dependent: :destroy
+  has_many :service_usage_logs, through: :invoice_service_usage_logs
   has_many :payment_orders, dependent: :destroy
   has_one :payos_order, -> { where(provider: "payos").order(id: :desc) }, class_name: "PaymentOrder"
 
@@ -93,7 +94,7 @@ class Invoice < ApplicationRecord
         discarded_at: Time.current,
         note: [ note, "[Hủy bởi #{by_user.fullname} lúc #{Time.current.strftime('%H:%M %d/%m/%Y')}]" ].compact_blank.join("\n")
       )
-      service_usage_logs.update_all(invoice_id: nil)
+      invoice_service_usage_logs.destroy_all
     end
   end
 

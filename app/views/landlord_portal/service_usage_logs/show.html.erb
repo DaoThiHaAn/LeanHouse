@@ -122,9 +122,13 @@
                   <div class="d-flex justify-content-between align-items-center">
                     <span class="text-secondary small"><%= t("invoice.submitter") %>:</span>
                     <span class="fw-semibold small text-dark">
-                      <%= @log.submitted_by.is_a?(User) ? @log.submitted_by.fullname : t("invoice.landlord_label") %>
-                      <% if @log.submitted_by.is_a?(User) %>
+                      <% if !@log.is_confirmed? && @log.latest_reading.blank? %>
+                        <span class="text-secondary fst-italic"><%= t("invoice.awaiting_tenant_submit") %></span>
+                      <% elsif @log.submitted_by.is_a?(User) %>
+                        <%= @log.submitted_by.fullname %>
                         <span class="text-secondary small">(<%= @log.submitted_by.tenant? ? t("invoice.submitted_by_tenant") : t("invoice.submitted_by_landlord") %>)</span>
+                      <% else %>
+                        <%= t("invoice.landlord_label") %>
                       <% end %>
                     </span>
                   </div>
@@ -168,6 +172,22 @@
                     <span class="text-secondary small"><%= t("service_usage_logs.billing_state") %>:</span>
                     <%= usage_log_billed_badge(@log, show_unbilled: true) %>
                   </div>
+
+                  <% if @log.billed? && @log.invoices.any? %>
+                    <div class="mt-2 pt-2 border-top">
+                      <span class="text-secondary small d-block mb-1"><%= t("invoice.associated_invoices", default: "Hóa đơn liên kết") %>:</span>
+                      <div class="d-flex flex-wrap gap-1">
+                        <% @log.invoices.each do |inv| %>
+                          <%= link_to landlord_house_invoice_path(@house, inv),
+                                      class: "badge bg-white text-primary border text-decoration-none shadow-xs d-inline-flex align-items-center gap-1 py-1 px-2",
+                                      data: { turbo_frame: "_top" } do %>
+                            <span class="material-symbols-outlined fs-6">receipt</span>
+                            <span><%= inv.code %></span>
+                          <% end %>
+                        <% end %>
+                      </div>
+                    </div>
+                  <% end %>
                 </div>
 
               </div>
@@ -180,7 +200,7 @@
           <div>
             <% unless @log.billed? %>
               <%= link_to edit_landlord_house_service_usage_log_path(@house, @log),
-                          class: "btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-1",
+                          class: "btn btn-outline-primary btn-sm d-inline-flex align-items-center gap-1",
                           data: { turbo_frame: "_top" } do %>
                 <span class="material-symbols-outlined fs-6">edit</span>
                 <span><%= t("edit") %></span>

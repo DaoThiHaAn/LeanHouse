@@ -236,6 +236,58 @@ class LandlordPortal::ServiceUsageLogsControllerTest < ActionDispatch::Integrati
     assert_redirected_to landlord_house_service_usage_logs_path(@house, month: @billing_month.next_month.strftime("%Y-%m"))
   end
 
+  test "should create unconfirmed service usage log awaiting tenant and notify tenant" do
+    tenant_user = User.create!(
+      fullname: "Nguyen Van A",
+      tel: "090#{SecureRandom.random_number(10_000_000).to_s.rjust(7, '0')}",
+      password: "Password123",
+      password_confirmation: "Password123",
+      role: :tenant,
+      sex: "male",
+      bday: 25.years.ago.to_date,
+      address: "123 Street",
+      tel_verified_at: Time.current
+    )
+    tenant = Tenant.find_or_create_by!(id: tenant_user.id)
+    @room.rental_unit.tenant_stays.create!(tenant: tenant, checkin_at: 1.month.ago, checkout_at: nil)
+
+    assert_difference -> { ServiceUsageLog.count } => 1, -> { Noticed::Event.count } => 1 do
+      post landlord_house_service_usage_logs_path(@house), params: {
+        service_usage_log: {
+          room_id: @room.id,
+          service_id: @service.id,
+          service_variant_id: @variant.id,
+          service_name: @service.name,
+          unit: @variant.human_unit,
+          unit_price: @variant.fee,
+          billing_month: @billing_month.next_month.strftime("%Y-%m"),
+          start_date: @billing_month.next_month.beginning_of_month,
+          end_date: @billing_month.next_month.end_of_month,
+          prev_reading: 220,
+          latest_reading: nil,
+          is_confirmed: false
+        }
+      }
+    end
+
+    created_log = ServiceUsageLog.last
+    assert_nil created_log.submitted_by
+    assert_not created_log.is_confirmed?
+    assert_redirected_to landlord_house_service_usage_logs_path(@house, month: @billing_month.next_month.strftime("%Y-%m"))
+  end
+
+  test "show renders awaiting tenant submit text when unconfirmed and reading blank" do
+    @log.update_columns(
+      is_confirmed: false,
+      latest_reading: nil,
+      submitted_by_id: nil,
+      submitted_by_type: nil
+    )
+    get landlord_house_service_usage_log_path(@house, @log), headers: { "Turbo-Frame" => "usage_log_detail_modal" }
+    assert_response :success
+    assert_includes response.body, I18n.t("invoice.awaiting_tenant_submit")
+  end
+
   test "should confirm single log and lock tenant modifications" do
     assert_equal false, @log.is_confirmed?
     assert_equal true, @log.can_be_edited_by_tenant?
@@ -361,6 +413,52 @@ class LandlordPortal::ServiceUsageLogsControllerTest < ActionDispatch::Integrati
     assert_redirected_to landlord_house_service_usage_logs_path(@house)
     assert_equal I18n.t("service_usage_logs.cannot_delete_billed", default: "Chỉ số này đã được xuất hóa đơn, không thể xóa!"), flash[:alert]
   end
+
+  test "should not allow edit for billed log and redirect with alert" do
+    invoice = Invoice.create!(
+      code: "INV-TEST-EDIT-BILLED",
+      title: "Hóa đơn test edit",
+      house: @house,
+      room: @room,
+      created_by: @landlord_user,
+      invoice_type: "room",
+      billing_month: @billing_month,
+      due_date: @billing_month + 10.days,
+      subtotal: 100_000,
+      total_amount: 100_000,
+      status: :pending
+    )
+    @log.update!(invoice: invoice)
+
+    get edit_landlord_house_service_usage_log_path(@house, @log)
+    assert_redirected_to landlord_house_service_usage_logs_path(@house, month: @billing_month.strftime("%Y-%m"))
+    assert_equal I18n.t("service_usage_logs.cannot_edit_billed", default: "Chỉ số này đã được xuất hóa đơn, không thể chỉnh sửa!"), flash[:alert]
+  end
+
+  test "should not allow update for billed log and redirect with alert" do
+    invoice = Invoice.create!(
+      code: "INV-TEST-UPDATE-BILLED",
+      title: "Hóa đơn test update",
+      house: @house,
+      room: @room,
+      created_by: @landlord_user,
+      invoice_type: "room",
+      billing_month: @billing_month,
+      due_date: @billing_month + 10.days,
+      subtotal: 100_000,
+      total_amount: 100_000,
+      status: :pending
+    )
+    @log.update!(invoice: invoice)
+
+    patch landlord_house_service_usage_log_path(@house, @log), params: {
+      service_usage_log: { latest_reading: 9999 }
+    }
+    assert_redirected_to landlord_house_service_usage_logs_path(@house, month: @billing_month.strftime("%Y-%m"))
+    assert_equal I18n.t("service_usage_logs.cannot_edit_billed", default: "Chỉ số này đã được xuất hóa đơn, không thể chỉnh sửa!"), flash[:alert]
+    assert_not_equal 9999, @log.reload.latest_reading
+  end
+
 
   test "should get room index with real_time tab by default when real_time service exists" do
     get landlord_house_room_service_usage_logs_path(@house, @room)
@@ -658,6 +756,51 @@ class LandlordPortal::ServiceUsageLogsControllerTest < ActionDispatch::Integrati
     end
     assert_response :redirect
     assert @log.reload.is_confirmed?
+  end
+
+  test "creating unconfirmed log sends notification to active staying tenants in room requesting meter reading" do
+    tenant_user = User.create!(
+      fullname: "Staying Tenant Request",
+      tel: "090#{SecureRandom.random_number(10_000_000).to_s.rjust(7, '0')}",
+      password: "Password123",
+      password_confirmation: "Password123",
+      role: "tenant",
+      sex: "female",
+      bday: 22.years.ago.to_date,
+      address: "Room 101",
+      tel_verified_at: Time.current
+    )
+    tenant = Tenant.find_or_create_by!(id: tenant_user.id)
+    TenantStay.create!(
+      rental_unit: @room.rental_unit,
+      tenant: tenant,
+      checkin_at: 1.month.ago,
+      checkout_at: nil
+    )
+
+    next_month = 4.months.from_now.beginning_of_month
+
+    assert_difference -> { Noticed::Notification.where(recipient: tenant_user).count }, 1 do
+      post landlord_house_service_usage_logs_path(@house), params: {
+        service_usage_log: {
+          billing_month: next_month.strftime("%Y-%m"),
+          room_id: @room.id,
+          service_id: @service.id,
+          service_variant_id: @variant.id,
+          service_name: @service.name,
+          unit: @variant.human_unit,
+          unit_price: @variant.fee,
+          prev_reading: 220,
+          latest_reading: nil,
+          is_confirmed: false,
+          start_date: next_month,
+          end_date: next_month.end_of_month
+        }
+      }
+    end
+    assert_response :redirect
+    notification = Noticed::Notification.where(recipient: tenant_user).last
+    assert_equal I18n.t("noti.titles.service_usage_log_requested"), notification.title
   end
 
   test "whole house index with tab fixed renders fixed services summary" do

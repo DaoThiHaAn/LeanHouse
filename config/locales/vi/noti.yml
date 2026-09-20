@@ -62,6 +62,7 @@ vi:
       invoice_unpaid_landlord: "Đã hoàn tác xác nhận thanh toán hóa đơn %{code}"
       invoice_unpaid_tenant: "Hóa đơn %{code} chưa hoàn tất thanh toán"
       service_usage_log_confirmed: "Chỉ số dịch vụ đã được xác nhận"
+      service_usage_log_requested: "Yêu cầu nộp chỉ số dịch vụ"
 
     messages:
       invoice_paid_landlord_self: "Bạn đã xác nhận thu tiền cho hóa đơn %{code} (%{room_name}) với số tiền %{amount} qua %{method}."
@@ -122,3 +123,4 @@ vi:
       request_completed_tenant: "Chủ nhà đã hoàn thành %{request_type} tại %{house_name}."
       request_rejected_tenant: "Chủ nhà đã từ chối %{request_type} tại %{house_name}. Lý do: %{reason}"
       service_usage_log_confirmed: "Chủ nhà đã xác nhận chỉ số %{service_name} tháng %{month} của phòng %{room_name}."
+      service_usage_log_requested: "Chủ nhà đã mở đợt ghi chỉ số %{service_name} tháng %{month} cho phòng %{room_name}. Vui lòng chụp ảnh công tơ và nộp chỉ số."

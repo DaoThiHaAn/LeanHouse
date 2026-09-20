@@ -1,4 +1,4 @@
-<%= turbo_frame_tag "draft_items_form" do %>
+<%= turbo_frame_tag "draft_items_form", data: { current_room_id: local_assigns[:room]&.id.to_s, current_invoice_type: local_assigns[:invoice_type].to_s } do %>
   <% if local_assigns[:room].nil? %>
     <div class="card invoice-card mb-4 shadow-sm border-0 bg-white">
       <div class="card-body p-5 text-center">
@@ -21,7 +21,11 @@
         <div>
           <h2 class="mb-2 d-flex align-items-center gap-2">
             <span class="material-symbols-filled fs-3">table</span>
-            <span><%= t('invoice.item_or_service') %> (<%= t('common.month', default: 'Tháng') %> <%= billing_month.strftime("%m/%Y") %> - <%= room.title_name %>)</span>
+            <span>
+              <%= t('invoice.item_or_service') %>
+              (<%= t('invoice.billing_month') %>
+              <%= billing_month.strftime("%m/%Y") %> - <%= room.title_name %>)
+            </span>
           </h2>
           <p class="w-75 text-info-emphasis ms-4"><%= t('invoice.service_note') %></p>
         </div>
@@ -41,7 +45,7 @@
             <tr>
               <th class="ps-3 text-center th-check"><%= t('invoice.actions.done') %></th>
               <th><%= t('invoice.item_or_service') %></th>
-              <th class="th-unit"><%= t('invoice.unit') %></th>
+              <th class="text-end th-unit"><%= t('invoice.unit') %></th>
               <th class="th-price"><%= t('invoice.unit_price') %></th>
               <th class="th-reading"><%= t('invoice.reading_or_qty') %></th>
               <th class="text-end th-amount"><%= t('invoice.amount') %></th>
@@ -72,6 +76,41 @@
                                      readonly: true,
                                      autocomplete: "off",
                                      class: "form-control form-control-sm fw-semibold item-name bg-light-subtle" %>
+                  <% if item[:item_type].to_sym == :metered_service %>
+                    <div class="mt-2 d-flex flex-wrap align-items-center gap-1">
+                      <% if item[:is_confirmed] %>
+                        <span class="badge bg-success-subtle text-success border border-success-subtle d-inline-flex align-items-center gap-1 font-monospace py-1"
+                              <%= tooltip("right", :"invoice.status_confirmed_note", html: true) %>>
+                          <span class="material-symbols-filled fs-6">lock</span>
+                          <span><%= t('invoice.status_confirmed') %></span>
+                        </span>
+
+                      <% elsif item[:has_log] %>
+                        <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle d-inline-flex align-items-center gap-1 font-monospace py-1"
+                              <%= tooltip("right", :"invoice.status_unconfirmed_note", html: true) %>>
+                          <span class="material-symbols-filled fs-6">schedule</span>
+                          <span><%= t('invoice.status_unconfirmed') %></span>
+                        </span>
+
+                        <% if item[:log]&.reading_photo&.attached? %>
+                          <%= link_to landlord_house_service_usage_log_path(room.house, item[:log]),
+                                      class: "badge bg-primary-subtle text-primary border border-primary-subtle text-decoration-none d-inline-flex align-items-center gap-1 py-1",
+                                      data: { turbo_frame: "usage_log_detail_modal" },
+                                      title: t("service_usage_logs.view_detail") do %>
+                            <span class="material-symbols-outlined fs-6">photo_camera</span>
+                            <span><%= t("service_usage_logs.view_photo_btn") %></span>
+                          <% end %>
+                        <% end %>
+
+                      <% else %>
+                        <span class="badge bg-secondary-subtle text-secondary border d-inline-flex align-items-center gap-1 font-monospace py-1"
+                          <%= tooltip("right", :"service_usage_logs.unrecorded_note", html: true) %>>
+                          <span class="material-symbols-outlined fs-6">edit_note</span>
+                          <span><%= t('service_usage_logs.unrecorded') %></span>
+                        </span>
+                      <% end %>
+                    </div>
+                  <% end %>
                 </td>
 
                 <td>
@@ -111,8 +150,9 @@
                         <%= number_field_tag "invoice[items][#{idx}][prev_reading]", item[:prev_reading],
                                               id: "invoice_items_#{idx}_prev_reading",
                                               min: 0,
+                                              readonly: item[:is_confirmed],
                                               autocomplete: "off",
-                                              class: "form-control font-monospace item-prev-reading",
+                                              class: "form-control font-monospace item-prev-reading #{'bg-light-subtle text-secondary' if item[:is_confirmed]}",
                                               placeholder: t('invoice.prev_reading'),
                                               data: { action: "input->invoice-items#calculateRow" } %>
                       </div>
@@ -123,9 +163,10 @@
                         </span>
                         <%= number_field_tag "invoice[items][#{idx}][latest_reading]", item[:latest_reading],
                                               id: "invoice_items_#{idx}_latest_reading",
-                                              min: 0,
+                                              min: (item[:prev_reading] || 0),
+                                              readonly: item[:is_confirmed],
                                               autocomplete: "off",
-                                              class: "form-control font-monospace text-primary item-latest-reading",
+                                              class: "form-control font-monospace text-primary item-latest-reading #{'bg-light-subtle text-secondary' if item[:is_confirmed]}",
                                               placeholder: t('invoice.latest_reading'),
                                               data: { action: "input->invoice-items#calculateRow" } %>
                       </div>
@@ -169,15 +210,15 @@
         <div class="col-md-7">
           <div class="d-flex flex-column gap-1 small">
             <div class="d-flex justify-content-between text-secondary invoice-summary-row">
-              <span><%= t('invoice.subtotal_room_services', default: 'Tiền phòng & Dịch vụ') %>:</span>
+              <span><%= t('invoice.subtotal_room_services') %>:</span>
               <span id="summary_subtotal" data-invoice-items-target="subtotalSummary" class="font-monospace fw-semibold text-dark">0 đ</span>
             </div>
             <div class="d-flex justify-content-between text-primary invoice-summary-row">
-              <span><%= t('invoice.total_addition_summary', default: 'Tổng phụ phí (+)') %>:</span>
+              <span><%= t('invoice.total_addition_summary') %>:</span>
               <span id="summary_addition" data-invoice-items-target="additionSummary" class="font-monospace fw-semibold">+ 0 đ</span>
             </div>
             <div class="d-flex justify-content-between text-danger invoice-summary-row">
-              <span><%= t('invoice.total_discount_summary', default: 'Tổng giảm trừ (-)') %>:</span>
+              <span><%= t('invoice.total_discount_summary') %>:</span>
               <span id="summary_discount" data-invoice-items-target="discountSummary" class="font-monospace fw-semibold">- 0 đ</span>
             </div>
           </div>

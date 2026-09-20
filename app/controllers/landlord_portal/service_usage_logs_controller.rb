@@ -65,7 +65,11 @@ class LandlordPortal::ServiceUsageLogsController < LandlordPortal::BaseControlle
   # - If is_confirmed: false -> opens the cycle and awaits tenant photo/reading submission
   def create
     @log = ServiceUsageLog.new(log_params)
-    @log.submitted_by = current_user
+    if @log.is_confirmed? || @log.latest_reading.present?
+      @log.submitted_by = current_user
+    else
+      @log.submitted_by = nil
+    end
 
     if @log.is_confirmed?
       @log.confirmed_by = current_user
@@ -77,6 +81,7 @@ class LandlordPortal::ServiceUsageLogsController < LandlordPortal::BaseControlle
     @billing_month = @log.billing_month || Date.current.beginning_of_month
 
     if @log.save
+      notify_tenants_of_requested_log(@log) unless @log.is_confirmed?
       redirect_to determine_redirect_path(@log), notice: t("service_usage_logs.create_success", default: "Đã ghi nhận chỉ số dịch vụ thành công!")
     else
       render :new, status: :unprocessable_entity
@@ -87,9 +92,17 @@ class LandlordPortal::ServiceUsageLogsController < LandlordPortal::BaseControlle
   end
 
   def edit
+    if @log.billed?
+      redirect_to determine_redirect_path(@log), alert: t("service_usage_logs.cannot_edit_billed", default: "Chỉ số này đã được xuất hóa đơn, không thể chỉnh sửa!")
+    end
   end
 
   def update
+    if @log.billed?
+      redirect_to determine_redirect_path(@log), alert: t("service_usage_logs.cannot_edit_billed", default: "Chỉ số này đã được xuất hóa đơn, không thể chỉnh sửa!")
+      return
+    end
+
     @log.allow_landlord_override = true
 
     if @log.update(log_params)
@@ -250,6 +263,13 @@ class LandlordPortal::ServiceUsageLogsController < LandlordPortal::BaseControlle
 
   def notify_tenants_of_confirmed_logs(logs)
     logs.each { |log| notify_tenants_of_confirmed_log(log) }
+  end
+
+  def notify_tenants_of_requested_log(log)
+    tenants = log.room.active_staying_tenant_users
+    return if tenants.empty?
+
+    ServiceUsageLogRequestedNotifier.with(log: log).deliver_later(tenants)
   end
 
   def from_room_context?

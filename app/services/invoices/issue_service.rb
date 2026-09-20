@@ -141,6 +141,7 @@ module Invoices
         if item_type == "metered_service"
           variant_id = item_param[:service_variant_id]
           variant = ServiceVariant.find_by(id: variant_id)
+          log = nil
 
           if record_usage_log
             if item_param[:latest_reading].present?
@@ -159,11 +160,23 @@ module Invoices
               log.is_confirmed = true
               log.confirmed_at ||= Time.current
               log.confirmed_by ||= @landlord
-              log.invoice = invoice
               log.save!
             elsif item_param[:service_usage_log_id].present?
-              ServiceUsageLog.where(id: item_param[:service_usage_log_id]).update_all(invoice_id: invoice.id)
+              log = ServiceUsageLog.find_by(id: item_param[:service_usage_log_id])
             end
+          else
+            log = if item_param[:service_usage_log_id].present?
+                    ServiceUsageLog.find_by(id: item_param[:service_usage_log_id])
+            else
+                    @room.service_usage_logs.find_by(
+                      service_id: variant&.service_id,
+                      billing_month: @billing_month
+                    )
+            end
+          end
+
+          if log.present? && !invoice.service_usage_logs.include?(log)
+            invoice.service_usage_logs << log
           end
         end
 

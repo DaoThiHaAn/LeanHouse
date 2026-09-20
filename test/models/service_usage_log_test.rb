@@ -139,4 +139,88 @@ class ServiceUsageLogTest < ActiveSupport::TestCase
     assert_not log.valid?
     assert log.errors[:latest_reading].any?
   end
+
+  test "invalid when duplicate log created for same room, service and billing_month" do
+    ServiceUsageLog.create!(
+      room: @room,
+      service: @service,
+      service_variant: @variant,
+      service_name: @service.name,
+      unit: "kWh",
+      unit_price: 3500,
+      billing_month: @billing_month,
+      start_date: @billing_month,
+      end_date: @billing_month.end_of_month,
+      prev_reading: 100,
+      latest_reading: 150,
+      is_confirmed: true
+    )
+
+    dup_log = ServiceUsageLog.new(
+      room: @room,
+      service: @service,
+      service_variant: @variant,
+      service_name: @service.name,
+      unit: "kWh",
+      unit_price: 3500,
+      billing_month: @billing_month,
+      start_date: @billing_month,
+      end_date: @billing_month.end_of_month,
+      prev_reading: 150,
+      latest_reading: 200,
+      is_confirmed: true
+    )
+
+    assert_not dup_log.valid?
+    assert dup_log.errors[:service_id].any?
+  end
+
+  test "billed? returns true when linked to an invoice and false when unbilled" do
+    log = ServiceUsageLog.create!(
+      room: @room,
+      service: @service,
+      service_variant: @variant,
+      service_name: @service.name,
+      unit: "kWh",
+      unit_price: 3500,
+      billing_month: @billing_month,
+      start_date: @billing_month,
+      end_date: @billing_month.end_of_month,
+      prev_reading: 100,
+      latest_reading: 150,
+      is_confirmed: true
+    )
+
+    assert_not log.billed?
+    assert_includes ServiceUsageLog.unbilled, log
+    assert_not_includes ServiceUsageLog.billed, log
+
+    inv = Invoice.create!(
+      code: "INV-LOG-TEST-001",
+      title: "Bill",
+      house: @house,
+      room: @room,
+      created_by: @user,
+      invoice_type: "room",
+      status: :pending,
+      billing_month: @billing_month,
+      start_date: @billing_month,
+      end_date: @billing_month.end_of_month,
+      due_date: Date.current + 5.days,
+      subtotal: 100_000,
+      total_amount: 100_000
+    )
+    inv.service_usage_logs << log
+
+    log.reload
+    assert log.billed?
+    assert_includes ServiceUsageLog.billed, log
+    assert_not_includes ServiceUsageLog.unbilled, log
+
+    # prevent destroy if billed
+    assert_no_difference "ServiceUsageLog.count" do
+      log.destroy
+    end
+    assert log.errors[:base].any?
+  end
 end

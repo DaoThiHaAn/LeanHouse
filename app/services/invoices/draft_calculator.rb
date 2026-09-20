@@ -170,6 +170,7 @@ module Invoices
         items << {
           service_variant_id: variant.id,
           service_usage_log_id: log&.id,
+          log: log,
           item_type: :metered_service,
           name: variant.service.name,
           unit: variant.human_unit,

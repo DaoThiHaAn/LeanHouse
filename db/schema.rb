@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_19_203909) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_20_164000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "unaccent"
@@ -175,6 +175,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_19_203909) do
     t.datetime "updated_at", null: false
     t.index ["invoice_id"], name: "index_invoice_items_on_invoice_id"
     t.index ["service_variant_id"], name: "index_invoice_items_on_service_variant_id"
+  end
+
+  create_table "invoice_service_usage_logs", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "invoice_id", null: false
+    t.bigint "service_usage_log_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["invoice_id", "service_usage_log_id"], name: "idx_inv_usage_logs_unique", unique: true
+    t.index ["invoice_id"], name: "index_invoice_service_usage_logs_on_invoice_id"
+    t.index ["service_usage_log_id"], name: "index_invoice_service_usage_logs_on_service_usage_log_id"
   end
 
   create_table "invoices", force: :cascade do |t|
@@ -361,7 +371,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_19_203909) do
     t.bigint "confirmed_by_id"
     t.datetime "created_at", null: false
     t.date "end_date", null: false
-    t.bigint "invoice_id"
     t.boolean "is_confirmed", default: false, null: false
     t.integer "latest_reading"
     t.integer "prev_reading", default: 0, null: false
@@ -377,7 +386,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_19_203909) do
     t.datetime "updated_at", null: false
     t.integer "usage_quantity"
     t.index ["confirmed_by_id"], name: "index_service_usage_logs_on_confirmed_by_id"
-    t.index ["invoice_id"], name: "index_service_usage_logs_on_invoice_id"
     t.index ["room_id", "service_id", "billing_month"], name: "idx_usage_logs_room_service_month", unique: true
     t.index ["room_id"], name: "index_service_usage_logs_on_room_id"
     t.index ["service_id"], name: "index_service_usage_logs_on_service_id"
@@ -613,6 +621,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_19_203909) do
   add_foreign_key "houses", "landlords"
   add_foreign_key "invoice_items", "invoices", on_delete: :cascade
   add_foreign_key "invoice_items", "service_variants", on_delete: :nullify
+  add_foreign_key "invoice_service_usage_logs", "invoices", on_delete: :cascade
+  add_foreign_key "invoice_service_usage_logs", "service_usage_logs", on_delete: :cascade
   add_foreign_key "invoices", "bank_accounts", on_delete: :nullify
   add_foreign_key "invoices", "houses", on_delete: :cascade
   add_foreign_key "invoices", "rooms", on_delete: :cascade
@@ -628,7 +638,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_19_203909) do
   add_foreign_key "room_services", "rooms", on_delete: :cascade
   add_foreign_key "room_services", "service_variants", on_delete: :cascade
   add_foreign_key "rooms", "floors"
-  add_foreign_key "service_usage_logs", "invoices", on_delete: :nullify
   add_foreign_key "service_usage_logs", "rooms", on_delete: :cascade
   add_foreign_key "service_usage_logs", "service_variants", on_delete: :nullify
   add_foreign_key "service_usage_logs", "services", on_delete: :nullify

@@ -23,7 +23,7 @@ class LandlordServiceUsageLogsFilter
     scope = apply_status(scope)
 
     scope = scope
-      .preload({ room: :floor }, :service, :service_variant, :submitted_by, :confirmed_by, reading_photo_attachment: :blob)
+      .preload({ room: :floor }, :service, :service_variant, :submitted_by, :confirmed_by, :invoice_service_usage_logs, :invoices, reading_photo_attachment: :blob)
 
     scope = if room.present? || params[:room_id].present?
       scope.order("service_usage_logs.billing_month DESC, service_usage_logs.created_at DESC")
@@ -96,7 +96,7 @@ class LandlordServiceUsageLogsFilter
     when "unconfirmed"
       scope.unconfirmed
     when "billed"
-      scope.where.not(invoice_id: nil)
+      scope.billed
     else
       scope
     end

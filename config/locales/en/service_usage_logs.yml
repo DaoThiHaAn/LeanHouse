@@ -48,6 +48,7 @@ en:
     confirm_all_room_success: "Confirmed %{count} meter readings for room %{room}!"
     confirm_all_success: "Confirmed all %{count} meter readings for this month!"
     cannot_delete_billed: "This reading has already been billed and cannot be deleted!"
+    cannot_edit_billed: "This reading has already been billed and cannot be edited!"
     delete_success: "Meter log deleted successfully!"
     detail_title: "Service Usage Log Details: %{service} - %{room}"
     photo_uploaded_at: "Photo Uploaded At"
@@ -145,3 +146,5 @@ en:
     tenant_guide_step2_desc: "Click 'Submit Reading / Photo' to capture a clear meter face photo and enter the current reading."
     tenant_guide_step3_title: "3. Landlord Approval & Locking"
     tenant_guide_step3_desc: "Landlord verifies the photo and confirms the reading. Once confirmed, it is locked and ready for billing."
+    view_photo_btn: "View Photo"
+    unrecorded: "Unrecorded"

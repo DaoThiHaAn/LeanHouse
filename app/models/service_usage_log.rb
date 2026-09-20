@@ -4,24 +4,41 @@ class ServiceUsageLog < ApplicationRecord
   belongs_to :room
   belongs_to :service, optional: true
   belongs_to :service_variant, optional: true
-  belongs_to :invoice, optional: true
+  has_many :invoice_service_usage_logs, dependent: :destroy
+  has_many :invoices, through: :invoice_service_usage_logs
   belongs_to :submitted_by, polymorphic: true, optional: true
   belongs_to :confirmed_by, class_name: "User", optional: true
+
+  # Convenience backward-compatible accessors for primary/first invoice
+  def invoice
+    invoices.first
+  end
+
+  def invoice=(inv)
+    self.invoices = inv ? [ inv ] : []
+  end
 
   validates :service_name, :unit, :billing_month, :start_date, :end_date, presence: true
   validates :prev_reading, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   # latest_reading is required immediately if confirmed; optional if awaiting tenant photo/reading
   validates :latest_reading, presence: true, if: :is_confirmed?
   validates :latest_reading, numericality: { only_integer: true }, allow_nil: true
+  validates :service_id,
+            uniqueness: {
+              scope: %i[room_id billing_month],
+              message: ->(_object, _data) { I18n.t("activerecord.errors.models.service_usage_log.attributes.service_id.taken") }
+            },
+            if: :service_id?
   validate :latest_reading_greater_than_or_equal_to_prev_reading
   validate :prevent_modification_when_confirmed, on: :update
 
   before_save :compute_usage
-  before_destroy :prevent_destroy_if_billed
+  before_destroy :prevent_destroy_if_billed, prepend: true
 
   scope :confirmed,   -> { where(is_confirmed: true) }
   scope :unconfirmed, -> { where(is_confirmed: false) }
-  scope :unbilled,    -> { where(invoice_id: nil) }
+  scope :billed,      -> { where(id: InvoiceServiceUsageLog.select(:service_usage_log_id)) }
+  scope :unbilled,    -> { where.not(id: InvoiceServiceUsageLog.select(:service_usage_log_id)) }
   scope :for_month,   ->(month) { where(billing_month: month.to_date.beginning_of_month) }
   scope :sorted,      -> { order(billing_month: :desc, created_at: :desc) }
 
@@ -56,7 +73,11 @@ class ServiceUsageLog < ApplicationRecord
   end
 
   def billed?
-    invoice_id.present?
+    if invoice_service_usage_logs.loaded?
+      invoice_service_usage_logs.any?
+    else
+      invoice_service_usage_logs.exists?
+    end
   end
 
   # Tenants can only edit or upload meter photos if the log is not yet confirmed by the landlord

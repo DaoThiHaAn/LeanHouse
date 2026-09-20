@@ -67,8 +67,17 @@ class LandlordPortal::InvoicesController < LandlordPortal::BaseController
       return
     end
 
-    rooms_query = Invoices::OccupiedRoomsQuery.call(@house)
-    @room = rooms_query[:occupied_rooms].find { |r| r.id.to_s == params[:room_id].to_s } || @house.rooms.find(params[:room_id])
+    @room = @house.rooms.includes(:rental_unit, beds: :rental_unit).find_by(id: params[:room_id])
+    unless @room
+      render partial: "draft_items_form", locals: {
+        room: nil,
+        billing_month: @billing_month,
+        invoice_type: params[:invoice_type].presence || "room",
+        draft_items: []
+      }
+      return
+    end
+
     @invoice_type = params[:invoice_type].presence || "room"
 
     calculator = Invoices::DraftCalculator.new(

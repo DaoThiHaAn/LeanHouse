@@ -55,7 +55,9 @@
   </td>
 
   <td class="small">
-    <% if log.submitted_by.is_a?(User) %>
+    <% if !log.is_confirmed? && log.latest_reading.blank? %>
+      <span class="text-secondary fst-italic"><%= t("invoice.awaiting_tenant_submit") %></span>
+    <% elsif log.submitted_by.is_a?(User) %>
       <span class="fw-semibold"><%= log.submitted_by.fullname %></span>
       <span class="text-secondary d-block small">(<%= log.submitted_by.tenant? ? t("invoice.submitted_by_tenant") : t("invoice.submitted_by_landlord") %>)</span>
     <% else %>

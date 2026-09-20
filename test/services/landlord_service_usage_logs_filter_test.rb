@@ -143,6 +143,33 @@ class LandlordServiceUsageLogsFilterTest < ActiveSupport::TestCase
     assert_not_includes results, @log1
   end
 
+  test "filters by status billed" do
+    invoice = Invoice.create!(
+      code: "INV-FILTER-001",
+      title: "Bill",
+      house: @house,
+      room: @room1,
+      created_by: @landlord_user,
+      invoice_type: "room",
+      status: :pending,
+      billing_month: @billing_month,
+      start_date: @billing_month,
+      end_date: @billing_month.end_of_month,
+      due_date: Date.current + 5.days,
+      subtotal: 100_000,
+      total_amount: 100_000
+    )
+    invoice.service_usage_logs << @log1
+
+    results = LandlordServiceUsageLogsFilter.call(
+      house: @house,
+      params: { status: "billed" }
+    )
+    assert_includes results, @log1
+    assert_not_includes results, @log2
+    assert_not_includes results, @log_prev
+  end
+
   test "scopes to dedicated room and supports pagination" do
     results = LandlordServiceUsageLogsFilter.call(
       house: @house,

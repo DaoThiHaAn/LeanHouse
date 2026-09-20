@@ -21,6 +21,8 @@
                   invoice_form_rooms_value: @rooms_json_data.to_json,
                   invoice_form_select_room_prompt_value: t('invoice.select_room_prompt'),
                   invoice_form_select_tenant_prompt_value: t('invoice.select_tenant_prompt'),
+                  invoice_form_preview_error_text_value: t('invoice.preview_error'),
+                  invoice_form_retry_text_value: t('invoice.retry'),
                   loading_text_value: t('invoice.issuing'),
                   action: "submit->loading#submit"
                 } do |f| %>
@@ -136,3 +138,5 @@
 
 <!-- Modal Hướng dẫn Toàn diện -->
 <%= render "creation_guide_modal" %>
+
+<%= turbo_frame_tag "usage_log_detail_modal" %>

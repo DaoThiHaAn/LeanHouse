@@ -19,8 +19,10 @@ module ServiceUsageLogsHelper
 
   def usage_log_billed_badge(log, show_unbilled: false, extra_class: nil)
     if log.billed?
+      count = log.respond_to?(:invoices) ? (log.invoices.loaded? ? log.invoices.size : log.invoices.count) : 1
+      text = count > 1 ? "#{t('invoice.status_billed')} (#{count})" : t("invoice.status_billed")
       classes = [ "badge bg-info-subtle text-info-emphasis border border-info-subtle px-2 py-1", extra_class ].compact.join(" ")
-      content_tag(:span, t("invoice.status_billed"), class: classes)
+      content_tag(:span, text, class: classes)
     elsif show_unbilled
       content_tag(:span, t("service_usage_logs.not_billed_yet"), class: "text-secondary small fst-italic")
     end

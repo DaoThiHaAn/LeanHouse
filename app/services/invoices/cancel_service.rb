@@ -13,7 +13,7 @@ module Invoices
         )
 
         # Unlink any associated service usage logs
-        ServiceUsageLog.where(invoice_id: invoice.id).update_all(invoice_id: nil)
+        invoice.invoice_service_usage_logs.destroy_all
 
         # Cancel payOS payment link if exists
         cancel_payos_payment_link(invoice, cancelled_by)

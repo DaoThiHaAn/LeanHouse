@@ -458,6 +458,11 @@ textarea {
   border: 2px dashed #cbd5e1;
 }
 
+.img-preview {
+  width: 200px;
+  height: auto;
+}
+
 /* Polished Turn-Back / Back Navigation Link */
 .turn-back.link {
   display: inline-flex;
@@ -671,6 +676,9 @@ thead {
 @media (max-width: 991.98px) {
   html {
     font-size: 12px;
+  }
+  .main-container {
+    width: 85%;
   }
 }
 

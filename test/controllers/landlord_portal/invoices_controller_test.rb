@@ -647,6 +647,80 @@ class LandlordPortal::InvoicesControllerTest < ActionDispatch::IntegrationTest
     assert_select "tbody#standard_items_tbody tr.standard-row input.item-select-check"
   end
 
+  test "preview endpoint renders locked badge and readonly inputs for confirmed metered service log" do
+    sign_in_as(@landlord_user)
+
+    service = @house.services.create!(name: "Điện sinh hoạt")
+    variant = service.service_variants.create!(fee: 3_500, unit: :per_kwh, is_real_time: true)
+    @room1.room_services.create!(service_variant: variant)
+
+    billing_month = Date.current.beginning_of_month
+    @room1.service_usage_logs.create!(
+      service: service,
+      service_variant: variant,
+      service_name: service.name,
+      unit: variant.human_unit,
+      unit_price: variant.fee,
+      prev_reading: 100,
+      latest_reading: 180,
+      billing_month: billing_month,
+      start_date: billing_month,
+      end_date: billing_month.end_of_month,
+      is_confirmed: true
+    )
+
+    get preview_landlord_house_invoices_path(@house, room_id: @room1.id, month: billing_month.strftime("%Y-%m"), invoice_type: "room")
+    assert_response :success
+
+    # Badge shows locked / confirmed
+    assert_select "tr[data-item-type='metered_service'] span.badge", text: /#{I18n.t('invoice.status_confirmed')}/
+
+    # Reading inputs are readonly
+    assert_select "tr[data-item-type='metered_service'] input.item-prev-reading[readonly='readonly'][value='100']"
+    assert_select "tr[data-item-type='metered_service'] input.item-latest-reading[readonly='readonly'][value='180']"
+  end
+
+  test "preview endpoint renders unconfirmed badge and photo view button for unconfirmed log with photo" do
+    sign_in_as(@landlord_user)
+
+    service = @house.services.create!(name: "Nước sinh hoạt")
+    variant = service.service_variants.create!(fee: 25_000, unit: :per_m3, is_real_time: true)
+    @room1.room_services.create!(service_variant: variant)
+
+    billing_month = Date.current.beginning_of_month
+    log = @room1.service_usage_logs.create!(
+      service: service,
+      service_variant: variant,
+      service_name: service.name,
+      unit: variant.human_unit,
+      unit_price: variant.fee,
+      prev_reading: 50,
+      latest_reading: 70,
+      billing_month: billing_month,
+      start_date: billing_month,
+      end_date: billing_month.end_of_month,
+      is_confirmed: false
+    )
+    log.reading_photo.attach(
+      io: File.open(Rails.root.join("test", "fixtures", "files", "normal.png")),
+      filename: "sample_meter.png",
+      content_type: "image/png"
+    )
+
+    get preview_landlord_house_invoices_path(@house, room_id: @room1.id, month: billing_month.strftime("%Y-%m"), invoice_type: "room")
+    assert_response :success
+
+    # Badge shows unconfirmed / pending
+    assert_select "tr[data-item-type='metered_service'] span.badge", text: /#{I18n.t('invoice.status_unconfirmed')}/
+
+    # Photo view button is rendered with modal turbo-frame target
+    assert_select "tr[data-item-type='metered_service'] a[data-turbo-frame='usage_log_detail_modal']", text: /#{I18n.t('service_usage_logs.view_photo_btn')}/
+
+    # Reading inputs are NOT readonly
+    assert_select "tr[data-item-type='metered_service'] input.item-prev-reading:not([readonly])"
+    assert_select "tr[data-item-type='metered_service'] input.item-latest-reading:not([readonly])"
+  end
+
   test "individual invoice for room-mode room divides rent equally among staying tenants" do
     # When 2 active occupants are in @room1
     @room1.update!(tenants_count: 2)
@@ -1288,5 +1362,103 @@ class LandlordPortal::InvoicesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     refute_includes response.body, CGI.escapeHTML(I18n.t("invoice.payos.open_checkout"))
     refute_includes response.body, I18n.t("invoice.payos.static_qr_notice_html")
+  end
+
+  test "POST create individual invoices links all invoices to the same service usage log and cancellation unlinks cleanly" do
+    sign_in_as(@landlord_user)
+
+    bed_house = House.create!(
+      landlord: @landlord,
+      name: "M2M Dorm House",
+      mode: :bed,
+      address_l1: "123 Main St",
+      address_l2: "Ward 1",
+      address_l3: "District 1",
+      floors_count: 1,
+      inv_creation_date: 1
+    )
+    floor = bed_house.floors.create!(name: "Floor 1", position: 1, rooms_count: 1)
+    room = floor.rooms.create!(name: "Room 301", max_slots: 2, tenants_count: 2, area: 30.0)
+    bed1 = room.beds.create!(name: "Bed A")
+    bed2 = room.beds.create!(name: "Bed B")
+    ru1 = bed1.create_rental_unit!(rent: 1_500_000, deposit: 1_500_000)
+    ru2 = bed2.create_rental_unit!(rent: 1_500_000, deposit: 1_500_000)
+
+    u1 = User.create!(fullname: "Tenant Mot", tel: "0912345601", password: "Password123", password_confirmation: "Password123", role: "tenant", sex: "male", bday: 22.years.ago.to_date, address: "St 1", tel_verified_at: Time.current)
+    u2 = User.create!(fullname: "Tenant Hai", tel: "0912345602", password: "Password123", password_confirmation: "Password123", role: "tenant", sex: "male", bday: 23.years.ago.to_date, address: "St 2", tel_verified_at: Time.current)
+    t1 = Tenant.find_or_create_by!(id: u1.id)
+    t2 = Tenant.find_or_create_by!(id: u2.id)
+
+    TenantStay.create!(rental_unit: ru1, tenant: t1, checkin_at: 1.month.ago)
+    TenantStay.create!(rental_unit: ru2, tenant: t2, checkin_at: 1.month.ago)
+
+    service = bed_house.services.create!(name: "Điện sinh hoạt")
+    variant = service.service_variants.create!(fee: 3_500, unit: :per_kwh, is_real_time: true)
+    room.room_services.create!(service_variant: variant)
+
+    log = room.service_usage_logs.create!(
+      service: service,
+      service_variant: variant,
+      service_name: service.name,
+      unit: variant.human_unit,
+      unit_price: variant.fee,
+      prev_reading: 100,
+      latest_reading: 200,
+      billing_month: @billing_month,
+      start_date: @billing_month,
+      end_date: @billing_month.end_of_month,
+      is_confirmed: true
+    )
+
+    assert_not log.billed?
+
+    assert_difference -> { bed_house.invoices.count }, 2 do
+      post landlord_house_invoices_path(bed_house), params: {
+        invoice: {
+          billing_month: @billing_month.strftime("%Y-%m"),
+          room_id: room.id,
+          invoice_type: "individual",
+          title: "Tiền phòng tháng #{@billing_month.strftime('%m/%Y')}",
+          items: {
+            "0" => {
+              selected: "1",
+              item_type: "metered_service",
+              service_variant_id: variant.id,
+              service_usage_log_id: log.id,
+              name: service.name,
+              unit: variant.human_unit,
+              unit_price: variant.fee.to_s,
+              quantity: "50",
+              amount: (50 * variant.fee).to_s,
+              prev_reading: "100",
+              latest_reading: "200"
+            }
+          }
+        }
+      }
+    end
+
+    assert_response :redirect
+
+    log.reload
+    assert log.billed?
+    assert_equal 2, log.invoices.count
+
+    inv1, inv2 = log.invoices.order(:id).to_a
+
+    # Cancel first invoice
+    Invoices::CancelService.call(invoice: inv1, cancelled_by: @landlord_user)
+
+    log.reload
+    assert log.billed?, "Log should still be billed because inv2 is still active"
+    assert_equal 1, log.invoices.count
+    assert_includes log.invoices, inv2
+
+    # Cancel second invoice
+    Invoices::CancelService.call(invoice: inv2, cancelled_by: @landlord_user)
+
+    log.reload
+    assert_not log.billed?, "Log should be unbilled after all associated invoices are cancelled"
+    assert_equal 0, log.invoices.count
   end
 end
