@@ -185,6 +185,8 @@ vi:
     unprocessable_entity: "Dữ liệu không hợp lệ. Vui lòng kiểm tra lại!"
     service_variant_required: "Chọn 1 phiên bản của dịch vụ này!"
     tel_linked: "Tài khoản này đang được liên kết với Nhà khác"
+    tel_linked_current_house: "Tài khoản này đã được liên kết với nhà này rồi"
+    tel_linked_current_house_with_location: "Tài khoản này đã được liên kết với nhà này rồi (%{location})"
     rental_unit_unavailable: "Vị trí thuê này không còn trống. Vui lòng chọn lại."
     not_bed_mode: "Nhà này không thuộc loại hình Thuê theo Giường!"
     capacity_below_tenants: "Không thể giảm sức chứa xuống dưới số khách hiện tại (%{count} người)!"

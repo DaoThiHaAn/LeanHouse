@@ -238,4 +238,78 @@ class LandlordPortal::TenantsControllerTest < ActionDispatch::IntegrationTest
     assert_select "turbo-stream[action='update'][target='flash']"
     assert_equal I18n.t("errors.tenant_has_pending_invoices", count: 1), flash[:alert]
   end
+
+  test "new renders link tenant modal" do
+    sign_in_as(@landlord_user)
+    get new_landlord_house_tenant_path(@house)
+    assert_response :success
+    assert_select "turbo-frame#new_tenant_modal"
+    assert_select "form[action='#{landlord_house_tenant_available_path(@house)}']"
+  end
+
+  test "available returns unprocessable_entity with specific current house error when tenant is already staying in current house" do
+    sign_in_as(@landlord_user)
+    get landlord_house_tenant_available_path(@house), params: { tenant_link_form: { tel: @tenant_user1.tel } }
+    assert_response :unprocessable_entity
+
+    expected_location = @rental_unit1.location_info
+    expected_msg = I18n.t("errors.tel_linked_current_house_with_location", location: expected_location)
+    assert_includes response.body, expected_msg
+  end
+
+  test "available returns unprocessable_entity with other house error when tenant is staying in another house" do
+    other_house = House.create!(
+      landlord: @landlord,
+      name: "Other House",
+      mode: :room,
+      address_l1: "999 Other St",
+      address_l2: "Ward 2",
+      address_l3: "District 2",
+      floors_count: 1,
+      inv_creation_date: 1
+    )
+    floor = other_house.floors.create!(name: "Tầng 1", position: 1)
+    room = floor.rooms.create!(name: "901", max_slots: 2, tenants_count: 1, area: 25)
+    rental_unit = room.create_rental_unit!(rent: 3000000, deposit: 3000000)
+
+    other_tenant_user = User.create!(
+      fullname: "Other House Tenant",
+      tel: "093#{SecureRandom.random_number(10_000_000).to_s.rjust(7, '0')}",
+      password: "Password123",
+      password_confirmation: "Password123",
+      role: "tenant",
+      sex: "male",
+      bday: 25.years.ago.to_date,
+      address: "Other St",
+      tel_verified_at: Time.current
+    )
+    other_tenant = Tenant.find_or_create_by!(id: other_tenant_user.id)
+    other_tenant.tenant_stays.create!(rental_unit: rental_unit, checkin_at: 1.week.ago, checkout_at: nil)
+
+    sign_in_as(@landlord_user)
+    get landlord_house_tenant_available_path(@house), params: { tenant_link_form: { tel: other_tenant_user.tel } }
+    assert_response :unprocessable_entity
+    assert_includes response.body, I18n.t("errors.tel_linked")
+  end
+
+  test "available renders extended_new turbo_stream when tenant is valid and available" do
+    free_tenant_user = User.create!(
+      fullname: "Free Tenant",
+      tel: "094#{SecureRandom.random_number(10_000_000).to_s.rjust(7, '0')}",
+      password: "Password123",
+      password_confirmation: "Password123",
+      role: "tenant",
+      sex: "female",
+      bday: 20.years.ago.to_date,
+      address: "Free St",
+      tel_verified_at: Time.current
+    )
+    Tenant.find_or_create_by!(id: free_tenant_user.id)
+
+    sign_in_as(@landlord_user)
+    get landlord_house_tenant_available_path(@house), params: { tenant_link_form: { tel: free_tenant_user.tel } }
+    assert_response :success
+    assert_select "turbo-stream[action='replace'][target='tenant_form']"
+    assert_includes response.body, free_tenant_user.fullname
+  end
 end

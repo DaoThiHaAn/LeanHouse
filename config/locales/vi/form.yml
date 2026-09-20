@@ -68,6 +68,7 @@ vi:
       i_understand: "Tôi đã hiểu"
       change_tel_cf: "Bạn có chắc chắn muốn thay đổi số điện thoại?"
       change_pw_cf: "Bạn có chắc chắn muốn thay đổi mật khẩu?"
+      verify_fname: "Nhập họ và tên, không phân biệt chữ hoa, chữ thường"
 
       blockers:
         active_tenants: "Vẫn còn %{count} khách thuê đang ở trong các nhà của bạn."

@@ -59,11 +59,12 @@ class LandlordPortal::TenantsController < LandlordPortal::BaseController
   end
 
   def new
-    @form = TenantLinkForm.new
+    @form = TenantLinkForm.new(house: @house)
   end
 
   def available
     @form = TenantLinkForm.new(tenant_params)
+    @form.house = @house
 
     if @form.valid?
       @tenant = @form.tenant
