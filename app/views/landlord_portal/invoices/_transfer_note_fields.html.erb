@@ -2,6 +2,8 @@
   inv = local_assigns[:invoice]
   field_prefix = local_assigns[:field_prefix] || "invoice"
   id_prefix = local_assigns[:id_prefix] || "inv"
+  initial_account = local_assigns[:initial_account]
+  is_initial_payos = initial_account&.payos_configured? || false
 
   initial_mode = invoice_transfer_note_mode(inv)
   custom_val = invoice_custom_transfer_note_value(inv, initial_mode)
@@ -13,66 +15,83 @@
     <span><%= t("invoice.transfer_note_config") %></span>
   </label>
 
-  <!-- 3 options for note config -->
-  <div class="d-flex flex-wrap gap-3 mb-2 ms-3">
-    <% transfer_note_mode_options.each do |mode| %>
-      <div class="form-check">
-        <%= radio_button_tag "#{field_prefix}[transfer_note_mode]",
-                              mode[:value],
-                              (initial_mode == mode[:value]),
-                              id: "#{id_prefix}_tn_#{mode[:value]}",
-                              class: "form-check-input",
-                              data: {
-                                transfer_note_target: "radio",
-                                action: "change->transfer-note#modeChanged"
-                              } %>
-        <%= label_tag "#{id_prefix}_tn_#{mode[:value]}",
-                      mode[:label],
-                      class: ["form-check-label", mode[:label_class]] %>
+  <!-- PayOS automated note notice (displayed when a payOS-enabled bank account is selected) -->
+  <div data-transfer-note-target="payosNotice" class="<%= 'd-none' unless is_initial_payos %>">
+    <div class="alert alert-info d-flex align-items-start gap-2 mb-0 py-2 px-3 border-info-subtle bg-info-subtle text-info-emphasis rounded-2">
+      <span class="material-symbols-outlined fs-5 flex-shrink-0 mt-0.5 text-primary">auto_fix_high</span>
+      <div>
+        <div class="fw-semibold small mb-1"><%= t("invoice.payos_note_title") %></div>
+        <div class="small text-secondary mb-0">
+          <%= t("invoice.payos_note_desc") %>
+        </div>
       </div>
-    <% end %>
-  </div>
-
-  <!-- Auto-generated note preview -->
-  <div data-transfer-note-target="systemPreview" class="note-preview <%= 'd-none' if initial_mode != 'system' %>">
-    <div class="text-secondary small d-flex align-items-center gap-1 bg-white p-2 text-container">
-      <span class="material-symbols-filled fs-6 text-success">check_circle</span>
-      <span>
-        <%= t("invoice.transfer_note_system_hint") %>
-        <strong class="font-monospace text-dark">HD<%= Date.current.strftime("%d%m%Y") %>-...</strong>)
-      </span>
     </div>
   </div>
 
-  <!-- Custom note preview -->
-  <div data-transfer-note-target="customInputWrapper"
-       class="note-preview <%= 'd-none' if initial_mode != 'custom' %>"
-       data-controller="character-counter"
-       data-character-counter-max-value="50">
-    <div class="d-flex justify-content-between align-items-center mb-2">
-      <span class="small text-secondary"><%= t("invoice.enter_custom_transfer_note") %></span>
-      <span class="small text-secondary" data-character-counter-target="count"><%= custom_val.to_s.length %>/50</span>
+  <!-- Standard options container (hidden when payOS is selected) -->
+  <div data-transfer-note-target="optionsContainer" class="<%= 'd-none' if is_initial_payos %>">
+    <!-- 3 options for note config -->
+    <div class="d-flex flex-wrap gap-3 mb-2 ms-3">
+      <% transfer_note_mode_options.each do |mode| %>
+        <div class="form-check">
+          <%= radio_button_tag "#{field_prefix}[transfer_note_mode]",
+                                mode[:value],
+                                (initial_mode == mode[:value]),
+                                id: "#{id_prefix}_tn_#{mode[:value]}",
+                                class: "form-check-input",
+                                disabled: is_initial_payos,
+                                data: {
+                                  transfer_note_target: "radio",
+                                  action: "change->transfer-note#modeChanged"
+                                } %>
+          <%= label_tag "#{id_prefix}_tn_#{mode[:value]}",
+                        mode[:label],
+                        class: ["form-check-label", mode[:label_class]] %>
+        </div>
+      <% end %>
     </div>
 
-    <%= text_field_tag "#{field_prefix}[transfer_note]",
-                       custom_val,
-                       id: "#{id_prefix}_transfer_note",
-                       class: "form-control form-control-sm font-monospace shadow-sm text-uppercase",
-                       maxlength: 50,
-                       autocomplete: "off",
-                       placeholder: t("invoice.custom_transfer_note_placeholder"),
-                       disabled: (initial_mode != "custom"),
-                       data: {
-                         transfer_note_target: "customInput",
-                         character_counter_target: "input",
-                         action: "input->transfer-note#liveUpdate input->character-counter#update blur->transfer-note#sanitizeField change->transfer-note#sanitizeField paste->transfer-note#onPaste"
-                       } %>
-
-    <div class="d-flex gap-3 align-items-center mt-2">
-      <div class="small text-danger-emphasis">
-        <%= t("invoice.transfer_note_bank_notice") %>
+    <!-- Auto-generated note preview -->
+    <div data-transfer-note-target="systemPreview" class="note-preview <%= 'd-none' if initial_mode != 'system' %>">
+      <div class="text-secondary small d-flex align-items-center gap-1 bg-white p-2 text-container">
+        <span class="material-symbols-filled fs-6 text-success">check_circle</span>
+        <span>
+          <%= t("invoice.transfer_note_system_hint") %>
+          <strong class="font-monospace text-dark">HD<%= Date.current.strftime("%d%m%Y") %>-...</strong>)
+        </span>
       </div>
-      <div data-transfer-note-target="livePreview" class="small font-monospace badge bg-primary-subtle text-primary border border-primary-subtle d-none"></div>
+    </div>
+
+    <!-- Custom note preview -->
+    <div data-transfer-note-target="customInputWrapper"
+         class="note-preview <%= 'd-none' if initial_mode != 'custom' %>"
+         data-controller="character-counter"
+         data-character-counter-max-value="50">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="small text-secondary"><%= t("invoice.enter_custom_transfer_note") %></span>
+        <span class="small text-secondary" data-character-counter-target="count"><%= custom_val.to_s.length %>/50</span>
+      </div>
+
+      <%= text_field_tag "#{field_prefix}[transfer_note]",
+                         custom_val,
+                         id: "#{id_prefix}_transfer_note",
+                         class: "form-control form-control-sm font-monospace shadow-sm text-uppercase",
+                         maxlength: 50,
+                         autocomplete: "off",
+                         placeholder: t("invoice.custom_transfer_note_placeholder"),
+                         disabled: (is_initial_payos || initial_mode != "custom"),
+                         data: {
+                           transfer_note_target: "customInput",
+                           character_counter_target: "input",
+                           action: "input->transfer-note#liveUpdate input->character-counter#update blur->transfer-note#sanitizeField change->transfer-note#sanitizeField paste->transfer-note#onPaste"
+                         } %>
+
+      <div class="d-flex gap-3 align-items-center mt-2">
+        <div class="small text-danger-emphasis">
+          <%= t("invoice.transfer_note_bank_notice") %>
+        </div>
+        <div data-transfer-note-target="livePreview" class="small font-monospace badge bg-primary-subtle text-primary border border-primary-subtle d-none"></div>
+      </div>
     </div>
   </div>
 </div>

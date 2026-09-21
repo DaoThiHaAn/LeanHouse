@@ -361,6 +361,8 @@ vi:
     transfer_note: "Nội dung chuyển khoản"
     transfer_note_strict: "Nội dung chuyển khoản (Bắt buộc giữ nguyên)"
     transfer_note_config: "Cú pháp chuyển khoản"
+    payos_note_title: "Tài khoản tích hợp thanh toán tự động (payOS)"
+    payos_note_desc: "Nội dung chuyển khoản sẽ được hệ thống tạo tự động theo mã đơn hàng payOS (ví dụ: HD 100000001) để tự động đối soát và xác nhận gạch nợ khi khách thanh toán."
     transfer_note_mode_system: "Cú pháp hệ thống (Khuyên dùng)"
     transfer_note_mode_custom: "Tự đặt nội dung"
     transfer_note_mode_none: "Không dùng cú pháp"

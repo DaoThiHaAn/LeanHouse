@@ -342,6 +342,8 @@ en:
     transfer_note: "Transfer Note"
     transfer_note_strict: "Transfer Note (Required exact content)"
     transfer_note_config: "VietQR Transfer Note"
+    payos_note_title: "Automated Payment Account (payOS)"
+    payos_note_desc: "The transfer note will be automatically generated with a unique payOS order code (e.g. HD 100000001) to enable instant automatic payment verification."
     transfer_note_mode_system: "System-generated (Recommended)"
     transfer_note_mode_custom: "Custom Note"
     transfer_note_mode_none: "Do not use"
