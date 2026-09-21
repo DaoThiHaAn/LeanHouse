@@ -26,6 +26,11 @@ vi:
       custom_title: "Hóa đơn thu phí tùy chọn"
       custom_desc: "Tự do chọn người thuê bất kỳ & thiết lập các khoản thu, giảm trừ"
 
+    modals:
+      no_tenants_title: "Chưa có khách thuê trong nhà"
+      no_tenants_desc: "Nhà này hiện chưa có khách thuê nào đang lưu trú. Vui lòng liên kết khách thuê vào phòng trước khi lập hóa đơn."
+      go_to_link_tenant: "Liên kết khách thuê ngay"
+
     custom_invoice_title: "Hóa đơn Thu phí Tùy chọn mới"
     custom_invoice_subtitle: "Tạo hóa đơn thu phí hoặc giảm trừ cho các người thuê được chọn bất kỳ (không gắn liền với tiền phòng hoặc dịch vụ định kỳ)."
     custom_title_placeholder: "Ví dụ: Hóa đơn Phí vệ sinh chung..."

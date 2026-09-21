@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_20_164000) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_21_000001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "unaccent"
@@ -76,9 +76,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_20_164000) do
     t.datetime "created_at", null: false
     t.boolean "is_default", default: false, null: false
     t.bigint "landlord_id", null: false
-    t.string "payos_api_key"
-    t.string "payos_checksum_key"
-    t.string "payos_client_id"
+    t.text "payos_api_key"
+    t.text "payos_checksum_key"
+    t.text "payos_client_id"
     t.boolean "payos_enabled", default: false, null: false
     t.datetime "updated_at", null: false
     t.index ["bank_id"], name: "index_bank_accounts_on_bank_id"

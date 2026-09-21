@@ -1461,4 +1461,69 @@ class LandlordPortal::InvoicesControllerTest < ActionDispatch::IntegrationTest
     assert_not log.billed?, "Log should be unbilled after all associated invoices are cancelled"
     assert_equal 0, log.invoices.count
   end
+
+  test "index renders no-tenant modal trigger when house has no tenants" do
+    empty_house = House.create!(
+      landlord: @landlord,
+      name: "Empty Invoice House",
+      mode: :room,
+      address_l1: "999 Empty St",
+      address_l2: "Ward 1",
+      address_l3: "District 1",
+      floors_count: 1,
+      inv_creation_date: 1
+    )
+    floor = empty_house.floors.create!(name: "Tầng 1", position: 1)
+    floor.rooms.create!(name: "101", max_slots: 2, tenants_count: 0, area: 20.0)
+
+    sign_in_as(@landlord_user)
+    get landlord_house_invoices_path(empty_house)
+    assert_response :success
+
+    # Unified modal should be rendered in the DOM
+    assert_select "#noTenantModal"
+
+    # Both dropdown options should trigger #noTenantModal instead of direct links
+    assert_select "button[data-bs-target='#noTenantModal']", count: 2
+  end
+
+  test "new redirects to invoices index with alert when house has no staying tenants" do
+    empty_house = House.create!(
+      landlord: @landlord,
+      name: "Empty House New",
+      mode: :room,
+      address_l1: "999 Empty St",
+      address_l2: "Ward 1",
+      address_l3: "District 1",
+      floors_count: 1,
+      inv_creation_date: 1
+    )
+    floor = empty_house.floors.create!(name: "Tầng 1", position: 1)
+    floor.rooms.create!(name: "101", max_slots: 2, tenants_count: 0, area: 20.0)
+
+    sign_in_as(@landlord_user)
+    get new_landlord_house_invoice_path(empty_house)
+    assert_redirected_to landlord_house_invoices_path(empty_house, month: Date.current.strftime("%Y-%m"))
+    assert_equal I18n.t("invoice.no_staying_tenants_warning"), flash[:alert]
+  end
+
+  test "new_custom redirects to invoices index with alert when house has no staying tenants" do
+    empty_house = House.create!(
+      landlord: @landlord,
+      name: "Empty House Custom",
+      mode: :room,
+      address_l1: "999 Empty St",
+      address_l2: "Ward 1",
+      address_l3: "District 1",
+      floors_count: 1,
+      inv_creation_date: 1
+    )
+    floor = empty_house.floors.create!(name: "Tầng 1", position: 1)
+    floor.rooms.create!(name: "101", max_slots: 2, tenants_count: 0, area: 20.0)
+
+    sign_in_as(@landlord_user)
+    get new_custom_landlord_house_invoices_path(empty_house)
+    assert_redirected_to landlord_house_invoices_path(empty_house, month: Date.current.strftime("%Y-%m"))
+    assert_equal I18n.t("invoice.no_staying_tenants_warning"), flash[:alert]
+  end
 end

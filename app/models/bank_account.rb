@@ -1,6 +1,11 @@
 class BankAccount < ApplicationRecord
   MAX_ACCOUNTS = 10
 
+  # Encrypt sensitive PayOS API credentials at rest.
+  # Decryption is transparent — read/write .payos_api_key etc. as plain strings normally.
+  # support_unencrypted_data: true is set in application.rb until the data migration runs.
+  encrypts :payos_api_key, :payos_checksum_key, :payos_client_id
+
   belongs_to :landlord, inverse_of: :bank_accounts
   belongs_to :bank
   has_many :invoices, dependent: :nullify

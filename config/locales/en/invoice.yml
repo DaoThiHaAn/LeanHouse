@@ -19,6 +19,10 @@ en:
       room_service_desc: "Rent and utilities by room or individual occupants"
       custom_title: "Custom Fee Invoice"
       custom_desc: "Freely select arbitrary tenants & define custom fees or discounts"
+    modals:
+      no_tenants_title: "No Active Tenants"
+      no_tenants_desc: "This property currently has no active tenants residing in it. Please link tenants before creating an invoice."
+      go_to_link_tenant: "Link Tenant Now"
     custom_invoice_title: "Create Custom Fee Invoice"
     custom_invoice_subtitle: "Issue custom fees or discounts to arbitrarily selected tenants (independent of room rent or recurring metered utilities)."
     custom_title_placeholder: "e.g. Common Area Cleaning Surcharge, Damaged Asset Compensation..."

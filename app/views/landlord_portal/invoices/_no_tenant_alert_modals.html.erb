@@ -1,0 +1,31 @@
+<!-- Modal Cảnh báo: Chưa có khách thuê trong nhà (Cả 2 loại hóa đơn) -->
+<div class="modal fade text-start" id="noTenantModal" tabindex="-1" aria-labelledby="noTenantModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-4 shadow border-0 overflow-hidden">
+      <div class="modal-header bg-warning-subtle border-bottom py-3">
+        <div class="d-flex align-items-center gap-2">
+          <span class="material-symbols-outlined text-warning-emphasis fs-2">group_off</span>
+          <h2 class="modal-title mb-0" id="noTenantModalLabel">
+            <%= t('invoice.modals.no_tenants_title') %>
+          </h2>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="<%= t('invoice.actions.close') %>"></button>
+      </div>
+
+      <div class="modal-body p-4 text-secondary">
+        <p><%= t('invoice.modals.no_tenants_desc') %></p>
+      </div>
+
+      <div class="modal-footer border-top bg-light py-2 px-3 d-flex justify-content-between">
+        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">
+          <%= t('invoice.actions.close') %>
+        </button>
+        <%= link_to landlord_house_tenants_path(@house),
+                    class: "custom-primary-btn d-inline-flex align-items-center gap-1 shadow-sm px-3 py-1 text-decoration-none" do %>
+          <span class="material-symbols-outlined fs-6">person_add</span>
+          <span><%= t('invoice.modals.go_to_link_tenant') %></span>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

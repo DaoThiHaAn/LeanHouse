@@ -16,24 +16,44 @@
       </button>
       <ul class="dropdown-menu dropdown-menu-end shadow-sm custom-invoice-dropdown-menu">
         <li>
-          <%= link_to new_landlord_house_invoice_path(@house, month: @billing_month.strftime("%Y-%m")),
-              class: "dropdown-item d-flex align-items-center gap-2" do %>
-            <span class="material-symbols-filled fs-5">sensor_door</span>
-            <div>
-              <div class="fw-semibold"><%= t('invoice.types.room_service_title') %></div>
-              <small class="text-secondary"><%= t('invoice.types.room_service_desc') %></small>
-            </div>
+          <% if @house.has_staying_tenants? %>
+            <%= link_to new_landlord_house_invoice_path(@house, month: @billing_month.strftime("%Y-%m")),
+                class: "dropdown-item d-flex align-items-center gap-2" do %>
+              <span class="material-symbols-filled fs-5">sensor_door</span>
+              <div>
+                <div class="fw-semibold"><%= t('invoice.types.room_service_title') %></div>
+                <small class="text-secondary"><%= t('invoice.types.room_service_desc') %></small>
+              </div>
+            <% end %>
+          <% else %>
+            <button type="button" class="dropdown-item d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#noTenantModal">
+              <span class="material-symbols-filled fs-5 text-secondary">sensor_door</span>
+              <div>
+                <div class="fw-semibold"><%= t('invoice.types.room_service_title') %></div>
+                <small class="text-secondary"><%= t('invoice.types.room_service_desc') %></small>
+              </div>
+            </button>
           <% end %>
         </li>
         <li><hr class="dropdown-divider my-1"></li>
         <li>
-          <%= link_to new_custom_landlord_house_invoices_path(@house, month: @billing_month.strftime("%Y-%m")),
-              class: "dropdown-item d-flex align-items-center gap-2" do %>
-            <span class="material-symbols-outlined fs-5">tune</span>
-            <div>
-              <div class="fw-semibold"><%= t('invoice.types.custom_title') %></div>
-              <small class="text-secondary"><%= t('invoice.types.custom_desc') %></small>
-            </div>
+          <% if @house.has_staying_tenants? %>
+            <%= link_to new_custom_landlord_house_invoices_path(@house, month: @billing_month.strftime("%Y-%m")),
+                class: "dropdown-item d-flex align-items-center gap-2" do %>
+              <span class="material-symbols-outlined fs-5">tune</span>
+              <div>
+                <div class="fw-semibold"><%= t('invoice.types.custom_title') %></div>
+                <small class="text-secondary"><%= t('invoice.types.custom_desc') %></small>
+              </div>
+            <% end %>
+          <% else %>
+            <button type="button" class="dropdown-item d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#noTenantModal">
+              <span class="material-symbols-outlined fs-5 text-secondary">tune</span>
+              <div>
+                <div class="fw-semibold"><%= t('invoice.types.custom_title') %></div>
+                <small class="text-secondary"><%= t('invoice.types.custom_desc') %></small>
+              </div>
+            </button>
           <% end %>
         </li>
       </ul>
@@ -43,4 +63,5 @@
 
 <%= render "invoices_content", house: @house, invoices: @invoices, stats: @stats, billing_month: @billing_month, current_tab: @current_tab %>
 <%= render "creation_guide_modal" %>
+<%= render "no_tenant_alert_modals" %>
 <%= turbo_frame_tag "edit_invoice_modal" %>

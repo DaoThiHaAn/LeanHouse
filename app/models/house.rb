@@ -141,12 +141,17 @@ class House < ApplicationRecord
   end
 
   def can_delete?
-    !rooms.where("tenants_count > 0").exists? && !requests.where(status: %i[pending handling]).exists?
+    !has_staying_tenants? && !requests.where(status: %i[pending handling]).exists?
   end
 
   def can_change_mode?
-    !rooms.where("tenants_count > 0").exists?
+    !has_staying_tenants?
   end
+
+  def has_staying_tenants?
+    occupied_slots.positive?
+  end
+  alias_method :has_occupied_rooms?, :has_staying_tenants?
 
   def full_address
     [ address_l3, address_l2, address_l1 ].compact_blank.join(", ")

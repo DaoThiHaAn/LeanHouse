@@ -2,6 +2,7 @@ class LandlordPortal::InvoicesController < LandlordPortal::BaseController
   layout "house_mngment"
 
   before_action :set_billing_month, only: %i[index filtered new new_custom preview]
+  before_action :ensure_tenants_exist, only: %i[new new_custom]
   before_action :set_invoice, only: %i[show edit update mark_paid undo_paid cancel]
   before_action :ensure_invoice_editable, only: %i[edit update]
   before_action :ensure_invoice_cancellable, only: %i[cancel]
@@ -401,5 +402,12 @@ class LandlordPortal::InvoicesController < LandlordPortal::BaseController
     else
       items_param
     end
+  end
+
+  def ensure_tenants_exist
+    return if @house.has_staying_tenants?
+
+    redirect_to landlord_house_invoices_path(@house, month: (@billing_month || Date.current).strftime("%Y-%m")),
+                alert: t("invoice.no_staying_tenants_warning")
   end
 end
