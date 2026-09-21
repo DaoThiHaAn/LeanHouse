@@ -11,9 +11,11 @@ class PaymentOrder < ApplicationRecord
   scope :paid, -> { where(status: "PAID") }
 
   def self.generate_order_code
-    loop do
-      candidate = rand(100_000_000..999_999_999)
-      return candidate unless exists?(order_code: candidate)
-    end
+    # Use a PostgreSQL sequence for atomic, collision-free order code generation.
+    # Unlike rand() + loop, nextval() is guaranteed unique at the DB level with
+    # no race conditions and no retry logic needed.
+    ActiveRecord::Base.connection
+                      .select_value("SELECT nextval('payos_order_code_seq')")
+                      .to_i
   end
 end

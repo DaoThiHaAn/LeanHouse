@@ -34,6 +34,11 @@ module LeanHouse
     config.time_zone = "Asia/Ho_Chi_Minh"
     config.active_record.default_timezone = :utc
 
+    # Use structure.sql instead of schema.rb so PostgreSQL-specific features
+    # (sequences, custom types, functions, etc.) are captured and applied to the
+    # test database. Required after adding payos_order_code_seq.
+    config.active_record.schema_format = :sql
+
     # Active Record Encryption for PayOS credentials (payos_api_key, payos_checksum_key, payos_client_id).
     # Keys are stored in Rails credentials under active_record_encryption:
     #   primary_key, deterministic_key, key_derivation_salt
