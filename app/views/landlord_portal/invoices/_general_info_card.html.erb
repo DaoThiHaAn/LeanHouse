@@ -103,10 +103,18 @@
                 options_for_select(account_options, selected_account&.id),
                 class: "form-select shadow-sm",
                 data: { transfer_note_bank_select: true } %>
+
         <% else %>
-          <div class="d-flex align-items-center gap-2 mt-1">
-            <span class="text-danger small"><%= t('invoice.no_bank_account_landlord') %></span>
-            <%= link_to t('invoice.add_bank_account'), landlord_bank_accounts_path, class: "btn btn-sm btn-outline-primary" %>
+          <div>
+            <div class="d-flex align-items-center gap-2 mt-1">
+              <span class="text-danger small"><%= t('invoice.no_bank_account_landlord') %></span>
+              <%= link_to t('invoice.add_bank_account'), landlord_bank_accounts_path, target: "_blank", rel: "noopener",
+                  class: "btn btn-sm btn-outline-primary" %>
+            </div>
+            <p class="text-secondary small mt-1">
+              <span class="material-symbols-outlined fs-6 align-middle text-secondary">info</span>
+              <%= t('invoice.can_add_bank_account_later') %>
+            </p>
           </div>
         <% end %>
       </div>

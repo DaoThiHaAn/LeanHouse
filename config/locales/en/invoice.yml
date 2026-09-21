@@ -359,6 +359,7 @@ en:
     no_bank_account_landlord: "Receiving bank account is not set up."
     no_bank_account_tenant: "Receiving bank account is unavailable (not set up or has been deleted). Please contact the landlord for payment details."
     add_bank_account: "Add Account"
+    can_add_bank_account_later: "You can still create the invoice now and link a receiving account later when editing the invoice."
     calculate_formula_title: "Total Calculation Formula"
     immutability_notice: "Issued invoices are saved immutably and displayed on tenant portal."
     issue_button: "Issue Invoice"

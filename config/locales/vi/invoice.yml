@@ -378,6 +378,7 @@ vi:
     no_bank_account_landlord: "Chưa thiết lập tài khoản ngân hàng nhận tiền."
     no_bank_account_tenant: "Tài khoản nhận tiền không khả dụng (chưa thiết lập hoặc đã bị xóa). Vui lòng liên hệ chủ trọ để nhận phương thức thanh toán."
     add_bank_account: "Thêm tài khoản"
+    can_add_bank_account_later: "Bạn vẫn có thể tạo hóa đơn ngay lúc này và bổ sung tài khoản nhận tiền sau khi chỉnh sửa hóa đơn."
     calculate_formula_title: "Công thức tính tổng tiền"
     immutability_notice: "Hóa đơn sau khi xuất sẽ được lưu cố định và hiển thị trên cổng người thuê."
     issue_button: "Xuất Hóa Đơn"
