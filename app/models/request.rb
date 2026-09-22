@@ -200,8 +200,8 @@ class Request < ApplicationRecord
 
     if TERMINAL_STATUSES.include?(status_was)
       errors.add(:status, "đã được xử lý (#{status_was}) và không thể thay đổi trạng thái nữa.")
-    elsif status_was == "handling" && status != "completed"
-      errors.add(:status, "đang được xử lý và chỉ có thể chuyển sang hoàn thành.")
+    elsif status_was == "handling" && !%w[completed rejected].include?(status)
+      errors.add(:status, "đang được xử lý và chỉ có thể chuyển sang hoàn thành hoặc từ chối.")
     end
   end
 

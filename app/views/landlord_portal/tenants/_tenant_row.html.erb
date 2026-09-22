@@ -59,16 +59,11 @@
         <span class="material-symbols-filled" aria-hidden="true">move_location</span>
       <% end %>
 
-      <%= button_to landlord_house_tenant_path(house, tenant), method: :delete,
-            data: {
-              turbo_confirm: [
-                t("form.tenant.remove_cf"),
-                [t("form.tenant.remove_warning_1"), t("form.tenant.remove_warning_2"), t("form.tenant.remove_warning_3")].join("\n")
-              ].join("\n\n")
-            },
+      <%= link_to confirm_remove_landlord_house_tenant_path(house, tenant),
             title: t("form.tenant.remove"),
             aria: { label: t("form.tenant.remove") },
-            class: "table-action border-0 bg-transparent p-0" do %>
+            data: { turbo_frame: "remove_tenant_modal" },
+            class: "table-action" do %>
         <span class="material-symbols-filled text-danger-emphasis" aria-hidden="true">person_remove</span>
       <% end %>
     </div>

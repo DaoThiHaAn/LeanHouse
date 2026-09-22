@@ -1,3 +1,4 @@
+<!-- Service usage log of the whole house page -->
 <% tab_meta = house_usage_logs_tab_meta(@current_tab) %>
 <% content_for :title, "#{tab_meta[:page_title]} - #{@house.name}" %>
 
@@ -11,12 +12,16 @@
         action: "turbo:frame-load->pagination-sync#updateUrl"
       } do %>
 
-  <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3 pb-3 border-bottom">
-    <div>
-      <h1 class="mb-2"><%= tab_meta[:title] %></h1>
-      <p class="text-secondary">
-        <%= tab_meta[:subtitle] %>
-      </p>
+  <div class="d-flex flex-column gap-4 mb-3 pb-3 border-bottom">
+    <div class="d-flex flex-column flex-md-row gap-2 justify-content-between align-items-center">
+      <div>
+        <h1 class="mb-2"><%= tab_meta[:title] %></h1>
+        <p class="text-secondary">
+          <%= tab_meta[:subtitle] %>
+        </p>
+      </div>
+
+      <%= back_link_to landlord_house_service_usage_logs_path(@house), t("service.back") %>
     </div>
 
     <%= render "nav_tabs",
@@ -35,6 +40,7 @@
                fixed_services: @fixed_services,
                fixed_variants: @fixed_variants,
                selected_service: nil %>
+
   <% else %>
     <!-- Toolbar lọc tháng, tầng, phòng và trạng thái toàn nhà -->
     <div class="card bg-light border-0 rounded-3 p-3 mb-5">

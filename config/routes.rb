@@ -129,6 +129,7 @@ Rails.application.routes.draw do
         member do
           get :move
           post :move, to: "tenants#execute_move"
+          get :confirm_remove
         end
         collection do
           get :filtered

@@ -42,6 +42,20 @@
               <%= render 'rental_unit_fields', house: @house, floors: @available_slots.floors %>
             </div>
 
+            <% if @tenant_stay.contract.present? %>
+              <div class="form-check mt-3">
+                <%= check_box_tag :end_contract, "1", false,
+                      class: "form-check-input",
+                      id: "endContractOnMoveCheck" %>
+                <%= label_tag "endContractOnMoveCheck",
+                      t("form.tenant.end_contract_on_move"),
+                      class: "form-check-label fw-semibold cursor-pointer" %>
+                <div class="form-text text-muted small mt-1">
+                  <%= t("form.tenant.end_contract_on_move_hint") %>
+                </div>
+              </div>
+            <% end %>
+
             <%= f.button :submit,
                   class: "mt-2 custom-primary-btn mx-auto main-form d-flex align-items-center justify-content-center gap-2",
                   data: { loading_target: "button" } do %>

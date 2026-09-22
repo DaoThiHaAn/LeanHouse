@@ -79,6 +79,7 @@ vi:
     confirm_complete: "Bạn có chắc chắn đã HOÀN THÀNH sửa chữa cho yêu cầu này?"
     rejection_reason_placeholder: "Nhập lý do từ chối (bắt buộc khi từ chối)..."
     rejection_reason_required: "Vui lòng nhập lý do từ chối!"
+    rejection_reason_checkout: "Khách thuê đã trả phòng / rời nhà."
     action_notice: "Lưu ý: Bạn chỉ có thể xét duyệt yêu cầu 1 lần duy nhất và không thể hoàn tác."
     handled: "Yêu cầu đã được xét duyệt"
     expired_note: "Yêu cầu đã hết hạn xét duyệt (quá 7 ngày)."

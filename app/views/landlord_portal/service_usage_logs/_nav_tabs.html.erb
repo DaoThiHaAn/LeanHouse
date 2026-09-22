@@ -1,6 +1,7 @@
 <%# locals: (current_tab:, real_time_url:, fixed_url:, unconfirmed_count:, fixed_count:, new_log_url: nil, real_time_title: nil, fixed_title: nil) %>
 <% real_time_title ||= t("service_usage_logs.tab_real_time") %>
 <% fixed_title ||= t("service_usage_logs.tab_fixed") %>
+
 <div class="d-flex align-items-center gap-3 flex-wrap w-100">
   <!-- 2 Tabs: Real-time and Fixed -->
   <div class="d-inline-flex bg-light p-1 rounded-pill border gap-1 shadow-sm fs-5">
@@ -32,6 +33,7 @@
 
   <% if real_time_tab?(current_tab) && new_log_url.present? %>
     <%= link_to new_log_url,
+        data: { turbo_frame: "_top" },
         class: "main-btn shadow-sm gap-2" do %>
       <span class="material-symbols-outlined fs-3">variable_add</span>
       <span class="fs-5"><%= t("invoice.new_meter_log") %></span>

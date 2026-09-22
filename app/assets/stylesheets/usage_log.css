@@ -52,3 +52,17 @@
 .confirmation-radio-card:has(input[type="radio"]:checked) {
   opacity: 1;
 }
+
+.service-usage.input-group .input-group-text {
+  background-color: white;
+}
+
+.service-usage.input-group .form-select {
+  border-left: none;
+}
+
+.service-usage.input-group .form-select:focus {
+  box-shadow: none;
+  outline: none;
+  border-left: 1px solid #a9c8f4;
+}

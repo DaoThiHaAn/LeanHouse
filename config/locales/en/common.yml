@@ -146,6 +146,7 @@ en:
     time_range: "Time range"
     past_house: "Past House"
     past_house_notice: "This is an archived request from a property you previously rented (read-only)."
+    rejection_reason_checkout: "Tenant has checked out / left the property."
   filter: "Filter"
   clear_filter: "Clear filter"
   clear_search: "Clear search"
@@ -180,6 +181,9 @@ en:
         needs_repair: "item(s) need inspection/repair"
         total_subtext: "In the entire property"
         investment_subtext: "Total equipment purchase value"
+    tenant:
+      end_contract_on_move: "Terminate current rental contract"
+      end_contract_on_move_hint: "The contract for the current unit will be ended immediately. The landlord can sign a new contract for the new unit afterwards."
   vehicle:
     stats:
       total_vehicles: "Total Vehicles"

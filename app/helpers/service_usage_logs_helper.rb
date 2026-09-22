@@ -61,6 +61,7 @@ module ServiceUsageLogsHelper
     current.to_s == tab_name.to_s ? "active shadow-sm" : "text-secondary"
   end
 
+  # Generate tab meta of the house service usage index page
   def house_usage_logs_tab_meta(tab = @current_tab)
     if fixed_tab?(tab)
       {

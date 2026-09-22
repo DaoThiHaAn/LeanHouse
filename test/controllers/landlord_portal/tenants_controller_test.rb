@@ -195,6 +195,28 @@ class LandlordPortal::TenantsControllerTest < ActionDispatch::IntegrationTest
     assert_equal I18n.t("errors.rental_unit_unavailable"), flash[:alert]
   end
 
+  test "execute_move with end_contract=1 terminates the active contract and sets has_contract false on new stay" do
+    sign_in_as(@landlord_user)
+    post move_landlord_house_tenant_path(@house, @tenant1),
+      params: { rental_unit_id: @rental_unit3.id, end_contract: "1" }
+    assert_redirected_to landlord_house_tenants_path(@house)
+    new_stay = @tenant1.reload.current_stay
+    assert_equal @rental_unit3, new_stay.rental_unit
+    assert_not new_stay.has_contract, "New stay should have has_contract=false when end_contract is checked"
+    assert @contract1.reload.end_date.present?, "Contract should have an end_date set"
+    assert_equal Date.current, @contract1.reload.end_date
+  end
+
+  test "execute_move without end_contract keeps contract intact on new stay" do
+    sign_in_as(@landlord_user)
+    post move_landlord_house_tenant_path(@house, @tenant1),
+      params: { rental_unit_id: @rental_unit3.id }
+    new_stay = @tenant1.reload.current_stay
+    assert_equal @rental_unit3, new_stay.rental_unit
+    assert new_stay.has_contract, "New stay should still have has_contract=true when end_contract is not checked"
+    assert_nil @contract1.reload.end_date, "Contract should remain open when end_contract is not checked"
+  end
+
   test "destroy via turbo_stream removes row, updates stats, unsigned banner, and flash" do
     sign_in_as(@landlord_user)
     delete landlord_house_tenant_path(@house, @tenant1), as: :turbo_stream

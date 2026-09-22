@@ -71,7 +71,76 @@ class CheckoutTest < ActiveSupport::TestCase
     assert_not Vehicle.exists?(@vehicle.id)
   end
 
-  test "checkout automatically approves pending requests of the tenant without sending request notification" do
+  test "checkout approves approved_request and rejects all other pending/handling requests" do
+    approved_leave = LeaveHouseRequest.create!
+    approved_req = @house.requests.create!(
+      tenant: @tenant,
+      requestable: approved_leave,
+      status: :pending
+    )
+
+    other_leave = LeaveHouseRequest.create!
+    other_req = @house.requests.create!(
+      tenant: @tenant,
+      requestable: other_leave,
+      status: :pending
+    )
+
+    repair = RepairRequest.create!(title: "Sửa vòi nước", content: "Bị rò rỉ")
+    repair_req = @house.requests.create!(
+      tenant: @tenant,
+      requestable: repair,
+      status: :handling,
+      resolved_by: @landlord_user,
+      resolved_at: Time.current
+    )
+
+    vehicle_req = VehicleRequest.new(
+      license_plate: "59A-99999",
+      vehicle_type: :motorbike,
+      consent_given_at: Time.current
+    )
+    vehicle_req.registration_card_image.attach(
+      io: File.open(Rails.root.join("test/fixtures/files/normal.png")),
+      filename: "reg.png",
+      content_type: "image/png"
+    )
+    vehicle_req.vehicle_photo.attach(
+      io: File.open(Rails.root.join("test/fixtures/files/normal.png")),
+      filename: "photo.png",
+      content_type: "image/png"
+    )
+    vehicle_req.save!
+    v_req = @house.requests.create!(
+      tenant: @tenant,
+      requestable: vehicle_req,
+      status: :pending
+    )
+
+    assert_no_difference -> { Noticed::Event.where(type: "RequestResolvedNotifier").count } do
+      Checkout.call(
+        house: @house,
+        tenant_stay: @tenant_stay,
+        approved_request: approved_req
+      )
+    end
+
+    assert_equal "approved", approved_req.reload.status
+    assert_not_nil approved_req.resolved_at
+
+    expected_reason = I18n.t("request.rejection_reason_checkout")
+    assert_equal "rejected", other_req.reload.status
+    assert_equal expected_reason, other_req.rejection_reason
+
+    assert_equal "rejected", repair_req.reload.status
+    assert_equal expected_reason, repair_req.rejection_reason
+
+    assert_equal "rejected", v_req.reload.status
+    assert_equal expected_reason, v_req.rejection_reason
+    assert_not vehicle_req.reload.registration_card_image.attached?
+  end
+
+  test "checkout rejects all pending requests if no approved_request is specified (e.g. manual landlord removal)" do
     leave_req = LeaveHouseRequest.create!
     req = @house.requests.create!(
       tenant: @tenant,
@@ -79,16 +148,13 @@ class CheckoutTest < ActiveSupport::TestCase
       status: :pending
     )
 
-    assert_no_difference -> { Noticed::Event.where(type: "RequestResolvedNotifier").count } do
-      Checkout.call(
-        house: @house,
-        tenant_stay: @tenant_stay
-      )
-    end
+    Checkout.call(
+      house: @house,
+      tenant_stay: @tenant_stay
+    )
 
-    assert_equal "approved", req.reload.status
-    assert_not_nil req.resolved_at
-    assert_equal @landlord_user.id, req.resolved_by_id
+    assert_equal "rejected", req.reload.status
+    assert_equal I18n.t("request.rejection_reason_checkout"), req.rejection_reason
   end
 
   test "checkout raises PendingInvoicesError when tenant has pending individual or custom invoices" do

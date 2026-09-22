@@ -4,10 +4,11 @@ class TenantMover
     new(...).call
   end
 
-  def initialize(house:, tenant_stay:, rental_unit_id:, send_noti: true)
+  def initialize(house:, tenant_stay:, rental_unit_id:, end_contract: false, send_noti: true)
     @house = house
     @tenant_stay = tenant_stay
     @rental_unit_id = rental_unit_id
+    @end_contract = end_contract
     @send_noti = send_noti
   end
 
@@ -19,19 +20,22 @@ class TenantMover
       tenant_stay.update!(checkout_at: Time.current)
       tenant_stay.rental_unit.tenant_removed!
 
-      # 2. Acquire and validate new rental unit
+      # 2. Optionally terminate the active contract
+      end_contract! if @end_contract && tenant_stay.has_contract?
+
+      # 3. Acquire and validate new rental unit
       new_rental_unit = house.available_rental_units.find(rental_unit_id)
       new_rental_unit.lock!
       validate_rental_unit!(new_rental_unit)
 
-      # 3. Increase new unit occupancy and create new stay
+      # 4. Increase new unit occupancy and create new stay
       new_rental_unit.tenant_added!
 
       TenantStay.create!(
         tenant: tenant_stay.tenant,
         rental_unit: new_rental_unit,
         checkin_at: Time.current,
-        has_contract: tenant_stay.has_contract
+        has_contract: @end_contract ? false : tenant_stay.has_contract
       )
     end
 
@@ -43,6 +47,14 @@ class TenantMover
   private
 
   attr_reader :house, :tenant_stay, :rental_unit_id
+
+  def end_contract!
+    contract = house.contracts.unfinished.find_by(tenant_id: tenant_stay.tenant_id)
+    if contract
+      contract.update!(end_date: Date.current)
+      tenant_stay.update!(has_contract: false)
+    end
+  end
 
   def validate_different_rental_unit!
     if tenant_stay.rental_unit_id == rental_unit_id.to_i

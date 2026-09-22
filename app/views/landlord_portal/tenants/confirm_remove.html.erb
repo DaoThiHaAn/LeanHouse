@@ -1,0 +1,63 @@
+<%# Variables: @tenant, @house %>
+
+<%= turbo_frame_tag "remove_tenant_modal" do %>
+  <div class="modal fade" id="removeTenantModal" tabindex="-1" aria-hidden="true"
+        data-controller="modal" data-modal-auto-open-value="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-danger">
+          <h1 class="text-white text-center flex-grow-1" id="removeTenantModalLabel">
+            <span class="material-symbols-filled fs-2 me-1">person_remove</span>
+            <%= t("form.tenant.remove") %>
+          </h1>
+          <button type="button" data-bs-theme="dark" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+          <%# Tenant name %>
+          <div class="d-flex gap-2 mb-3">
+            <p class="fw-bold"><%= t("form.tenant.self") %>:</p>
+            <p><%= vn_name(@tenant.user.fullname) %></p>
+          </div>
+
+          <%# Warning callout %>
+          <div class="alert alert-warning d-flex flex-column gap-2 ps-0 mb-3 text-justify" role="alert">
+            <ul>
+              <li>
+                <p class="small"><%= t("form.tenant.remove_warning_1") %></p>
+              </li>
+              <li>
+                <p class="small"><%= t("form.tenant.remove_warning_2") %></p>
+              </li>
+              <li>
+                <p class="small"><%= t("form.tenant.remove_warning_3") %></p>
+              </li>
+            </ul>
+          </div>
+
+          <p class="fw-semibold text-center"><%= t("form.tenant.remove_cf") %></p>
+        </div>
+
+        <div class="modal-footer justify-content-center gap-2">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            <%= t("cancel") %>
+          </button>
+
+          <%= button_to landlord_house_tenant_path(@house, @tenant), method: :delete,
+                class: "btn btn-danger d-inline-flex align-items-center gap-1",
+                form: {
+                  data: {
+                    controller: "loading",
+                    loading_text_value: "#{t('form.tenant.removing')}...",
+                    action: "submit->loading#submit"
+                  }
+                } do %>
+            <span class="material-symbols-filled fs-6" data-loading-target="icon" aria-hidden="true">person_remove</span>
+            <span class="material-symbols-outlined fs-6 spin d-none" data-loading-target="spinner" aria-hidden="true">progress_activity</span>
+            <span data-loading-target="text"><%= t("form.tenant.remove") %></span>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

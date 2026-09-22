@@ -14,7 +14,8 @@ class LeaveHouseRequest < ApplicationRecord
             house: request.house,
             tenant_stay: tenant_stay,
             end_contract: true,
-            send_noti: false # RequestResolvedNotifier is sent by RequestHandling
+            send_noti: false, # RequestResolvedNotifier is sent by RequestHandling
+            approved_request: request
           )
         rescue Checkout::PendingInvoicesError => e
           request.errors.add(:base, I18n.t("errors.leave_request_has_pending_invoices", count: e.invoices.size))

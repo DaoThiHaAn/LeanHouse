@@ -12,10 +12,11 @@
 
   <% if summary.items.empty? %>
     <div class="empty card bg-light text-center py-5 rounded-4 mx-auto">
-      <span class="material-symbols-outlined text-secondary fs-1 mb-2">lock_open</span>
+      <span class="material-symbols-outlined text-secondary fs-1 mb-2">fact_check</span>
       <p class="fs-5 fw-bold mb-1"><%= t("service_usage_logs.no_fixed_services_house") %></p>
       <p class="text-secondary small"><%= t("service_usage_logs.no_fixed_services_house_hint") %></p>
     </div>
+
   <% else %>
     <div class="table-responsive bg-white rounded-3 shadow-sm border mb-4">
       <table class="table table-hover align-middle mb-0">
@@ -97,10 +98,12 @@
                       <% end %>
                     <% end %>
                   </div>
+
                 <% elsif item.waived? %>
                   <span class="badge bg-light text-secondary border rounded-pill px-2 py-1">
                     <%= t("service_usage_logs.status_waived") %>
                   </span>
+
                 <% else %>
                   <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle rounded-pill px-2 py-1">
                     <%= t("service_usage_logs.status_draft") %>
@@ -116,23 +119,15 @@
                     <span class="material-symbols-outlined fs-6">receipt_long</span>
                     <span><%= t("service_usage_logs.view_invoice") %></span>
                   <% end %>
-                <% else %>
-                  <div class="d-flex align-items-center justify-content-center gap-1">
-                    <%= link_to new_landlord_house_invoice_path(house, room_id: item.room.id, billing_month: summary.billing_month_str),
-                                class: "btn btn-sm btn-outline-success d-inline-flex align-items-center gap-1 shadow-xs",
-                                data: { turbo_frame: "_top" },
-                                title: t("service_usage_logs.create_invoice_for_cycle") do %>
-                      <span class="material-symbols-outlined fs-6">add_notes</span>
-                      <span class="d-none d-lg-inline"><%= t("service_usage_logs.create_invoice_for_cycle") %></span>
-                    <% end %>
 
-                    <%= link_to edit_landlord_house_room_path(house, item.room),
-                                class: "btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1",
-                                data: { turbo_frame: "edit_room_modal" },
-                                title: t("service_usage_logs.configure_services_btn") do %>
-                      <span class="material-symbols-outlined fs-6">tune</span>
-                    <% end %>
-                  </div>
+                <% else %>
+                  <%= link_to new_landlord_house_invoice_path(house, room_id: item.room.id, billing_month: summary.billing_month_str),
+                              class: "btn btn-sm btn-outline-success d-inline-flex align-items-center gap-1 shadow-xs",
+                              data: { turbo_frame: "_top" },
+                              title: t("service_usage_logs.create_invoice_for_cycle") do %>
+                    <span class="material-symbols-outlined fs-6">add_notes</span>
+                    <span class="d-none d-lg-inline"><%= t("service_usage_logs.create_invoice_for_cycle") %></span>
+                  <% end %>
                 <% end %>
               </td>
             </tr>

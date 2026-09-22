@@ -1,7 +1,7 @@
 class LandlordPortal::TenantsController < LandlordPortal::BaseController
   layout "house_mngment"
 
-  before_action :authorize_tenant_belongs_to_house!, only: [ :show, :move, :destroy, :execute_move ]
+  before_action :authorize_tenant_belongs_to_house!, only: [ :show, :move, :destroy, :execute_move, :confirm_remove ]
 
   def show
     @user = @tenant.user
@@ -25,6 +25,10 @@ class LandlordPortal::TenantsController < LandlordPortal::BaseController
           locals: { signed_tenants: @tenants, house: @house }
   end
 
+  def confirm_remove
+    # renders confirm_remove.html.erb inside the remove_tenant_modal turbo frame
+  end
+
   # TODO: Modal form to move tenant to another rental unit
   def move
     @available_slots = AvailableSlotsBuilder.call(
@@ -37,7 +41,8 @@ class LandlordPortal::TenantsController < LandlordPortal::BaseController
     TenantMover.call(
       house: @house,
       tenant_stay: @tenant_stay,
-      rental_unit_id: params.expect(:rental_unit_id)
+      rental_unit_id: params.expect(:rental_unit_id),
+      end_contract: params[:end_contract] == "1"
     )
 
     @house.reload

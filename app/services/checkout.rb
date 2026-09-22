@@ -27,11 +27,12 @@ class Checkout
     house.invoices.where(id: all_unpaid_ids)
   end
 
-  def initialize(house:, tenant_stay:, end_contract: true, send_noti: true)
+  def initialize(house:, tenant_stay:, end_contract: true, send_noti: true, approved_request: nil)
     @house = house
     @tenant_stay = tenant_stay
     @end_contract = end_contract
     @send_noti = send_noti
+    @approved_request = approved_request
   end
 
   def call
@@ -45,7 +46,7 @@ class Checkout
     end
 
     TenantStay.transaction do
-      auto_approve_pending_requests!
+      auto_resolve_pending_requests!
       checkout_stay!
       tenant_stay.rental_unit.tenant_removed!  # Update occupancy
       end_contract! if @end_contract
@@ -60,29 +61,33 @@ class Checkout
 
   attr_reader :tenant_stay, :house
 
-  def auto_approve_pending_requests!
+  def auto_resolve_pending_requests!
     landlord_user = house.landlord.user
+    rejection_reason = I18n.t("request.rejection_reason_checkout", default: "Khách thuê đã trả phòng / rời nhà.")
+
     house.requests.where(tenant_id: tenant_stay.tenant_id, status: %i[pending handling]).find_each do |req|
-      case req.requestable_type
-      when "LeaveHouseRequest"
+      if @approved_request.present? && req.id == @approved_request.id
         req.update!(
           status: :approved,
           resolved_by: landlord_user,
           resolved_at: Time.current
         )
-      when "VehicleRequest"
-        req.requestable.approve!(landlord_user)
-      when "RepairRequest"
-        req.requestable.complete!(landlord_user)
       else
-        req.update!(
-          status: :approved,
-          resolved_by: landlord_user,
-          resolved_at: Time.current
-        )
+        if req.requestable.respond_to?(:reject!) && req.actionable?
+          req.requestable.reject!(landlord_user, rejection_reason)
+        else
+          req.update!(
+            status: :rejected,
+            rejection_reason: rejection_reason,
+            resolved_by: landlord_user,
+            resolved_at: Time.current
+          )
+          req.requestable.try(:purge_documents!)
+        end
       end
     end
   end
+  alias_method :auto_approve_pending_requests!, :auto_resolve_pending_requests!
 
   # Update the checkout time
   def checkout_stay!
