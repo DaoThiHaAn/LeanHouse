@@ -1,4 +1,7 @@
 <% content_for :title, "#{t('invoice.new_meter_log')} - #{@house.name}" %>
+<% content_for :head do %>
+  <meta name="turbo-cache-control" content="no-cache">
+<% end %>
 
 <div class="py-3 usage-log-form-wrapper">
   <div class="card shadow">
@@ -7,25 +10,25 @@
         <span class="material-symbols-filled fs-2">electric_meter</span>
         <%= t("invoice.new_meter_log") %>
       </h1>
-      <%= link_to t("invoice.actions.back"), (params[:from_room] == "true" && @room ? landlord_house_room_service_usage_logs_path(@house, @room) : landlord_house_service_usage_logs_path(@house, month: (@billing_month || @log&.billing_month || Date.current).strftime("%Y-%m"))), class: "btn btn-sm btn-outline-secondary" %>
+
+      <%= link_to t("invoice.actions.back"),
+          (params[:from_room] == "true" && @room ?
+            landlord_house_room_service_usage_logs_path(@house, @room) :
+            landlord_house_service_usage_logs_path(@house, month: (@billing_month || @log&.billing_month || Date.current).strftime("%Y-%m"))
+          ),
+          class: "btn btn-sm btn-outline-secondary" %>
     </div>
+
     <div class="card-body p-4">
-      <%= form_with model: [:landlord, @house, @log], local: true,
+      <%= form_with model: [:landlord, @house, @log], local: true, html: { autocomplete: "off" },
                     data: {
                       controller: "loading service-log-form",
                       loading_text_value: "#{t('saving')}...",
-                      action: "submit->loading#submit"
+                      action: "submit->loading#submit",
+                      service_log_form_room_variant_map_value: @room_real_time_variant_ids.to_json,
+                      service_log_form_room_occupancy_map_value: @room_occupancy.to_json
                     } do |f| %>
         <%= hidden_field_tag :from_room, "true" if params[:from_room] == "true" %>
-        <% if @log.errors.any? %>
-          <div class="alert alert-danger">
-            <ul class="mb-0">
-              <% @log.errors.full_messages.each do |msg| %>
-                <li><%= msg %></li>
-              <% end %>
-            </ul>
-          </div>
-        <% end %>
 
         <%= f.hidden_field :service_id %>
         <%= f.hidden_field :service_variant_id %>
@@ -33,6 +36,9 @@
         <%= f.hidden_field :unit %>
         <%= f.hidden_field :unit_price %>
 
+        <h2 class="mb-3"><%= t("service_usage_logs.object_and_period") %></h2>
+
+        <!-- Select a room -->
         <div class="mb-3">
           <%= f.label :room_id, class: "form-label fw-semibold" do %>
             <%= t("invoice.applied_room") %> <span class="text-danger">*</span>
@@ -44,6 +50,7 @@
               <%= label_tag :floor_id, class: "input-group-text" do %>
                 <%= t("form.floor.self") %><span class="text-danger ms-1">*</span>
               <% end %>
+
               <%= select_tag :floor_id,
                     options_for_select(
                       [[t("form.room.select_floor"), ""]] + @floors.map { |floor| [floor.name, floor.id] },
@@ -54,75 +61,86 @@
                       dependent_rental_unit_target: "floor",
                       action: "change->dependent-rental-unit#floorChanged"
                     } %>
+
               <%= f.label :room_id, class: "input-group-text" do %>
                 <%= t("form.room.self") %><span class="text-danger ms-1">*</span>
               <% end %>
-              <%= f.select :room_id, [], {}, class: "form-select", required: true,
+              <%= f.select :room_id, [], {},
+                    class: "form-select #{invalid_class(@log, :room)} #{invalid_class(@log, :room_id)}", required: true,
                     data: {
                       dependent_rental_unit_target: "room",
                       selected_value: @log.room_id || @room&.id,
-                      action: "change->dependent-rental-unit#roomChanged"
+                      action: "change->dependent-rental-unit#roomChanged change->service-log-form#checkRoomVariants change->service-log-form#checkRoomOccupancy"
                     } %>
             </div>
           </div>
+
+          <%= field_error(@log, :room) %>
+          <%= field_error(@log, :room_id) %>
         </div>
 
+        <div class="alert alert-warning border-0 d-none align-items-start gap-2 mb-4"
+             data-service-log-form-target="vacantRoomWarning">
+          <span class="material-symbols-outlined">info</span>
+          <span><%= t("service_usage_logs.vacant_room_not_billable") %></span>
+        </div>
 
         <div class="row g-4">
+          <!-- Billing month -->
           <div class="col-md-6">
             <%= f.label :billing_month, class: "form-label fw-semibold" do %>
               <%= t("invoice.billing_month") %> <span class="text-danger">*</span>
             <% end %>
-            <%= f.month_field :billing_month, value: @billing_month.strftime("%Y-%m"), class: "form-control shadow-sm", required: true %>
+            <%= f.month_field :billing_month, value: @billing_month.strftime("%Y-%m"), class: "form-control shadow-sm #{invalid_class(@log, :billing_month)}", required: true %>
+
+            <%= field_error(@log, :billing_month) %>
           </div>
 
-
+          <!-- Service variant -->
           <div class="col-md-6">
             <%= f.label :service_variant_id, class: "form-label fw-semibold" do %>
               <%= t("invoice.measured_service") %> <span class="text-danger">*</span>
             <% end %>
-            <select name="service_usage_log[service_variant_id]" class="form-select shadow-sm" required onchange="this.form.submit()">
+            <select name="service_usage_log[service_variant_id]" class="form-select shadow-sm <%= invalid_class(@log, :service_id) %>" required onchange="this.form.submit()">
               <% @house.service_variants.where(is_real_time: true).each do |v| %>
                 <option value="<%= v.id %>" <%= 'selected' if @log.service_variant_id == v.id %>>
                   <%= v.service.name %> (<%= v.human_unit %> - <%= number_to_currency(v.fee, unit: 'đ', precision: 0) %>)
                 </option>
               <% end %>
             </select>
+
+            <%= field_error(@log, :service_id, classes: "mt-2") %>
+
+            <div class="d-none mt-2 d-flex align-items-center gap-2 text-danger small fw-medium"
+                 data-service-log-form-target="noVariantWarning">
+              <span class="material-symbols-outlined fs-4">warning</span>
+              <span><%= t("service_usage_logs.no_real_time_variant_for_room") %></span>
+            </div>
           </div>
 
-          <div class="col-md-6">
-            <%= f.label :prev_reading, class: "form-label fw-semibold" do %>
-              <%= t("invoice.prev_reading_label", unit: @log.unit) %> <span class="text-danger">*</span>
-            <% end %>
-            <%= f.number_field :prev_reading, class: "form-control shadow-sm", required: true, min: 0,
-                               data: { service_log_form_target: "prevReadingInput", action: "input->service-log-form#updateMinReading" } %>
-          </div>
-
-          <div class="col-md-6">
-            <%= f.label :latest_reading, class: "form-label fw-semibold text-primary" do %>
-              <%= t("invoice.latest_reading_label", unit: @log.unit) %>
-              <span class="text-danger" data-service-log-form-target="latestReadingAsterisk">*</span>
-            <% end %>
-            <%= f.number_field :latest_reading, class: "form-control shadow-sm",
-                               placeholder: t("invoice.reading_placeholder"),
-                               required: true,
-                               min: @log.prev_reading,
-                               data: { service_log_form_target: "latestReadingInput" } %>
-          </div>
-
+          <!-- Start date of billing month -->
           <div class="col-md-6">
             <%= f.label :start_date, class: "form-label fw-semibold" do %>
               <%= t("invoice.cycle_start_date") %> <span class="text-danger">*</span>
             <% end %>
-            <%= f.date_field :start_date, value: @log.start_date || @billing_month.beginning_of_month, class: "form-control shadow-sm", required: true %>
+            <%= f.date_field :start_date, value: @log.start_date || @billing_month.beginning_of_month, class: "form-control shadow-sm #{invalid_class(@log, :start_date)}", required: true %>
+
+            <%= field_error(@log, :start_date) %>
           </div>
 
+          <!-- End date of billing month -->
           <div class="col-md-6">
             <%= f.label :end_date, class: "form-label fw-semibold" do %>
               <%= t("invoice.cycle_end_date") %> <span class="text-danger">*</span>
             <% end %>
-            <%= f.date_field :end_date, value: @log.end_date || @billing_month.end_of_month, class: "form-control shadow-sm", required: true %>
+            <%= f.date_field :end_date, value: @log.end_date || @billing_month.end_of_month, class: "form-control shadow-sm #{invalid_class(@log, :end_date)}", required: true %>
+
+            <%= field_error(@log, :end_date, classes: "mt-2") %>
           </div>
+
+          <hr>
+
+          <h2 class="my-1"><%= t("service_usage_logs.record_reading") %></h2>
 
           <!-- Radio cards: Confirmation Mode -->
           <div class="col-12 mt-3">
@@ -133,13 +151,13 @@
             <div class="row g-3">
               <!-- Landlord confirm -->
               <div class="col-md-6">
-                <div class="card h-100 confirmation-radio-card p-3 border rounded-3 bg-light cursor-pointer">
+                <div class="card h-100 confirmation-radio-card p-3 border rounded-3 bg-light">
                   <div class="form-check d-flex align-items-start gap-2 mb-0">
                     <%= f.radio_button :is_confirmed, true, checked: (@log.is_confirmed.nil? ? true : @log.is_confirmed?),
-                                       class: "form-check-input mt-1 cursor-pointer",
+                                       class: "form-check-input mt-1",
                                        id: "is_confirmed_true",
                                        data: { action: "change->service-log-form#toggleConfirmation" } %>
-                    <label class="form-check-label cursor-pointer w-100" for="is_confirmed_true">
+                    <label class="form-check-label w-100" for="is_confirmed_true">
                       <div class="d-flex align-items-center gap-1 text-success fw-bold mb-1">
                         <span class="material-symbols-filled fs-5">bookmark_check</span>
                         <span><%= t("invoice.confirm_now_option") %></span>
@@ -154,13 +172,17 @@
 
               <!-- Wait for tenant to upload the image -->
               <div class="col-md-6">
-                <div class="card h-100 confirmation-radio-card p-3 border rounded-3 bg-light cursor-pointer">
+                <div class="card h-100 confirmation-radio-card p-3 border rounded-3 bg-light"
+                     data-service-log-form-target="awaitTenantCard">
                   <div class="form-check d-flex align-items-start gap-2 mb-0">
                     <%= f.radio_button :is_confirmed, false, checked: (@log.is_confirmed == false),
-                                       class: "form-check-input mt-1 cursor-pointer",
+                                       class: "form-check-input mt-1",
                                        id: "is_confirmed_false",
-                                       data: { action: "change->service-log-form#toggleConfirmation" } %>
-                    <label class="form-check-label cursor-pointer w-100" for="is_confirmed_false">
+                                       data: {
+                                         service_log_form_target: "awaitTenantOption",
+                                         action: "change->service-log-form#toggleConfirmation"
+                                       } %>
+                    <label class="form-check-label w-100" for="is_confirmed_false">
                       <div class="d-flex align-items-center gap-1 text-primary fw-bold mb-1">
                         <span class="material-symbols-filled fs-5">photo_camera</span>
                         <span><%= t("invoice.awaiting_tenant_option") %></span>
@@ -177,8 +199,58 @@
 
           <!-- Photo upload -->
           <div class="col-md-6" data-service-log-form-target="photoUploadWrapper">
-            <%= f.label :reading_photo, t("invoice.meter_photo"), class: "form-label fw-semibold" %>
-            <%= f.file_field :reading_photo, accept: "image/*", class: "form-control shadow-sm" %>
+            <%# A new reading is a fresh transaction; do not restore a photo from a previous visit. %>
+            <div data-controller="file-preview">
+              <%= f.label :reading_photo, t("invoice.meter_photo"), class: "form-label fw-semibold" %>
+              <%= f.file_field :reading_photo,
+                               accept: "image/*",
+                               class: "form-control shadow-sm",
+                               data: {
+                                 file_preview_target: "input",
+                                 action: "change->file-preview#preview"
+                               } %>
+
+              <!-- Live upload preview with remove (×) button -->
+              <div class="position-relative d-inline-block mt-3 d-none" data-file-preview-target="container">
+                <img src=""
+                     alt="<%= t("invoice.meter_photo") %>"
+                     class="rounded border shadow-sm img-preview"
+                     data-file-preview-target="preview">
+                <button type="button"
+                        class="btn btn-danger btn-sm rounded-circle position-absolute top-0 end-0 d-flex align-items-center justify-content-center p-0 shadow"
+                        style="width: 24px; height: 24px; transform: translate(30%, -30%); z-index: 5;"
+                        data-action="click->file-preview#clear"
+                        title="<%= t("clear_img") %>">
+                  <span class="material-symbols-outlined fs-5">close</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Prev reading -->
+          <div class="col-sm-6">
+            <%= f.label :prev_reading, class: "form-label fw-semibold" do %>
+              <%= t("invoice.prev_reading_label", unit: @log.unit) %> <span class="text-danger">*</span>
+            <% end %>
+            <%= f.number_field :prev_reading, class: "form-control shadow-sm #{invalid_class(@log, :prev_reading)}", required: true, min: 0,
+                               data: { service_log_form_target: "prevReadingInput", action: "input->service-log-form#updateMinReading" } %>
+
+            <%= field_error(@log, :prev_reading) %>
+          </div>
+
+          <!-- Latest reading -->
+          <div class="col-sm-6">
+            <%= f.label :latest_reading, class: "form-label fw-semibold text-primary" do %>
+              <%= t("invoice.latest_reading_label", unit: @log.unit) %>
+              <span class="text-danger" data-service-log-form-target="latestReadingAsterisk">*</span>
+            <% end %>
+            <%= f.number_field :latest_reading, class: "form-control shadow-sm #{invalid_class(@log, :latest_reading)}",
+                               placeholder: t("invoice.reading_placeholder"),
+                               required: true,
+                               min: @log.prev_reading,
+                               data: { service_log_form_target: "latestReadingInput" } %>
+
+            <%= field_error(@log, :latest_reading) %>
           </div>
 
           <div class="col-12 mt-4 text-end">

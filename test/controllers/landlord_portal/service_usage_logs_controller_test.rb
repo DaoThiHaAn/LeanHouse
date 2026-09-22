@@ -708,6 +708,33 @@ class LandlordPortal::ServiceUsageLogsControllerTest < ActionDispatch::Integrati
     assert_nil created_log.latest_reading
   end
 
+  test "forces confirmation for a vacant room" do
+    @room.update!(tenants_count: 0)
+    next_month = 4.months.from_now.beginning_of_month
+
+    post landlord_house_service_usage_logs_path(@house), params: {
+      service_usage_log: {
+        billing_month: next_month.strftime("%Y-%m"),
+        room_id: @room.id,
+        service_id: @service.id,
+        service_variant_id: @variant.id,
+        service_name: @service.name,
+        unit: @variant.human_unit,
+        unit_price: @variant.fee,
+        prev_reading: 220,
+        latest_reading: 250,
+        is_confirmed: false,
+        start_date: next_month,
+        end_date: next_month.end_of_month
+      }
+    }
+
+    assert_response :redirect
+    created_log = ServiceUsageLog.last
+    assert_predicate created_log, :is_confirmed?
+    assert_not created_log.billable?
+  end
+
   test "cannot create confirmed service usage log when latest_reading is blank" do
     next_month = 3.months.from_now.beginning_of_month
     assert_no_difference("ServiceUsageLog.count") do
@@ -729,6 +756,8 @@ class LandlordPortal::ServiceUsageLogsControllerTest < ActionDispatch::Integrati
       }
     end
     assert_response :unprocessable_entity
+    assert_select "#service_usage_log_latest_reading.is-invalid"
+    assert_select ".invalid-feedback", text: /Không được để trống/
   end
 
   test "confirming log sends notification to active staying tenants in room" do

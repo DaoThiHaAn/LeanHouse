@@ -159,3 +159,7 @@ vi:
     unrecorded: "Chưa ghi số"
     unrecorded_note: "Bạn có thể bổ sung/ghi đè chỉ số  cũ hoặc mới"
     editable_note: "Bạn có thể  chỉnh sủa / nộp lại ảnh trước khi chủ nhà xác nhận"
+    no_real_time_variant_for_room: "Phòng này chưa được gán phiên bản dịch vụ đo thực tế nào. Hãy kiểm tra lại cài đặt dịch vụ cho phòng."
+    vacant_room_not_billable: "Phòng này hiện không có người thuê. Chỉ số vẫn được lưu để theo dõi, nhưng sẽ không được tính vào hóa đơn."
+    object_and_period: "Đối tượng & kỳ tính toán"
+    record_reading: "Ghi nhận chỉ số"

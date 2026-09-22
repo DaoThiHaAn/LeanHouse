@@ -14,6 +14,8 @@ module Invoices
     end
 
     def call
+      ensure_room_has_staying_tenants!
+
       if @inv_type == "individual"
         issue_individual_invoices
       else
@@ -149,6 +151,7 @@ module Invoices
                 service_id: variant&.service_id,
                 billing_month: @billing_month
               )
+              ensure_billable_log!(log) if log.persisted?
               log.service_variant = variant
               log.service_name = name
               log.unit = unit
@@ -162,17 +165,19 @@ module Invoices
               log.confirmed_by ||= @landlord
               log.save!
             elsif item_param[:service_usage_log_id].present?
-              log = ServiceUsageLog.find_by(id: item_param[:service_usage_log_id])
+              log = @room.service_usage_logs.find_by(id: item_param[:service_usage_log_id])
+              ensure_billable_log!(log)
             end
           else
             log = if item_param[:service_usage_log_id].present?
-                    ServiceUsageLog.find_by(id: item_param[:service_usage_log_id])
+                    @room.service_usage_logs.find_by(id: item_param[:service_usage_log_id])
             else
                     @room.service_usage_logs.find_by(
                       service_id: variant&.service_id,
                       billing_month: @billing_month
                     )
             end
+            ensure_billable_log!(log) if log.present?
           end
 
           if log.present? && !invoice.service_usage_logs.include?(log)
@@ -209,6 +214,18 @@ module Invoices
       invoice.total_discount = total_discount
       invoice.total_addition = total_addition
       invoice.total_amount = [ subtotal + total_addition - total_discount, 0 ].max
+    end
+
+    def ensure_room_has_staying_tenants!
+      return if @room.active_staying_tenant_users.exists?
+
+      raise ArgumentError, I18n.t("invoice.errors.no_staying_tenants_in_room")
+    end
+
+    def ensure_billable_log!(log)
+      return if log&.billable?
+
+      raise ArgumentError, I18n.t("invoice.errors.non_billable_usage_log")
     end
 
     def finalize_invoice(invoice)

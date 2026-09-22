@@ -148,3 +148,5 @@ en:
     tenant_guide_step3_desc: "Landlord verifies the photo and confirms the reading. Once confirmed, it is locked and ready for billing."
     view_photo_btn: "View Photo"
     unrecorded: "Unrecorded"
+    no_real_time_variant_for_room: "This room has no metered service variant assigned. Please check the room's service settings."
+    vacant_room_not_billable: "This room has no staying tenant. The reading will be saved for tracking but will not be included in invoices."

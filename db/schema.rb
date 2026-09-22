@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_21_000002) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_22_000000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "unaccent"
@@ -366,6 +366,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_21_000002) do
   end
 
   create_table "service_usage_logs", force: :cascade do |t|
+    t.boolean "billable", default: true, null: false
     t.date "billing_month", null: false
     t.datetime "confirmed_at"
     t.bigint "confirmed_by_id"
@@ -386,6 +387,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_21_000002) do
     t.datetime "updated_at", null: false
     t.integer "usage_quantity"
     t.index ["confirmed_by_id"], name: "index_service_usage_logs_on_confirmed_by_id"
+    t.index ["billable"], name: "index_service_usage_logs_on_billable"
     t.index ["room_id", "service_id", "billing_month"], name: "idx_usage_logs_room_service_month", unique: true
     t.index ["room_id"], name: "index_service_usage_logs_on_room_id"
     t.index ["service_id"], name: "index_service_usage_logs_on_service_id"

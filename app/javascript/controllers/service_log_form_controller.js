@@ -3,12 +3,24 @@ import { Controller } from "@hotwired/stimulus"
 // Stimulus controller to dynamically toggle the required state and asterisk
 // of latest_reading based on the confirmation mode radio selection (confirm now vs await tenant submission),
 // and dynamically constrain latest_reading to be greater than or equal to prev_reading.
+// Also shows a warning when the selected room has no real-time service variant assigned.
 export default class extends Controller {
-  static targets = ["latestReadingInput", "latestReadingAsterisk", "prevReadingInput", "photoUploadWrapper"]
+  static targets = ["latestReadingInput", "latestReadingAsterisk", "prevReadingInput", "photoUploadWrapper", "noVariantWarning", "vacantRoomWarning", "awaitTenantOption", "awaitTenantCard"]
+  static values = { roomVariantMap: Object, roomOccupancyMap: Object }
 
   connect() {
     this.updateRequirement()
     this.updateMinReading()
+    this.checkRoomVariants()
+    this.checkRoomOccupancy()
+
+    // The nested dependent-rental-unit controller populates and preselects the
+    // room during its own connect callback. Recheck on the next turn so the
+    // initial room gets the same warnings as a manually selected one.
+    setTimeout(() => {
+      this.checkRoomVariants()
+      this.checkRoomOccupancy()
+    }, 0)
   }
 
   // Triggered when switching between "Xác nhận & chốt số ngay" and "Chờ người thuê chụp ảnh / nộp số"
@@ -47,6 +59,39 @@ export default class extends Controller {
         this.latestReadingInputTarget.min = prevVal
       } else {
         this.latestReadingInputTarget.removeAttribute("min")
+      }
+    }
+  }
+
+  // Shows a warning below the variant select when the selected room has no real-time service variant assigned.
+  checkRoomVariants() {
+    if (!this.hasNoVariantWarningTarget) return
+
+    const roomSelect = this.element.querySelector('[data-dependent-rental-unit-target="room"]')
+    const roomId = roomSelect?.value
+
+    const variantIds = roomId ? (this.roomVariantMapValue[roomId] ?? []) : []
+    const hasNoVariant = roomId && variantIds.length === 0
+
+    this.noVariantWarningTarget.classList.toggle("d-none", !hasNoVariant)
+  }
+
+  checkRoomOccupancy() {
+    if (!this.hasVacantRoomWarningTarget) return
+
+    const roomId = this.element.querySelector('[data-dependent-rental-unit-target="room"]')?.value
+    const isVacant = roomId && this.roomOccupancyMapValue[roomId] === false
+    this.vacantRoomWarningTarget.classList.toggle("d-none", !isVacant)
+    this.vacantRoomWarningTarget.classList.toggle("d-flex", isVacant)
+
+    if (this.hasAwaitTenantOptionTarget) {
+      this.awaitTenantOptionTarget.disabled = isVacant
+      this.awaitTenantCardTarget?.classList.toggle("opacity-50", isVacant)
+      this.awaitTenantCardTarget?.classList.toggle("cursor-not-allowed", isVacant)
+
+      if (isVacant) {
+        this.element.querySelector("#is_confirmed_true").checked = true
+        this.updateRequirement()
       }
     }
   }

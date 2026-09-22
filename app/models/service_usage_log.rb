@@ -33,12 +33,14 @@ class ServiceUsageLog < ApplicationRecord
   validate :prevent_modification_when_confirmed, on: :update
 
   before_save :compute_usage
+  before_validation :mark_non_billable_for_vacant_room, on: :create
   before_destroy :prevent_destroy_if_billed, prepend: true
 
   scope :confirmed,   -> { where(is_confirmed: true) }
   scope :unconfirmed, -> { where(is_confirmed: false) }
   scope :billed,      -> { where(id: InvoiceServiceUsageLog.select(:service_usage_log_id)) }
   scope :unbilled,    -> { where.not(id: InvoiceServiceUsageLog.select(:service_usage_log_id)) }
+  scope :billable,    -> { where(billable: true) }
   scope :for_month,   ->(month) { where(billing_month: month.to_date.beginning_of_month) }
   scope :sorted,      -> { order(billing_month: :desc, created_at: :desc) }
 
@@ -101,6 +103,12 @@ class ServiceUsageLog < ApplicationRecord
   end
 
   private
+
+  # Persist vacancy at creation time so a later move-in cannot make an old
+  # vacant-period reading chargeable.
+  def mark_non_billable_for_vacant_room
+    self.billable = false if room&.empty?
+  end
 
   def latest_reading_greater_than_or_equal_to_prev_reading
     return if latest_reading.blank? || prev_reading.blank?

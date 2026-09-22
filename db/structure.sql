@@ -1026,7 +1026,8 @@ CREATE TABLE public.service_usage_logs (
     submitted_by_id bigint,
     confirmed_by_id bigint,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    billable boolean DEFAULT true NOT NULL
 );
 
 
@@ -2816,6 +2817,13 @@ CREATE UNIQUE INDEX index_rooms_on_floor_id_and_name ON public.rooms USING btree
 
 
 --
+-- Name: index_service_usage_logs_on_billable; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_service_usage_logs_on_billable ON public.service_usage_logs USING btree (billable);
+
+
+--
 -- Name: index_service_usage_logs_on_confirmed_by_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3534,6 +3542,7 @@ ALTER TABLE ONLY public.payment_orders
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20260922000000'),
 ('20260921000002'),
 ('20260921000001'),
 ('20260920164000'),

@@ -589,5 +589,6 @@ en:
       explanation_required: "Please provide a reason to undo payment confirmation."
       no_tenants_selected: "Please select at least one tenant to issue invoices to."
       no_staying_tenants_in_room: "There are currently no active staying tenants in this room to issue individual invoices."
+      non_billable_usage_log: "A reading recorded while the room was vacant cannot be included in an invoice."
       no_items_entered: "Please enter at least one valid fee or deduction item."
       tenant_not_found: "Tenant ID %{id} is invalid or no longer staying in this house."

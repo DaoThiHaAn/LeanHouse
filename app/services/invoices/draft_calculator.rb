@@ -139,13 +139,13 @@ module Invoices
       items = []
       room.service_variants.where(is_real_time: true).includes(:service).each do |variant|
         # 1. Look for log explicitly in this billing_month
-        log = room.service_usage_logs.find_by(
+        log = room.service_usage_logs.billable.find_by(
           service_id: variant.service_id,
           billing_month: billing_month
         )
 
         # 2. If no log for this exact billing_month, look for the most recent log on or before billing_month
-        log ||= room.service_usage_logs
+        log ||= room.service_usage_logs.billable
                     .where(service_id: variant.service_id)
                     .where("billing_month <= ?", billing_month)
                     .order(billing_month: :desc)

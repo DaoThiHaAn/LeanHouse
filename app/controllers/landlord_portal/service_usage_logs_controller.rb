@@ -24,7 +24,14 @@ class LandlordPortal::ServiceUsageLogsController < LandlordPortal::BaseControlle
   def filtered
     if @room
       @logs = LandlordServiceUsageLogsFilter.call(house: @house, room: @room, params: params)
-      render partial: "room_logs_table", locals: { house: @house, room: @room, logs: @logs }
+      # The house-level filter form targets "logs_table"; the room-level page targets "room_logs_table".
+      # Render the partial matching the requesting Turbo Frame to avoid blank content.
+      if request.headers["Turbo-Frame"] == "room_logs_table"
+        render partial: "room_logs_table", locals: { house: @house, room: @room, logs: @logs }
+      else
+        render partial: "logs_table", locals: { house: @house, logs: @logs, billing_month: @billing_month }
+      end
+
     elsif params[:tab] == "fixed"
       @fixed_services_summary = HouseFixedServicesSummary.call(
         house: @house,
@@ -33,6 +40,7 @@ class LandlordPortal::ServiceUsageLogsController < LandlordPortal::BaseControlle
       )
       render partial: "house_fixed_services_table", locals: { house: @house, summary: @fixed_services_summary }
     else
+
       @logs = LandlordServiceUsageLogsFilter.call(house: @house, params: params.reverse_merge(month: @billing_month.strftime("%Y-%m")))
       render partial: "logs_table", locals: { house: @house, logs: @logs, billing_month: @billing_month }
     end
@@ -65,6 +73,10 @@ class LandlordPortal::ServiceUsageLogsController < LandlordPortal::BaseControlle
   # - If is_confirmed: false -> opens the cycle and awaits tenant photo/reading submission
   def create
     @log = ServiceUsageLog.new(log_params)
+    # A vacant room has nobody to complete a pending reading. Keep this rule on
+    # the server as well as in the form, so a crafted request cannot create one.
+    @log.is_confirmed = true if @log.room&.empty?
+
     if @log.is_confirmed? || @log.latest_reading.present?
       @log.submitted_by = current_user
     else
@@ -149,6 +161,7 @@ class LandlordPortal::ServiceUsageLogsController < LandlordPortal::BaseControlle
           ]
         end
       end
+
       format.html do
         redirect_back fallback_location: landlord_house_service_usage_logs_path(@house, month: @log.billing_month.strftime("%Y-%m")),
                       notice: t("service_usage_logs.confirm_log_success", room: @log.room.name, default: "Đã xác nhận chỉ số!")
@@ -357,7 +370,7 @@ class LandlordPortal::ServiceUsageLogsController < LandlordPortal::BaseControlle
 
   # Loads floor and room options for the dependent floor & room input group picker
   def load_floor_and_room_options
-    @rooms = @house.rooms.active.includes(:floor).sorted
+    @rooms = @house.rooms.active.includes(:floor, :service_variants).sorted
     @floors = @rooms.map(&:floor).compact.uniq.sort_by(&:position)
     @room_options = @rooms.map do |r|
       {
@@ -365,6 +378,13 @@ class LandlordPortal::ServiceUsageLogsController < LandlordPortal::BaseControlle
         floorId: r.floor_id,
         name: r.title_name
       }
+    end
+    # Maps used by the form warnings for service assignment and room occupancy.
+    @room_real_time_variant_ids = @rooms.each_with_object({}) do |r, h|
+      h[r.id.to_s] = r.service_variants.select(&:is_real_time?).map { |v| v.id.to_s }
+    end
+    @room_occupancy = @rooms.each_with_object({}) do |r, h|
+      h[r.id.to_s] = !r.empty?
     end
   end
 

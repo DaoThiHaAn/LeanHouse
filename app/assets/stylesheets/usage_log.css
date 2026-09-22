@@ -66,3 +66,11 @@
   outline: none;
   border-left: 1px solid #a9c8f4;
 }
+
+.confirmation-radio-card input {
+  cursor: pointer;
+}
+
+.confirmation-radio-card:has(input:disabled) * {
+  cursor: not-allowed !important;
+}

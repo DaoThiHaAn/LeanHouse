@@ -57,6 +57,8 @@ class ServiceUsageLogTest < ActiveSupport::TestCase
     assert log.valid?
     log.save!
     assert_equal 50, log.usage_quantity
+    assert_not log.billable?
+    assert_includes ServiceUsageLog.where(billable: false), log
   end
 
   test "valid when latest_reading equals prev_reading" do
@@ -222,5 +224,31 @@ class ServiceUsageLogTest < ActiveSupport::TestCase
       log.destroy
     end
     assert log.errors[:base].any?
+  end
+
+  test "a vacant-room reading is excluded from invoice drafts" do
+    @room.room_services.create!(service_variant: @variant)
+    log = ServiceUsageLog.create!(
+      room: @room,
+      service: @service,
+      service_variant: @variant,
+      service_name: @service.name,
+      unit: "kWh",
+      unit_price: 3500,
+      billing_month: @billing_month,
+      start_date: @billing_month,
+      end_date: @billing_month.end_of_month,
+      prev_reading: 100,
+      latest_reading: 150,
+      is_confirmed: true
+    )
+
+    item = Invoices::DraftCalculator.new(room: @room, billing_month: @billing_month)
+                                    .build_items
+                                    .find { |draft_item| draft_item[:item_type] == :metered_service }
+
+    assert_not log.billable?
+    assert_nil item[:service_usage_log_id]
+    assert_not item[:has_log]
   end
 end

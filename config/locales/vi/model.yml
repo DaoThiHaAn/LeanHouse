@@ -124,6 +124,8 @@ vi:
           attributes:
             latest_reading:
               greater_than_or_equal_to_prev: "phải lớn hơn hoặc bằng chỉ số cũ (%{count})!"
+            service_id:
+              taken: "Phiên bản dịch vụ này đã được ghi nhận cho phòng này trong kỳ này!"
 
       # Global messages
       messages:
