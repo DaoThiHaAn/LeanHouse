@@ -41,14 +41,6 @@ class OtpController < ApplicationController
     (user&.otp_sent_at || Time.current) + Otp::OTP_EXPIRY
   end
 
-  def current_pending_user
-    if logged_in?
-      current_user
-    elsif session[:pending_tel].present? && session[:pending_role].present?
-      User.kept.find_by(tel: session[:pending_tel], role: session[:pending_role])
-    end
-  end
-
   def verify_change_tel
     if current_user.otp_expired?
       return render_otp_error(t("errors.expired_otp"))

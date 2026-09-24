@@ -1,0 +1,166 @@
+<%# locals: (attachment:) %>
+<div class="modal fade" id="deleteFileModal-<%= attachment.id %>" tabindex="-1" aria-labelledby="deleteFileModalLabel-<%= attachment.id %>" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow">
+      <%= form_with url: admin_uploaded_file_path(attachment), method: :delete do |f| %>
+        <div class="modal-header bg-danger text-white">
+          <h2 class="text-white d-flex align-items-center gap-2 mb-0" id="deleteFileModalLabel-<%= attachment.id %>">
+            <span class="material-symbols-outlined fs-4">warning</span>
+            <span><%= t("admin.uploaded_files.delete_btn") %></span>
+          </h2>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body text-start p-4">
+          <div class="alert alert-danger bg-danger-subtle text-danger border-0 d-flex align-items-center gap-2 mb-3">
+            <span class="material-symbols-outlined fs-5 mt-1">info</span>
+            <p class="small text-wrap">
+              <%= t("admin.uploaded_files.delete_confirm_warning") %>
+            </p>
+          </div>
+
+          <div class="p-2 border rounded bg-light mb-3">
+            <div class="fw-bold text-dark text-break">
+              <%= attachment.blob.filename %>
+            </div>
+
+            <div class="text-secondary small mt-1">
+              <%= record_friendly_description(attachment) %>
+              •
+              <%= number_to_human_size(attachment.blob.byte_size) %>
+            </div>
+          </div>
+
+          <!-- Reason Selector -->
+          <div class="mb-3">
+            <span class="form-label fw-semibold d-block mb-2">
+              <%= t("admin.uploaded_files.select_reason_label") %>
+            </span>
+
+            <div class="form-check mb-2">
+              <%= f.radio_button :reason,
+                    "sensitive_content",
+                    checked: true,
+                    class: "form-check-input",
+                    id: "reason_sensitive_#{attachment.id}" %>
+
+              <%= f.label :reason,
+                    value: "sensitive_content",
+                    class: "form-check-label small",
+                    for: "reason_sensitive_#{attachment.id}" do %>
+                <strong>
+                  <%= t("admin.uploaded_files.reasons.sensitive_content") %>
+                </strong>
+
+                <span class="text-secondary d-block admin-file-reason-hint">
+                  <%= t("admin.uploaded_files.reasons_hints.sensitive_content") %>
+                </span>
+              <% end %>
+            </div>
+
+            <div class="form-check mb-2">
+              <%= f.radio_button :reason,
+                    "privacy_violation",
+                    class: "form-check-input",
+                    id: "reason_privacy_#{attachment.id}" %>
+
+              <%= f.label :reason,
+                    value: "privacy_violation",
+                    class: "form-check-label small",
+                    for: "reason_privacy_#{attachment.id}" do %>
+                <strong>
+                  <%= t("admin.uploaded_files.reasons.privacy_violation") %>
+                </strong>
+
+                <span class="text-secondary d-block admin-file-reason-hint">
+                  <%= t("admin.uploaded_files.reasons_hints.privacy_violation") %>
+                </span>
+              <% end %>
+            </div>
+
+            <div class="form-check mb-2">
+              <%= f.radio_button :reason,
+                    "fraudulent_document",
+                    class: "form-check-input",
+                    id: "reason_fraud_#{attachment.id}" %>
+
+              <%= f.label :reason,
+                    value: "fraudulent_document",
+                    class: "form-check-label small",
+                    for: "reason_fraud_#{attachment.id}" do %>
+                <strong>
+                  <%= t("admin.uploaded_files.reasons.fraudulent_document") %>
+                </strong>
+
+                <span class="text-secondary d-block admin-file-reason-hint">
+                  <%= t("admin.uploaded_files.reasons_hints.fraudulent_document") %>
+                </span>
+              <% end %>
+            </div>
+
+            <div class="form-check mb-2">
+              <%= f.radio_button :reason,
+                    "malicious_content",
+                    class: "form-check-input",
+                    id: "reason_malicious_#{attachment.id}" %>
+
+              <%= f.label :reason,
+                    value: "malicious_content",
+                    class: "form-check-label small",
+                    for: "reason_malicious_#{attachment.id}" do %>
+                <strong>
+                  <%= t("admin.uploaded_files.reasons.malicious_content") %>
+                </strong>
+
+                <span class="text-secondary d-block admin-file-reason-hint">
+                  <%= t("admin.uploaded_files.reasons_hints.malicious_content") %>
+                </span>
+              <% end %>
+            </div>
+
+            <div class="form-check">
+              <%= f.radio_button :reason,
+                    "custom",
+                    class: "form-check-input",
+                    id: "reason_custom_#{attachment.id}" %>
+
+              <%= f.label :reason,
+                    value: "custom",
+                    class: "form-check-label small",
+                    for: "reason_custom_#{attachment.id}" do %>
+                <strong>
+                  <%= t("admin.uploaded_files.reasons.custom") %>
+                </strong>
+              <% end %>
+            </div>
+          </div>
+
+          <!-- Custom Reason Textarea -->
+          <div class="mb-2">
+            <%= f.label :custom_reason,
+                  t("admin.uploaded_files.custom_reason_label"),
+                  class: "form-label small text-secondary",
+                  for: "custom_reason_#{attachment.id}" %>
+
+            <%= f.text_area :custom_reason,
+                  rows: 2,
+                  class: "form-control form-control-sm",
+                  id: "custom_reason_#{attachment.id}",
+                  placeholder: t("admin.uploaded_files.custom_reason_placeholder") %>
+          </div>
+        </div>
+
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
+            <%= t("cancel") %>
+          </button>
+
+          <button type="submit" class="btn btn-danger btn-sm d-inline-flex align-items-center gap-1">
+            <span class="material-symbols-outlined fs-6">delete</span>
+            <span><%= t("admin.uploaded_files.confirm_delete_btn") %></span>
+          </button>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

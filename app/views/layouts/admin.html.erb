@@ -85,18 +85,12 @@
             </li>
 
             <li class="flex-shrink-0 nav-item custom <%= 'active' if controller_name == 'requests' %>">
-              <%= link_to admin_requests_path,
-                    class: "nav-link d-flex align-items-center gap-1 px-3 py-2 text-nowrap",
-                    aria: {
-                      label: (pending_requests_count > 0 ? "#{t('admin.nav.requests')} (#{pending_requests_count} #{t('admin.requests.pending_requests', default: 'chờ xử lý')})" : t('admin.nav.requests'))
-                    } do %>
-                <span class="material-symbols-filled fs-5" aria-hidden="true">assignment</span>
+              <%= link_to admin_requests_path, class: "nav-link d-flex align-items-center gap-1 px-3 py-2 text-nowrap" do %>
+                <span class="material-symbols-filled fs-5">assignment</span>
                 <span><%= t("admin.nav.requests") %></span>
-                <% if pending_requests_count > 0 %>
-                  <span class="admin-nav-badge ms-1" aria-hidden="true"><%= noti_count(pending_requests_count) %></span>
-                <% end %>
               <% end %>
             </li>
+
 
             <li class="flex-shrink-0 nav-item custom <%= 'active' if controller_name == 'issue_reports' %>">
               <%= link_to admin_issue_reports_path,
@@ -110,12 +104,20 @@
               <% end %>
             </li>
 
+            <li class="flex-shrink-0 nav-item custom <%= 'active' if controller_name == 'uploaded_files' %>">
+              <%= link_to admin_uploaded_files_path, class: "nav-link d-flex align-items-center gap-1 px-3 py-2 text-nowrap" do %>
+                <span class="material-symbols-filled fs-5" aria-hidden="true">folder_shared</span>
+                <span><%= t("admin.nav.uploaded_files") %></span>
+              <% end %>
+            </li>
+
             <li class="flex-shrink-0 nav-item custom <%= 'active' if controller_name == 'notifications' %>">
               <%= link_to admin_notifications_path, class: "nav-link d-flex align-items-center gap-1 px-3 py-2 text-nowrap" do %>
                 <span class="material-symbols-filled fs-5" aria-hidden="true">campaign</span>
                 <span><%= t("admin.nav.notifications") %></span>
               <% end %>
             </li>
+
 
             <% if current_admin&.super_admin? %>
               <li class="flex-shrink-0 nav-item custom <%= 'active' if controller_name == 'admins' %>">
@@ -199,5 +201,8 @@
     <%= turbo_frame_tag "invoice_detail_modal" %>
     <!-- Modal container for request detail -->
     <%= turbo_frame_tag "request_detail_modal" %>
+    <!-- Modal container for uploaded file detail -->
+    <%= turbo_frame_tag "uploaded_file_detail_modal" %>
   </body>
+
 </html>

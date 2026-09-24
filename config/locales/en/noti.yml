@@ -21,8 +21,10 @@ en:
       invoice_paid_tenant_self: "Payment Confirmation Sent for %{code}"
       invoice_paid_payos_landlord: "Invoice %{code} Paid via payOS"
       invoice_paid_payos_tenant: "Invoice %{code} Paid via payOS"
+      sensitive_file_removed: "Uploaded File Removed Due to Policy Violation"
 
     messages:
+      sensitive_file_removed: "File \"%{filename}\" (%{record_info}) was removed by the administrator due to content violation (%{reason}). Please ensure compliance with system upload guidelines."
       service_usage_log_confirmed: "Landlord has confirmed %{service_name} reading for %{room_name} (month %{month})."
       service_usage_log_requested: "Landlord requested %{service_name} meter reading for %{room_name} (month %{month}). Please take a meter photo and submit readings."
       invoice_paid_landlord_self: "You confirmed payment for invoice %{code} (%{room_name}) for %{amount} via %{method}."

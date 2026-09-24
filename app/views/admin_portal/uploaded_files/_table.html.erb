@@ -1,0 +1,41 @@
+<%= turbo_frame_tag "uploaded_files_table", data: { turbo_action: "advance" } do %>
+  <!-- Used by Stimulus pagination-sync to update URL -->
+  <span hidden data-pagination-total-pages="<%= @attachments.respond_to?(:total_pages) ? @attachments.total_pages : 1 %>"></span>
+
+  <% if @attachments.any? %>
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-3">
+        <thead class="table-light">
+          <tr class="small text-secondary">
+            <th class="ps-3 admin-file-col-preview"><%= t("admin.uploaded_files.table.preview") %></th>
+            <th><%= t("admin.uploaded_files.table.file_info") %></th>
+            <th><%= t("admin.uploaded_files.table.record_context") %></th>
+            <th><%= t("admin.uploaded_files.table.uploader") %></th>
+            <th><%= t("admin.uploaded_files.table.uploaded_at") %></th>
+            <th class="text-end pe-3"><%= t("admin.uploaded_files.table.actions") %></th>
+          </tr>
+        </thead>
+
+        <tbody class="border-top-0">
+          <%= render partial: "admin_portal/uploaded_files/row", collection: @attachments, as: :attachment %>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="d-flex justify-content-center my-4">
+      <%= paginate @attachments,
+            params: {
+              record_type: params[:record_type].presence,
+              file_type: params[:file_type].presence,
+              q: params[:q].presence
+            }.compact %>
+    </div>
+  <% else %>
+    <div class="text-center py-5">
+      <span class="material-symbols-outlined fs-1 text-secondary mb-2">folder_off</span>
+      <h6 class="text-secondary fw-semibold mb-1"><%= t("admin.uploaded_files.empty") %></h6>
+      <p class="text-muted small"><%= t("admin.uploaded_files.empty_hint") %></p>
+    </div>
+  <% end %>
+<% end %>

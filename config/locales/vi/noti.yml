@@ -63,9 +63,12 @@ vi:
       invoice_unpaid_tenant: "Hóa đơn %{code} chưa hoàn tất thanh toán"
       service_usage_log_confirmed: "Chỉ số dịch vụ đã được xác nhận"
       service_usage_log_requested: "Yêu cầu nộp chỉ số dịch vụ"
+      sensitive_file_removed: "Tệp tải lên đã bị gỡ bỏ do nội dung nhạy cảm"
 
     messages:
+      sensitive_file_removed: "Tệp \"%{filename}\" (%{record_info}) đã bị Quản trị viên gỡ bỏ do vi phạm quy định về nội dung (%{reason}). Vui lòng tuân thủ quy định tải lên tệp của hệ thống."
       invoice_paid_landlord_self: "Bạn đã xác nhận thu tiền cho hóa đơn %{code} (%{room_name}) với số tiền %{amount} qua %{method}."
+
       invoice_paid_tenant_submit: "Khách thuê %{actor_name} (%{room_name}) đã gửi xác nhận thanh toán hóa đơn %{code} với số tiền %{amount} qua %{method}. Vui lòng kiểm tra tài khoản."
       invoice_paid_roommate_submit: "Bạn cùng phòng %{actor_name} đã thanh toán hóa đơn %{code} (%{room_name}) với số tiền %{amount} qua %{method}."
       invoice_paid_landlord_confirmed: "Chủ nhà đã xác nhận thu tiền cho hóa đơn %{code} (%{room_name}) với số tiền %{amount} qua %{method}."

@@ -67,14 +67,42 @@ class OtpDemoSandboxTest < ActionDispatch::IntegrationTest
     ENV.delete("SHOW_DEMO_OTP")
   end
 
-  test "when demo mode is disabled, demo banner is not rendered in production" do
-    Otp.stub(:demo_mode?, false) do
-      post users_path, params: { user: @user_params }
-      follow_redirect!
+  test "when demo mode is disabled explicitly, demo banner is not rendered" do
+    ENV["SHOW_DEMO_OTP"] = "false"
+    post users_path, params: { user: @user_params }
+    follow_redirect!
 
-      assert_response :success
-      assert_select "[data-action='click->otp#fillDemo']", count: 0
-      assert_select ".badge.bg-warning", count: 0
-    end
+    assert_response :success
+    assert_select "[data-action='click->otp#fillDemo']", count: 0
+    assert_select ".badge.bg-warning", count: 0
+  ensure
+    ENV.delete("SHOW_DEMO_OTP")
+  end
+
+  test "Otp.demo_mode? defaults to true when no SMS service is configured" do
+    ENV.delete("SHOW_DEMO_OTP")
+    ENV.delete("ENABLE_SMS_SERVICE")
+    ENV.delete("SMS_API_KEY")
+
+    assert_equal true, Otp.demo_mode?
+  end
+
+  test "Otp.demo_mode? returns false when SMS service is enabled" do
+    ENV.delete("SHOW_DEMO_OTP")
+    ENV["ENABLE_SMS_SERVICE"] = "true"
+
+    assert_equal false, Otp.demo_mode?
+  ensure
+    ENV.delete("ENABLE_SMS_SERVICE")
+  end
+
+  test "Otp.demo_mode? honors SHOW_DEMO_OTP override over SMS service" do
+    ENV["ENABLE_SMS_SERVICE"] = "true"
+    ENV["SHOW_DEMO_OTP"] = "true"
+
+    assert_equal true, Otp.demo_mode?
+  ensure
+    ENV.delete("ENABLE_SMS_SERVICE")
+    ENV.delete("SHOW_DEMO_OTP")
   end
 end

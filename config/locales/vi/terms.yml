@@ -38,10 +38,11 @@ vi:
     user_data:
       title: "3. Dữ liệu và nội dung người dùng"
       content: "Mọi dữ liệu nhập vào hệ thống do người dùng tự chịu trách nhiệm."
-      content_1: "Người dùng không được đăng tải nội dung:"
-      content_2: "Vi phạm pháp luật, bản quyền, đạo đức"
-      content_3: "Chứa mã độc hoặc ảnh hưởng đến hệ thống"
-      content_4: "LeanHouse có quyền xóa các nội dung vi phạm mà không cần thông báo"
+      content_1: "Người dùng không được đăng tải nội dung hoặc tệp tin:"
+      content_2: "Vi phạm pháp luật, bản quyền, phản cảm, đồi trụy hoặc xâm phạm quyền riêng tư"
+      content_3: "Chứa mã độc, thông tin sai lệch, gian lận hoặc gây ảnh hưởng đến hệ thống"
+      content_4: "LeanHouse có quyền kiểm duyệt và xóa các tệp tin hoặc nội dung vi phạm mà không cần có sự đồng ý trước, đồng thời hệ thống sẽ gửi thông báo nêu rõ lý do gỡ bỏ đến tài khoản người tải lên."
+
 
     accuracy:
       title: "4. Tính chính xác của thông tin"

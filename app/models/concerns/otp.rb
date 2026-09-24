@@ -5,7 +5,24 @@ module Otp
 
   class << self
     def demo_mode?
-      Rails.env.development? || ENV["SHOW_DEMO_OTP"].to_s.downcase.in?(%w[true 1 yes])
+      # Explicit override via SHOW_DEMO_OTP environment variable
+      if ENV["SHOW_DEMO_OTP"].present?
+        return ENV["SHOW_DEMO_OTP"].to_s.downcase.in?(%w[true 1 yes])
+      end
+
+      # If an actual SMS service gateway is explicitly enabled, disable demo sandbox
+      return false if sms_service_enabled?
+
+      # When no SMS service is configured, default to demo sandbox mode across all environments
+      true
+    end
+
+    def sms_service_enabled?
+      ENV["ENABLE_SMS_SERVICE"].to_s.downcase.in?(%w[true 1 yes]) ||
+        ENV["SMS_API_KEY"].present? ||
+        ENV["TWILIO_ACCOUNT_SID"].present? ||
+        ENV["SPEEDSMS_API_KEY"].present? ||
+        ENV["ESMS_API_KEY"].present?
     end
   end
 

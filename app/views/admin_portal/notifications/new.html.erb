@@ -40,11 +40,11 @@
 
         <!-- 1. Target Audience Selector -->
         <div>
-          <%= f.label :target_audience, class: "form-label fw-bold d-flex align-items-center gap-2 mb-2" do %>
+          <div class="form-label fw-bold d-flex align-items-center gap-2 mb-2">
             <span class="material-symbols-filled fs-4">groups</span>
             <span><%= t("admin.notifications.form.audience_label") %></span>
             <span class="text-danger">*</span>
-          <% end %>
+          </div>
 
           <div class="row g-3">
             <!-- All Users -->
@@ -104,11 +104,11 @@
 
         <!-- 2. Priority Level -->
         <div>
-          <%= f.label :level, class: "form-label fw-bold d-flex align-items-center gap-2 mb-2" do %>
+          <div class="form-label fw-bold d-flex align-items-center gap-2 mb-2">
             <span class="material-symbols-filled fs-4">flag</span>
             <span><%= t("admin.notifications.form.level_label") %></span>
             <span class="text-danger">*</span>
-          <% end %>
+          </div>
           <div class="d-flex gap-3 flex-wrap">
             <div class="form-check">
               <%= f.radio_button :level, "info", checked: true, class: "form-check-input",

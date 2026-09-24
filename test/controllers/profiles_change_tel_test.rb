@@ -305,4 +305,14 @@ class ProfilesChangeTelTest < ActionDispatch::IntegrationTest
     assert_includes response.body, %(target="navbar_avatar")
     assert @tenant.reload.avatar.attached?
   end
+
+  test "profile page renders security section with data-turbo-confirm and data-turbo-method" do
+    sign_in_as(@landlord)
+    get landlord_profile_path
+
+    assert_response :success
+    assert_select "a[data-turbo-confirm][data-turbo-method='get']", count: 2
+    assert_select "a[data-turbo-confirm]", text: /#{Regexp.escape(I18n.t("form.profile.change_tel"))}/
+    assert_select "a[data-turbo-confirm]", text: /#{Regexp.escape(I18n.t("form.profile.change_pw"))}/
+  end
 end

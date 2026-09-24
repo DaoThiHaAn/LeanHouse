@@ -1,0 +1,139 @@
+<!-- Modal Hướng Dẫn & Quy Định Kiểm Duyệt Tệp Tin Hệ Thống -->
+<div class="modal fade" id="uploadedFilesGuidanceModal" tabindex="-1" aria-labelledby="uploadedFilesGuidanceModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+    <div class="modal-content border-0 shadow">
+      <!-- Modal Header -->
+      <div class="modal-header bg-dark text-white border-bottom">
+        <div class="d-flex align-items-center gap-2">
+          <span class="material-symbols-outlined fs-3 text-warning">shield</span>
+          <div>
+            <h2 class="h5 modal-title mb-0 text-white" id="uploadedFilesGuidanceModalLabel">
+              <%= t("admin.uploaded_files.guidance.title") %>
+            </h2>
+            <small class="text-white-50"><%= t("admin.uploaded_files.guidance.subtitle") %></small>
+          </div>
+        </div>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body p-4">
+        <!-- Section 1: Mục đích & Quyền hạn -->
+        <div class="mb-4">
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <span class="material-symbols-outlined text-primary fs-5">gavel</span>
+            <h3 class="h6 fw-bold mb-0 text-dark">
+              <%= t("admin.uploaded_files.guidance.section1_title") %>
+            </h3>
+          </div>
+          <p class="text-secondary small mb-0 lh-base">
+            <%= t("admin.uploaded_files.guidance.section1_desc") %>
+          </p>
+        </div>
+
+        <hr class="my-3 text-secondary-subtle">
+
+        <!-- Section 2: Tiêu chuẩn nội dung bị cấm -->
+        <div class="mb-4">
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <span class="material-symbols-outlined text-danger fs-5">block</span>
+            <h3 class="h6 fw-bold mb-0 text-danger">
+              <%= t("admin.uploaded_files.guidance.section2_title") %>
+            </h3>
+          </div>
+          <div class="row g-3 mt-1">
+            <div class="col-md-6">
+              <div class="p-3 rounded-3 bg-danger-subtle bg-opacity-25 border border-danger-subtle h-100">
+                <div class="fw-bold text-danger d-flex align-items-center gap-1 mb-1">
+                  <span class="material-symbols-outlined fs-6">warning</span>
+                  <span><%= t("admin.uploaded_files.guidance.rule1_title") %></span>
+                </div>
+                <small class="text-secondary d-block">
+                  <%= t("admin.uploaded_files.guidance.rule1_desc") %>
+                </small>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="p-3 rounded-3 bg-warning-subtle bg-opacity-25 border border-warning-subtle h-100">
+                <div class="fw-bold text-warning-emphasis d-flex align-items-center gap-1 mb-1">
+                  <span class="material-symbols-outlined fs-6">lock_person</span>
+                  <span><%= t("admin.uploaded_files.guidance.rule2_title") %></span>
+                </div>
+                <small class="text-secondary d-block">
+                  <%= t("admin.uploaded_files.guidance.rule2_desc") %>
+                </small>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="p-3 rounded-3 bg-info-subtle bg-opacity-25 border border-info-subtle h-100">
+                <div class="fw-bold text-info-emphasis d-flex align-items-center gap-1 mb-1">
+                  <span class="material-symbols-outlined fs-6">fact_check</span>
+                  <span><%= t("admin.uploaded_files.guidance.rule3_title") %></span>
+                </div>
+                <small class="text-secondary d-block">
+                  <%= t("admin.uploaded_files.guidance.rule3_desc") %>
+                </small>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="p-3 rounded-3 bg-secondary-subtle bg-opacity-50 border h-100">
+                <div class="fw-bold text-dark d-flex align-items-center gap-1 mb-1">
+                  <span class="material-symbols-outlined fs-6">pest_control</span>
+                  <span><%= t("admin.uploaded_files.guidance.rule4_title") %></span>
+                </div>
+                <small class="text-secondary d-block">
+                  <%= t("admin.uploaded_files.guidance.rule4_desc") %>
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <hr class="my-3 text-secondary-subtle">
+
+        <!-- Section 3: Quy trình gỡ bỏ & thông báo -->
+        <div>
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <span class="material-symbols-outlined text-success fs-5">sync_alt</span>
+            <h3 class="h6 fw-bold mb-0 text-dark">
+              <%= t("admin.uploaded_files.guidance.section3_title") %>
+            </h3>
+          </div>
+          <div class="d-flex flex-column gap-2 mt-2">
+            <div class="d-flex align-items-start gap-2 p-2 rounded-2 bg-light">
+              <span class="badge bg-dark rounded-circle px-2 py-1">1</span>
+              <div>
+                <div class="fw-bold"><%= t("admin.uploaded_files.guidance.step1_title") %></div>
+                <small class="text-secondary"><%= t("admin.uploaded_files.guidance.step1_desc") %></small>
+              </div>
+            </div>
+            <div class="d-flex align-items-start gap-2 p-2 rounded-2 bg-light">
+              <span class="badge bg-dark rounded-circle px-2 py-1">2</span>
+              <div>
+                <div class="fw-bold"><%= t("admin.uploaded_files.guidance.step2_title") %></div>
+                <small class="text-secondary"><%= t("admin.uploaded_files.guidance.step2_desc") %></small>
+              </div>
+            </div>
+            <div class="d-flex align-items-start gap-2 p-2 rounded-2 bg-light">
+              <span class="badge bg-dark rounded-circle px-2 py-1">3</span>
+              <div>
+                <div class="fw-bold"><%= t("admin.uploaded_files.guidance.step3_title") %></div>
+                <small class="text-secondary"><%= t("admin.uploaded_files.guidance.step3_desc") %></small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer bg-light border-top">
+        <button type="button" class="btn btn-secondary btn-sm px-4" data-bs-dismiss="modal">
+          <%= t("close") %>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

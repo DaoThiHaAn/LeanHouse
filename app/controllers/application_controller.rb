@@ -3,10 +3,20 @@ class ApplicationController < ActionController::Base
   allow_browser versions: :modern
 
   include SessionHelper
-  helper_method :current_user, :current_admin, :logged_in?, :admin_logged_in?, :show_demo_otp?
+  helper_method :current_user, :current_admin, :logged_in?, :admin_logged_in?, :show_demo_otp?, :current_pending_user
 
   def show_demo_otp?
     Otp.demo_mode?
+  end
+
+  def current_pending_user
+    if logged_in?
+      current_user
+    elsif session[:pending_tel].present? && session[:pending_role].present?
+      User.kept.find_by(tel: session[:pending_tel], role: session[:pending_role])
+    elsif session[:pending_tel].present?
+      User.kept.find_by(tel: session[:pending_tel])
+    end
   end
 
 

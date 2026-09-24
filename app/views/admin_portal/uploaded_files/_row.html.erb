@@ -1,0 +1,105 @@
+<%# locals: (attachment:) %>
+<tr id="<%= dom_id(attachment) %>" class="align-middle">
+  <!-- Preview Thumbnail -->
+  <td class="ps-3 admin-file-col-preview">
+    <% if attachment.blob.image? %>
+      <%= image_tag url_for(attachment),
+                    alt: attachment.blob.filename,
+                    class: "rounded-3 border shadow-sm admin-file-thumb" %>
+    <% elsif attachment.blob.video? %>
+      <div class="rounded-3 border bg-dark text-white d-flex align-items-center justify-content-center shadow-sm admin-file-thumb-icon">
+        <span class="material-symbols-outlined fs-4 text-danger">videocam</span>
+      </div>
+    <% elsif attachment.blob.content_type == "application/pdf" %>
+      <div class="rounded-3 border bg-warning-subtle text-warning-emphasis d-flex align-items-center justify-content-center shadow-sm admin-file-thumb-icon">
+        <span class="material-symbols-outlined fs-4 text-danger">picture_as_pdf</span>
+      </div>
+    <% else %>
+      <div class="rounded-3 border bg-light text-secondary d-flex align-items-center justify-content-center shadow-sm admin-file-thumb-icon">
+        <span class="material-symbols-outlined fs-4">description</span>
+      </div>
+    <% end %>
+  </td>
+
+  <!-- Filename & Details -->
+  <td>
+    <div class="fw-semibold custom-text-primary text-break admin-file-name-col">
+      <%= attachment.blob.filename %>
+    </div>
+    <div class="d-flex align-items-center gap-2 mt-1">
+      <%= file_type_badge(attachment) %>
+      <span class="badge bg-light text-secondary border small">
+        <%= number_to_human_size(attachment.blob.byte_size) %>
+      </span>
+    </div>
+  </td>
+
+  <!-- Attached Record Context -->
+  <td>
+    <span class="badge <%= record_type_badge_class(attachment.record_type) %> rounded-pill mb-1">
+      <%= record_type_badge_text(attachment.record_type) %>
+    </span>
+    <div class="small fw-semibold text-dark">
+      <% admin_link = record_admin_link(attachment) %>
+      <% if admin_link %>
+        <%= link_to record_friendly_description(attachment), admin_link, class: "text-decoration-none text-primary hover-underline", data: { turbo_frame: "_top" } %>
+      <% else %>
+        <%= record_friendly_description(attachment) %>
+      <% end %>
+    </div>
+  </td>
+
+  <!-- Uploaded By (Sender) -->
+  <td>
+    <% senders = find_senders_for_attachment(attachment) %>
+    <% if senders.any? %>
+      <% senders.each do |user| %>
+        <div class="d-flex align-items-center gap-1">
+          <span class="material-symbols-outlined fs-6 text-secondary">person</span>
+          <span class="small fw-medium"><%= user.fullname %></span>
+        </div>
+        <div class="badge bg-secondary-subtle text-secondary border rounded-pill">
+          <%= user_role_badge_text(user) %>
+        </div>
+        <p class="text-secondary d-block ps-1 mt-1 small"><%= user.tel %></p>
+      <% end %>
+    <% else %>
+      <span class="text-secondary small fst-italic"><%= t("admin.uploaded_files.unknown_uploader") %></span>
+    <% end %>
+  </td>
+
+
+  <!-- Uploaded Date -->
+  <td>
+    <div class="small text-dark fw-medium">
+      <%= attachment.created_at.strftime("%d/%m/%Y") %>
+    </div>
+    <small class="text-secondary">
+      <%= attachment.created_at.strftime("%H:%M") %>
+    </small>
+  </td>
+
+  <!-- Actions -->
+  <td class="text-end pe-3 text-nowrap">
+    <div class="d-inline-flex align-items-center gap-2">
+      <!-- Preview / Show Button -->
+      <%= link_to admin_uploaded_file_path(attachment),
+                  class: "btn btn-sm btn-light border d-inline-flex align-items-center gap-1",
+                  title: t("view_detail"),
+                  data: { turbo_frame: "uploaded_file_detail_modal" } do %>
+        <span class="material-symbols-filled fs-6">visibility</span>
+      <% end %>
+
+      <!-- Delete Button (triggers modal) -->
+      <button type="button"
+              class="btn btn-sm btn-outline-danger d-inline-flex align-items-center gap-1"
+              data-bs-toggle="modal"
+              data-bs-target="#deleteFileModal-<%= attachment.id %>"
+              title="<%= t('admin.uploaded_files.delete_btn_title') %>">
+        <span class="material-symbols-outlined fs-6">delete</span>
+      </button>
+
+      <%= render "admin_portal/uploaded_files/delete_modal", attachment: attachment %>
+    </div>
+  </td>
+</tr>

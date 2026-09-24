@@ -149,3 +149,24 @@
     border-color: #198754;
     box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
 }
+
+/* OTP Card */
+.otp.card {
+    width: 50%;
+}
+
+@media(max-width: 768px) {
+    .otp.card{
+        width: 75%;
+    }
+    .otp-box {
+        width: 35px !important;
+        height: 35px !important;
+    }
+}
+
+@media(max-width: 576px) {
+    .otp.card{
+        width: 95%;
+    }
+}

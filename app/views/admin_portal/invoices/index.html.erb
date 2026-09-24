@@ -121,6 +121,7 @@
             <% end %>
           <% end %>
         </div>
+
         <!-- Invoices Table Card -->
         <div class="card admin-card shadow-sm">
           <div class="card-body p-0">
@@ -218,6 +219,7 @@
                 </tbody>
               </table>
             </div>
+
             <% if @invoices.total_pages > 1 %>
               <div class="card-footer bg-white border-top py-3 d-flex justify-content-center">
                 <%= paginate @invoices, params: { q: @query, state: @state, invoice_type: @invoice_type } %>

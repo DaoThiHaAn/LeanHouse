@@ -279,6 +279,7 @@ Rails.application.routes.draw do
     resources :invoices, only: [ :show ]
     resources :requests, only: [ :index, :show ]
     resources :issue_reports, only: [ :index, :show, :update ]
+    resources :uploaded_files, only: [ :index, :show, :destroy ]
     resources :notifications, only: [ :index, :new, :create, :show ]
   end
 end

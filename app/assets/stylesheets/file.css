@@ -1,0 +1,48 @@
+/* Uploaded Files Management Styles */
+
+/* Table Columns & Thumbnails */
+.admin-file-col-preview {
+  width: 70px;
+}
+
+.admin-file-thumb {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+}
+
+.admin-file-thumb-icon {
+  width: 50px;
+  height: 50px;
+}
+
+.admin-file-name-col {
+  max-width: 250px;
+}
+
+/* Modal and Preview Elements */
+.admin-file-modal-backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.admin-file-modal-title {
+  max-width: 500px;
+}
+
+.admin-file-preview-img {
+  max-height: 400px;
+  object-fit: contain;
+}
+
+.admin-file-preview-video {
+  max-height: 400px;
+}
+
+/* Typography and Detail Helpers */
+.admin-file-text-xs {
+  font-size: 0.75rem;
+}
+
+.admin-file-reason-hint {
+  font-size: 0.75rem;
+}
