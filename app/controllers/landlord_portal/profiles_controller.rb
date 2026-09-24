@@ -18,10 +18,11 @@ class LandlordPortal::ProfilesController < LandlordPortal::BaseController
 
   def update_avatar
     if @user.update(avatar_params)
+      flash.now[:notice] = t("success_messages.avatar_updated")
       # Rails Active Storage auto purges the old attachment
       respond_to do |format|
         format.turbo_stream
-        format.html { render partial: "avatar", locals: { user: @user } }
+        format.html { redirect_to landlord_profile_path, notice: t("success_messages.avatar_updated") }
       end
     else
       respond_to do |format|

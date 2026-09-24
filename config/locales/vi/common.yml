@@ -212,6 +212,7 @@ vi:
     login: "Đăng nhập thành công!"
     logout: "Đăng xuất thành công!"
     user_updated: "Cập nhật thông tin tài khoản thành công!"
+    avatar_updated: "Cập nhật ảnh đại diện thành công!"
     tel_updated: "Đổi số điện thoại thành công!"
     pw_updated: "Cập nhật mật khẩu thành công!"
     house_created: "Tạo nhà thành công!"

@@ -278,7 +278,7 @@ class ProfilesChangeTelTest < ActionDispatch::IntegrationTest
     assert @tenant.reload.authenticate("TenantNewPassword123")
   end
 
-  test "landlord update avatar streams both profile_avatar and navbar_avatar" do
+  test "landlord update avatar streams profile_avatar, navbar_avatar, and flash" do
     sign_in_as(@landlord)
     image = fixture_file_upload("normal.png", "image/png")
 
@@ -289,10 +289,12 @@ class ProfilesChangeTelTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_includes response.body, %(target="profile_avatar")
     assert_includes response.body, %(target="navbar_avatar")
+    assert_includes response.body, %(target="flash")
+    assert_includes response.body, I18n.t("success_messages.avatar_updated")
     assert @landlord.reload.avatar.attached?
   end
 
-  test "tenant update avatar streams both profile_avatar and navbar_avatar" do
+  test "tenant update avatar streams profile_avatar, navbar_avatar, and flash" do
     sign_in_as(@tenant)
     image = fixture_file_upload("normal.png", "image/png")
 
@@ -303,6 +305,8 @@ class ProfilesChangeTelTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_includes response.body, %(target="profile_avatar")
     assert_includes response.body, %(target="navbar_avatar")
+    assert_includes response.body, %(target="flash")
+    assert_includes response.body, I18n.t("success_messages.avatar_updated")
     assert @tenant.reload.avatar.attached?
   end
 

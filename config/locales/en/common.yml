@@ -158,6 +158,7 @@ en:
   clear_img: "Clear image"
   ago: "ago"
   success_messages:
+    avatar_updated: "Avatar updated successfully!"
     room_created: "Room created successfully!"
     room_updated: "Room updated successfully!"
     bed_created: "Bed created successfully!"
