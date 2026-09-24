@@ -1,7 +1,8 @@
 <%# locals: (house:, billing_month:, selected_service: nil, count:) %>
 <div id="house_confirm_all_btn" class="ms-auto">
   <% if count.to_i > 0 %>
-    <%= button_to confirm_all_landlord_house_service_usage_logs_path(house, month: billing_month.strftime("%Y-%m"), service_id: selected_service&.id),
+    <% confirm_path = selected_service ? confirm_all_landlord_house_service_service_usage_logs_path(house, selected_service, month: billing_month.strftime("%Y-%m")) : confirm_all_landlord_house_service_usage_logs_path(house, month: billing_month.strftime("%Y-%m")) %>
+    <%= button_to confirm_path,
                   method: :patch,
                   form: {
                     data: {

@@ -77,7 +77,7 @@ class LandlordPortal::ServiceUsageLogsControllerTest < ActionDispatch::Integrati
   end
 
   test "should get house service usage logs index scoped to service" do
-    get landlord_house_service_usage_logs_path(@house, service_id: @service.id)
+    get landlord_house_service_service_usage_logs_path(@house, @service)
     assert_response :success
     assert_select "nav[aria-label*='readcrumb']", text: /#{@service.name}/
     assert_select "h1", text: /#{@service.name}/
@@ -204,7 +204,7 @@ class LandlordPortal::ServiceUsageLogsControllerTest < ActionDispatch::Integrati
   end
 
   test "should get filtered logs for room" do
-    get filtered_landlord_house_service_usage_logs_path(@house, room_id: @room.id)
+    get filtered_landlord_house_room_service_usage_logs_path(@house, @room)
     assert_response :success
     assert_select "turbo-frame#room_logs_table"
   end
@@ -364,8 +364,8 @@ class LandlordPortal::ServiceUsageLogsControllerTest < ActionDispatch::Integrati
     assert_equal false, @log.is_confirmed?
     assert_equal false, water_log.is_confirmed?
 
-    patch confirm_all_landlord_house_service_usage_logs_path(@house, month: @billing_month.strftime("%Y-%m"), service_id: @service.id)
-    assert_redirected_to landlord_house_service_usage_logs_path(@house, service_id: @service.id, month: @billing_month.strftime("%Y-%m"))
+    patch confirm_all_landlord_house_service_service_usage_logs_path(@house, @service, month: @billing_month.strftime("%Y-%m"))
+    assert_redirected_to landlord_house_service_service_usage_logs_path(@house, @service, month: @billing_month.strftime("%Y-%m"))
 
     assert_equal true, @log.reload.is_confirmed?
     assert_equal false, water_log.reload.is_confirmed?
@@ -850,7 +850,7 @@ class LandlordPortal::ServiceUsageLogsControllerTest < ActionDispatch::Integrati
     fixed_var = fixed_svc.service_variants.create!(unit: "per_month", fee: 30_000, is_real_time: false)
     RoomService.create!(room: @room, service_variant: fixed_var, service: fixed_svc)
 
-    get landlord_house_service_usage_logs_path(@house, service_id: fixed_svc.id, month: @billing_month.strftime("%Y-%m"))
+    get landlord_house_service_service_usage_logs_path(@house, fixed_svc, month: @billing_month.strftime("%Y-%m"))
     assert_response :success
     assert_select "turbo-frame#house_service_logs_section" do
       assert_select "turbo-frame#house_fixed_services_table"
@@ -890,7 +890,8 @@ class LandlordPortal::ServiceUsageLogsControllerTest < ActionDispatch::Integrati
       }
     end
     assert_response :unprocessable_entity
-    assert_select ".alert-danger", text: /phải lớn hơn hoặc bằng chỉ số cũ/
+    assert_select "#service_usage_log_latest_reading.is-invalid"
+    assert_select ".invalid-feedback", text: /phải lớn hơn hoặc bằng chỉ số cũ/
   end
 
   test "cannot update service usage log when latest_reading is less than prev_reading" do
@@ -904,5 +905,27 @@ class LandlordPortal::ServiceUsageLogsControllerTest < ActionDispatch::Integrati
     assert_select ".alert-danger", text: /phải lớn hơn hoặc bằng chỉ số cũ/
     @log.reload
     assert_equal 220, @log.latest_reading
+  end
+
+  test "house index with room_id query param renders house index and does not render room index" do
+    get landlord_house_service_usage_logs_path(@house, room_id: @room.id, month: @billing_month.strftime("%Y-%m"))
+    assert_response :success
+    assert_select "turbo-frame#house_service_logs_section"
+    assert_select "turbo-frame#room_service_logs_section", count: 0
+    assert_select "turbo-frame#logs_table"
+  end
+
+  test "filtered house logs with room_id query param renders logs_table partial" do
+    get filtered_landlord_house_service_usage_logs_path(@house, room_id: @room.id, month: @billing_month.strftime("%Y-%m"))
+    assert_response :success
+    assert_select "turbo-frame#logs_table"
+    assert_select "turbo-frame#room_logs_table", count: 0
+  end
+
+  test "filtered service logs with room_id query param renders logs_table partial" do
+    get filtered_landlord_house_service_service_usage_logs_path(@house, @service, room_id: @room.id, month: @billing_month.strftime("%Y-%m"))
+    assert_response :success
+    assert_select "turbo-frame#logs_table"
+    assert_select "turbo-frame#room_logs_table", count: 0
   end
 end

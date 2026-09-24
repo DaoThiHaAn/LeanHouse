@@ -1,9 +1,9 @@
 <%= turbo_frame_tag "logs_table",
       data: {
         controller: "pagination-sync",
-        pagination_sync_canonical_url_value: landlord_house_service_usage_logs_path(house),
-        pagination_sync_default_params_value: (params[:service_id].present? ? { service_id: params[:service_id].to_s } : {}).to_json,
-        pagination_sync_query_params_value: ["month", "floor_id", "room_id", "service_id", "service_variant_id", "status"].to_json,
+        pagination_sync_canonical_url_value: (@selected_service ? landlord_house_service_service_usage_logs_path(house, @selected_service) : landlord_house_service_usage_logs_path(house)),
+        pagination_sync_default_params_value: { tab: "real_time" }.to_json,
+        pagination_sync_query_params_value: ["month", "floor_id", "room_id", "service_variant_id", "status"].to_json,
         pagination_sync_total_pages_selector_value: "[data-pagination-total-pages]",
         action: "turbo:frame-load->pagination-sync#updateUrl"
       } do %>

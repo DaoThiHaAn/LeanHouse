@@ -65,11 +65,10 @@
     <!-- Real-time Tab Content -->
     <!-- Filter Toolbar & Actions -->
     <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
-      <%= form_with url: filtered_landlord_house_service_usage_logs_path(@house),
+      <%= form_with url: filtered_landlord_house_room_service_usage_logs_path(@house, @room),
                     method: :get,
                     class: "d-flex gap-3 align-items-center flex-wrap",
                     data: { turbo_frame: "room_logs_table", turbo_action: "advance" } do |f| %>
-        <%= f.hidden_field :room_id, value: @room.id %>
 
         <!-- Filter Month -->
         <div class="d-flex align-items-center gap-2">

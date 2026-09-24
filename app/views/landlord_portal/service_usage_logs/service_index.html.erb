@@ -15,9 +15,9 @@
 <%= turbo_frame_tag "house_service_logs_section",
       data: {
         controller: "pagination-sync",
-        pagination_sync_canonical_url_value: landlord_house_service_usage_logs_path(@house),
-        pagination_sync_default_params_value: { service_id: @selected_service.id.to_s, tab: @current_tab, month: @billing_month.strftime("%Y-%m") }.to_json,
-        pagination_sync_query_params_value: ["tab", "month", "floor_id", "room_id", "service_id", "service_variant_id", "status"].to_json,
+        pagination_sync_canonical_url_value: landlord_house_service_service_usage_logs_path(@house, @selected_service),
+        pagination_sync_default_params_value: { tab: @current_tab, month: @billing_month.strftime("%Y-%m") }.to_json,
+        pagination_sync_query_params_value: ["tab", "month", "floor_id", "room_id", "service_variant_id", "status"].to_json,
         pagination_sync_total_pages_selector_value: "[data-pagination-total-pages]",
         action: "turbo:frame-load->pagination-sync#updateUrl"
       } do %>
@@ -34,8 +34,8 @@
 
     <%= render "nav_tabs",
                current_tab: @current_tab,
-               real_time_url: landlord_house_service_usage_logs_path(@house, service_id: @selected_service.id, tab: "real_time", month: @billing_month.strftime("%Y-%m")),
-               fixed_url: landlord_house_service_usage_logs_path(@house, service_id: @selected_service.id, tab: "fixed", month: @billing_month.strftime("%Y-%m")),
+               real_time_url: landlord_house_service_service_usage_logs_path(@house, @selected_service, tab: "real_time", month: @billing_month.strftime("%Y-%m")),
+               fixed_url: landlord_house_service_service_usage_logs_path(@house, @selected_service, tab: "fixed", month: @billing_month.strftime("%Y-%m")),
                real_time_title: t("service_usage_logs.service_tab_real_time"),
                fixed_title: t("service_usage_logs.service_tab_fixed"),
                unconfirmed_count: @unconfirmed_count,
@@ -53,7 +53,7 @@
   <% else %>
     <!-- Toolbar lọc cho dịch vụ cụ thể -->
     <div class="card bg-light border-0 rounded-3 p-3 mb-5">
-      <%= form_with url: filtered_landlord_house_service_usage_logs_path(@house),
+      <%= form_with url: filtered_landlord_house_service_service_usage_logs_path(@house, @selected_service),
                     method: :get,
                     class: "d-flex gap-3 align-items-center flex-wrap",
                     data: {
@@ -65,7 +65,6 @@
                     } do |f| %>
 
         <%= f.hidden_field :tab, value: "real_time" %>
-        <%= f.hidden_field :service_id, value: @selected_service.id %>
 
         <!-- Chọn tháng -->
         <div class="d-flex align-items-center gap-2">

@@ -99,15 +99,25 @@ Rails.application.routes.draw do
             patch :update_application
           end
         end
+
+        resources :service_usage_logs, only: [] do
+          collection do
+            get "/", to: "service_usage_logs#service_index", as: ""
+            get :filtered, to: "service_usage_logs#filtered_service"
+            patch :confirm_all, to: "service_usage_logs#confirm_all_service"
+          end
+        end
       end
 
       resources :rooms do
         collection do # act on the collection of records
           get :filtered
         end
-        resources :service_usage_logs, only: %i[index] do
+        resources :service_usage_logs, only: [] do
           collection do
-            patch :confirm_all
+            get "/", to: "service_usage_logs#room_index", as: ""
+            get :filtered, to: "service_usage_logs#filtered_room"
+            patch :confirm_all, to: "service_usage_logs#confirm_all_room"
           end
         end
       end
