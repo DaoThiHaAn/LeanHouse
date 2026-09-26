@@ -70,8 +70,8 @@
     def update
       respond_to do |format|
         if @house.update(house_params)
-          format.html { redirect_to @house, notice: "House was successfully updated.", status: :see_other }
-          format.json { render :show, status: :ok, location: @house }
+          format.html { redirect_to [ :landlord, @house ], notice: "House was successfully updated.", status: :see_other }
+          format.json { render :show, status: :ok, location: [ :landlord, @house ] }
         else
           format.html { render :edit, status: :unprocessable_entity }
           format.json { render json: @house.errors, status: :unprocessable_entity }
