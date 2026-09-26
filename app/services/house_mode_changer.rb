@@ -33,7 +33,7 @@ class HouseModeChanger
       deposit_per_bed = old_unit ? (old_unit.deposit.to_i / bed_count) : 0
 
       # Remove room-level rental unit
-      old_unit&.destroy!
+      old_unit.destroy! if old_unit
 
       # Reset max_slots to 0 before creating beds because Bed counter-caches :max_slots
       room.update_columns(max_slots: 0)
@@ -54,8 +54,8 @@ class HouseModeChanger
       active_beds = room.beds.active.to_a
       bed_count = [ active_beds.size, room.max_slots, 1 ].max
 
-      total_rent = active_beds.sum { |b| b.rental_unit&.rent.to_i }
-      total_deposit = active_beds.sum { |b| b.rental_unit&.deposit.to_i }
+      total_rent = active_beds.sum { |b| b.rental_unit.rent.to_i }
+      total_deposit = active_beds.sum { |b| b.rental_unit.deposit.to_i }
 
       # Destroy all beds (dependent: :destroy removes polymorphic rental_units)
       room.beds.destroy_all

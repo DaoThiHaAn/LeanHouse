@@ -29,15 +29,15 @@ class RentalUnit < ApplicationRecord
   end
 
   def room
-    rentable.is_a?(Room) ? rentable : rentable&.room
+    rentable.is_a?(Room) ? rentable : rentable.room
   end
 
   def floor
-    room&.floor
+    room.floor
   end
 
   def house
-    room&.house
+    room.house
   end
 
   # Format the name of the rental unit in format:
@@ -52,8 +52,8 @@ class RentalUnit < ApplicationRecord
   def location_info
     parts = []
     parts << title_name if bed
-    parts << room&.title_name
-    parts << floor&.title_name
+    parts << room.title_name
+    parts << floor.title_name
     parts.compact_blank.join(", ")
   end
 end

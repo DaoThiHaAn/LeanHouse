@@ -2,6 +2,38 @@
 
 module AdminPortal
   module UploadedFilesHelper
+    RECORD_TYPE_I18N_KEYS = {
+      "User" => "admin.uploaded_files.record_types.User",
+      "Contract" => "admin.uploaded_files.record_types.Contract",
+      "ServiceUsageLog" => "admin.uploaded_files.record_types.ServiceUsageLog",
+      "Invoice" => "admin.uploaded_files.record_types.Invoice",
+      "RepairRequest" => "admin.uploaded_files.record_types.RepairRequest",
+      "VehicleRequest" => "admin.uploaded_files.record_types.VehicleRequest",
+      "Vehicle" => "admin.uploaded_files.record_types.Vehicle",
+      "House" => "admin.uploaded_files.record_types.House",
+      "ActiveStorage::VariantRecord" => "admin.uploaded_files.record_types.VariantRecord"
+    }.freeze
+
+    RECORD_TYPE_BADGE_CLASSES = {
+      "User" => "bg-primary-subtle text-primary border border-primary-subtle",
+      "Contract" => "bg-purple-subtle text-purple border border-purple-subtle",
+      "ServiceUsageLog" => "bg-info-subtle text-info-emphasis border border-info-subtle",
+      "Invoice" => "bg-success-subtle text-success-emphasis border border-success-subtle",
+      "RepairRequest" => "bg-warning-subtle text-warning-emphasis border border-warning-subtle",
+      "VehicleRequest" => "bg-secondary-subtle text-secondary-emphasis border border-secondary-subtle",
+      "Vehicle" => "bg-secondary-subtle text-secondary-emphasis border border-secondary-subtle",
+      "House" => "bg-dark-subtle text-dark border border-dark-subtle",
+      "ActiveStorage::VariantRecord" => "bg-secondary-subtle text-secondary border border-secondary-subtle"
+    }.freeze
+
+    ROLE_BADGE_I18N_KEYS = {
+      "landlord" => "role.landlord",
+      "tenant" => "role.tenant",
+      "admin" => "role.admin",
+      "super_admin" => "role.admin",
+      "support" => "role.admin"
+    }.freeze
+
     def find_senders_for_attachment(attachment)
       record = attachment.record
       return [] unless record
@@ -9,161 +41,68 @@ module AdminPortal
       case record
       when User
         [ record ]
-      when Contract
-        [ record.tenant&.user, record.house&.landlord&.user ].compact.uniq
+      when Contract, Vehicle
+        [ record.tenant.user, record.house.landlord.user ].compact.uniq
       when ServiceUsageLog
-        if record.submitted_by
-          [ record.submitted_by ]
-        elsif record.room
-          landlord_user = record.room.house&.landlord&.user
-          tenants = record.room.respond_to?(:active_staying_tenant_users) ? record.room.active_staying_tenant_users : []
-          (tenants + [ landlord_user ]).compact.uniq
-        else
-          []
-        end
+        senders_for_room_record(record, record.submitted_by)
       when Invoice
-        if record.paid_by
-          [ record.paid_by ]
-        elsif record.room
-          landlord_user = record.room.house&.landlord&.user
-          tenants = record.room.respond_to?(:active_staying_tenant_users) ? record.room.active_staying_tenant_users : []
-          (tenants + [ landlord_user ]).compact.uniq
-        else
-          []
-        end
-      when RepairRequest
+        senders_for_room_record(record, record.paid_by)
+      when RepairRequest, VehicleRequest
         req = record.request
-        [ req&.tenant&.user, req&.house&.landlord&.user ].compact.uniq
-      when VehicleRequest
-        req = record.request
-        [ req&.tenant&.user, req&.house&.landlord&.user ].compact.uniq
-      when Vehicle
-        [ record.tenant&.user, record.house&.landlord&.user ].compact.uniq
+        [ req.tenant.user, req.house.landlord.user ].compact.uniq
       when House
-        [ record.landlord&.user ].compact
+        [ record.landlord.user ].compact
       when ActiveStorage::VariantRecord
-        original_attachment = record.blob&.attachments&.first
-        if original_attachment && original_attachment != attachment
-          find_senders_for_attachment(original_attachment)
-        else
-          []
-        end
+        original_attachment = record.blob.attachments.first
+        original_attachment && original_attachment != attachment ? find_senders_for_attachment(original_attachment) : []
       else
-        if record.respond_to?(:user) && record.user.is_a?(User)
-          [ record.user ]
-        elsif record.respond_to?(:submitted_by) && record.submitted_by.is_a?(User)
-          [ record.submitted_by ]
-        elsif record.respond_to?(:tenant) && record.tenant.respond_to?(:user)
-          [ record.tenant.user ].compact
-        elsif record.respond_to?(:landlord) && record.landlord.respond_to?(:user)
-          [ record.landlord.user ].compact
-        else
-          []
-        end
+        fallback_senders_for_record(record)
       end
     end
 
     def record_type_badge_text(record_type)
-      case record_type.to_s
-      when "User"
-        I18n.t("admin.uploaded_files.record_types.User")
-      when "Contract"
-        I18n.t("admin.uploaded_files.record_types.Contract")
-      when "ServiceUsageLog"
-        I18n.t("admin.uploaded_files.record_types.ServiceUsageLog")
-      when "Invoice"
-        I18n.t("admin.uploaded_files.record_types.Invoice")
-      when "RepairRequest"
-        I18n.t("admin.uploaded_files.record_types.RepairRequest")
-      when "VehicleRequest"
-        I18n.t("admin.uploaded_files.record_types.VehicleRequest")
-      when "Vehicle"
-        I18n.t("admin.uploaded_files.record_types.Vehicle")
-      when "House"
-        I18n.t("admin.uploaded_files.record_types.House")
-      when "ActiveStorage::VariantRecord"
-        I18n.t("admin.uploaded_files.record_types.VariantRecord")
-      else
-        record_type.to_s
-      end
+      key = RECORD_TYPE_I18N_KEYS[record_type.to_s]
+      key ? I18n.t(key) : record_type.to_s
     end
 
-
     def user_role_badge_text(user)
-      return "" unless user
+      return "" unless user && user.respond_to?(:role)
 
-      if user.respond_to?(:role)
-        case user.role.to_s
-        when "landlord"
-          I18n.t("role.landlord")
-        when "tenant"
-          I18n.t("role.tenant")
-        when "admin", "super_admin", "support"
-          I18n.t("role.admin")
-        else
-          user.role.to_s.titleize
-        end
-      else
-        ""
-      end
+      role_str = user.role.to_s
+      key = ROLE_BADGE_I18N_KEYS[role_str]
+      key ? I18n.t(key) : role_str.titleize
     end
 
     def record_friendly_description(attachment)
+      record = attachment.record
+      return "#{record_type_badge_text(attachment.record_type)} ##{attachment.record_id}" unless record
+
       case attachment.record_type
       when "User"
-        user = attachment.record
-        "#{I18n.t('admin.uploaded_files.types.user_avatar')}: #{user&.fullname || I18n.t('admin.uploaded_files.record_types.User')}"
+        "#{I18n.t('admin.uploaded_files.types.user_avatar')}: #{record.fullname.presence || I18n.t('admin.uploaded_files.record_types.User')}"
       when "Contract"
-        contract = attachment.record
-        "#{I18n.t('admin.uploaded_files.types.contract')}: #{contract&.try(:name) || "##{contract&.id}"}"
+        "#{I18n.t('admin.uploaded_files.types.contract')}: #{record.name.presence || "##{record.id}"}"
       when "ServiceUsageLog"
-        log = attachment.record
-        "#{I18n.t('admin.uploaded_files.types.service_usage_log')}: #{log&.service_name} (#{log&.room&.title_name || 'Phòng'})"
+        "#{I18n.t('admin.uploaded_files.types.service_usage_log')}: #{record.service_name} (#{record.room&.title_name || 'Phòng'})"
       when "Invoice"
-        invoice = attachment.record
-        "#{I18n.t('admin.uploaded_files.types.invoice')}: #{invoice&.try(:title) || "##{invoice&.id}"}"
+        "#{I18n.t('admin.uploaded_files.types.invoice')}: #{record.title.presence || "##{record.id}"}"
       when "RepairRequest"
-        req = attachment.record
-        "#{I18n.t('admin.uploaded_files.types.repair_request')}: #{req&.try(:title) || "##{req&.id}"}"
-      when "VehicleRequest"
-        req = attachment.record
-        "#{I18n.t('admin.uploaded_files.types.vehicle_request')}: #{req&.license_plate || req&.id}"
-      when "Vehicle"
-        veh = attachment.record
-        "#{I18n.t('admin.uploaded_files.types.vehicle')}: #{veh&.license_plate || veh&.id}"
+        "#{I18n.t('admin.uploaded_files.types.repair_request')}: #{record.title.presence || "##{record.id}"}"
+      when "VehicleRequest", "Vehicle"
+        type_key = attachment.record_type == "VehicleRequest" ? "vehicle_request" : "vehicle"
+        "#{I18n.t("admin.uploaded_files.types.#{type_key}")}: #{record.license_plate.presence || record.id}"
       when "House"
-        house = attachment.record
-        "#{I18n.t('admin.uploaded_files.types.house')}: #{house&.name || 'Nhà trọ'}"
+        "#{I18n.t('admin.uploaded_files.types.house')}: #{record.name.presence || 'Nhà trọ'}"
       when "ActiveStorage::VariantRecord"
-        "#{I18n.t('admin.uploaded_files.types.variant')}: #{attachment.blob&.filename}"
+        "#{I18n.t('admin.uploaded_files.types.variant')}: #{attachment.blob.filename}"
       else
         "#{record_type_badge_text(attachment.record_type)} ##{attachment.record_id}"
       end
     end
 
     def record_type_badge_class(record_type)
-      case record_type
-      when "User"
-        "bg-primary-subtle text-primary border border-primary-subtle"
-      when "Contract"
-        "bg-purple-subtle text-purple border border-purple-subtle"
-      when "ServiceUsageLog"
-        "bg-info-subtle text-info-emphasis border border-info-subtle"
-      when "Invoice"
-        "bg-success-subtle text-success-emphasis border border-success-subtle"
-      when "RepairRequest"
-        "bg-warning-subtle text-warning-emphasis border border-warning-subtle"
-      when "VehicleRequest", "Vehicle"
-        "bg-secondary-subtle text-secondary-emphasis border border-secondary-subtle"
-      when "House"
-        "bg-dark-subtle text-dark border border-dark-subtle"
-      when "ActiveStorage::VariantRecord"
-        "bg-secondary-subtle text-secondary border border-secondary-subtle"
-      else
-        "bg-light text-secondary border"
-      end
+      RECORD_TYPE_BADGE_CLASSES.fetch(record_type.to_s, "bg-light text-secondary border")
     end
-
 
     def file_type_badge(attachment)
       blob = attachment.blob
@@ -210,8 +149,31 @@ module AdminPortal
         admin_house_path(record)
       when RepairRequest, VehicleRequest
         admin_request_path(record)
+      end
+    end
+
+    private
+
+    def senders_for_room_record(record, actor)
+      return [ actor ] if actor
+      return [] unless record.room
+
+      landlord_user = record.room.house.landlord.user
+      tenants = record.room.active_staying_tenant_users
+      (tenants + [ landlord_user ]).compact.uniq
+    end
+
+    def fallback_senders_for_record(record)
+      if record.respond_to?(:user) && record.user.is_a?(User)
+        [ record.user ]
+      elsif record.respond_to?(:submitted_by) && record.submitted_by.is_a?(User)
+        [ record.submitted_by ]
+      elsif record.respond_to?(:tenant) && record.tenant.respond_to?(:user)
+        [ record.tenant.user ].compact
+      elsif record.respond_to?(:landlord) && record.landlord.respond_to?(:user)
+        [ record.landlord.user ].compact
       else
-        nil
+        []
       end
     end
   end

@@ -37,17 +37,18 @@ module Invoices
     def build_rent_item
       if invoice_type == "individual"
         stay = tenant.present? ? house.tenant_stay_for(tenant.id) : nil
-        total_rent = stay&.rental_unit&.rent || room.rental_unit&.rent || 0
+        stay_unit = stay&.rental_unit
+        total_rent = (stay_unit ? stay_unit.rent : room.rental_unit&.rent) || 0
         rent_amount = if house.bed?
-          stay&.rental_unit&.rent || (room.beds.joins(:rental_unit).average("rental_units.rent")&.round) || (room.rental_unit&.rent || 0)
+          (stay_unit && stay_unit.rent) || room.beds.joins(:rental_unit).average("rental_units.rent")&.round || room.rental_unit&.rent || 0
         else
           (total_rent.to_f / active_tenants_count).round
         end
 
         location = if house.bed?
-                     stay&.rental_unit&.location_info || "#{room.title_name} (Giường)"
+                     (stay_unit && stay_unit.location_info) || "#{room.title_name} (Giường)"
         else
-                     stay&.rental_unit&.location_info || room.title_name
+                     (stay_unit && stay_unit.location_info) || room.title_name
         end
 
         {
@@ -151,16 +152,23 @@ module Invoices
                     .order(billing_month: :desc)
                     .first
 
-        prev_num = if log&.prev_reading.present?
-                     log.prev_reading
+        if log
+          prev_num = log.prev_reading.presence || previous_month_reading(variant.service_id, log.billing_month)
+          latest_num = log.latest_reading
+          has_log = true
+          is_confirmed = log.is_confirmed?
+          log_id = log.id
+          start_dt = log.start_date || billing_month.beginning_of_month
+          end_dt = log.end_date || billing_month.end_of_month
         else
-                     cutoff_month = log ? log.billing_month : billing_month
-                     previous_month_reading(variant.service_id, cutoff_month)
+          prev_num = previous_month_reading(variant.service_id, billing_month)
+          latest_num = nil
+          has_log = false
+          is_confirmed = false
+          log_id = nil
+          start_dt = billing_month.beginning_of_month
+          end_dt = billing_month.end_of_month
         end
-
-        latest_num = log&.latest_reading
-        has_log = log.present?
-        is_confirmed = log&.is_confirmed? || false
 
         total_usage = (latest_num && prev_num) ? [ latest_num - prev_num, 0 ].max : 0
         divisor = (invoice_type == "individual") ? active_tenants_count : 1
@@ -169,7 +177,7 @@ module Invoices
 
         items << {
           service_variant_id: variant.id,
-          service_usage_log_id: log&.id,
+          service_usage_log_id: log_id,
           log: log,
           item_type: :metered_service,
           name: variant.service.name,
@@ -181,8 +189,8 @@ module Invoices
           has_log: has_log,
           quantity: qty,
           amount: amount,
-          start_date: log&.start_date || billing_month.beginning_of_month,
-          end_date: log&.end_date || billing_month.end_of_month,
+          start_date: start_dt,
+          end_date: end_dt,
           selected: true
         }
       end

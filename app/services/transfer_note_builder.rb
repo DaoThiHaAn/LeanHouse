@@ -4,11 +4,11 @@ class TransferNoteBuilder
   def self.build(template, invoice)
     tpl = template.presence || DEFAULT_TEMPLATE
     vars = {
-      "{room_name}"     => invoice.room&.name,
-      "{house_name}"    => invoice.house&.name,
+      "{room_name}"     => invoice.room ? invoice.room.name : nil,
+      "{house_name}"    => invoice.house.name,
       "{invoice_code}"  => invoice.code,
-      "{month}"         => invoice.billing_month&.strftime("%m"),
-      "{tenant_name}"   => invoice.tenant&.user&.fullname,
+      "{month}"         => invoice.billing_month.strftime("%m"),
+      "{tenant_name}"   => invoice.tenant ? invoice.tenant.user.fullname : nil,
       "{note}"          => invoice.note
     }
 

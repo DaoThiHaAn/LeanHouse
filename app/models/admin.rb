@@ -29,8 +29,8 @@ class Admin < ApplicationRecord
   private
 
   def normalize_inputs
-    self.fullname = fullname&.squish
-    self.email = email&.squish&.downcase
+    self.fullname = fullname.to_s.squish
+    self.email = email.to_s.squish.downcase
   end
 
   def pw_complexity

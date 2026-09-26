@@ -7,10 +7,11 @@ class ContractExtendedNotifier < ApplicationNotifier
     end
 
     def message
+      formatted_date = params[:due_date].respond_to?(:strftime) ? params[:due_date].strftime("%d/%m/%Y") : params[:due_date].to_s
       t("noti.messages.contract_extended",
         contract_name: params[:contract_name],
-        date: params[:due_date]&.strftime("%d/%m/%Y"),
-        default: "#{params[:contract_name]} được gia hạn đến #{params[:due_date]&.strftime('%d/%m/%Y')}.")
+        date: formatted_date,
+        default: "#{params[:contract_name]} được gia hạn đến #{formatted_date}.")
     end
 
     def url

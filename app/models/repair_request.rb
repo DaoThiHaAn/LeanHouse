@@ -65,8 +65,8 @@ class RepairRequest < ApplicationRecord
   private
 
   def normalize_attributes
-    self.title = title&.squish
-    self.content = content&.strip
+    self.title = title.to_s.squish
+    self.content = content.to_s.strip
   end
 
   def validate_attachments

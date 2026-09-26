@@ -79,10 +79,10 @@ class TenantPortal::InvoicesController < TenantPortal::BaseController
   end
 
   def tenant_current_house_room_ids
-    stays_room_ids = @tenant.tenant_stays.includes(rental_unit: :rentable).map do |stay|
+    stays_room_ids = @tenant.tenant_stays.includes(rental_unit: :rentable).filter_map do |stay|
       ru = stay.rental_unit
-      ru&.room&.id if ru&.house&.id == @house.id
-    end.compact
+      ru.room.id if ru.house.id == @house.id
+    end
     ([ @room.id ] + stays_room_ids).uniq
   end
 

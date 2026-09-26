@@ -1,6 +1,5 @@
 class PublicPagesController < ApplicationController
   def main_home
-    # TODO: Render the main home page for the public except for admin
     render "public_pages/main_home"
   end
 

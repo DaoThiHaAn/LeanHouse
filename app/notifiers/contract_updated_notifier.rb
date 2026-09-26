@@ -23,7 +23,7 @@ class ContractUpdatedNotifier < ApplicationNotifier
 
     def url
       if recipient.landlord?
-        landlord_house_contract_path(params[:house_id], params[:contract_id] || params[:contract]&.id)
+        landlord_house_contract_path(params[:house_id], params[:contract_id] || params[:contract].id)
       else
         tenant_contract_path
       end

@@ -27,9 +27,9 @@ module LandlordDashboard
         ])
       ).take
 
-      total_rev = rev_stats&.total_revenue.to_i
-      paid_rev = rev_stats&.paid_revenue.to_i
-      pending_rev = rev_stats&.pending_revenue.to_i
+      total_rev = rev_stats.total_revenue.to_i
+      paid_rev = rev_stats.paid_revenue.to_i
+      pending_rev = rev_stats.pending_revenue.to_i
 
       # Items breakdown (Rent vs Services)
       items_scope = InvoiceItem.joins(:invoice)
@@ -42,8 +42,8 @@ module LandlordDashboard
         ])
       ).take
 
-      rent_total = item_stats&.rent_total.to_i
-      services_total = item_stats&.services_total.to_i
+      rent_total = item_stats.rent_total.to_i
+      services_total = item_stats.services_total.to_i
 
       items_sum = rent_total + services_total
       rent_pct = items_sum.positive? ? ((rent_total.to_f / items_sum) * 100).round(1) : 0.0

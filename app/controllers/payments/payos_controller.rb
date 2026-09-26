@@ -18,8 +18,8 @@ module Payments
 
       order_code = params[:orderCode]
       @payment_order = PaymentOrder.find_by(order_code: order_code) if order_code.present?
-      @invoice = @payment_order&.invoice || Invoice.find_by(id: params[:invoice_id])
-      @payment_order ||= @invoice&.payos_order
+      @invoice = (@payment_order ? @payment_order.invoice : nil) || Invoice.find_by(id: params[:invoice_id])
+      @payment_order ||= @invoice.payos_order if @invoice
 
       # Reconcile invoice with payOS if needed
       if @invoice.present? && !@is_cancelled
@@ -37,7 +37,7 @@ module Payments
             redirect_to tenant_invoice_path(@invoice), notice: t("invoice.payos.payment_success_flash")
           end
           return
-        elsif current_user.landlord? && current_user.landlord&.id == @invoice.house&.landlord_id
+        elsif current_user.landlord? && current_user.id == @invoice.house.landlord_id
           if @is_cancelled
             redirect_to landlord_house_invoice_path(@invoice.house, @invoice), alert: t("invoice.payos.payment_cancelled_flash")
           else
@@ -59,8 +59,7 @@ module Payments
       return false unless tenant
 
       staying_rooms = tenant.tenant_stays.staying.includes(rental_unit: :rentable).map do |stay|
-        ru = stay.rental_unit
-        ru&.rentable_type == "Room" ? ru.rentable_id : ru&.room&.id
+        stay.rental_unit.room.id
       end.compact
 
       (invoice.invoice_type == "room" && staying_rooms.include?(invoice.room_id)) ||

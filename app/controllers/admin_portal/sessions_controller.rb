@@ -7,7 +7,7 @@ module AdminPortal
     end
 
     def create
-      email = params[:email]&.strip&.downcase
+      email = params[:email].to_s.strip.downcase
       password = params[:password]
 
       if email.blank? || password.blank?

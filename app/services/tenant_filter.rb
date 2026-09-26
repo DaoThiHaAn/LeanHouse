@@ -7,7 +7,7 @@ class TenantFilter
 
   def initialize(house:, params:)
     @house = house
-    @query = params[:query]&.strip
+    @query = params[:query].to_s.strip
     @contract_state = params[:contract_state]
     @residence_state = params[:residence_state]
     @page = params[:page]

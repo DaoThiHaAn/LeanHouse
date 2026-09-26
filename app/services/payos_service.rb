@@ -73,7 +73,7 @@ class PayosService
   # Create payment link for an invoice via payOS API
   def self.create_payment_link(invoice, host: nil)
     bank_account = invoice.bank_account
-    return { success: false, error: I18n.t("invoice.payos.webhook.unconfigured_bank", default: "Bank account not configured for payOS") } unless bank_account&.payos_configured?
+    return { success: false, error: I18n.t("invoice.payos.webhook.unconfigured_bank", default: "Bank account not configured for payOS") } unless bank_account && bank_account.payos_configured?
 
     order = invoice.ensure_payos_order!
     order_code = order.order_code
@@ -134,7 +134,7 @@ class PayosService
   # Cancel payment link for an invoice via payOS API
   def self.cancel_payment_link(invoice, reason: nil)
     bank_account = invoice.bank_account
-    return { success: false, error: "Bank account not configured for payOS" } unless bank_account&.payos_configured?
+    return { success: false, error: "Bank account not configured for payOS" } unless bank_account && bank_account.payos_configured?
 
     order = invoice.payos_order
     return { success: true, message: "No payOS order to cancel" } unless order && (order.payment_link_id.present? || order.order_code.present?)
@@ -168,13 +168,13 @@ class PayosService
     end
   rescue StandardError => e
     Rails.logger.error("[PayosService] Exception cancelling payment link: #{e.message}")
-    order&.update!(status: "CANCELLED") rescue nil
+    order.update!(status: "CANCELLED") rescue nil
     { success: false, error: e.message }
   end
 
   # Fetch payment link info from payOS API
   def self.fetch_payment_link_info(order_code_or_id, bank_account)
-    return { success: false, error: "Bank account not configured for payOS" } unless bank_account&.payos_configured?
+    return { success: false, error: "Bank account not configured for payOS" } unless bank_account && bank_account.payos_configured?
     return { success: false, error: "No order code or payment link ID" } if order_code_or_id.blank?
 
     uri = URI("#{PAYOS_API_URL}/#{order_code_or_id}")
@@ -207,13 +207,14 @@ class PayosService
     return invoice unless invoice.payos_configured?
 
     order = invoice.payos_order
-    target_id = order&.order_code || order&.payment_link_id
+    target_id = order ? (order.order_code || order.payment_link_id) : nil
     return invoice if target_id.blank?
 
     res = fetch_payment_link_info(target_id, invoice.bank_account)
     if res[:success] && res[:data]["status"] == "PAID"
       data = res[:data]
-      reference = data["transactions"]&.last&.dig("reference") || data["id"]
+      tx_last = Array(data["transactions"]).last
+      reference = (tx_last && tx_last["reference"]) || data["id"]
       payment_note = I18n.t("invoice.payos.auto_paid_note", ref: reference, default: "Tự động gạch nợ qua payOS (Mã GD: #{reference})")
 
       Invoices::MarkPaidService.call(
@@ -224,7 +225,7 @@ class PayosService
           note: payment_note
         }
       )
-      order&.update!(status: "PAID")
+      order.update!(status: "PAID")
       invoice.reload
     end
     invoice

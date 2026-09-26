@@ -11,7 +11,7 @@ class TenantStay < ApplicationRecord
 
   # MODEL METHODS
   def contract
-    rental_unit&.house&.contracts&.unfinished&.find_by(tenant_id: tenant_id)
+    rental_unit.house.contracts.unfinished.find_by(tenant_id: tenant_id)
   end
 
   after_commit :broadcast_dashboard_update
@@ -19,6 +19,6 @@ class TenantStay < ApplicationRecord
   private
 
   def broadcast_dashboard_update
-    LandlordDashboardBroadcaster.broadcast_later(rental_unit&.house&.id)
+    LandlordDashboardBroadcaster.broadcast_later(rental_unit.house.id)
   end
 end

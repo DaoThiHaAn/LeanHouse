@@ -17,24 +17,24 @@ class BroadcastNotificationForm
   validates :level, inclusion: { in: LEVELS }
 
   def title=(val)
-    super(val&.to_s&.squish)
+    super(val.to_s.squish)
   end
 
   def message=(val)
-    super(val&.to_s&.squish)
+    super(val.to_s.squish)
   end
 
   def url=(val)
-    super(val&.to_s&.squish.presence)
+    super(val.to_s.squish.presence)
   end
 
   def target_audience=(val)
-    cleaned = val&.to_s&.squish
+    cleaned = val.to_s.squish
     super(cleaned.presence_in(AUDIENCES) || "all")
   end
 
   def level=(val)
-    cleaned = val&.to_s&.squish
+    cleaned = val.to_s.squish
     super(cleaned.presence_in(LEVELS) || "info")
   end
 

@@ -107,7 +107,7 @@ class LandlordPortal::InvoicesController < LandlordPortal::BaseController
     unless @room
       flash.now[:alert] = t("invoice.select_room_prompt")
       load_new_invoice_form_data
-      @invoice_type = params[:invoice]&.[](:invoice_type).presence || "room"
+      @invoice_type = params.dig(:invoice, :invoice_type).presence || "room"
       @draft_items = []
       render :new, status: :unprocessable_entity
       return
@@ -130,7 +130,7 @@ class LandlordPortal::InvoicesController < LandlordPortal::BaseController
   rescue ArgumentError => e
     flash.now[:alert] = e.message
     load_new_invoice_form_data
-    @invoice_type = params[:invoice]&.[](:invoice_type).presence || "room"
+    @invoice_type = params.dig(:invoice, :invoice_type).presence || "room"
     calculator = Invoices::DraftCalculator.new(
       room: @room,
       billing_month: @billing_month,
@@ -141,7 +141,7 @@ class LandlordPortal::InvoicesController < LandlordPortal::BaseController
   rescue ActiveRecord::RecordInvalid => e
     flash.now[:alert] = t("invoice.errors.create_failed", error: e.record.errors.full_messages.to_sentence)
     load_new_invoice_form_data
-    @invoice_type = params[:invoice]&.[](:invoice_type).presence || "room"
+    @invoice_type = params.dig(:invoice, :invoice_type).presence || "room"
     calculator = Invoices::DraftCalculator.new(
       room: @room,
       billing_month: @billing_month,

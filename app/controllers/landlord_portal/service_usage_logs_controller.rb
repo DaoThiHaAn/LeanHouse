@@ -74,19 +74,19 @@ class LandlordPortal::ServiceUsageLogsController < LandlordPortal::BaseControlle
 
   def new
     target_room = @room || @house.rooms.find_by(id: params[:room_id]) || @house.rooms.active.first
-    @billing_month = (params[:billing_month]&.to_date || Date.current).beginning_of_month
+    @billing_month = (params[:billing_month].present? ? params[:billing_month].to_date : Date.current).beginning_of_month
     service_variant = @house.service_variants.where(is_real_time: true).find_by(id: params[:service_variant_id]) ||
                       @house.service_variants.where(is_real_time: true).first
 
-    prev_reading = target_room ? ServiceUsageLog.previous_reading_for(room: target_room, service_id: service_variant&.service_id, before_month: @billing_month) : 0
+    prev_reading = (target_room && service_variant) ? ServiceUsageLog.previous_reading_for(room: target_room, service_id: service_variant.service_id, before_month: @billing_month) : 0
 
     @log = ServiceUsageLog.new(
       room: target_room,
       service_variant: service_variant,
-      service: service_variant&.service,
-      service_name: service_variant&.service&.name || "Điện/Nước",
-      unit: service_variant&.human_unit || "kWh",
-      unit_price: service_variant&.fee || 0,
+      service: service_variant ? service_variant.service : nil,
+      service_name: service_variant ? service_variant.service.name : "Điện/Nước",
+      unit: service_variant ? service_variant.human_unit : "kWh",
+      unit_price: service_variant ? service_variant.fee : 0,
       billing_month: @billing_month,
       start_date: @billing_month.beginning_of_month,
       end_date: @billing_month.end_of_month,
@@ -101,7 +101,7 @@ class LandlordPortal::ServiceUsageLogsController < LandlordPortal::BaseControlle
     @log = ServiceUsageLog.new(log_params)
     # A vacant room has nobody to complete a pending reading. Keep this rule on
     # the server as well as in the form, so a crafted request cannot create one.
-    @log.is_confirmed = true if @log.room&.empty?
+    @log.is_confirmed = true if @log.room && @log.room.empty?
 
     if @log.is_confirmed? || @log.latest_reading.present?
       @log.submitted_by = current_user

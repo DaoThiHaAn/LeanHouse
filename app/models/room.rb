@@ -62,7 +62,7 @@ class Room < ApplicationRecord
   end
 
   def full_title
-    [ title_name, floor&.title_name ].compact.join(", ")
+    [ title_name, floor.title_name ].compact.join(", ")
   end
 
   def has_real_time_service?
@@ -88,7 +88,7 @@ class Room < ApplicationRecord
       beds.update_all(deleted: true, is_available: false) if beds.exists?
       floor.decrement!(:rooms_count) if floor.rooms_count > 0
       floor.touch
-      house&.touch
+      house.touch
     end
   end
 
@@ -235,10 +235,10 @@ class Room < ApplicationRecord
   end
 
   def normalize_name
-    self.name = name&.squish
+    self.name = name.to_s.squish
   end
 
   def broadcast_dashboard_update
-    LandlordDashboardBroadcaster.broadcast_later(floor&.house_id)
+    LandlordDashboardBroadcaster.broadcast_later(floor.house_id)
   end
 end

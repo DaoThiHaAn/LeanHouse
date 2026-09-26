@@ -138,8 +138,9 @@ class RoomFixedServicesSummary
     stay = tenant.tenant_stays.where(rental_unit: room.rental_unit).first
     return false if stay.blank?
 
-    start_date = [ stay.checkin_at&.to_date, stay.contract&.start_date ].compact.min
-    start_month = start_date&.beginning_of_month
+    contract = stay.contract
+    start_date = [ stay.checkin_at.to_date, contract ? contract.start_date : nil ].compact.min
+    start_month = start_date.beginning_of_month
     start_month.present? && billing_month < start_month
   end
 
@@ -189,7 +190,7 @@ class RoomFixedServicesSummary
 
     extra_pairs.each do |it, inv|
       result << Item.new(
-        service: it.service_variant&.service,
+        service: it.service_variant.service,
         variant: it.service_variant,
         name: it.name,
         unit: it.unit,

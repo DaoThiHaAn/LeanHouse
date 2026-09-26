@@ -55,7 +55,7 @@ class ServiceUsageLog < ApplicationRecord
         super(nil)
       end
     else
-      super(val&.to_date&.beginning_of_month)
+      super(val ? val.to_date.beginning_of_month : nil)
     end
   end
 
@@ -71,7 +71,7 @@ class ServiceUsageLog < ApplicationRecord
                  .order(billing_month: :desc, created_at: :desc)
                  .first
 
-    last_log&.latest_reading || last_log&.prev_reading || 0
+    last_log ? (last_log.latest_reading || last_log.prev_reading || 0) : 0
   end
 
   def billed?
@@ -89,7 +89,7 @@ class ServiceUsageLog < ApplicationRecord
   end
 
   def real_time?
-    service_variant&.is_real_time? || false
+    service_variant ? service_variant.is_real_time? : false
   end
 
   def total_amount
@@ -107,7 +107,7 @@ class ServiceUsageLog < ApplicationRecord
   # Persist vacancy at creation time so a later move-in cannot make an old
   # vacant-period reading chargeable.
   def mark_non_billable_for_vacant_room
-    self.billable = false if room&.empty?
+    self.billable = false if room.empty?
   end
 
   def latest_reading_greater_than_or_equal_to_prev_reading

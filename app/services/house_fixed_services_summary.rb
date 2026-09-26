@@ -191,7 +191,7 @@ class HouseFixedServicesSummary
     extra_pairs.each do |it, inv|
       @items << Item.new(
         room: room,
-        service: it.service_variant&.service,
+        service: it.service_variant.service,
         variant: it.service_variant,
         name: it.name,
         unit: it.unit,
@@ -244,11 +244,11 @@ class HouseFixedServicesSummary
 
   def apply_filters
     if params[:service_id].present?
-      @items.select! { |it| it.service&.id.to_s == params[:service_id].to_s }
+      @items.select! { |it| it.service.id.to_s == params[:service_id].to_s }
     end
 
     if params[:service_variant_id].present?
-      @items.select! { |it| it.variant&.id.to_s == params[:service_variant_id].to_s }
+      @items.select! { |it| it.variant.id.to_s == params[:service_variant_id].to_s }
     end
 
     if params[:status].present?

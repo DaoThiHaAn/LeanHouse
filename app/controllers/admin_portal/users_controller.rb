@@ -30,7 +30,7 @@ module AdminPortal
       if @user.landlord?
         @houses = House.where(landlord_id: @user.id, is_deleted: false).includes(:floors, :rooms)
       elsif @user.tenant?
-        @current_stay = @user.tenant&.tenant_stays&.staying&.includes(rental_unit: :rentable)&.first
+        @current_stay = @user.tenant.tenant_stays.staying.includes(rental_unit: :rentable).first
         @contracts_count = Contract.where(tenant_id: @user.id).count
         @invoices_count = tenant_invoices_scope.count
       end
@@ -81,7 +81,7 @@ module AdminPortal
     def tenant_invoices_scope
       return Invoice.none unless @user.tenant
 
-      room_ids = @user.tenant.tenant_stays.includes(rental_unit: :rentable).map { |ts| ts.rental_unit&.room&.id }.compact.uniq
+      room_ids = @user.tenant.tenant_stays.includes(rental_unit: :rentable).map { |ts| ts.rental_unit.room.id }.compact.uniq
       scope = Invoice.where(tenant_id: @user.id)
       scope = scope.or(Invoice.where(invoice_type: "room", room_id: room_ids)) if room_ids.any?
       scope

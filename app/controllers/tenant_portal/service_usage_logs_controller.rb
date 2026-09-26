@@ -90,12 +90,12 @@ class TenantPortal::ServiceUsageLogsController < TenantPortal::BaseController
       return
     end
 
-    if params[:service_usage_log]&.[](:purge_reading_photo) == "1" && params[:service_usage_log]&.[](:reading_photo).blank?
+    if params.dig(:service_usage_log, :purge_reading_photo) == "1" && params.dig(:service_usage_log, :reading_photo).blank?
       @log.reading_photo.purge if @log.reading_photo.attached?
     end
 
     # Photo is required if not previously attached
-    if !@log.reading_photo.attached? && params[:service_usage_log]&.[](:reading_photo).blank?
+    if !@log.reading_photo.attached? && params.dig(:service_usage_log, :reading_photo).blank?
       @log.errors.add(:reading_photo, t("invoice.reading_photo_required", default: "vui lòng chụp hoặc đính kèm ảnh công tơ thực tế"))
       respond_to do |format|
         format.turbo_stream { render :edit, status: :unprocessable_entity, formats: [ :html ] }
@@ -136,9 +136,10 @@ class TenantPortal::ServiceUsageLogsController < TenantPortal::BaseController
   end
 
   def set_stay_dates
-    start_date = [ @tenant_stay&.checkin_at&.to_date, @tenant_stay&.contract&.start_date ].compact.min
-    @stay_start_month = start_date&.beginning_of_month
-    @min_billing_month = @stay_start_month&.strftime("%Y-%m")
+    contract = @tenant_stay.contract
+    start_date = [ @tenant_stay.checkin_at.to_date, contract ? contract.start_date : nil ].compact.min
+    @stay_start_month = start_date.beginning_of_month
+    @min_billing_month = @stay_start_month.strftime("%Y-%m")
   end
 
   def tenant_visible_logs

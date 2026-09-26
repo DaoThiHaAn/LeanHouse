@@ -119,13 +119,13 @@ class Invoice < ApplicationRecord
   def target_name(include_room: true)
     room_str = room_title
 
-    if (individual? || custom?) && tenant&.user.present?
+    if (individual? || custom?) && tenant.present?
       name = tenant.user.fullname
       (include_room && room_str.present?) ? "#{name} (#{room_str})" : name
     elsif room_str.present?
       room_str
     else
-      house&.name
+      house.name
     end
   end
 
@@ -218,7 +218,7 @@ class Invoice < ApplicationRecord
   def payos_order_code(account = bank_account)
     return nil unless payos_configured?(account)
 
-    (payos_order || ensure_payos_order!(account))&.order_code
+    (payos_order || ensure_payos_order!(account)).order_code
   end
 
   def payos_checkout_url
@@ -252,7 +252,7 @@ class Invoice < ApplicationRecord
   end
 
   def effective_bank_account_number(account = bank_account)
-    if payos_configured?(account) && payos_order&.metadata&.dig("accountNumber").present?
+    if payos_configured?(account) && payos_order && payos_order.metadata.to_h["accountNumber"].present?
       payos_order.metadata["accountNumber"]
     else
       account&.account_number
@@ -261,7 +261,7 @@ class Invoice < ApplicationRecord
 
   def effective_transfer_note(account = bank_account)
     if payos_configured?(account)
-      payos_order&.metadata&.dig("description").presence || payos_transfer_description(account)
+      (payos_order && payos_order.metadata.to_h["description"].presence) || payos_transfer_description(account)
     else
       transfer_note
     end
@@ -270,8 +270,8 @@ class Invoice < ApplicationRecord
   def vietqr_url(account = bank_account)
     return unless account
 
-    if payos_configured?(account) && payos_order&.checkout_url.present? && payos_order.metadata&.dig("accountNumber").present?
-      bin = payos_order.metadata["bin"].presence || account.bank&.bin
+    if payos_configured?(account) && payos_order&.checkout_url.present? && payos_order.metadata.to_h["accountNumber"].present?
+      bin = payos_order.metadata["bin"].presence || account.bank.bin
       acc_num = payos_order.metadata["accountNumber"]
       desc = payos_order.metadata["description"].presence || payos_transfer_description(account)
       acc_name = payos_order.metadata["accountName"].presence || account.account_holder
@@ -319,7 +319,7 @@ class Invoice < ApplicationRecord
   end
 
   def normalize_title
-    self.title = title&.squish
+    self.title = title.to_s.squish
     self.note = note&.squish
   end
 

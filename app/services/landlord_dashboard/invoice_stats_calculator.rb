@@ -33,13 +33,13 @@ module LandlordDashboard
         ])
       ).take
 
-      total_count = stats&.total_count.to_i
-      paid_count = stats&.paid_count.to_i
-      pending_count = stats&.pending_count.to_i
-      overdue_count = stats&.overdue_count.to_i
-      total_amount = stats&.total_amount.to_i
-      paid_amount = stats&.paid_amount.to_i
-      pending_amount = stats&.pending_amount.to_i
+      total_count = stats.total_count.to_i
+      paid_count = stats.paid_count.to_i
+      pending_count = stats.pending_count.to_i
+      overdue_count = stats.overdue_count.to_i
+      total_amount = stats.total_amount.to_i
+      paid_amount = stats.paid_amount.to_i
+      pending_amount = stats.pending_amount.to_i
 
       collection_rate = total_amount.positive? ? ((paid_amount.to_f / total_amount) * 100).round(1) : 0.0
 

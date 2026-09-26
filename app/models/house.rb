@@ -305,14 +305,14 @@ class House < ApplicationRecord
       bed = rental_unit.bed
       {
         tenant: stay.tenant,
-        user: stay.tenant&.user,
+        user: stay.tenant.user,
         stay: stay,
         rental_unit: rental_unit,
         room: room,
         bed: bed,
         location: rental_unit.location_info
       }
-    end.compact.uniq { |item| item[:tenant]&.id }.sort_by { |item| [ item[:room]&.name || "", item[:user]&.fullname || "" ] }
+    end.compact.uniq { |item| item[:tenant].id }.sort_by { |item| [ item[:room].name.to_s, item[:user].fullname.to_s ] }
   end
 
   private

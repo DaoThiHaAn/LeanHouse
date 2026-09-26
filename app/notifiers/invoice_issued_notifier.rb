@@ -17,13 +17,7 @@ class InvoiceIssuedNotifier < ApplicationNotifier
     end
 
     def url
-      tenant_invoices_path(status: :pending, month: params[:raw_month])
-      inv = params[:invoice] || params[:invoice_id]
-      if inv.present?
-        tenant_invoice_path(inv)
-      else
-        tenant_invoices_path(status: :pending, month: params[:raw_month])
-      end
+      tenant_invoice_path(params[:invoice] || params[:invoice_id])
     end
   end
 end

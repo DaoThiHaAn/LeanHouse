@@ -1,16 +1,16 @@
 module HousesHelper
   def house_mode(house)
-    return "(#{t("form.house.room-based")})" if house&.room?
+    return "(#{t("form.house.room-based")})" if house.room?
     "(#{t("form.house.bed-based")})"
   end
 
   def house_mode_icon(house)
-    return "living" if house&.room?
+    return "living" if house.room?
     "bed"
   end
 
   def occupied_rate_format(house)
-    "#{house&.occupied_slots} / #{house&.total_slots}"
+    "#{house.occupied_slots} / #{house.total_slots}"
   end
 
   # Configuration hash mapping modes to their asset & translation keys
@@ -52,7 +52,7 @@ module HousesHelper
       rent = room.rental_unit&.rent
       rent ? format_money(rent) : "-"
     else
-      bed_rents = room.beds.map { |b| b.rental_unit&.rent }.compact
+      bed_rents = room.beds.filter_map { |b| b.rental_unit.rent }
       if bed_rents.empty?
         "-"
       elsif bed_rents.min == bed_rents.max

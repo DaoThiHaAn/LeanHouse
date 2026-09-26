@@ -71,13 +71,13 @@ class Contract < ApplicationRecord
   end
 
   def formatted_period
-    "#{start_date&.strftime('%d/%m/%Y')} - #{due_date&.strftime('%d/%m/%Y')}"
+    "#{start_date.strftime('%d/%m/%Y')} - #{due_date.strftime('%d/%m/%Y')}"
   end
 
   private
 
   def normalize_name
-    self.name = name&.squish
+    self.name = name.to_s.squish
   end
 
   def validate_documents

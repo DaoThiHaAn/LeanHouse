@@ -130,11 +130,11 @@ module Invoices
         # If bed house and item is rent, adjust rent specifically for this tenant's bed if applicable
         if @house.bed? && item_type == "rent" && tenant.present?
           stay = @house.tenant_stay_for(tenant.id)
-          bed_rent = stay&.rental_unit&.rent
+          bed_rent = stay ? stay.rental_unit.rent : nil
           if bed_rent.present? && bed_rent > 0
             unit_price = bed_rent
             amount = bed_rent
-            location = stay&.rental_unit&.location_info || "#{@room.title_name} (Giường)"
+            location = stay.rental_unit.location_info.presence || "#{@room.title_name} (Giường)"
             name = "Tiền thuê #{location}"
           end
         end
@@ -143,12 +143,13 @@ module Invoices
         if item_type == "metered_service"
           variant_id = item_param[:service_variant_id]
           variant = ServiceVariant.find_by(id: variant_id)
+          variant_service_id = variant ? variant.service_id : nil
           log = nil
 
           if record_usage_log
             if item_param[:latest_reading].present?
               log = @room.service_usage_logs.find_or_initialize_by(
-                service_id: variant&.service_id,
+                service_id: variant_service_id,
                 billing_month: @billing_month
               )
               ensure_billable_log!(log) if log.persisted?
@@ -173,7 +174,7 @@ module Invoices
                     @room.service_usage_logs.find_by(id: item_param[:service_usage_log_id])
             else
                     @room.service_usage_logs.find_by(
-                      service_id: variant&.service_id,
+                      service_id: variant_service_id,
                       billing_month: @billing_month
                     )
             end
@@ -223,7 +224,7 @@ module Invoices
     end
 
     def ensure_billable_log!(log)
-      return if log&.billable?
+      return if log && log.billable?
 
       raise ArgumentError, I18n.t("invoice.errors.non_billable_usage_log")
     end

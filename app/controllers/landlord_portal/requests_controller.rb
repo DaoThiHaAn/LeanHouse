@@ -47,7 +47,7 @@ class LandlordPortal::RequestsController < LandlordPortal::BaseController
       end
     end
   rescue ActiveRecord::RecordInvalid => e
-    record_errors = e.record&.errors&.full_messages&.to_sentence
+    record_errors = e.record ? e.record.errors.full_messages.to_sentence : nil
     flash.now[:alert] = record_errors.presence || @request.errors.full_messages.to_sentence.presence || e.message
     render_modal_error
   rescue ArgumentError, Checkout::PendingInvoicesError => e

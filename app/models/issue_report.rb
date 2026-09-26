@@ -60,8 +60,8 @@ class IssueReport < ApplicationRecord
   end
 
   def normalize
-    self.email = email&.squish
-    self.title = title&.squish
-    self.description = description&.squish
+    self.email = email.to_s.squish
+    self.title = title.to_s.squish
+    self.description = description.to_s.squish
   end
 end

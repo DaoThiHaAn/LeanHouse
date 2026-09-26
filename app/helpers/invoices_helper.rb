@@ -67,10 +67,10 @@ module InvoicesHelper
   def invoice_target_info(invoice, show_type_badge: false)
     return "" unless invoice
 
-    room_text = invoice.room_title.presence || invoice.house&.name
+    room_text = invoice.room_title.presence || invoice.house.name
     parts = []
 
-    if (invoice.individual? || invoice.custom?) && invoice.tenant&.user.present?
+    if (invoice.individual? || invoice.custom?) && invoice.tenant.present?
       user = invoice.tenant.user
       parts << content_tag(:div, user.fullname, class: "fw-semibold text-dark")
       parts << content_tag(:div, room_text, class: "small text-secondary") if room_text.present?
@@ -101,17 +101,18 @@ module InvoicesHelper
   end
 
   def invoice_transfer_note_mode(invoice)
-    return invoice.transfer_note_mode if invoice&.transfer_note_mode.present?
-    return "system" unless invoice&.persisted?
+    return "system" unless invoice
+    return invoice.transfer_note_mode if invoice.transfer_note_mode.present?
+    return "system" unless invoice.persisted?
     return "none" if invoice.transfer_note.blank?
 
-    expected_system_note = TransferNoteBuilder.build(invoice.house&.transfer_note_template, invoice)
+    expected_system_note = TransferNoteBuilder.build(invoice.house.transfer_note_template, invoice)
     invoice.transfer_note == expected_system_note ? "system" : "custom"
   end
 
   def invoice_custom_transfer_note_value(invoice, mode = nil)
     mode ||= invoice_transfer_note_mode(invoice)
-    mode == "custom" ? invoice&.transfer_note.to_s : ""
+    mode == "custom" ? invoice.transfer_note.to_s : ""
   end
 
   def transfer_note_mode_options

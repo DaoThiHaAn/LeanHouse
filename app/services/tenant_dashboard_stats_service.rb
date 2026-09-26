@@ -33,7 +33,7 @@ class TenantDashboardStatsService
   end
 
   def calculate_stay_stats(contract)
-    if contract&.start_date && contract&.due_date
+    if contract && contract.start_date && contract.due_date
       days_stayed = [ (Date.current - contract.start_date).to_i, 0 ].max
       total_days = [ (contract.due_date - contract.start_date).to_i, 1 ].max
       stay_progress_pct = [ ((days_stayed.to_f / total_days) * 100).round, 100 ].min
@@ -83,9 +83,10 @@ class TenantDashboardStatsService
   end
 
   def calculate_invoice_stats
-    house = tenant_stay&.rental_unit&.house
-    room = tenant_stay&.rental_unit&.room
-    return empty_invoice_stats unless house && room
+    return empty_invoice_stats unless tenant_stay
+
+    house = tenant_stay.rental_unit.house
+    room = tenant_stay.rental_unit.room
 
     scope = house.invoices
                  .where("invoices.room_id = :room_id OR invoices.tenant_id = :tenant_id", room_id: room.id, tenant_id: tenant.id)
@@ -105,11 +106,11 @@ class TenantDashboardStatsService
       ])
     ).take
 
-    unpaid_count = stats&.unpaid_count.to_i
-    overdue_count = stats&.overdue_count.to_i
-    unpaid_amount = stats&.unpaid_amount.to_i
-    paid_amount = stats&.paid_amount.to_i
-    total_count = stats&.total_count.to_i
+    unpaid_count = stats.unpaid_count.to_i
+    overdue_count = stats.overdue_count.to_i
+    unpaid_amount = stats.unpaid_amount.to_i
+    paid_amount = stats.paid_amount.to_i
+    total_count = stats.total_count.to_i
 
     upcoming_unpaid = scope.where(status: :pending).where("due_date >= ?", today).order(due_date: :asc)
     nearest_due_date = upcoming_unpaid.first&.due_date

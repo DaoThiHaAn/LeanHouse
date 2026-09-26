@@ -73,7 +73,7 @@ class User < ApplicationRecord
 
   # @param role ["landlord", "tenant"]
   def self.find_acc(tel, role)
-    registered.find_by(tel: tel&.to_s&.squish, role: role)
+    registered.find_by(tel: tel.to_s.squish, role: role)
   end
 
   # Resize avatar
@@ -119,8 +119,8 @@ class User < ApplicationRecord
 
   def normalize_inputs
     # Remove leading/trailing whitespace from string fields
-    self.fullname = fullname&.squish
+    self.fullname = fullname.to_s.squish
     self.tel = tel&.squish
-    self.address = address&.squish
+    self.address = address.to_s.squish
   end
 end

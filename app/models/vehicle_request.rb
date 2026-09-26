@@ -107,8 +107,8 @@ class VehicleRequest < ApplicationRecord
   private
 
   def normalize_attributes
-    self.license_plate = license_plate&.squish&.upcase
-    self.brand = brand&.squish
-    self.model = model&.squish
+    self.license_plate = license_plate.to_s.squish.upcase
+    self.brand = brand.to_s.squish
+    self.model = model.to_s.squish
   end
 end

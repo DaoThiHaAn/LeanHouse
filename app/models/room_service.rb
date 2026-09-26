@@ -13,8 +13,8 @@ class RoomService < ApplicationRecord
   def room_and_service_variant_must_belong_to_same_house
     return unless room && service_variant
 
-    room_house_id = room.floor&.house_id
-    service_house_id = service_variant.service&.house_id
+    room_house_id = room.floor.house_id
+    service_house_id = service_variant.service.house_id
 
     return if room_house_id.nil? || service_house_id.nil?
     return if room_house_id == service_house_id

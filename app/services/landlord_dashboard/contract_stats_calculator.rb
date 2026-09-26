@@ -25,8 +25,8 @@ module LandlordDashboard
         ])
       ).take
 
-      overdue = result&.overdue_count.to_i
-      nearly_due = result&.nearly_due_count.to_i
+      overdue = result.overdue_count.to_i
+      nearly_due = result.nearly_due_count.to_i
 
       {
         overdue: overdue,

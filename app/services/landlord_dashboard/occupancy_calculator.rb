@@ -19,8 +19,8 @@ module LandlordDashboard
          COALESCE(SUM(rooms.tenants_count), 0) AS total_occupied"
       ).take
 
-      total_capacity = stats&.total_capacity.to_i
-      total_occupied = stats&.total_occupied.to_i
+      total_capacity = stats.total_capacity.to_i
+      total_occupied = stats.total_occupied.to_i
       rate = total_capacity.zero? ? 0.0 : ((total_occupied.to_f / total_capacity) * 100).round(1)
 
       {
