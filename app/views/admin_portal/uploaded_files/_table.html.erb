@@ -1,4 +1,13 @@
-<%= turbo_frame_tag "uploaded_files_table", data: { turbo_action: "advance" } do %>
+<%= turbo_frame_tag "uploaded_files_table",
+      data: {
+        turbo_action: "advance",
+        controller: "pagination-sync",
+        pagination_sync_canonical_url_value: admin_uploaded_files_path,
+        pagination_sync_default_params_value: { record_type: "all", file_type: "all" }.to_json,
+        pagination_sync_query_params_value: ["q", "record_type", "file_type"].to_json,
+        pagination_sync_total_pages_selector_value: "[data-pagination-total-pages]",
+        action: "turbo:frame-load->pagination-sync#updateUrl"
+      } do %>
   <!-- Used by Stimulus pagination-sync to update URL -->
   <span hidden data-pagination-total-pages="<%= @attachments.respond_to?(:total_pages) ? @attachments.total_pages : 1 %>"></span>
 

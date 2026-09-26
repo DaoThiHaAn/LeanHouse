@@ -1,5 +1,7 @@
 module AdminPortal
   class HousesController < BaseController
+    HOUSES_PER_PAGE = 15
+
     def index
       @mode_filter = params[:mode].presence
       @status_filter = params[:status].presence || "all"
@@ -16,7 +18,7 @@ module AdminPortal
         houses = houses.deleted
       end
 
-      @houses = houses.order(created_at: :desc)
+      @houses = houses.order(created_at: :desc).page(params[:page]).per(HOUSES_PER_PAGE)
     end
 
     def show

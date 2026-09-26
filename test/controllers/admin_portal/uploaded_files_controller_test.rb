@@ -73,6 +73,35 @@ class AdminPortal::UploadedFilesControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "Quy chế Kiểm duyệt"
   end
 
+  test "uploaded files list paginates with 15 records per page" do
+    login_as(@admin)
+
+    # Create 16 additional user avatars so total attachments > 15
+    16.times do |i|
+      u = User.create!(
+        fullname: "Nguyen Van User #{('A'..'Z').to_a[i]}",
+        tel: "097#{i.to_s.rjust(7, '0')}",
+        password: "Password123!",
+        password_confirmation: "Password123!",
+        role: "tenant",
+        sex: "male",
+        bday: 20.years.ago.to_date,
+        address: "Address #{i}",
+        is_active: true
+      )
+      u.avatar.attach(
+        io: StringIO.new("fake image #{i}"),
+        filename: "avatar_#{i}.png",
+        content_type: "image/png"
+      )
+    end
+
+    get admin_uploaded_files_url(page: 2)
+    assert_response :success
+    assert_select ".pagination"
+    assert_select "span[data-pagination-total-pages]"
+  end
+
   test "filter uploaded files by record_type" do
     login_as(@admin)
     get admin_uploaded_files_url, params: { record_type: "User" }

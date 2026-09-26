@@ -87,7 +87,18 @@
 </div>
 
 <!-- Users Table with Turbo Frame for AJAX updates -->
-<%= turbo_frame_tag "admin_users_table" do %>
+<%= turbo_frame_tag "admin_users_table",
+      data: {
+        controller: "pagination-sync",
+        pagination_sync_canonical_url_value: admin_users_path,
+        pagination_sync_default_params_value: { role: "all", status: "all" }.to_json,
+        pagination_sync_query_params_value: ["q", "role", "status"].to_json,
+        pagination_sync_total_pages_selector_value: "[data-pagination-total-pages]",
+        action: "turbo:frame-load->pagination-sync#updateUrl"
+      } do %>
+
+  <span hidden data-pagination-total-pages="<%= @users.respond_to?(:total_pages) ? @users.total_pages : 1 %>"></span>
+
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h2>
       <span class="material-symbols-filled fs-3">user_attributes</span>
@@ -95,7 +106,7 @@
     </h2>
 
     <span class="badge bg-light text-dark border p-2 fs-6">
-      <%= t("admin.users.total_users", count: @users.count) %>
+      <%= t("admin.users.total_users", count: @users.respond_to?(:total_count) ? @users.total_count : @users.size) %>
     </span>
   </div>
 
@@ -193,5 +204,9 @@
         <% end %>
       </tbody>
     </table>
+  </div>
+
+  <div class="d-flex justify-content-center mt-4">
+    <%= paginate @users if @users.respond_to?(:total_pages) %>
   </div>
 <% end %>

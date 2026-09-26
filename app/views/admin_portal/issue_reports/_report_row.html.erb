@@ -44,12 +44,11 @@
   <!-- Actions -->
   <td class="px-3 text-center">
     <%= link_to admin_issue_report_path(report),
-          class: "btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-1 shadow-sm",
+          class: "btn btn-sm btn-light border d-inline-flex align-items-center",
           title: t("admin.issue_reports.view_detail"),
           aria: { label: t("admin.issue_reports.view_detail") },
           data: { turbo_frame: "_top" } do %>
       <span class="material-symbols-filled fs-6" aria-hidden="true">visibility</span>
-      <span><%= t("admin.issue_reports.view_detail") %></span>
     <% end %>
   </td>
 </tr>

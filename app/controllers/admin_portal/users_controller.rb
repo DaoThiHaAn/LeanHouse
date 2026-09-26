@@ -2,6 +2,8 @@ module AdminPortal
   class UsersController < BaseController
     before_action :set_user, only: [ :show, :toggle_active, :recycle_phone, :contracts, :invoices ]
 
+    USERS_PER_PAGE = 15
+
     def index
       @role_filter = params[:role].presence || "all"
       @status_filter = params[:status].presence || "all"
@@ -23,7 +25,7 @@ module AdminPortal
         users = users.where("fullname ILIKE ? OR tel ILIKE ? OR address ILIKE ?", sanitized, sanitized, sanitized)
       end
 
-      @users = users.order(created_at: :desc)
+      @users = users.order(created_at: :desc).page(params[:page]).per(USERS_PER_PAGE)
     end
 
     def show

@@ -60,6 +60,29 @@ class AdminPortal::HousesControllerTest < ActionDispatch::IntegrationTest
     assert_select "a", text: "Admin Deleted House"
   end
 
+  test "admin houses list paginates when exceeding houses per page" do
+    sign_in_as_admin(@admin)
+
+    # Create 16 more houses to exceed HOUSES_PER_PAGE (15)
+    16.times do |i|
+      House.create!(
+        landlord: @landlord,
+        name: "Admin Paginated House #{i + 1}",
+        mode: :room,
+        address_l1: "100 Paginated St #{i + 1}",
+        address_l2: "Ward P",
+        address_l3: "District P",
+        floors_count: 1,
+        inv_creation_date: 1
+      )
+    end
+
+    get admin_houses_path(page: 2)
+    assert_response :success
+    assert_select ".pagination"
+    assert_select "span[data-pagination-total-pages]"
+  end
+
   test "admin can filter houses by active status" do
     sign_in_as_admin(@admin)
     get admin_houses_path, params: { status: "active" }

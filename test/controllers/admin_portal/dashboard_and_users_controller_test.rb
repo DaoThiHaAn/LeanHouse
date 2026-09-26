@@ -47,6 +47,30 @@ class AdminPortal::DashboardAndUsersControllerTest < ActionDispatch::Integration
     assert_includes response.body, @user.fullname
   end
 
+  test "should paginate users list when exceeding users per page" do
+    post admin_handle_login_url, params: { email: @admin.email, password: "Password123!" }
+
+    # Create 16 more users to exceed USERS_PER_PAGE (15)
+    16.times do |i|
+      User.create!(
+        fullname: "Nguyen Thi Thu #{('A'..'Z').to_a[i]}",
+        tel: "096#{i.to_s.rjust(7, '0')}",
+        password: "Password123!",
+        password_confirmation: "Password123!",
+        sex: "female",
+        bday: 22.years.ago.to_date,
+        address: "Address #{i + 1}",
+        role: "tenant",
+        is_active: true
+      )
+    end
+
+    get admin_users_url(page: 2)
+    assert_response :success
+    assert_select ".pagination"
+    assert_select "span[data-pagination-total-pages]"
+  end
+
   test "should toggle user active status" do
     post admin_handle_login_url, params: { email: @admin.email, password: "Password123!" }
 

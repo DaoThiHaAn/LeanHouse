@@ -86,7 +86,18 @@
 </div>
 
 <!-- Houses Table with Turbo Frame for AJAX updates -->
-<%= turbo_frame_tag "admin_houses_table" do %>
+<%= turbo_frame_tag "admin_houses_table",
+      data: {
+        controller: "pagination-sync",
+        pagination_sync_canonical_url_value: admin_houses_path,
+        pagination_sync_default_params_value: { mode: "", status: "all" }.to_json,
+        pagination_sync_query_params_value: ["q", "mode", "status"].to_json,
+        pagination_sync_total_pages_selector_value: "[data-pagination-total-pages]",
+        action: "turbo:frame-load->pagination-sync#updateUrl"
+      } do %>
+
+  <span hidden data-pagination-total-pages="<%= @houses.respond_to?(:total_pages) ? @houses.total_pages : 1 %>"></span>
+
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h2>
       <span class="material-symbols-filled fs-3">house</span>
@@ -94,7 +105,7 @@
     </h2>
 
     <span class="badge bg-light text-dark border p-2 fs-6">
-      <%= t("admin.houses.total_houses", count: @houses.count) %>
+      <%= t("admin.houses.total_houses", count: @houses.respond_to?(:total_count) ? @houses.total_count : @houses.size) %>
     </span>
   </div>
 
@@ -163,4 +174,8 @@
           </tbody>
         </table>
       </div>
+
+  <div class="d-flex justify-content-center mt-4">
+    <%= paginate @houses if @houses.respond_to?(:total_pages) %>
+  </div>
 <% end %>
