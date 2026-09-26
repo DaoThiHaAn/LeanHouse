@@ -189,6 +189,7 @@ vi:
     tel_linked_current_house: "Tài khoản này đã được liên kết với nhà này rồi"
     tel_linked_current_house_with_location: "Tài khoản này đã được liên kết với nhà này rồi (%{location})"
     rental_unit_unavailable: "Vị trí thuê này không còn trống. Vui lòng chọn lại."
+    house_full: "Nhà đã hết chỗ trống!"
     not_bed_mode: "Nhà này không thuộc loại hình Thuê theo Giường!"
     capacity_below_tenants: "Không thể giảm sức chứa xuống dưới số khách hiện tại (%{count} người)!"
     house_cant_deleted: "Không thể xóa nhà này khi vẫn còn khách thuê hoặc có yêu cầu chưa xử lý!"

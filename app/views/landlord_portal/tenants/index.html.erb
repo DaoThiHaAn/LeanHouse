@@ -72,7 +72,7 @@
     <div class="d-flex flex-column align-items-end gap-3">
       <%= link_to new_landlord_house_tenant_path(@house),
                   class: "custom-primary-btn d-inline-flex align-items-center gap-1 shadow",
-                  data: { turbo_frame: "new_tenant_modal" } do %>
+                  data: { turbo_frame: "new_tenant_modal", turbo_prefetch: false } do %>
         <span class="material-symbols-filled fs-5">link</span>
         <span><%= t('form.tenant.link') %></span>
       <% end %>

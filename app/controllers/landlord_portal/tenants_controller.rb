@@ -2,6 +2,7 @@ class LandlordPortal::TenantsController < LandlordPortal::BaseController
   layout "house_mngment"
 
   before_action :authorize_tenant_belongs_to_house!, only: [ :show, :move, :destroy, :execute_move, :confirm_remove ]
+  before_action :check_house_non_full, only: [ :new, :create_new, :available ]
 
   def show
     @user = @tenant.user
@@ -29,7 +30,7 @@ class LandlordPortal::TenantsController < LandlordPortal::BaseController
     # renders confirm_remove.html.erb inside the remove_tenant_modal turbo frame
   end
 
-  # TODO: Modal form to move tenant to another rental unit
+  # Modal form to move tenant to another rental unit
   def move
     @available_slots = AvailableSlotsBuilder.call(
       house: @house,
@@ -83,7 +84,6 @@ class LandlordPortal::TenantsController < LandlordPortal::BaseController
     end
   end
 
-  # TODO:
   def create_new
     @user = User.new
     @available_slots = AvailableSlotsBuilder.call(house: @house)
@@ -150,6 +150,20 @@ class LandlordPortal::TenantsController < LandlordPortal::BaseController
     else
       @tenant = Tenant.find_by(id: params[:id])
       raise CanCan::AccessDenied unless @tenant && (@house.contracts.where(tenant: @tenant).exists? || @house.tenant_stay_for(@tenant.id).present?)
+    end
+  end
+
+  def check_house_non_full
+    return if @house.non_full?
+
+    if turbo_frame_request? || request.format.turbo_stream?
+      flash.now[:alert] = t("errors.house_full")
+      render turbo_stream: turbo_stream.update(
+        "flash",
+        partial: "layouts/shared_components/flash_message"
+      )
+    else
+      redirect_to landlord_house_tenants_path(@house), alert: t("errors.house_full")
     end
   end
 end

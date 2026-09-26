@@ -1,6 +1,6 @@
 module RequestsHelper
   REQUEST_STATUS_ICONS = {
-    "pending" => "hourglass_empty",
+    "pending" => "hourglass_top",
     "handling" => "sync",
     "completed" => "check_circle",
     "approved" => "check_circle",

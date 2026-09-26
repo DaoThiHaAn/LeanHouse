@@ -9,7 +9,7 @@ class TenantPortalTest < ApplicationSystemTestCase
     sign_in_as(@tenant_user)
 
     assert_current_path tenant_dashboard_path
-    assert_text @tenant_user.fullname
+    assert_text "Tran T.N. Thue"
   end
 
   test "unauthenticated user cannot directly visit tenant dashboard" do

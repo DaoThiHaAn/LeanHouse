@@ -102,6 +102,8 @@ en:
     tel_linked: "This account is already linked to another property"
     tel_linked_current_house: "This account is already linked to this property"
     tel_linked_current_house_with_location: "This account is already linked to this property (%{location})"
+    rental_unit_unavailable: "This rental unit is no longer available. Please select another."
+    house_full: "House is full! There are no available slots."
     capacity_below_tenants: "Cannot reduce capacity below the current number of staying tenants (%{count})!"
     tenant_has_pending_invoices: "Cannot remove tenant because there are %{count} unpaid invoice(s). Please resolve or cancel them first."
     leave_request_has_pending_invoices: "Cannot approve leave request because the tenant has %{count} unpaid invoice(s). Please resolve them first."

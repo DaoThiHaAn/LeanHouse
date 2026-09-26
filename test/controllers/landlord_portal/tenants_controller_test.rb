@@ -334,4 +334,55 @@ class LandlordPortal::TenantsControllerTest < ActionDispatch::IntegrationTest
     assert_select "turbo-stream[action='replace'][target='tenant_form']"
     assert_includes response.body, free_tenant_user.fullname
   end
+
+  test "new when house is full via turbo_frame does not render modal and updates flash with house_full error" do
+    @room1.update!(tenants_count: 2)
+    @room2.update!(tenants_count: 2)
+    @room3.update!(tenants_count: 2)
+    assert @house.reload.full?
+
+    sign_in_as(@landlord_user)
+    get new_landlord_house_tenant_path(@house), headers: { "Turbo-Frame" => "new_tenant_modal" }
+    assert_response :success
+    assert_equal "text/vnd.turbo-stream.html; charset=utf-8", response.content_type
+    assert_select "turbo-stream[action='update'][target='flash']"
+    assert_select "#newTenantModal", count: 0
+    assert_equal I18n.t("errors.house_full"), flash[:alert]
+  end
+
+  test "new when house is full via html redirects to index with house_full error" do
+    @room1.update!(tenants_count: 2)
+    @room2.update!(tenants_count: 2)
+    @room3.update!(tenants_count: 2)
+    assert @house.reload.full?
+
+    sign_in_as(@landlord_user)
+    get new_landlord_house_tenant_path(@house)
+    assert_redirected_to landlord_house_tenants_path(@house)
+    assert_equal I18n.t("errors.house_full"), flash[:alert]
+  end
+
+  test "create_new when house is full redirects to index with house_full error" do
+    @room1.update!(tenants_count: 2)
+    @room2.update!(tenants_count: 2)
+    @room3.update!(tenants_count: 2)
+    assert @house.reload.full?
+
+    sign_in_as(@landlord_user)
+    get landlord_house_create_new_tenant_path(@house)
+    assert_redirected_to landlord_house_tenants_path(@house)
+    assert_equal I18n.t("errors.house_full"), flash[:alert]
+  end
+
+  test "available when house is full redirects or updates flash with house_full error" do
+    @room1.update!(tenants_count: 2)
+    @room2.update!(tenants_count: 2)
+    @room3.update!(tenants_count: 2)
+    assert @house.reload.full?
+
+    sign_in_as(@landlord_user)
+    get landlord_house_tenant_available_path(@house), params: { tenant_link_form: { tel: "0901234567" } }
+    assert_redirected_to landlord_house_tenants_path(@house)
+    assert_equal I18n.t("errors.house_full"), flash[:alert]
+  end
 end

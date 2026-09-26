@@ -9,7 +9,7 @@ class AuthenticationTest < ApplicationSystemTestCase
   test "visiting login page from root and verifying form elements" do
     visit root_url
     assert_selector "a[href='#{login_path}']", text: /Đăng nhập|Login/i, wait: 5
-    click_on "Đăng nhập"
+    first("a[href='#{login_path}']").click
 
     assert_current_path login_path
     assert_selector "input[name='user[tel]']"
@@ -32,7 +32,7 @@ class AuthenticationTest < ApplicationSystemTestCase
 
     # Landlord is redirected to landlord dashboard or landlord area
     assert_no_current_path login_path, wait: 5
-    assert_text @landlord_user.fullname
+    assert_text "Nguyen V.C. Nha"
   end
 
   test "successful tenant login navigates to tenant dashboard" do
@@ -40,12 +40,12 @@ class AuthenticationTest < ApplicationSystemTestCase
 
     # Tenant is redirected to tenant dashboard
     assert_no_current_path login_path, wait: 5
-    assert_text @tenant_user.fullname
+    assert_text "Tran T.N. Thue"
   end
 
   test "logging out clears session and returns to root" do
     sign_in_as(@tenant_user)
-    assert_text @tenant_user.fullname
+    assert_text "Tran T.N. Thue"
 
     # Visit logout endpoint
     visit logout_path

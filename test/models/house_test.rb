@@ -154,4 +154,15 @@ class HouseTest < ActiveSupport::TestCase
       @house_empty.update!(is_deleted: false)
     end
   end
+
+  test "full? returns true when house has no available slots and false otherwise" do
+    assert @house_full.full?
+    assert_not @house_full.non_full?
+
+    assert_not @house_occupied.full?
+    assert @house_occupied.non_full?
+
+    assert_not @house_empty.full?
+    assert @house_empty.non_full?
+  end
 end

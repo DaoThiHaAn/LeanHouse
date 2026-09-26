@@ -157,6 +157,18 @@ class House < ApplicationRecord
     [ address_l3, address_l2, address_l1 ].compact_blank.join(", ")
   end
 
+  def full?
+    !non_full?
+  end
+
+  def non_full?
+    if rooms.loaded?
+      rooms.any?(&:available?)
+    else
+      rooms.active.available.exists?
+    end
+  end
+
   # Returns active, available rental units with their location preloaded.
   # @return [Array<RentalUnit>]
   def available_rental_units

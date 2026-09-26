@@ -332,7 +332,7 @@
       <button type="reset"
               class="cancel-btn d-inline-flex align-items-center justify-content-center gap-1 px-4 py-2"
               title="<%= t("reset") %>">
-        <span class="material-symbols-outlined fs-5">filter_alt_off</span>
+        <span class="material-symbols-outlined fs-5">refresh</span>
         <%= t("reset") %>
       </button>
     <% end %>
@@ -341,7 +341,7 @@
       class: "custom-primary-btn main-form d-flex align-items-center justify-content-center gap-2 m-0",
       data: { loading_target: "button" } do %>
       <span class="material-symbols-outlined fs-5"><%= is_finished_edit ? "more_time" : "save" %></span>
-      <span data-loading-target="text"><%= is_finished_edit ? t("form.contract.extend", default: "Gia hạn hợp đồng") : (local_assigns[:submit_text] || t("save")) %></span>
+      <span data-loading-target="text"><%= is_finished_edit ? t("form.contract.extend") : (local_assigns[:submit_text] || t("save")) %></span>
       <span class="material-symbols-outlined spin d-none"
         data-loading-target="spinner">
         progress_activity

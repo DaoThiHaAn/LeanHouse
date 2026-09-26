@@ -2,6 +2,16 @@
   min-width: 250px;
 }
 
+.main-info-zone .name-title {
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: rgb(214, 244, 167)
+}
+
+.main-info-zone .info-icon {
+  color: rgb(152, 152, 152)
+}
+
 .add-tenant.custom-primary-btn {
   border-top-right-radius: 7px;
   border-bottom-right-radius: 7px;
