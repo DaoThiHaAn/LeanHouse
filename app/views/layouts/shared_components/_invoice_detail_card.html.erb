@@ -408,20 +408,31 @@
               <%= image_tag qr_url, alt: t('invoice.vietqr.qr_alt'), class: "d-block mx-auto", width: "200px" %>
 
               <% if invoice.payos_configured?(bank_account) && !invoice.paid? %>
-                <div class="alert alert-info border border-info-subtle bg-info-subtle text-dark p-3 rounded-3 w-100 small d-print-none mb-1">
-                  <div class="d-flex align-items-start gap-2 <%= 'mb-2' if invoice.payos_checkout_url.present? %>">
-                    <span class="material-symbols-outlined text-info-emphasis fs-5 flex-shrink-0 mt-0.5">info</span>
-                    <div class="text-secondary small">
-                      <%= sanitize(t('invoice.payos.static_qr_notice_html')) %>
+                <% if invoice.payos_checkout_url.present? %>
+                  <div class="alert alert-info border border-info-subtle bg-info-subtle text-dark p-3 rounded-3 w-100 small d-print-none mb-1">
+                    <div class="d-flex align-items-start gap-2 mb-2">
+                      <span class="material-symbols-outlined text-info-emphasis fs-5 flex-shrink-0 mt-0.5">info</span>
+                      <div class="text-secondary small">
+                        <%= sanitize(t('invoice.payos.static_qr_notice_html')) %>
+                      </div>
                     </div>
-                  </div>
-                  <% if invoice.payos_checkout_url.present? %>
                     <a href="<%= invoice.payos_checkout_url %>" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-success text-white d-inline-flex align-items-center justify-content-center gap-1 px-3 py-2 rounded-pill w-100 fw-semibold shadow-sm">
                       <span class="material-symbols-outlined fs-6">open_in_new</span>
                       <span><%= t('invoice.payos.open_checkout') %></span>
                     </a>
-                  <% end %>
-                </div>
+                  </div>
+
+                <% else %>
+                  <!-- PayOS connection error -->
+                  <div class="alert alert-warning border border-warning-subtle bg-warning-subtle text-dark p-3 rounded-3 w-100 small d-print-none mb-1">
+                    <div class="d-flex align-items-start gap-2">
+                      <span class="material-symbols-outlined text-warning-emphasis fs-5 flex-shrink-0 mt-0.5">warning</span>
+                      <div class="text-secondary small">
+                        <%= sanitize(t('invoice.payos.connection_error_fallback_html')) %>
+                      </div>
+                    </div>
+                  </div>
+                <% end %>
               <% end %>
 
               <div class="bg-light p-3 rounded-3 border small font-monospace w-100">

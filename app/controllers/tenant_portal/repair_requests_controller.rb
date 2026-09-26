@@ -13,7 +13,7 @@ class TenantPortal::RepairRequestsController < TenantPortal::BaseController
 
     redirect_to tenant_requests_path, notice: t("success_messages.repair_created_success", default: "Gửi yêu cầu sửa chữa thành công!")
   rescue ActiveRecord::RecordInvalid => e
-    @repair_request = e.record.is_a?(RepairRequest) ? e.record : RepairRequest.new(repair_request_params.except(:images, :video))
+    @repair_request = e.record
     render :new, status: :unprocessable_entity
   end
 

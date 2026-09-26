@@ -318,6 +318,7 @@ vi:
       realtime_badge: "Tự động nhận diện thanh toán (payOS)"
       static_qr_badge: "VietQR tĩnh"
       static_qr_notice_html: "Mã QR này là <strong>VietQR tĩnh</strong> (chuyển khoản thông thường). Để hệ thống <strong>tự động nhận diện và gạch nợ tức thì</strong>, vui lòng mở liên kết thanh toán payOS."
+      connection_error_fallback_html: "Hiện tạm thời chưa thể kết nối cổng thanh toán tự động payOS. Bạn vẫn có thể quét mã <strong>VietQR tĩnh</strong> bên trên để chuyển khoản như bình thường và gửi ảnh biên lai xác nhận."
       open_checkout: "Mở trang thanh toán payOS"
       open_checkout_url: "Mở cổng thanh toán payOS"
       embedded_tab: "Cổng payOS (QR Động)"

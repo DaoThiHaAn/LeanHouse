@@ -48,7 +48,7 @@ class VehicleRequestSubmission
       tenant_name: tenant_user.fullname,
       house_id: house.id,
       house_name: house.name,
-      location: tenant_stay&.rental_unit&.location_info,
+      location: tenant_stay.rental_unit.location_info,
       license_plate: vehicle_request.license_plate
     ).deliver_later(recipients)
   end

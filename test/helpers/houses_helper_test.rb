@@ -85,4 +85,19 @@ class HousesHelperTest < ActionView::TestCase
     assert l_years.any?
     assert landlord_year_filter_options(nil).any?
   end
+
+  test "services_helper methods" do
+    extend ServicesHelper
+
+    fake_variant = Struct.new(:is_real_time?, :unit, :human_unit).new(true, :per_room, "phòng")
+    assert_includes service_calculation_type_badge(fake_variant), "speed"
+    fake_variant.send(:[]=, :is_real_time?, false)
+    assert_includes service_calculation_type_badge(fake_variant), "lock"
+
+    [ :per_room, :per_month, :per_person, :per_item, :kwh ].each do |u|
+      v = Struct.new(:unit, :human_unit).new(u, u.to_s)
+      assert_kind_of Float, fixed_service_applied_quantity(@room, v, vehicle_count: 2)
+      assert_kind_of String, fixed_service_quantity_display(@room, v, vehicle_count: 2)
+    end
+  end
 end

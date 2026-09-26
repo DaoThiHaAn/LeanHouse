@@ -3,14 +3,14 @@ module LocationsHelper
     return nil if code.blank?
 
     provinces = load_locations["province"]
-    provinces.find { |p| p["idProvince"] == code }&.dig("name")
+    (provinces.find { |p| p["idProvince"] == code } || {})["name"]
   end
 
   def commune_name(code)
     return nil if code.blank?
 
     communes = load_locations["commune"]
-    communes.find { |c| c["idCommune"] == code }&.dig("name")
+    (communes.find { |c| c["idCommune"] == code } || {})["name"]
   end
 
   private
