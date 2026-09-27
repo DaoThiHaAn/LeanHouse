@@ -39,6 +39,10 @@
   max-width: 300px;
 }
 
+.log.main-info-zone .title {
+  color: rgb(184, 236, 158)
+}
+
 .col-content {
   min-width: 200px;
   max-width: 350px;

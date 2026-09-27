@@ -346,24 +346,9 @@
   width: 46px; height: 46px;
 }
 
-/* Asset Table */
-.tenant-asset-table thead th {
-  font-size: 0.85rem;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-  color: #64748b;
-  font-weight: 700;
-  border-bottom: 2px solid #e2e8f0;
-}
-
-.tenant-asset-table tbody td {
-  font-size: 0.95rem;
-  border-bottom: 1px solid #f1f5f9;
-}
-
 .asset-cat-icon {
-  width: 32px;
-  height: 32px;
+  width: 3rem;
+  height: 3rem;
   background-color: #eaf8f1;
   color: #164E5D;
 }

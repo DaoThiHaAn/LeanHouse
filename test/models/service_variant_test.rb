@@ -81,4 +81,31 @@ class ServiceVariantTest < ActiveSupport::TestCase
     assert_includes @variant1.active_staying_tenant_users, tenant_user
     assert_empty @variant2.active_staying_tenant_users
   end
+
+  test "validates uniqueness of variant within the same service" do
+    duplicate = @service.service_variants.build(
+      fee: @variant1.fee,
+      unit: @variant1.unit,
+      is_real_time: @variant1.is_real_time
+    )
+    assert_not duplicate.valid?
+    assert duplicate.errors[:fee].any?
+
+    # Different fee, unit, or is_real_time is valid in the same service
+    diff_real_time = @service.service_variants.build(
+      fee: @variant1.fee,
+      unit: @variant1.unit,
+      is_real_time: !@variant1.is_real_time
+    )
+    assert diff_real_time.valid?
+
+    # Same fee, unit, is_real_time in a different service is valid
+    other_service = @house.services.create!(name: "Nước")
+    other_variant = other_service.service_variants.build(
+      fee: @variant1.fee,
+      unit: @variant1.unit,
+      is_real_time: @variant1.is_real_time
+    )
+    assert other_variant.valid?
+  end
 end

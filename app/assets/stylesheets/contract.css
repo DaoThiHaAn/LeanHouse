@@ -72,6 +72,12 @@ th.contract-state {
   color: #2e1700;
 }
 
+/* 4. Đã kết thúc (Nền xám) */
+.contract-badge.badge-finished {
+  background-color: #6c757d;
+  color: #ffffff;
+}
+
 .contract-detail-container h2 {
   font-size: 1.2rem;
 }

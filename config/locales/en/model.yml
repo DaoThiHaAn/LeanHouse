@@ -16,6 +16,10 @@ en:
           attributes:
             latest_reading:
               greater_than_or_equal_to_prev: "must be greater than or equal to previous reading (%{count})!"
+        service_variant:
+          attributes:
+            fee:
+              taken: "A service variant with this fee, unit, and calculation method already exists!"
 
     attributes:
       service_usage_log:

@@ -198,7 +198,7 @@
   </div>
 
   <!-- Temp residence registration -->
-  <div class="form-group" <%= 'data-controller="toggle-extra-fields"' unless is_finished_edit %>>
+  <div class="form-group" <% unless is_finished_edit %>data-controller="toggle-extra-fields"<% end %>>
     <div class="d-flex gap-4">
       <label class="form-label fw-semibold m-0 flex-shrink-0">
         <%= t("form.contract.resid_register", default: "Đăng ký tạm trú") %>:
@@ -232,7 +232,7 @@
           </div>
 
           <%# Hạn: date input %>
-          <div class="d-flex align-items-center gap-2 <%= "d-none" unless contract.temp_resid_registered? %>"
+          <div class="<%= contract.temp_resid_registered? ? 'd-flex' : 'd-none' %> align-items-center gap-2"
               data-toggle-extra-fields-target="extraFields">
             <span class="fw-semibold"><%= t("form.contract.due") %>:</span>
             <%= f.date_field :temp_resid_due_date,

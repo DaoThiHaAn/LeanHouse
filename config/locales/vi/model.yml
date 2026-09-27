@@ -59,6 +59,11 @@ vi:
             name:
               taken: "đã tồn tại!"
 
+        service_variant:
+          attributes:
+            fee:
+              taken: "Phiên bản dịch vụ với đơn giá, đơn vị và cách tính này đã tồn tại!"
+
         room_service:
           attributes:
             base:

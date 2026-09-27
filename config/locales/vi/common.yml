@@ -241,6 +241,7 @@ vi:
     account_deleted: "Đã xóa tài khoản thành công!"
     contract_extended: "Gia hạn hợp đồng thành công!"
     contract_signed_new: "Ký hợp đồng mới thành công!"
+    contract_closed: "Hợp đồng đã kết thúc"
     maintenance_log_created: "Thêm lịch sử thành công!"
     maintenance_log_deleted: "Xóa lịch sử thành công!"
     maintenance_log_updated: "Cập nhật lịch sử thành công!"

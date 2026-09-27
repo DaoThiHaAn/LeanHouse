@@ -2866,6 +2866,13 @@ CREATE INDEX index_service_variants_on_service_id ON public.service_variants USI
 
 
 --
+-- Name: index_service_variants_uniqueness; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_service_variants_uniqueness ON public.service_variants USING btree (service_id, fee, unit, is_real_time);
+
+
+--
 -- Name: index_services_on_house_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -3542,6 +3549,7 @@ ALTER TABLE ONLY public.payment_orders
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20260927130000'),
 ('20260922000000'),
 ('20260921000002'),
 ('20260921000001'),

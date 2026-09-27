@@ -49,6 +49,7 @@ class Contract < ApplicationRecord
   # Generate the status of the contract
   # @return [Symbol]
   def due_status
+    return :finished if finished?
     return :overdue if due_date < Date.current
     return :nearly_due if due_date <= Date.current + NEARLY_DUE_DAYS.days
     :normal

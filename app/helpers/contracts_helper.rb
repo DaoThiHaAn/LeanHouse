@@ -22,36 +22,42 @@ module ContractsHelper
 
     when :normal
       image_tag(
-              "normal.png",
-              alt: "Normal icon",
-              title: t("form.contract.normal"),
-              width: "25px"
-            )
+        "normal.png",
+        alt: "Normal icon",
+        title: t("form.contract.normal"),
+        width: "25px"
+      )
     end
   end
-end
 
-# Tạo badge tag trạng thái hợp đồng (Còn hiệu lực, Sắp hết hạn, Quá hạn)
-# @param status_or_contract [Symbol]
-def contract_state_tag(status_contract)
-  case status_contract
-  when :nearly_due, :"nearly-due"
-    content_tag(
-      :div,
-      t("form.contract.nearly_due"),
-      class: "contract-badge badge-nearly-due"
-    )
-  when :overdue
-    content_tag(
-      :div,
-      t("form.contract.overdue"),
-      class: "contract-badge badge-overdue"
-    )
-  else # :normal, :active
-    content_tag(
-      :div,
-      t("form.contract.normal"),
-      class: "contract-badge badge-active"
-    )
+  # Tạo badge tag trạng thái hợp đồng (Còn hiệu lực, Sắp hết hạn, Quá hạn, Đã kết thúc)
+  # @param status_contract [Symbol, String]
+  def contract_state_tag(status_contract)
+    case status_contract
+    when :finished, "finished"
+      content_tag(
+        :div,
+        t("form.contract.finished", default: "Đã kết thúc"),
+        class: "contract-badge badge-finished"
+      )
+    when :nearly_due, :"nearly-due", "nearly_due", "nearly-due"
+      content_tag(
+        :div,
+        t("form.contract.nearly_due"),
+        class: "contract-badge badge-nearly-due"
+      )
+    when :overdue, "overdue"
+      content_tag(
+        :div,
+        t("form.contract.overdue"),
+        class: "contract-badge badge-overdue"
+      )
+    else # :normal, :active
+      content_tag(
+        :div,
+        t("form.contract.normal"),
+        class: "contract-badge badge-active"
+      )
+    end
   end
 end

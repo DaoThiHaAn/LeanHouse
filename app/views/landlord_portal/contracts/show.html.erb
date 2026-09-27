@@ -29,11 +29,13 @@
           <span class="material-symbols-filled fs-2">ink_pen</span>
         <% end %>
 
-        <%= link_to close_landlord_house_contract_path(@house, @contract),
-                  title: t("form.contract.close"),
-                  data: { turbo_frame: "close_cf_modal" },
-                  class: "table-action" do %>
-          <span class="material-symbols-filled text-danger-emphasis fs-2">contract_delete</span>
+        <% unless @contract.finished? %>
+          <%= link_to close_landlord_house_contract_path(@house, @contract),
+                    title: t("form.contract.close"),
+                    data: { turbo_frame: "close_cf_modal" },
+                    class: "table-action" do %>
+            <span class="material-symbols-filled text-danger-emphasis fs-2">contract_delete</span>
+          <% end %>
         <% end %>
       </div>
     </div>

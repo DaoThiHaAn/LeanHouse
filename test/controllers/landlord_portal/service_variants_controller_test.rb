@@ -104,4 +104,14 @@ class LandlordPortal::ServiceVariantsControllerTest < ActionDispatch::Integratio
     assert_includes response.body, I18n.t("service.total_variants", val: 0)
     assert_includes response.body, "no_variants_prompt"
   end
+
+  test "create rejects duplicate variant in the same service" do
+    sign_in_as(@landlord_user)
+    assert_no_difference -> { @service.service_variants.count } do
+      post landlord_house_service_service_variants_path(@house, @service), params: {
+        service_variant: { fee: 3500, unit: "per_kwh", is_real_time: "1" }
+      }
+    end
+    assert_response :unprocessable_entity
+  end
 end

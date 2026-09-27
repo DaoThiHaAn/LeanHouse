@@ -57,12 +57,14 @@
         <span class="material-symbols-filled" aria-hidden="true">ink_pen</span>
       <% end %>
 
-      <%= link_to close_landlord_house_contract_path(house, contract),
-                title: t("form.contract.close"),
-                aria: { label: t("form.contract.close") },
-                data: { turbo_frame: "close_cf_modal" },
-                class: "table-action" do %>
-        <span class="material-symbols-filled text-danger-emphasis" aria-hidden="true">contract_delete</span>
+      <% unless contract.finished? %>
+        <%= link_to close_landlord_house_contract_path(house, contract),
+                  title: t("form.contract.close"),
+                  aria: { label: t("form.contract.close") },
+                  data: { turbo_frame: "close_cf_modal" },
+                  class: "table-action" do %>
+          <span class="material-symbols-filled text-danger-emphasis" aria-hidden="true">contract_delete</span>
+        <% end %>
       <% end %>
     </div>
   </td>

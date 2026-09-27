@@ -16,7 +16,8 @@ class ServiceVariant < ApplicationRecord
   }
 
   validates :fee, :unit, presence: true
-  validates :fee, numericality: { only_integer: true, greater_than: 0 }
+  validates :fee, numericality: { only_integer: true, greater_than: 0 },
+                  uniqueness: { scope: %i[service_id unit is_real_time] }
   validates :unit, presence: true, inclusion: { in: units.keys }
 
 

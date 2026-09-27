@@ -26,9 +26,11 @@ export default class extends Controller {
     const checked = this.checkboxTarget.checked
 
     if (checked) {
-      this.extraFieldsTarget.classList.replace("d-none", "d-flex")
+      this.extraFieldsTarget.classList.remove("d-none")
+      this.extraFieldsTarget.classList.add("d-flex")
     } else {
-      this.extraFieldsTarget.classList.replace("d-flex", "d-none")
+      this.extraFieldsTarget.classList.remove("d-flex")
+      this.extraFieldsTarget.classList.add("d-none")
     }
 
     // Disable or enable the input fields inside the extra fields container
