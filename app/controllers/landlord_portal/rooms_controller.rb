@@ -4,7 +4,7 @@ class LandlordPortal::RoomsController < LandlordPortal::BaseController
   load_and_authorize_resource :room, through: :house, except: %i[new create]
   # before_action :authorize_house_for_room_creation, only: %i[new create]
 
-  ROOMS_PER_PAGE = 15
+  ROOMS_PER_PAGE = 10
 
   def index
   end

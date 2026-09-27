@@ -1,0 +1,11 @@
+<% if @from_room_context %>
+  <%= turbo_stream.replace dom_id(@log), partial: "room_log_row", locals: { house: @house, room: @room, log: @log } %>
+  <%= turbo_stream.replace "room_unconfirmed_badge", partial: "unconfirmed_badge", locals: { id: "room_unconfirmed_badge", count: @unconfirmed_count } %>
+  <%= turbo_stream.replace "room_confirm_all_btn", partial: "room_confirm_all_btn", locals: { house: @house, room: @room, count: @unconfirmed_count } %>
+<% else %>
+  <%= turbo_stream.replace dom_id(@log), partial: "log_row", locals: { house: @house, log: @log } %>
+  <%= turbo_stream.replace "house_unconfirmed_badge", partial: "unconfirmed_badge", locals: { id: "house_unconfirmed_badge", count: @unconfirmed_count } %>
+  <%= turbo_stream.replace "house_confirm_all_btn", partial: "house_confirm_all_btn", locals: { house: @house, billing_month: @billing_month, selected_service: @selected_service, count: @unconfirmed_count } %>
+<% end %>
+
+<%= turbo_stream.update "flash", partial: "layouts/shared_components/flash_message" %>

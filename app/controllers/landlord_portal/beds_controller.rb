@@ -4,7 +4,7 @@ class LandlordPortal::BedsController < LandlordPortal::BaseController
   before_action :house_in_bed_mode
   before_action :set_bed, only: %i[edit update destroy]
 
-  BEDS_PER_PAGE = 15
+  BEDS_PER_PAGE = 10
 
   def index
     @beds = filtered_beds

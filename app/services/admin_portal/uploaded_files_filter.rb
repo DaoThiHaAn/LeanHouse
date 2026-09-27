@@ -2,7 +2,7 @@
 
 module AdminPortal
   class UploadedFilesFilter
-    FILES_PER_PAGE = 15
+    FILES_PER_PAGE = 10
 
     ALLOWED_RECORD_TYPES = %w[
       User Contract ServiceUsageLog Invoice RepairRequest VehicleRequest Vehicle House ActiveStorage::VariantRecord

@@ -175,7 +175,7 @@
 
                   <% if @log.billed? && @log.invoices.any? %>
                     <div class="mt-2 pt-2 border-top">
-                      <span class="text-secondary small d-block mb-1"><%= t("invoice.associated_invoices", default: "Hóa đơn liên kết") %>:</span>
+                      <span class="text-secondary small d-block mb-1"><%= t("invoice.associated_invoices") %>:</span>
                       <div class="d-flex flex-wrap gap-1">
                         <% @log.invoices.each do |inv| %>
                           <%= link_to landlord_house_invoice_path(@house, inv),

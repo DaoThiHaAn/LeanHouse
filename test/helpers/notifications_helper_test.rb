@@ -4,7 +4,7 @@ class NotificationsHelperTest < ActionView::TestCase
   test "notification_level_badge renders appropriate badges for levels" do
     urgent_badge = notification_level_badge("urgent")
     assert_includes urgent_badge, "bg-danger-subtle"
-    assert_includes urgent_badge, "error"
+    assert_includes urgent_badge, "emergency_home"
     assert_includes urgent_badge, I18n.t("admin.notifications.levels.urgent")
 
     warning_badge = notification_level_badge("warning")

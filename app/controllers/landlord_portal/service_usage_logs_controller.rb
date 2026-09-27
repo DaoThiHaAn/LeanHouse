@@ -15,17 +15,13 @@ class LandlordPortal::ServiceUsageLogsController < LandlordPortal::BaseControlle
       return
     end
 
-    setup_house_index
+    assign_index_data(LandlordServiceUsageLogsIndexBuilder.for_house(house: @house, billing_month: @billing_month, params: params))
     render :index
   end
 
   def filtered
     if params[:tab] == "fixed"
-      @fixed_services_summary = HouseFixedServicesSummary.call(
-        house: @house,
-        billing_month: @billing_month,
-        params: params
-      )
+      @fixed_services_summary = HouseFixedServicesSummary.call(house: @house, billing_month: @billing_month, params: params)
       render partial: "house_fixed_services_table", locals: { house: @house, summary: @fixed_services_summary }
     else
       @logs = LandlordServiceUsageLogsFilter.call(house: @house, params: params.reverse_merge(month: @billing_month.strftime("%Y-%m")))
@@ -34,7 +30,7 @@ class LandlordPortal::ServiceUsageLogsController < LandlordPortal::BaseControlle
   end
 
   def room_index
-    setup_room_index
+    assign_index_data(LandlordServiceUsageLogsIndexBuilder.for_room(house: @house, room: @room, billing_month: @billing_month, params: params))
     render :room_index
   end
 
@@ -54,7 +50,7 @@ class LandlordPortal::ServiceUsageLogsController < LandlordPortal::BaseControlle
   end
 
   def service_index
-    setup_service_index
+    assign_index_data(LandlordServiceUsageLogsIndexBuilder.for_service(house: @house, service: @selected_service, billing_month: @billing_month, params: params))
     render :service_index
   end
 
@@ -67,60 +63,28 @@ class LandlordPortal::ServiceUsageLogsController < LandlordPortal::BaseControlle
       )
       render partial: "house_fixed_services_table", locals: { house: @house, summary: @fixed_services_summary }
     else
-      @logs = LandlordServiceUsageLogsFilter.call(house: @house, params: params.reverse_merge(month: @billing_month.strftime("%Y-%m"), service_id: @selected_service.id))
+      @logs = LandlordServiceUsageLogsFilter.call(
+        house: @house,
+        params: params.reverse_merge(month: @billing_month.strftime("%Y-%m"), service_id: @selected_service.id)
+      )
       render partial: "logs_table", locals: { house: @house, logs: @logs, billing_month: @billing_month }
     end
   end
 
   def new
-    target_room = @room || @house.rooms.find_by(id: params[:room_id]) || @house.rooms.active.first
-    @billing_month = (params[:billing_month].present? ? params[:billing_month].to_date : Date.current).beginning_of_month
-    service_variant = @house.service_variants.where(is_real_time: true).find_by(id: params[:service_variant_id]) ||
-                      @house.service_variants.where(is_real_time: true).first
-
-    prev_reading = (target_room && service_variant) ? ServiceUsageLog.previous_reading_for(room: target_room, service_id: service_variant.service_id, before_month: @billing_month) : 0
-
-    @log = ServiceUsageLog.new(
-      room: target_room,
-      service_variant: service_variant,
-      service: service_variant ? service_variant.service : nil,
-      service_name: service_variant ? service_variant.service.name : "Điện/Nước",
-      unit: service_variant ? service_variant.human_unit : "kWh",
-      unit_price: service_variant ? service_variant.fee : 0,
-      billing_month: @billing_month,
-      start_date: @billing_month.beginning_of_month,
-      end_date: @billing_month.end_of_month,
-      prev_reading: prev_reading
-    )
+    @log = ServiceUsageLogCreator.build_default(house: @house, room: @room, params: params)
+    @billing_month = @log.billing_month
   end
 
   # Creates a service usage log:
   # - If is_confirmed: true -> landlord confirms & finalizes reading now
   # - If is_confirmed: false -> opens the cycle and awaits tenant photo/reading submission
   def create
-    @log = ServiceUsageLog.new(log_params)
-    # A vacant room has nobody to complete a pending reading. Keep this rule on
-    # the server as well as in the form, so a crafted request cannot create one.
-    @log.is_confirmed = true if @log.room && @log.room.empty?
-
-    if @log.is_confirmed? || @log.latest_reading.present?
-      @log.submitted_by = current_user
-    else
-      @log.submitted_by = nil
-    end
-
-    if @log.is_confirmed?
-      @log.confirmed_by = current_user
-      @log.confirmed_at = Time.current
-    else
-      @log.confirmed_by = nil
-      @log.confirmed_at = nil
-    end
+    @log = ServiceUsageLogCreator.call(log_params: log_params, user: current_user)
     @billing_month = @log.billing_month || Date.current.beginning_of_month
 
-    if @log.save
-      notify_tenants_of_requested_log(@log) unless @log.is_confirmed?
-      redirect_to determine_redirect_path(@log), notice: t("service_usage_logs.create_success", default: "Đã ghi nhận chỉ số dịch vụ thành công!")
+    if @log.persisted?
+      redirect_to determine_redirect_path(@log), notice: t("service_usage_logs.create_success")
     else
       render :new, status: :unprocessable_entity
     end
@@ -131,20 +95,20 @@ class LandlordPortal::ServiceUsageLogsController < LandlordPortal::BaseControlle
 
   def edit
     if @log.billed?
-      redirect_to determine_redirect_path(@log), alert: t("service_usage_logs.cannot_edit_billed", default: "Chỉ số này đã được xuất hóa đơn, không thể chỉnh sửa!")
+      redirect_to determine_redirect_path(@log), alert: t("service_usage_logs.cannot_edit_billed")
     end
   end
 
   def update
     if @log.billed?
-      redirect_to determine_redirect_path(@log), alert: t("service_usage_logs.cannot_edit_billed", default: "Chỉ số này đã được xuất hóa đơn, không thể chỉnh sửa!")
+      redirect_to determine_redirect_path(@log), alert: t("service_usage_logs.cannot_edit_billed")
       return
     end
 
     @log.allow_landlord_override = true
 
     if @log.update(log_params)
-      redirect_to determine_redirect_path(@log), notice: t("service_usage_logs.update_success", default: "Đã cập nhật chỉ số thành công!")
+      redirect_to determine_redirect_path(@log), notice: t("service_usage_logs.update_success")
     else
       render :edit, status: :unprocessable_entity
     end
@@ -152,128 +116,68 @@ class LandlordPortal::ServiceUsageLogsController < LandlordPortal::BaseControlle
 
   # Confirms a single log, locks tenant editing, and notifies active staying tenants
   def confirm
-    @log.update!(
-      is_confirmed: true,
-      confirmed_at: Time.current,
-      confirmed_by: current_user
-    )
-    notify_tenants_of_confirmed_log(@log)
+    ServiceUsageLogConfirmer.confirm(log: @log, user: current_user)
 
     respond_to do |format|
       format.turbo_stream do
-        flash.now[:notice] = t("service_usage_logs.confirm_log_success", room: @log.room.name, default: "Đã xác nhận chỉ số phòng #{@log.room.name}!")
-        if from_room_context?
-          @room = @log.room
-          @unconfirmed_count = @room.service_usage_logs.unconfirmed.count
-          render turbo_stream: [
-            turbo_stream.replace(helpers.dom_id(@log), partial: "room_log_row", locals: { house: @house, room: @room, log: @log }),
-            turbo_stream.update("flash", partial: "layouts/shared_components/flash_message"),
-            turbo_stream.replace("room_unconfirmed_badge", partial: "unconfirmed_badge", locals: { id: "room_unconfirmed_badge", count: @unconfirmed_count }),
-            turbo_stream.replace("room_confirm_all_btn", partial: "room_confirm_all_btn", locals: { house: @house, room: @room, count: @unconfirmed_count })
-          ]
-        else
-          @billing_month = @log.billing_month
-          @selected_service = @house.services.find_by(id: params[:service_id]) if params[:service_id].present?
-          @unconfirmed_count = if @selected_service
-            @house.service_usage_logs.for_month(@billing_month).where(service_id: @selected_service.id).unconfirmed.count
-          else
-            @house.service_usage_logs.for_month(@billing_month).unconfirmed.count
-          end
-          render turbo_stream: [
-            turbo_stream.replace(helpers.dom_id(@log), partial: "log_row", locals: { house: @house, log: @log }),
-            turbo_stream.update("flash", partial: "layouts/shared_components/flash_message"),
-            turbo_stream.replace("house_unconfirmed_badge", partial: "unconfirmed_badge", locals: { id: "house_unconfirmed_badge", count: @unconfirmed_count }),
-            turbo_stream.replace("house_confirm_all_btn", partial: "house_confirm_all_btn", locals: { house: @house, billing_month: @billing_month, selected_service: @selected_service, count: @unconfirmed_count })
-          ]
-        end
+        flash.now[:notice] = t("service_usage_logs.confirm_log_success", room: @log.room.name)
+        prepare_confirm_turbo_stream_state
       end
 
       format.html do
         redirect_back fallback_location: landlord_house_service_usage_logs_path(@house, month: @log.billing_month.strftime("%Y-%m")),
-                      notice: t("service_usage_logs.confirm_log_success", room: @log.room.name, default: "Đã xác nhận chỉ số!")
+                      notice: t("service_usage_logs.confirm_log_success", room: @log.room.name)
       end
     end
   end
 
   def confirm_all_room
-    logs_to_confirm = @room.service_usage_logs.unconfirmed.to_a
-    count = logs_to_confirm.count
-    @room.service_usage_logs.unconfirmed.update_all(
-      is_confirmed: true,
-      confirmed_at: Time.current,
-      confirmed_by_id: current_user.id
-    )
-    notify_tenants_of_confirmed_logs(logs_to_confirm)
+    count = ServiceUsageLogConfirmer.confirm_all(scope: @room.service_usage_logs, user: current_user)
     redirect_to landlord_house_room_service_usage_logs_path(@house, @room),
-                notice: t("service_usage_logs.confirm_all_room_success", count: count, room: @room.name, default: "Đã xác nhận #{count} chỉ số của phòng #{@room.name}!")
+                notice: t("service_usage_logs.confirm_all_room_success", count: count, room: @room.name)
   end
 
   def confirm_all_service
     @billing_month = parse_month(params[:month])
-    scope = @house.service_usage_logs.for_month(@billing_month).where(service_id: @selected_service.id).unconfirmed
-    logs_to_confirm = scope.to_a
-    count = logs_to_confirm.count
-    scope.update_all(
-      is_confirmed: true,
-      confirmed_at: Time.current,
-      confirmed_by_id: current_user.id
-    )
-    notify_tenants_of_confirmed_logs(logs_to_confirm)
+    scope = @house.service_usage_logs.for_month(@billing_month).where(service_id: @selected_service.id)
+    count = ServiceUsageLogConfirmer.confirm_all(scope: scope, user: current_user)
     redirect_to landlord_house_service_service_usage_logs_path(@house, @selected_service, month: @billing_month.strftime("%Y-%m")),
-                notice: t("service_usage_logs.confirm_all_success", count: count, default: "Đã xác nhận toàn bộ #{count} chỉ số trong tháng!")
+                notice: t("service_usage_logs.confirm_all_success", count: count)
   end
 
   # Batch confirms unconfirmed logs for the whole house / month
   # and notifies staying tenants of the confirmed records
   def confirm_all
     @billing_month = parse_month(params[:month])
-    scope = @house.service_usage_logs.for_month(@billing_month).unconfirmed
+    scope = @house.service_usage_logs.for_month(@billing_month)
     scope = scope.where(service_id: params[:service_id]) if params[:service_id].present?
-    logs_to_confirm = scope.to_a
-    count = logs_to_confirm.count
-    scope.update_all(
-      is_confirmed: true,
-      confirmed_at: Time.current,
-      confirmed_by_id: current_user.id
-    )
-    notify_tenants_of_confirmed_logs(logs_to_confirm)
+    count = ServiceUsageLogConfirmer.confirm_all(scope: scope, user: current_user)
+
     redirect_path = if params[:service_id].present? && (@selected_service = @house.services.find_by(id: params[:service_id]))
       landlord_house_service_service_usage_logs_path(@house, @selected_service, month: @billing_month.strftime("%Y-%m"))
     else
       landlord_house_service_usage_logs_path(@house, month: @billing_month.strftime("%Y-%m"))
     end
     redirect_to redirect_path,
-                notice: t("service_usage_logs.confirm_all_success", count: count, default: "Đã xác nhận toàn bộ #{count} chỉ số trong tháng!")
+                notice: t("service_usage_logs.confirm_all_success", count: count)
   end
 
   def destroy
     if @log.billed?
       redirect_back fallback_location: landlord_house_service_usage_logs_path(@house),
-                    alert: t("service_usage_logs.cannot_delete_billed", default: "Chỉ số này đã được xuất hóa đơn, không thể xóa!")
-    else
-      redirect_path = determine_redirect_path(@log)
-      @log.destroy
-      respond_to do |format|
-        format.turbo_stream do
-          flash.now[:notice] = t("service_usage_logs.delete_success", default: "Đã xóa chỉ số thành công!")
-          if from_room_context?
-            @room = @log.room
-            @logs = LandlordServiceUsageLogsFilter.call(house: @house, room: @room, params: params)
-            render turbo_stream: [
-              turbo_stream.replace("room_logs_table", partial: "room_logs_table", locals: { house: @house, room: @room, logs: @logs }),
-              turbo_stream.update("flash", partial: "layouts/shared_components/flash_message")
-            ]
-          else
-            @billing_month = @log.billing_month
-            @logs = LandlordServiceUsageLogsFilter.call(house: @house, params: params.reverse_merge(month: @billing_month.strftime("%Y-%m")))
-            render turbo_stream: [
-              turbo_stream.replace("logs_table", partial: "logs_table", locals: { house: @house, logs: @logs, billing_month: @billing_month }),
-              turbo_stream.update("flash", partial: "layouts/shared_components/flash_message")
-            ]
-          end
-        end
-        format.html { redirect_to redirect_path, notice: t("service_usage_logs.delete_success", default: "Đã xóa chỉ số thành công!") }
+                    alert: t("service_usage_logs.cannot_delete_billed")
+      return
+    end
+
+    redirect_path = determine_redirect_path(@log)
+    @log.destroy
+
+    respond_to do |format|
+      format.turbo_stream do
+        flash.now[:notice] = t("service_usage_logs.delete_success")
+        prepare_destroy_turbo_stream_state
       end
+      format.html { redirect_to redirect_path, notice: t("service_usage_logs.delete_success") }
     end
   end
 
@@ -292,42 +196,11 @@ class LandlordPortal::ServiceUsageLogsController < LandlordPortal::BaseControlle
   end
 
   def parse_month(str)
-    return Date.current.beginning_of_month if str.blank?
-
-    str_val = str.to_s.strip
-    if (m = str_val.match(/\A(\d{4})[-.\/](\d{1,2})\z/))
-      year = m[1].to_i
-      month = m[2].to_i
-      return Date.new(year, month, 1) if month.between?(1, 12) && year.between?(2000, 2100)
-    end
-
-    begin
-      Date.parse("#{str_val}-01").beginning_of_month
-    rescue StandardError
-      Date.current.beginning_of_month
-    end
+    LandlordServiceUsageLogsIndexBuilder.parse_month(str)
   end
 
   def set_service_usage_log
     @log = @house.service_usage_logs.find(params[:id])
-  end
-
-  def notify_tenants_of_confirmed_log(log)
-    tenants = log.room.active_staying_tenant_users
-    return if tenants.empty?
-
-    ServiceUsageLogConfirmedNotifier.with(log: log).deliver_later(tenants)
-  end
-
-  def notify_tenants_of_confirmed_logs(logs)
-    logs.each { |log| notify_tenants_of_confirmed_log(log) }
-  end
-
-  def notify_tenants_of_requested_log(log)
-    tenants = log.room.active_staying_tenant_users
-    return if tenants.empty?
-
-    ServiceUsageLogRequestedNotifier.with(log: log).deliver_later(tenants)
   end
 
   def from_room_context?
@@ -342,95 +215,50 @@ class LandlordPortal::ServiceUsageLogsController < LandlordPortal::BaseControlle
     end
   end
 
-  def setup_room_index
-    @unconfirmed_count = @room.service_usage_logs.unconfirmed.count
-    @fixed_services_count = @room.room_services.joins(:service_variant).where(service_variants: { is_real_time: false }).count
-    @current_tab = if params[:tab].present?
-      params[:tab] == "fixed" ? "fixed" : "real_time"
-    elsif @room.service_variants.any?(&:is_real_time?)
-      "real_time"
-    elsif @fixed_services_count.positive?
-      "fixed"
+  def prepare_confirm_turbo_stream_state
+    @from_room_context = from_room_context?
+    if @from_room_context
+      @room = @log.room
+      @unconfirmed_count = @room.service_usage_logs.unconfirmed.count
     else
-      "real_time"
+      @billing_month = @log.billing_month
+      @selected_service = @house.services.find_by(id: params[:service_id]) if params[:service_id].present?
+      scope = @house.service_usage_logs.for_month(@billing_month)
+      scope = scope.where(service_id: @selected_service.id) if @selected_service
+      @unconfirmed_count = scope.unconfirmed.count
     end
+  end
 
-    if @current_tab == "fixed"
-      @fixed_services_summary = RoomFixedServicesSummary.call(
-        room: @room,
-        billing_month: @billing_month,
-        page: params[:page],
-        per_page: params[:per_page]
-      )
-    else
+  def prepare_destroy_turbo_stream_state
+    @from_room_context = from_room_context?
+    if @from_room_context
+      @room = @log.room
       @logs = LandlordServiceUsageLogsFilter.call(house: @house, room: @room, params: params)
-      @services = @house.services.name_sorted
-    end
-  end
-
-  def setup_service_index
-    @unconfirmed_count = @house.service_usage_logs.for_month(@billing_month).where(service_id: @selected_service.id).unconfirmed.count
-    @fixed_services_count = RoomService.where(room_id: @house.rooms.select(:id)).joins(:service_variant).where(service_variants: { service_id: @selected_service.id, is_real_time: false }).count
-
-    @current_tab = if params[:tab].present?
-      params[:tab] == "fixed" ? "fixed" : "real_time"
-    elsif @selected_service.service_variants.any?(&:is_real_time?)
-      "real_time"
     else
-      "fixed"
-    end
-
-    if @current_tab == "fixed"
-      @fixed_services_summary = HouseFixedServicesSummary.call(
-        house: @house,
-        billing_month: @billing_month,
-        params: params.merge(service_id: @selected_service.id)
-      )
-      @fixed_services = [ @selected_service ]
-      @fixed_variants = @selected_service.service_variants.where(is_real_time: false)
-    else
-      @logs = LandlordServiceUsageLogsFilter.call(house: @house, params: params.reverse_merge(month: @billing_month.strftime("%Y-%m"), service_id: @selected_service.id))
-      @service_variants = @selected_service.service_variants.where(is_real_time: true)
-    end
-  end
-
-  def setup_house_index
-    @unconfirmed_count = @house.service_usage_logs.for_month(@billing_month).unconfirmed.count
-    @fixed_services_count = RoomService.where(room_id: @house.rooms.select(:id)).joins(:service_variant).where(service_variants: { is_real_time: false }).count
-    @current_tab = params[:tab] == "fixed" ? "fixed" : "real_time"
-
-    if @current_tab == "fixed"
-      @fixed_services_summary = HouseFixedServicesSummary.call(
-        house: @house,
-        billing_month: @billing_month,
-        params: params
-      )
-      @fixed_services = @house.services.joins(:service_variants).where(service_variants: { is_real_time: false }).distinct.name_sorted
-      @fixed_variants = @house.service_variants.where(is_real_time: false)
-    else
+      @billing_month = @log.billing_month
       @logs = LandlordServiceUsageLogsFilter.call(house: @house, params: params.reverse_merge(month: @billing_month.strftime("%Y-%m")))
-      @services = @house.services.joins(:service_variants).where(service_variants: { is_real_time: true }).distinct.name_sorted
     end
   end
 
-  # Loads floor and room options for the dependent floor & room input group picker
+  def assign_index_data(data)
+    @unconfirmed_count = data.unconfirmed_count
+    @fixed_services_count = data.fixed_services_count
+    @current_tab = data.current_tab
+    @fixed_services_summary = data.fixed_services_summary
+    @fixed_services = data.fixed_services
+    @fixed_variants = data.fixed_variants
+    @logs = data.logs
+    @services = data.services
+    @service_variants = data.service_variants
+  end
+
   def load_floor_and_room_options
-    @rooms = @house.rooms.active.includes(:floor, :service_variants).sorted
-    @floors = @rooms.map(&:floor).compact.uniq.sort_by(&:position)
-    @room_options = @rooms.map do |r|
-      {
-        id: r.id,
-        floorId: r.floor_id,
-        name: r.title_name
-      }
-    end
-    # Maps used by the form warnings for service assignment and room occupancy.
-    @room_real_time_variant_ids = @rooms.each_with_object({}) do |r, h|
-      h[r.id.to_s] = r.service_variants.select(&:is_real_time?).map { |v| v.id.to_s }
-    end
-    @room_occupancy = @rooms.each_with_object({}) do |r, h|
-      h[r.id.to_s] = !r.empty?
-    end
+    options = LandlordServiceUsageLogsIndexBuilder.floor_and_room_options(house: @house)
+    @rooms = options.rooms
+    @floors = options.floors
+    @room_options = options.room_options
+    @room_real_time_variant_ids = options.room_real_time_variant_ids
+    @room_occupancy = options.room_occupancy
   end
 
   def log_params

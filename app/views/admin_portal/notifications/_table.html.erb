@@ -15,7 +15,7 @@
       <span class="material-symbols-outlined text-secondary fs-1 mb-2">notifications_off</span>
       <% if @level.present? || @audience.present? %>
         <h5 class="fw-bold"><%= t("admin.notifications.filter.no_matching_title") %></h5>
-        <p class="text-secondary small mb-0"><%= t("admin.notifications.filter.no_matching_desc") %></p>
+        <p class="text-secondary small"><%= t("admin.notifications.filter.no_matching_desc") %></p>
       <% else %>
         <h5 class="fw-bold"><%= t("admin.notifications.empty_title") %></h5>
         <p class="text-secondary small mb-3"><%= t("admin.notifications.empty_desc") %></p>

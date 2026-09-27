@@ -4,7 +4,7 @@
       <div class="modal-content border-0 shadow">
         <div class="modal-header bg-dark text-white">
           <div class="d-flex align-items-center gap-2">
-            <span class="material-symbols-outlined fs-5">visibility</span>
+            <span class="material-symbols-filled fs-5">files</span>
             <h5 class="modal-title mb-0 text-truncate admin-file-modal-title"><%= @attachment.blob.filename %></h5>
           </div>
           <%= link_to admin_uploaded_files_path, class: "btn-close btn-close-white", data: { turbo_frame: "uploaded_file_detail_modal" } do %><% end %>

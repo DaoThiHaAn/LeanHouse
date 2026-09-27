@@ -38,9 +38,9 @@
               <td colspan="100" class="ps-3 py-2">
                 <div class="d-flex align-items-center gap-2">
                   <span class="material-symbols-outlined fs-5">layers</span>
-                  <span><%= floor&.title_name || t("service_usage_logs.unknown_floor", default: "Khác") %></span>
+                  <span><%= floor&.title_name || t("service_usage_logs.unknown_floor") %></span>
                   <span class="badge bg-white text-secondary border rounded-pill fw-normal small">
-                    <%= t("service_usage_logs.services_count", count: floor_items.size, default: "#{floor_items.size} dịch vụ") %>
+                    <%= t("service_usage_logs.services_count", count: floor_items.size) %>
                   </span>
                 </div>
               </td>

@@ -1,0 +1,7 @@
+<% if @from_room_context %>
+  <%= turbo_stream.replace "room_logs_table", partial: "room_logs_table", locals: { house: @house, room: @room, logs: @logs } %>
+<% else %>
+  <%= turbo_stream.replace "logs_table", partial: "logs_table", locals: { house: @house, logs: @logs, billing_month: @billing_month } %>
+<% end %>
+
+<%= turbo_stream.update "flash", partial: "layouts/shared_components/flash_message" %>

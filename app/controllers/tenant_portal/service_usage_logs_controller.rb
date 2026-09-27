@@ -60,35 +60,12 @@ class TenantPortal::ServiceUsageLogsController < TenantPortal::BaseController
 
   # Editing is locked if the log has already been confirmed or billed
   def edit
-    unless @log.can_be_edited_by_tenant?
-      respond_to do |format|
-        format.turbo_stream do
-          flash.now[:alert] = t("errors.landlord_confirm")
-          render turbo_stream: [
-            turbo_stream.replace(helpers.dom_id(@log), partial: "tenant_portal/service_usage_logs/row", locals: { log: @log }),
-            turbo_stream.update("flash", partial: "layouts/shared_components/flash_message")
-          ]
-        end
-        format.html { redirect_to tenant_service_usage_logs_path, alert: t("errors.landlord_confirm") }
-      end
-    end
+    render_locked_log unless @log.can_be_edited_by_tenant?
   end
 
   # Tenant submits reading and photo for an incomplete log created by the landlord
   def update
-    unless @log.can_be_edited_by_tenant?
-      respond_to do |format|
-        format.turbo_stream do
-          flash.now[:alert] = t("errors.landlord_confirm")
-          render turbo_stream: [
-            turbo_stream.replace(helpers.dom_id(@log), partial: "tenant_portal/service_usage_logs/row", locals: { log: @log }),
-            turbo_stream.update("flash", partial: "layouts/shared_components/flash_message")
-          ]
-        end
-        format.html { redirect_to tenant_service_usage_logs_path, alert: t("errors.landlord_confirm") }
-      end
-      return
-    end
+    return render_locked_log unless @log.can_be_edited_by_tenant?
 
     if params.dig(:service_usage_log, :purge_reading_photo) == "1" && params.dig(:service_usage_log, :reading_photo).blank?
       @log.reading_photo.purge if @log.reading_photo.attached?
@@ -96,7 +73,7 @@ class TenantPortal::ServiceUsageLogsController < TenantPortal::BaseController
 
     # Photo is required if not previously attached
     if !@log.reading_photo.attached? && params.dig(:service_usage_log, :reading_photo).blank?
-      @log.errors.add(:reading_photo, t("invoice.reading_photo_required", default: "vui lòng chụp hoặc đính kèm ảnh công tơ thực tế"))
+      @log.errors.add(:reading_photo, t("invoice.reading_photo_required"))
       respond_to do |format|
         format.turbo_stream { render :edit, status: :unprocessable_entity, formats: [ :html ] }
         format.html { render :edit, status: :unprocessable_entity }
@@ -106,7 +83,7 @@ class TenantPortal::ServiceUsageLogsController < TenantPortal::BaseController
 
     @log.submitted_by = current_user
     if @log.update(tenant_log_params)
-      notice_msg = t("invoice.submit_reading_success", default: "Đã gửi chỉ số và ảnh chụp công tơ thành công! Đang chờ chủ trọ duyệt.")
+      notice_msg = t("invoice.submit_reading_success")
       flash[:notice] = notice_msg
       respond_to do |format|
         format.html do
@@ -159,20 +136,17 @@ class TenantPortal::ServiceUsageLogsController < TenantPortal::BaseController
     params.require(:service_usage_log).permit(:latest_reading, :reading_photo)
   end
 
+  def render_locked_log
+    respond_to do |format|
+      format.turbo_stream do
+        flash.now[:alert] = t("errors.landlord_confirm")
+        render :update
+      end
+      format.html { redirect_to tenant_service_usage_logs_path, alert: t("errors.landlord_confirm") }
+    end
+  end
+
   def parse_billing_month(str)
-    return Date.current.beginning_of_month if str.blank?
-
-    str_val = str.to_s.strip
-    if (m = str_val.match(/\A(\d{4})[-.\/](\d{1,2})\z/))
-      year = m[1].to_i
-      month = m[2].to_i
-      return Date.new(year, month, 1) if month.between?(1, 12) && year.between?(2000, 2100)
-    end
-
-    begin
-      Date.parse("#{str_val}-01").beginning_of_month
-    rescue StandardError
-      Date.current.beginning_of_month
-    end
+    LandlordServiceUsageLogsIndexBuilder.parse_month(str)
   end
 end

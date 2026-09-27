@@ -5,7 +5,7 @@ module NotificationsHelper
     icon_name, badge_class, label_key =
       case lvl
       when "urgent"
-        [ "error", "bg-danger-subtle text-danger border border-danger-subtle", "admin.notifications.levels.urgent" ]
+        [ "emergency_home", "bg-danger-subtle text-danger border border-danger-subtle", "admin.notifications.levels.urgent" ]
       when "warning"
         [ "warning", "bg-warning-subtle text-warning-emphasis border border-warning-subtle", "admin.notifications.levels.warning" ]
       else
