@@ -92,14 +92,23 @@ class RequestOverdueExpireJobTest < ActiveJob::TestCase
     )
   end
 
-  test "perform marks requests older than 7 days as overdue and leaves active requests pending" do
+  test "perform marks requests older than 7 days as overdue, purges documents, and notifies tenant" do
     assert_equal "pending", @expired_request.status
     assert_equal "pending", @active_request.status
 
-    RequestOverdueExpireJob.perform_now
+    assert_difference -> { Noticed::Notification.count }, 1 do
+      RequestOverdueExpireJob.perform_now
+    end
 
     assert_equal "overdue", @expired_request.reload.status
     assert_equal "pending", @active_request.reload.status
     assert @vehicle_req1.reload.documents_purged_at.present?
+
+    noti = Noticed::Notification.last
+    assert_equal @tenant_user, noti.recipient
+    assert_equal "overdue", noti.event.params[:decision]
+    assert_equal "59A-12345", noti.event.params[:license_plate]
+    assert_equal "Happy House", noti.event.params[:house_name]
+    assert_includes noti.message, "59A-12345"
   end
 end

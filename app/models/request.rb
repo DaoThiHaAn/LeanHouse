@@ -84,7 +84,7 @@ class Request < ApplicationRecord
     end
   end
 
-  def mark_as_overdue!
+  def mark_as_overdue!(send_noti: true)
     reload
     return unless pending?
 
@@ -92,6 +92,8 @@ class Request < ApplicationRecord
       update!(status: :overdue)
       requestable.try(:purge_documents!)
     end
+
+    notify_tenant_overdue if send_noti
   end
 
   def remaining_expiry_days
@@ -203,6 +205,22 @@ class Request < ApplicationRecord
     elsif status_was == "handling" && !%w[completed rejected].include?(status)
       errors.add(:status, "đang được xử lý và chỉ có thể chuyển sang hoàn thành hoặc từ chối.")
     end
+  end
+
+  def notify_tenant_overdue
+    tenant_user = tenant&.user
+    return unless tenant_user
+
+    extra_details = requestable.respond_to?(:notification_details) ? requestable.notification_details : {}
+
+    RequestResolvedNotifier.with(
+      {
+        request: self,
+        decision: "overdue",
+        house_name: house&.name,
+        days: EXPIRED_DAYS
+      }.merge(extra_details)
+    ).deliver_later(tenant_user)
   end
 
   def broadcast_dashboard_update

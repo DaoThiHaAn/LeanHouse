@@ -40,4 +40,20 @@ class RequestTest < ActiveSupport::TestCase
     assert_equal "Không thuộc phạm vi bảo hành", @request.rejection_reason
     assert_not @request.actionable?
   end
+
+  test "mark_as_overdue! transitions status to overdue and notifies tenant once" do
+    assert_difference -> { Noticed::Notification.count }, 1 do
+      @request.mark_as_overdue!
+    end
+
+    assert @request.overdue?
+    noti = Noticed::Notification.last
+    assert_equal @tenant_user, noti.recipient
+    assert_equal "overdue", noti.event.params[:decision]
+
+    # Calling mark_as_overdue! again on an already overdue request is a no-op
+    assert_no_difference -> { Noticed::Notification.count } do
+      @request.mark_as_overdue!
+    end
+  end
 end

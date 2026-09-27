@@ -22,6 +22,8 @@ en:
       invoice_paid_payos_landlord: "Invoice %{code} Paid via payOS"
       invoice_paid_payos_tenant: "Invoice %{code} Paid via payOS"
       sensitive_file_removed: "Uploaded File Removed Due to Policy Violation"
+      request_overdue: "Request Expired"
+      vehicle_request_overdue: "Vehicle Registration Request Expired"
 
     messages:
       sensitive_file_removed: "File \"%{filename}\" (%{record_info}) was removed by the administrator due to content violation (%{reason}). Please ensure compliance with system upload guidelines."
@@ -34,3 +36,5 @@ en:
       invoice_paid_tenant_self: "You have successfully submitted payment confirmation for invoice %{code} (%{room_name}) for %{amount} via %{method}."
       invoice_paid_payos_landlord: "Invoice %{code} (%{room_name}) has been successfully paid for %{amount} via payOS."
       invoice_paid_payos_tenant: "Invoice %{code} (%{room_name}) has been successfully paid for %{amount} via payOS."
+      vehicle_request_overdue_tenant: "Your vehicle registration request (License plate: %{license_plate}) at %{house_name} has automatically expired after %{days} days without being processed. Please submit a new request if you still wish to register."
+      request_overdue_tenant: "Your %{request_type} at %{house_name} has automatically expired after %{days} days without being processed."

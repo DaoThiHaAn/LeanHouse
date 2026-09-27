@@ -190,7 +190,7 @@ class RoomFixedServicesSummary
 
     extra_pairs.each do |it, inv|
       result << Item.new(
-        service: it.service_variant.service,
+        service: it.service_variant&.service,
         variant: it.service_variant,
         name: it.name,
         unit: it.unit,

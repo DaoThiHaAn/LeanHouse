@@ -501,7 +501,7 @@ vi:
       type_room_title: "1. Hóa đơn theo phòng (Định kỳ hàng tháng)"
       type_room_desc: "Bao gồm tiền phòng định kỳ và các dịch vụ sử dụng chung trong chu kỳ tháng."
       mode_representative_title: "Kiểu Đại diện phòng"
-      mode_representative_desc: "Xuất 1 hóa đơn tổng cho cả phòng. Bạn đại diện phòng chịu trách nhiệm nhận và thanh toán toàn bộ cho phòng."
+      mode_representative_desc: "Xuất 1 hóa đơn tổng cho cả phòng. 1 bạn đại diện phòng chịu trách nhiệm nhận và thanh toán toàn bộ cho phòng."
       mode_self_pay_title: "Kiểu Tự thanh toán"
       mode_self_pay_desc: "Mỗi người thuê (hoặc giường) nhận một hóa đơn riêng. Tiền phòng tính theo giường hoặc chia đều theo số người đang ở; tiền dịch vụ chung được chia đều cho số người đang ở thực tế."
       type_custom_title: "2. Hóa đơn thu phí tùy chọn (Phát sinh linh hoạt)"

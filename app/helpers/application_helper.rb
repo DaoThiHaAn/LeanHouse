@@ -124,6 +124,7 @@ module ApplicationHelper
 
     extra_class = [ classes, extra_classes, options.delete(:class) ].compact.reject(&:blank?).join(" ")
     merged_class = [ "turn-back link", extra_class ].reject(&:blank?).join(" ")
+    options[:data] = { turbo_frame: "_top" }.merge(options[:data] || {})
 
     if block_given?
       link_to(url, class: merged_class, **options, &block)

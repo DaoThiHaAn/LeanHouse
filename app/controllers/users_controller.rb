@@ -22,57 +22,59 @@ class UsersController < ApplicationController
   # PATCH/PUT /users/1
   def update
     respond_to do |format|
-      context = session[:is_reset_pw] ? :pw_reset : nil
+      @user.assign_attributes(reset_pw_params)
 
-      @user.assign_attributes(user_params)
-
-      if @user.save(context: context)
-        if session[:is_reset_pw]
-          was_logged_in = logged_in?
-          target_path = if was_logged_in
-                          current_user.landlord? ? landlord_profile_path : tenant_profile_path
-          else
-                          login_path
-          end
-          clear_session_keys(:is_reset_pw, :verified_tel, :pending_role, :pending_tel)
-          format.html { redirect_to target_path, notice: t("success_messages.user_update_pw_success") }
+      if @user.save(context: :pw_reset)
+        was_logged_in = logged_in?
+        target_path = if was_logged_in
+                        current_user.landlord? ? landlord_profile_path : tenant_profile_path
         else
-          format.html { redirect_to root_path, notice: t("success_messages.user_updated"), status: :see_other }
+                        login_path
         end
+        clear_session_keys(:is_reset_pw, :verified_tel, :pending_role, :pending_tel)
+        format.html { redirect_to target_path, notice: t("success_messages.user_update_pw_success") }
       else
-        if session[:is_reset_pw]
-          format.html { render "authentication/reset_pw", status: :unprocessable_entity }
-        else
-          format.html { redirect_to root_path, status: :unprocessable_entity }
-        end
-
+        format.html { render "authentication/reset_pw", status: :unprocessable_entity }
         format.json { render json: @user.errors, status: :unprocessable_entity }
       end
     end
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
+    # Ensure update only operates on the OTP-verified user in an active password reset flow.
     def set_user
-      @user = User.find(params.expect(:id))
+      unless session[:is_reset_pw] && session[:verified_tel].present?
+        redirect_to forgot_pw_path, alert: t("errors.session_expired")
+        return
+      end
+
+      @user = if logged_in?
+                current_user
+      else
+                User.kept.find_by(tel: session[:verified_tel], role: session[:pending_role])
+      end
+
+      unless @user && @user.id == params[:id].to_i
+        redirect_to forgot_pw_path, alert: t("errors.session_expired")
+      end
     end
 
     # Only allow a list of trusted parameters through.
     def user_params
-      if session[:is_reset_pw]
-        params.require(:user).permit(:password, :password_confirmation)
-      else
-        params.require(:user).permit(
-          :fullname,
-          :tel,
-          :password,
-          :password_confirmation,
-          :role,
-          :address,
-          :sex,
-          :bday,
-          :terms_accepted
-        )
-      end
+      params.require(:user).permit(
+        :fullname,
+        :tel,
+        :password,
+        :password_confirmation,
+        :role,
+        :address,
+        :sex,
+        :bday,
+        :terms_accepted
+      )
+    end
+
+    def reset_pw_params
+      params.require(:user).permit(:password, :password_confirmation)
     end
 end

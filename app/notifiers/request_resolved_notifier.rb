@@ -27,14 +27,18 @@ class RequestResolvedNotifier < ApplicationNotifier
         "noti.messages.#{type_key}_#{decision}_tenant",
         **params.symbolize_keys.merge(request_type: req.human_request_type),
           default: begin
-            decision_text = case decision
-            when "approved" then "duyệt"
-            when "handling" then "tiếp nhận xử lý"
-            when "completed" then "hoàn thành"
-            when "rejected" then "từ chối"
-            else "cập nhật trạng thái"
+            if decision.to_s == "overdue"
+              "#{req.human_request_type} tại #{params[:house_name]} đã quá hạn xử lý sau #{Request::EXPIRED_DAYS} ngày."
+            else
+              decision_text = case decision
+              when "approved" then "duyệt"
+              when "handling" then "tiếp nhận xử lý"
+              when "completed" then "hoàn thành"
+              when "rejected" then "từ chối"
+              else "cập nhật trạng thái"
+              end
+              "Chủ nhà đã #{decision_text} #{req.human_request_type} tại #{params[:house_name]}."
             end
-            "Chủ nhà đã #{decision_text} #{req.human_request_type} tại #{params[:house_name]}."
           end
       )
     end
