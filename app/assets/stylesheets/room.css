@@ -278,11 +278,11 @@
 
 /* 2. Deposit Theme (Teal Pastel) */
 .tenant-room-stat-card.card-deposit {
-  background-color: #E6F7F5;
+  background-color: #e6f4f7;
   border-color: #9bbdc6;
 }
 .tenant-room-stat-card.card-deposit .stat-icon-wrapper {
-  color: #0e7e8a;
+  color: #0e658a;
 }
 .tenant-room-stat-card.card-deposit .deposit-value {
   color: #0e798a;
@@ -343,6 +343,7 @@
 
 .roommate-avatar {
   background: linear-gradient(135deg, #164E5D 0%, #206d80 100%) !important;
+  width: 46px; height: 46px;
 }
 
 /* Asset Table */

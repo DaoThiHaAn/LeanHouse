@@ -70,9 +70,7 @@
       <section id="general-info" class="mb-5">
         <h3 class="mb-4"><%= t("general_info") %></h3>
 
-        <%= turbo_frame_tag "edit_house_form" do
-          render "general_info_form", house: @house, provinces: @provinces, communes: @communes
-        end %>
+        <%= render "general_info_form", house: @house, provinces: @provinces, communes: @communes %>
       </section>
 
       <%# Floor section %>

@@ -68,9 +68,13 @@
 
 
     def update
+      if params.dig(:house, :remove_regulation_file) == "1" && params.dig(:house, :regulation_file).blank?
+        @house.regulation_file.purge if @house.regulation_file.attached?
+      end
+
       respond_to do |format|
         if @house.update(house_params)
-          format.html { redirect_to [ :landlord, @house ], notice: "House was successfully updated.", status: :see_other }
+          format.html { redirect_to edit_landlord_house_path(@house), notice: t("success_messages.house_updated", default: "House was successfully updated."), status: :see_other }
           format.json { render :show, status: :ok, location: [ :landlord, @house ] }
         else
           format.html { render :edit, status: :unprocessable_entity }

@@ -47,20 +47,19 @@
             </h2>
 
             <% if @house.regulation_file.attached? %>
-            <div class="text-truncate" style="max-width: 250px;" title="<%= @house.regulation_file.filename.to_s %>">
+            <div class="text-truncate" title="<%= @house.regulation_file.filename.to_s %>">
               <span class="material-symbols-outlined fs-6 align-middle text-secondary me-1">attachment</span>
-              <span class="small text-dark fw-medium"><%= @house.regulation_file.filename.to_s %></span>
+              <span class="fw-medium"><%= @house.regulation_file.filename.to_s %></span>
             </div>
             <%= link_to rails_blob_path(@house.regulation_file, disposition: "inline"),
                         target: "_blank",
                         rel: "noopener",
-                        class: "btn btn-outline-primary rounded-pill px-3 py-1.5 btn-sm fw-semibold d-inline-flex align-items-center gap-1" do %>
-              <span class="material-symbols-outlined fs-6">visibility</span>
+                        class: "btn btn-outline-primary rounded-pill px-3 py-1 btn-sm fw-semibold d-inline-flex align-items-center gap-1 mt-2" do %>
               <span><%= t("form.file.view") %></span>
-              <span class="material-symbols-outlined fs-7">open_in_new</span>
+              <span class="material-symbols-outlined fs-5">open_in_new</span>
             <% end %>
           <% else %>
-            <p class="text-secondary small fst-italic d-flex align-items-center gap-1">
+            <p class="text-secondary fst-italic d-flex align-items-center gap-1">
               <span class="material-symbols-outlined fs-6">info</span>
               <span><%= t("form.house.no_regulations_attached") %></span>
             </p>
@@ -174,7 +173,7 @@
             <span class="material-symbols-outlined text-secondary fs-2">block</span>
           </div>
           <p class="fw-semibold text-dark mb-1"><%= t("form.room.single_occupancy", default: t("single_occupancy", default: "Bạn đang ở một mình trong phòng này")) %></p>
-          <p class="small text-secondary mb-0"><%= t("form.room.single_occupancy_desc", default: t("single_occupancy_desc", default: "Hiện chưa có thêm thành viên nào khác trong phòng.")) %></p>
+          <p class="small text-secondary"><%= t("form.room.single_occupancy_desc", default: t("single_occupancy_desc", default: "Hiện chưa có thêm thành viên nào khác trong phòng.")) %></p>
         </div>
 
       <% else %>
@@ -182,24 +181,23 @@
           <% @roommates.each do |roommate| %>
             <div class="col-12 col-md-6 col-lg-4">
               <div class="roommate-card p-3 rounded-3 bg-light bg-opacity-50 h-100 d-flex align-items-center gap-3">
-                <div class="roommate-avatar text-white rounded-circle d-flex align-items-center justify-content-center fw-bold fs-5 flex-shrink-0" style="width: 46px; height: 46px;">
+                <div class="roommate-avatar text-white rounded-circle d-flex align-items-center justify-content-center fw-bold fs-5 flex-shrink-0">
                   <%= roommate[:user].fullname.to_s.strip.first&.upcase || "U" %>
                 </div>
+
                 <div class="flex-grow-1 min-w-0">
-                  <div class="fw-bold text-dark text-truncate"><%= vn_name(roommate[:user].fullname) %></div>
+                  <p class="fw-bold text-truncate"><%= vn_name(roommate[:user].fullname) %></p>
                   <div class="d-flex align-items-center gap-2 mt-1">
                     <a href="tel:<%= roommate[:user].tel %>" class="text-decoration-none text-secondary small d-inline-flex align-items-center gap-1">
-                      <span class="material-symbols-outlined fs-6 text-primary">call</span>
+                      <span class="material-symbols-outlined fs-6">call</span>
                       <span><%= roommate[:user].tel %></span>
                     </a>
                   </div>
                   <% if @house.bed? && roommate[:bed_name].present? %>
-                    <div class="mt-1">
-                      <span class="badge bg-info-subtle text-info-emphasis border border-info-subtle rounded-pill small px-2 py-0.5">
-                        <span class="material-symbols-outlined fs-6 align-middle me-1">single_bed</span>
-                        <%= roommate[:bed_name] %>
-                      </span>
-                    </div>
+                      <div class="badge bg-info-subtle text-info-emphasis border border-info-subtle rounded-pill d-inline-flex align-items-center w-auto gap-2 px-3 py-1 mt-2">
+                        <span class="material-symbols-outlined fs-5">single_bed</span>
+                        <%= "#{t("form.bed.self")} #{roommate[:bed_name]}" %>
+                      </div>
                   <% end %>
                 </div>
               </div>
@@ -240,8 +238,7 @@
                 <th class="ps-4 py-3"><%= t("form.asset.cat") %></th>
                 <th class="py-3"><%= t("status") %></th>
                 <th class="py-3"><%= t("form.asset.brand") %> / <%= t("form.asset.model") %></th>
-                <th class="py-3 text-end"><%= t("form.asset.price") %></th>
-                <th class="pe-4 py-3 text-end"><%= t("form.asset.purchase_date") %></th>
+                <th class="py-3 text-end pe-4"><%= t("form.asset.price") %></th>
               </tr>
             </thead>
 
@@ -250,7 +247,7 @@
                 <tr>
                   <td class="ps-4 py-3">
                     <div class="d-flex align-items-center gap-2">
-                      <div class="asset-cat-icon rounded-2 p-1.5 bg-light text-primary d-inline-flex align-items-center justify-content-center">
+                      <div class="asset-cat-icon rounded-2 p-1 bg-light text-primary d-inline-flex align-items-center justify-content-center">
                         <span class="material-symbols-outlined fs-5"><%= asset_category_icon(asset.category) %></span>
                       </div>
                       <span class="fw-semibold"><%= asset.human_category %></span>
@@ -267,11 +264,8 @@
                       <% end %>
                     </div>
                   </td>
-                  <td class="py-3 text-end fw-semibold">
+                  <td class="py-3 text-end pe-4 fw-semibold">
                     <%= format_money(asset.price) %>
-                  </td>
-                  <td class="pe-4 py-3 text-end text-secondary small">
-                    <%= format_date(asset.purchased_at) %>
                   </td>
                 </tr>
               <% end %>

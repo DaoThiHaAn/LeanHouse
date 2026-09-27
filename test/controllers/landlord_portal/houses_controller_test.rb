@@ -113,8 +113,39 @@ class LandlordPortal::HousesControllerTest < ActionDispatch::IntegrationTest
       house: { name: "Nhà Trọ A Đã Đổi Tên" }
     }
 
-    assert_redirected_to [ :landlord, @house1 ]
+    assert_redirected_to edit_landlord_house_path(@house1)
     assert_equal "Nhà Trọ A Đã Đổi Tên", @house1.reload.name
+  end
+
+  test "GET /landlord/houses/:id/edit renders edit view with correct form action" do
+    login_as_landlord
+
+    get "/landlord/houses/#{@house1.id}/edit"
+    assert_response :success
+    assert_select "form[action=?]", "/landlord/houses/#{@house1.id}"
+    assert_select "form[action=?]", "/landlord/houses.#{@house1.id}", count: 0
+  end
+
+  test "PATCH /landlord/houses/:id can upload and remove regulation_file" do
+    login_as_landlord
+
+    pdf_file = Rack::Test::UploadedFile.new(
+      StringIO.new("%PDF-1.4\n%%EOF"),
+      "application/pdf",
+      original_filename: "sample_contract.pdf"
+    )
+
+    patch "/landlord/houses/#{@house1.id}", params: {
+      house: { regulation_file: pdf_file }
+    }
+    assert_redirected_to edit_landlord_house_path(@house1)
+    assert @house1.reload.regulation_file.attached?
+
+    patch "/landlord/houses/#{@house1.id}", params: {
+      house: { remove_regulation_file: "1" }
+    }
+    assert_redirected_to edit_landlord_house_path(@house1)
+    assert_not @house1.reload.regulation_file.attached?
   end
 
   test "GET /landlord/houses/:id/check_deletion renders correct confirmation or blocked view" do

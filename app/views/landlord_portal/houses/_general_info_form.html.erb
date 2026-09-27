@@ -1,14 +1,14 @@
-<%# Local varaible: house, provinces, communes %>
+<%= turbo_frame_tag "edit_house_form" do %>
+  <%= form_with model: house, url: landlord_house_path(house), local: true,
+          class:"px-5 d-flex flex-column gap-4" ,
+          data: {
+            turbo_frame: "_top",
+            controller: "loading",
+            loading_text_value: t("saving") + "...",
+            action: "submit->loading#submit"
+          } do |f| %>
 
-<%= form_with model: house, url: landlord_houses_path( house), local: true, 
-        class:"px-5 d-flex flex-column gap-4" ,
-        data: { 
-          controller: "loading",
-          loading_text_value: t("saving") + "...",
-          action: "submit->loading#submit"
-        } do |f| %>
-
-  <!-- Name -->   
+  <!-- Name -->
   <div class="form-group" data-controller="form">
       <%= f.label :name , class: "form-label d-flex justify-content-between",
                   value: house.name do%>
@@ -22,12 +22,12 @@
           </small>
       <% end %>
 
-      <%= f.text_field :name, minlength: 1, maxlength: 100, class: "mb-1 form-control #{invalid_class( house, :name)}", 
+      <%= f.text_field :name, minlength: 1, maxlength: 100, class: "mb-1 form-control #{invalid_class( house, :name)}",
           placeholder: t('form.house.name_placeholder'), required: true,
           data: {
               form_target: "input",
               action: "input->form#update"
-          } 
+          }
       %>
 
       <%= field_error(house, :name) %>
@@ -42,7 +42,7 @@
       data-location-selected-province-value="<%=  house.address_l1 %>"
       data-location-selected-commune-value="<%=  house.address_l2 %>">
     <p class="form-label" >
-      <%= t('form.house.addr') + ": "%> 
+      <%= t('form.house.addr') + ": "%>
       <span class="asterisk">*</span>
     </p>
 
@@ -86,13 +86,13 @@
           </small>
       <% end %>
 
-      <%= f.text_field :address_l3, minlength: 2, maxlength: 100, class: "form-control", 
+      <%= f.text_field :address_l3, minlength: 2, maxlength: 100, class: "form-control",
           value:  house.address_l3,
           placeholder: t('form.house.detailed_addr_placeholder'), required: true,
           data: {
               form_target: "input",
               action: "input->form#update"
-          } 
+          }
       %>
   </div>
 
@@ -104,9 +104,9 @@
         <span class="asterisk">*</span>
       <% end %>
 
-      <%= f.number_field :inv_creation_date, in: 1..31, step: 1, required: true, 
+      <%= f.number_field :inv_creation_date, in: 1..31, step: 1, required: true,
           placeholder: "1-31", value:  house.inv_creation_date,
-          class: "number form-control" 
+          class: "number form-control"
       %>
     </div>
 
@@ -187,10 +187,10 @@
 
   <div class="d-flex justify-content-center gap-4">
     <%# Cancel button %>
-    <%= link_to t("cancel"), edit_landlord_house_path(@house),
+    <%= link_to t("cancel"), edit_landlord_house_path(house),
         class: "d-block cancel-btn",
-        data: { turbo_frame: "general_info_form" } %>
-    
+        data: { turbo_frame: "edit_house_form" } %>
+
     <%# Submit button %>
     <%= f.button type: :submit,
           class: "custom-primary-btn main-form d-flex align-items-center justify-content-center gap-2",
@@ -205,3 +205,4 @@
     <%end%>
   </div>
 <%end%>
+<% end %>
