@@ -54,37 +54,32 @@ class PayosWebhookTest < ActionDispatch::IntegrationTest
   end
 
   test "valid PayOS webhook automatically reconciles and marks invoice as paid" do
-    webhook_payload = {
-      data: {
-        orderCode: 987654,
-        amount: 3_000_000,
-        description: "Thanh toan tien phong",
-        accountNumber: @bank_account.account_number,
-        reference: "FT2409251234",
-        transactionDateTime: Time.current.to_s
-      },
-      signature: "valid_dummy_signature"
+    data = {
+      "orderCode" => 987654,
+      "amount" => 3_000_000,
+      "description" => "Thanh toan tien phong",
+      "accountNumber" => @bank_account.account_number,
+      "reference" => "FT2409251234",
+      "transactionDateTime" => Time.current.to_s
     }
+    signature = PayosService.create_signature(data, @bank_account.payos_checksum_key)
 
-    # Mock signature verification so test runs deterministically in CI/local
-    PayosService.stub :verify_webhook_data, true do
-      post "/webhooks/payos", params: webhook_payload, as: :json
+    post "/webhooks/payos", params: { data: data, signature: signature }, as: :json
 
-      assert_response :success
-      response_data = JSON.parse(response.body)
-      assert response_data["success"]
+    assert_response :success
+    response_data = JSON.parse(response.body)
+    assert response_data["success"]
 
-      # Verify database state changes
-      @invoice.reload
-      assert_equal "paid", @invoice.status
-      assert_not_nil @invoice.paid_at
-      assert_equal "transfer", @invoice.payment_method
-      assert_includes @invoice.note, "FT2409251234"
+    # Verify database state changes
+    @invoice.reload
+    assert_equal "paid", @invoice.status
+    assert_not_nil @invoice.paid_at
+    assert_equal "transfer", @invoice.payment_method
+    assert_includes @invoice.note, "FT2409251234"
 
-      # Verify payment order updated
-      @payment_order.reload
-      assert_equal "PAID", @payment_order.status
-    end
+    # Verify payment order updated
+    @payment_order.reload
+    assert_equal "PAID", @payment_order.status
   end
 
   test "PayOS webhook with invalid signature is rejected with 400 bad request" do
@@ -93,29 +88,26 @@ class PayosWebhookTest < ActionDispatch::IntegrationTest
       signature: "tampered_or_fake_signature"
     }
 
-    PayosService.stub :verify_webhook_data, false do
-      post "/webhooks/payos", params: webhook_payload, as: :json
+    post "/webhooks/payos", params: webhook_payload, as: :json
 
-      assert_response :bad_request
-      @invoice.reload
-      assert_equal "pending", @invoice.status # Status unchanged
-    end
+    assert_response :bad_request
+    @invoice.reload
+    assert_equal "pending", @invoice.status # Status unchanged
   end
 
   test "tenant returning from PayOS after successful payment is redirected with success notice" do
-    # Log in as landlord/tenant
+    # Log in as landlord
     post "/login", params: { user: { tel: @landlord_user.tel, password: "Password123", role: "landlord" } }
 
-    PayosService.stub :reconcile_payment!, true do
-      get "/payments/payos/return", params: {
-        orderCode: @payment_order.order_code,
-        status: "PAID",
-        code: "00"
-      }
+    get "/payments/payos/return", params: {
+      orderCode: @payment_order.order_code,
+      status: "PAID",
+      code: "00"
+    }
 
-      assert_response :redirect
-      follow_redirect!
-      assert_select ".alert, #flash, div", text: /thành công|hóa đơn/i
-    end
+    assert_response :redirect
+    follow_redirect!
+    assert_response :success
+    assert_equal I18n.t("invoice.payos.payment_success_flash"), flash[:notice]
   end
 end
