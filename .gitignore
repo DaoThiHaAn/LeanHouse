@@ -40,3 +40,6 @@
 
 # Ignore report docs
 /docs/reports/
+
+# Lighthouse report
+lighthouse_report.html
