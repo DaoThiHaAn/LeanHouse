@@ -1,6 +1,6 @@
 module AdminPortal
   class HousesController < BaseController
-    HOUSES_PER_PAGE = 15
+    HOUSES_PER_PAGE = 10
 
     def index
       @mode_filter = params[:mode].presence

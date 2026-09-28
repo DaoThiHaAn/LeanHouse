@@ -146,7 +146,7 @@ class RoomFixedServicesSummary
 
   def build_billed_items
     all_invoice_fixed_items = @active_invoices.flat_map do |inv|
-      inv.invoice_items.select(&:fixed_service?).map { |it| [ it, inv ] }
+      inv.invoice_items.select(&:fixed_service?).select(&:service_variant).map { |it| [ it, inv ] }
     end
 
     result = []
@@ -190,7 +190,7 @@ class RoomFixedServicesSummary
 
     extra_pairs.each do |it, inv|
       result << Item.new(
-        service: it.service_variant&.service,
+        service: it.service_variant.service,
         variant: it.service_variant,
         name: it.name,
         unit: it.unit,

@@ -47,8 +47,18 @@
             </td>
           </tr>
 
-          <% floor_logs.each do |log| %>
-            <%= render "log_row", house: house, log: log %>
+          <% room_groups = floor_logs.group_by(&:room) %>
+          <% room_groups.each_with_index do |(_room, room_logs), room_idx| %>
+            <% has_next_room = room_idx < (room_groups.size - 1) %>
+            <% room_logs.each_with_index do |log, idx| %>
+              <% is_last_in_room = idx == (room_logs.size - 1) %>
+              <%= render "log_row",
+                         house: house,
+                         log: log,
+                         show_room: idx.zero?,
+                         is_last_in_room: is_last_in_room,
+                         has_room_divider: (is_last_in_room && has_next_room) %>
+            <% end %>
           <% end %>
         <% end %>
       </tbody>

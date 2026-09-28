@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class HouseFixedServicesSummary
-  DEFAULT_PER_PAGE = 15
+  DEFAULT_PER_PAGE = 10
 
   Item = Data.define(:room, :service, :variant, :name, :unit, :unit_price, :quantity, :amount, :status, :invoice) do
     def initialize(room:, service:, variant:, name:, unit:, unit_price:, quantity:, amount:, status:, invoice: nil)
@@ -146,7 +146,7 @@ class HouseFixedServicesSummary
 
   def build_billed_items_for(room, fixed_room_services, room_invoices)
     all_invoice_fixed_items = room_invoices.flat_map do |inv|
-      inv.invoice_items.select(&:fixed_service?).map { |it| [ it, inv ] }
+      inv.invoice_items.select(&:fixed_service?).select(&:service_variant).map { |it| [ it, inv ] }
     end
 
     fixed_room_services.each do |rs|

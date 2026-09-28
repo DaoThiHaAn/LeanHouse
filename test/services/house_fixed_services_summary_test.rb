@@ -163,4 +163,53 @@ class HouseFixedServicesSummaryTest < ActiveSupport::TestCase
     assert_equal 1, summary.waived_count
     assert_equal 1, summary.draft_count
   end
+
+  test "handles extra billed fixed service items and ignores nullified service_variant items" do
+    svc_parking = @house.services.create!(name: "Gửi xe")
+    var_parking = svc_parking.service_variants.create!(unit: "per_item", fee: 100_000, is_real_time: false)
+
+    invoice = @room1.invoices.create!(
+      house: @house,
+      billing_month: @billing_month,
+      status: :pending,
+      invoice_type: "room",
+      code: "HD-TEST-102",
+      created_by: @landlord_user,
+      title: "Hóa đơn phòng 101",
+      subtotal: 200_000,
+      total_amount: 200_000,
+      due_date: Date.current + 5.days
+    )
+    # Billed variant that is no longer in @room1.room_services (extra_pairs)
+    invoice.invoice_items.create!(
+      service_variant: var_parking,
+      name: "Gửi xe",
+      unit: "per_item",
+      unit_price: 100_000,
+      quantity: 1,
+      amount: 100_000,
+      item_type: :fixed_service
+    )
+    # Orphaned fixed_service item whose service_variant was deleted (on_delete: :nullify)
+    invoice.invoice_items.create!(
+      service_variant: nil,
+      name: "Dịch vụ đã xóa",
+      unit: "per_room",
+      unit_price: 50_000,
+      quantity: 1,
+      amount: 50_000,
+      item_type: :fixed_service
+    )
+
+    summary = HouseFixedServicesSummary.call(
+      house: @house,
+      billing_month: @billing_month,
+      params: { service_id: svc_parking.id, service_variant_id: var_parking.id, status: "billed" }
+    )
+
+    assert_equal 1, summary.items.size
+    assert_equal svc_parking, summary.items.first.service
+    assert_equal var_parking, summary.items.first.variant
+    assert summary.items.first.billed?
+  end
 end

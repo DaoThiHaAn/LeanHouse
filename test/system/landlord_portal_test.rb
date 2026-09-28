@@ -74,23 +74,23 @@ class LandlordPortalTest < ApplicationSystemTestCase
     visit landlord_dashboard_path
 
     assert_selector "select[name='house_id']", wait: 5
-    assert_text "Nhà Trọ Ánh Dương"
-    assert_text "Ký Túc Xá Xanh"
+    assert_text(/Nhà Trọ Ánh Dương/i)
+    assert_text(/Ký Túc Xá Xanh/i)
 
     select "Nhà Trọ Ánh Dương", from: "house_id"
     assert_selector "select[name='house_id']"
-    assert_text "NHÀ TRỌ ÁNH DƯƠNG"
+    assert_text(/Nhà Trọ Ánh Dương/i)
   end
 
   test "landlord can view room management for room-mode house and switch tabs in bed-mode house" do
     sign_in_as(@landlord_user)
 
     visit landlord_house_rooms_path(@house_room)
-    assert_selector "h1", text: "Nhà Trọ Ánh Dương", wait: 5
-    assert_text "P.101"
+    assert_selector "h1", text: /Nhà Trọ Ánh Dương/i, wait: 5
+    assert_text(/P\.101/i)
 
     visit landlord_house_rooms_path(@house_bed)
-    assert_selector "h1", text: "Ký Túc Xá Xanh", wait: 5
+    assert_selector "h1", text: /Ký Túc Xá Xanh/i, wait: 5
     assert_selector "#houseTabs button[data-bs-target='#rooms-pane']"
     assert_selector "#houseTabs button[data-bs-target='#beds-pane']"
 

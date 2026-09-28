@@ -337,7 +337,6 @@ en:
         order_code: "Order Code"
         back_to_home: "Back to Home"
         login_btn: "Log In"
-        view_invoice_btn: "View Invoice Details"
         not_found: "Transaction or invoice information not found."
     transfer_note: "Transfer Note"
     transfer_note_strict: "Transfer Note (Required exact content)"

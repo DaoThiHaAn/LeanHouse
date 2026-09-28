@@ -74,3 +74,10 @@
 .confirmation-radio-card:has(input:disabled) * {
   cursor: not-allowed !important;
 }
+
+
+/* Thicker divider between room groups in house-level usage log tables */
+.table tbody tr.room-group-last-row > td,
+.table tbody td.room-group-cell-divider {
+  border-bottom: 2px solid #94a3b8 !important;
+}

@@ -1,9 +1,11 @@
-<%# locals: (house:, log:) %>
-<tr id="<%= dom_id(log) %>">
-  <td class="ps-3 fw-bold text-dark">
-    <%= link_to landlord_house_room_service_usage_logs_path(house, log.room), class: "text-decoration-none text-dark d-inline-flex align-items-center gap-1", data: { turbo_frame: "_top" }, title: t("service_usage_logs.view_room_logs") do %>
-      <span><%= log.room.title_name %></span>
-      <span class="material-symbols-outlined fs-6 text-primary">open_in_new</span>
+<%# locals: (house:, log:, show_room: true, is_last_in_room: true, has_room_divider: false) %>
+<tr id="<%= dom_id(log) %>" class="<%= 'room-group-last-row' if has_room_divider %>">
+  <td class="ps-3 fw-bold text-dark border-end bg-light bg-opacity-25 <%= 'border-bottom-0' unless is_last_in_room %>">
+    <% if show_room %>
+      <%= link_to landlord_house_room_service_usage_logs_path(house, log.room), class: "text-decoration-none text-dark d-inline-flex align-items-center gap-1", data: { turbo_frame: "_top" }, title: t("service_usage_logs.view_room_logs") do %>
+        <span><%= log.room.title_name %></span>
+        <span class="material-symbols-outlined fs-6 text-primary">open_in_new</span>
+      <% end %>
     <% end %>
   </td>
 
@@ -79,7 +81,7 @@
       <% end %>
 
       <% unless log.is_confirmed? %>
-        <%= button_to confirm_landlord_house_service_usage_log_path(house, log),
+        <%= button_to confirm_landlord_house_service_usage_log_path(house, log, show_room: show_room, is_last_in_room: is_last_in_room, has_room_divider: has_room_divider),
                       method: :patch,
                       class: "table-action text-success border-0 bg-transparent p-0",
                       title: t("invoice.confirm_log_title") do %>

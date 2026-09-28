@@ -18,7 +18,7 @@ vi:
     no_invoices_in_archive: "Chưa có hóa đơn nào từ nhà đã xóa."
     all_houses: "Tất cả nhà đã xóa"
     due_date: "Hạn đóng"
-    view:
+    view: "Xem chi tiết hóa đơn"
 
     types:
       room_service_title: "Hóa đơn theo phòng"
@@ -356,7 +356,6 @@ vi:
         order_code: "Mã đơn hàng"
         back_to_home: "Về trang chủ"
         login_btn: "Đăng nhập tài khoản"
-        view_invoice_btn: "Xem chi tiết hóa đơn"
         not_found: "Không tìm thấy thông tin giao dịch hoặc hóa đơn."
 
     transfer_note: "Nội dung chuyển khoản"

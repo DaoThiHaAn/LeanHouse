@@ -1,6 +1,6 @@
 <%# Variables: @house, @services, @selected_service, @total_house_rooms %>
 
-<% content_for :title, t("page_titles.service_mng") %>
+<% content_for :title, [@selected_service&.name, t("page_titles.service_mng")].compact.join(" - ") %>
 
 <div class="px-2 d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 pb-2 border-bottom gap-2">
   <div class="text-center text-md-start">

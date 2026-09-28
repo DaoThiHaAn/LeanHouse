@@ -77,6 +77,7 @@ vi:
     fixed_summary_title: "Tổng quan dịch vụ cố định"
     fixed_summary_subtitle: "Các dịch vụ có mức phí cố định hàng tháng áp dụng cho phòng này."
     total_monthly_est: "Tạm tính hàng tháng"
+    total_monthly_est_hint: "Tổng khoản phí dự kiến và khoản phí được ghi nhận trong hóa đơn theo bộ lọc hiện tại"
     fixed_services_count: "Số dịch vụ áp dụng"
     occupancy_info: "Hiện trạng phòng"
     occupancy_detail: "%{tenants} khách đang ở • %{vehicles} phương tiện đăng ký"

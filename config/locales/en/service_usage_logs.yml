@@ -69,6 +69,7 @@ en:
     fixed_summary_title: "Fixed Services Overview"
     fixed_summary_subtitle: "Monthly fixed recurring services applied to this room."
     total_monthly_est: "Estimated Monthly Total"
+    total_monthly_est_hint: "Sum of estimated fees (by room occupancy/vehicles) and billed amounts matching current filters"
     fixed_services_count: "Applied Services"
     occupancy_info: "Room Occupancy"
     occupancy_detail: "%{tenants} tenants • %{vehicles} registered vehicles"

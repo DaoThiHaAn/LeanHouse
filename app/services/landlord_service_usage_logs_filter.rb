@@ -11,7 +11,7 @@ class LandlordServiceUsageLogsFilter
     @params = params
   end
 
-  DEFAULT_PER_PAGE = 15
+  DEFAULT_PER_PAGE = 10
 
   def call
     scope = base_scope

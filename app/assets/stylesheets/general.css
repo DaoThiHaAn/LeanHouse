@@ -258,7 +258,7 @@ a {
   color: var(--primary-button-bg);
   font-weight: 600;
 }
-.link:hover {
+.link:hover, .hover-underline:hover {
   text-decoration: underline;
 }
 

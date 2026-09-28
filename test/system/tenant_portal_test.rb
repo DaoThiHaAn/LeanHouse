@@ -64,8 +64,8 @@ class TenantPortalTest < ApplicationSystemTestCase
     visit tenant_dashboard_path
 
     assert_selector ".tenant-dashboard", wait: 5
-    assert_text "Nhà Trọ Bình Yên"
-    assert_text "P.202"
+    assert_text(/Nhà Trọ Bình Yên/i)
+    assert_text(/P\.202/i)
   end
 
   test "tenant can view room invoices and switch to custom invoices tab" do

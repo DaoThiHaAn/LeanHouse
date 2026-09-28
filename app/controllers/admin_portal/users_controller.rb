@@ -2,7 +2,7 @@ module AdminPortal
   class UsersController < BaseController
     before_action :set_user, only: [ :show, :toggle_active, :recycle_phone, :contracts, :invoices ]
 
-    USERS_PER_PAGE = 15
+    USERS_PER_PAGE = 10
 
     def index
       @role_filter = params[:role].presence || "all"
