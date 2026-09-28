@@ -18,37 +18,37 @@ production:
   # Runs when human activity is zero. Mutates data states and cleans up records without user notifications.
   contract_overdue_close:
     class: ContractOverdueCloseJob
-    schedule: every day at 3am
+    schedule: every day at 3:05am
 
   request_overdue_expire:
     class: RequestOverdueExpireJob
-    schedule: every day at 3am
+    schedule: every day at 3:20am
 
   cleanup_notifications:
     class: CleanupNotificationsJob
     args: [ { read_days: 30, unread_days: 180 } ]
-    schedule: every day at 3:30am
+    schedule: every day at 3:40am
 
   # 2. Early Morning User Notification Window (06:30 AM)
   # Prepares notifications so users see fresh alerts right as they wake up.
   contract_due_reminder:
     class: ContractDueReminderJob
-    schedule: every day at 6:30am
+    schedule: every day at 4:00am
 
   contract_due_today:
     class: ContractDueTodayJob
-    schedule: every day at 6:30am
+    schedule: every day at 4:15am
 
   invoice_creation_reminder:
     class: InvoiceCreationReminderJob
-    schedule: every day at 6:30am
+    schedule: every day at 5:00am
 
   # 3. Morning Financial Notification Window (07:00 AM - 07:15 AM)
   # Alerts landlords and tenants during active banking & payment hours.
   invoice_due_today:
     class: InvoiceDueTodayJob
-    schedule: every day at 7am
+    schedule: every day at 5:30am
 
   invoice_overdue_check:
     class: InvoiceOverdueCheckJob
-    schedule: every day at 7:15am
+    schedule: every day at 6:00am
