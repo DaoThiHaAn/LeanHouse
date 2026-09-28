@@ -84858,6 +84858,5556 @@
             "branch": 66.66
           }
         }
+      },
+      {
+        "created_at": "2026-09-28T21:31:53Z",
+        "branch": "main",
+        "commit": "0acfb8a0338ada780de3854c8cc4305d778bb9c2",
+        "totals": {
+          "line": 46.85,
+          "branch": 29.73
+        },
+        "groups": {
+          "Controllers": {
+            "line": 26.86,
+            "branch": 6.23
+          },
+          "Helpers": {
+            "line": 64.6,
+            "branch": 47.58
+          },
+          "Jobs": {
+            "line": 37.62,
+            "branch": 21.05
+          },
+          "Models": {
+            "line": 76.78,
+            "branch": 44.84
+          },
+          "Services": {
+            "line": 48.52,
+            "branch": 34.53
+          },
+          "Notifiers": {
+            "line": 23.48,
+            "branch": 0.0
+          },
+          "Ungrouped": {
+            "line": 61.15,
+            "branch": 64.86
+          }
+        },
+        "files": {
+          "app/controllers/admin_portal/admins_controller.rb": {
+            "line": 34.21,
+            "branch": 0.0
+          },
+          "app/controllers/admin_portal/assets_controller.rb": {
+            "line": 50.0,
+            "branch": 100.0
+          },
+          "app/controllers/admin_portal/base_controller.rb": {
+            "line": 85.71,
+            "branch": 25.0
+          },
+          "app/controllers/admin_portal/contracts_controller.rb": {
+            "line": 42.85,
+            "branch": 100.0
+          },
+          "app/controllers/admin_portal/dashboard_controller.rb": {
+            "line": 14.28,
+            "branch": 100.0
+          },
+          "app/controllers/admin_portal/houses_controller.rb": {
+            "line": 23.8,
+            "branch": 0.0
+          },
+          "app/controllers/admin_portal/invoices_controller.rb": {
+            "line": 34.61,
+            "branch": 100.0
+          },
+          "app/controllers/admin_portal/issue_reports_controller.rb": {
+            "line": 27.58,
+            "branch": 0.0
+          },
+          "app/controllers/admin_portal/notifications_controller.rb": {
+            "line": 20.0,
+            "branch": 0.0
+          },
+          "app/controllers/admin_portal/requests_controller.rb": {
+            "line": 0.0,
+            "branch": 100.0
+          },
+          "app/controllers/admin_portal/services_controller.rb": {
+            "line": 50.0,
+            "branch": 100.0
+          },
+          "app/controllers/admin_portal/sessions_controller.rb": {
+            "line": 85.71,
+            "branch": 70.0
+          },
+          "app/controllers/admin_portal/uploaded_files_controller.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/controllers/admin_portal/users_controller.rb": {
+            "line": 27.08,
+            "branch": 0.0
+          },
+          "app/controllers/application_controller.rb": {
+            "line": 59.37,
+            "branch": 20.0
+          },
+          "app/controllers/authentication_controller.rb": {
+            "line": 78.12,
+            "branch": 50.0
+          },
+          "app/controllers/concerns/session_helper.rb": {
+            "line": 65.78,
+            "branch": 50.0
+          },
+          "app/controllers/landlord_portal/archived_contracts_controller.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/archived_invoices_controller.rb": {
+            "line": 26.31,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/assets_controller.rb": {
+            "line": 28.3,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/bank_accounts_controller.rb": {
+            "line": 25.97,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/base_controller.rb": {
+            "line": 60.0,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/beds_controller.rb": {
+            "line": 21.97,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/contracts_controller.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/dashboards_controller.rb": {
+            "line": 26.66,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/floors_controller.rb": {
+            "line": 29.41,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/houses_controller.rb": {
+            "line": 31.14,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/invoices_controller.rb": {
+            "line": 17.82,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/maintenance_logs_controller.rb": {
+            "line": 30.0,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/profiles_controller.rb": {
+            "line": 28.07,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/requests_controller.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/rooms_controller.rb": {
+            "line": 19.58,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/service_usage_logs_controller.rb": {
+            "line": 24.48,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/service_variants_controller.rb": {
+            "line": 35.41,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/services_controller.rb": {
+            "line": 32.6,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/tenants_controller.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/vehicles_controller.rb": {
+            "line": 30.0,
+            "branch": 100.0
+          },
+          "app/controllers/notifications_controller.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/controllers/otp_controller.rb": {
+            "line": 15.49,
+            "branch": 0.0
+          },
+          "app/controllers/payments/payos_controller.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/controllers/public_pages_controller.rb": {
+            "line": 93.33,
+            "branch": 75.0
+          },
+          "app/controllers/tenant_portal/base_controller.rb": {
+            "line": 66.66,
+            "branch": 0.0
+          },
+          "app/controllers/tenant_portal/contracts_controller.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/controllers/tenant_portal/dashboard_controller.rb": {
+            "line": 0.0,
+            "branch": 100.0
+          },
+          "app/controllers/tenant_portal/invoices_controller.rb": {
+            "line": 30.61,
+            "branch": 0.0
+          },
+          "app/controllers/tenant_portal/leave_house_requests_controller.rb": {
+            "line": 40.0,
+            "branch": 100.0
+          },
+          "app/controllers/tenant_portal/profiles_controller.rb": {
+            "line": 28.07,
+            "branch": 0.0
+          },
+          "app/controllers/tenant_portal/repair_requests_controller.rb": {
+            "line": 45.45,
+            "branch": 100.0
+          },
+          "app/controllers/tenant_portal/requests_controller.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/controllers/tenant_portal/rooms_controller.rb": {
+            "line": 25.0,
+            "branch": 100.0
+          },
+          "app/controllers/tenant_portal/service_usage_logs_controller.rb": {
+            "line": 19.51,
+            "branch": 0.0
+          },
+          "app/controllers/tenant_portal/services_controller.rb": {
+            "line": 71.42,
+            "branch": 100.0
+          },
+          "app/controllers/tenant_portal/vehicle_requests_controller.rb": {
+            "line": 45.45,
+            "branch": 100.0
+          },
+          "app/controllers/tenant_portal/vehicles_controller.rb": {
+            "line": 30.0,
+            "branch": 100.0
+          },
+          "app/controllers/users_controller.rb": {
+            "line": 43.58,
+            "branch": 18.75
+          },
+          "app/controllers/webhooks/payos_controller.rb": {
+            "line": 80.0,
+            "branch": 100.0
+          },
+          "app/forms/bed_creation_form.rb": {
+            "line": 96.29,
+            "branch": 50.0
+          },
+          "app/forms/broadcast_notification_form.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/forms/house_creation_form.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/forms/tenant_link_form.rb": {
+            "line": 96.15,
+            "branch": 77.77
+          },
+          "app/helpers/admin_portal/uploaded_files_helper.rb": {
+            "line": 16.66,
+            "branch": 0.0
+          },
+          "app/helpers/application_helper.rb": {
+            "line": 76.36,
+            "branch": 68.96
+          },
+          "app/helpers/assets_helper.rb": {
+            "line": 94.11,
+            "branch": 100.0
+          },
+          "app/helpers/contracts_helper.rb": {
+            "line": 25.0,
+            "branch": 0.0
+          },
+          "app/helpers/form_helper.rb": {
+            "line": 31.03,
+            "branch": 16.66
+          },
+          "app/helpers/houses_helper.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/helpers/invoices_helper.rb": {
+            "line": 98.24,
+            "branch": 85.71
+          },
+          "app/helpers/issue_reports_helper.rb": {
+            "line": 18.18,
+            "branch": 0.0
+          },
+          "app/helpers/locations_helper.rb": {
+            "line": 41.66,
+            "branch": 0.0
+          },
+          "app/helpers/nav_helper.rb": {
+            "line": 45.83,
+            "branch": 20.58
+          },
+          "app/helpers/notifications_helper.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/helpers/requests_helper.rb": {
+            "line": 75.0,
+            "branch": 60.0
+          },
+          "app/helpers/service_usage_logs_helper.rb": {
+            "line": 100.0,
+            "branch": 80.0
+          },
+          "app/helpers/services_helper.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/helpers/users_helper.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/jobs/application_job.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/jobs/broadcast_custom_notification_job.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/jobs/cleanup_notifications_job.rb": {
+            "line": 0.0,
+            "branch": 100.0
+          },
+          "app/jobs/contract_due_reminder_job.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/jobs/contract_due_today_job.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/jobs/contract_overdue_close_job.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/jobs/invoice_creation_reminder_job.rb": {
+            "line": 90.0,
+            "branch": 50.0
+          },
+          "app/jobs/invoice_due_today_job.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/jobs/invoice_overdue_check_job.rb": {
+            "line": 88.23,
+            "branch": 41.66
+          },
+          "app/jobs/landlord_dashboard_broadcast_job.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/jobs/request_overdue_expire_job.rb": {
+            "line": 0.0,
+            "branch": 100.0
+          },
+          "app/models/ability.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/models/admin.rb": {
+            "line": 100.0,
+            "branch": 75.0
+          },
+          "app/models/application_record.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/models/asset.rb": {
+            "line": 76.0,
+            "branch": 100.0
+          },
+          "app/models/bank.rb": {
+            "line": 90.9,
+            "branch": 100.0
+          },
+          "app/models/bank_account.rb": {
+            "line": 83.01,
+            "branch": 63.33
+          },
+          "app/models/bed.rb": {
+            "line": 75.67,
+            "branch": 25.0
+          },
+          "app/models/concerns/otp.rb": {
+            "line": 81.81,
+            "branch": 100.0
+          },
+          "app/models/contract.rb": {
+            "line": 71.66,
+            "branch": 20.0
+          },
+          "app/models/floor.rb": {
+            "line": 94.44,
+            "branch": 55.55
+          },
+          "app/models/house.rb": {
+            "line": 71.33,
+            "branch": 50.0
+          },
+          "app/models/invoice.rb": {
+            "line": 76.19,
+            "branch": 50.0
+          },
+          "app/models/invoice_item.rb": {
+            "line": 72.22,
+            "branch": 0.0
+          },
+          "app/models/invoice_service_usage_log.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/models/issue_report.rb": {
+            "line": 100.0,
+            "branch": 25.0
+          },
+          "app/models/landlord.rb": {
+            "line": 91.66,
+            "branch": 100.0
+          },
+          "app/models/leave_house_request.rb": {
+            "line": 46.66,
+            "branch": 16.66
+          },
+          "app/models/maintenance_log.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/models/payment_order.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/models/rental_unit.rb": {
+            "line": 100.0,
+            "branch": 66.66
+          },
+          "app/models/repair_request.rb": {
+            "line": 87.75,
+            "branch": 55.0
+          },
+          "app/models/request.rb": {
+            "line": 63.33,
+            "branch": 34.37
+          },
+          "app/models/room.rb": {
+            "line": 70.87,
+            "branch": 0.0
+          },
+          "app/models/room_service.rb": {
+            "line": 93.33,
+            "branch": 66.66
+          },
+          "app/models/service.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/models/service_usage_log.rb": {
+            "line": 86.48,
+            "branch": 58.33
+          },
+          "app/models/service_variant.rb": {
+            "line": 84.09,
+            "branch": 83.33
+          },
+          "app/models/tenant.rb": {
+            "line": 77.41,
+            "branch": 0.0
+          },
+          "app/models/tenant_stay.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/models/user.rb": {
+            "line": 89.23,
+            "branch": 62.5
+          },
+          "app/models/vehicle.rb": {
+            "line": 80.95,
+            "branch": 33.33
+          },
+          "app/models/vehicle_request.rb": {
+            "line": 50.0,
+            "branch": 0.0
+          },
+          "app/notifiers/application_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/contract_closed_notifier.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/notifiers/contract_due_today_notifier.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/notifiers/contract_expiring_soon_notifier.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/notifiers/contract_extended_notifier.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/notifiers/contract_overdue_closed_notifier.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/notifiers/contract_signed_notifier.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/notifiers/contract_updated_notifier.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/notifiers/custom_announcement_notifier.rb": {
+            "line": 64.28,
+            "branch": 100.0
+          },
+          "app/notifiers/delivery_methods/turbo_stream.rb": {
+            "line": 11.76,
+            "branch": 0.0
+          },
+          "app/notifiers/invoice_cancelled_notifier.rb": {
+            "line": 0.0,
+            "branch": 100.0
+          },
+          "app/notifiers/invoice_creation_reminder_notifier.rb": {
+            "line": 60.0,
+            "branch": 100.0
+          },
+          "app/notifiers/invoice_due_today_notifier.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/notifiers/invoice_issued_notifier.rb": {
+            "line": 66.66,
+            "branch": 100.0
+          },
+          "app/notifiers/invoice_overdue_notifier.rb": {
+            "line": 40.0,
+            "branch": 0.0
+          },
+          "app/notifiers/invoice_paid_notifier.rb": {
+            "line": 19.44,
+            "branch": 0.0
+          },
+          "app/notifiers/invoice_unpaid_notifier.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/notifiers/invoice_updated_notifier.rb": {
+            "line": 66.66,
+            "branch": 100.0
+          },
+          "app/notifiers/leave_house_request_created_notifier.rb": {
+            "line": 40.0,
+            "branch": 0.0
+          },
+          "app/notifiers/repair_request_created_notifier.rb": {
+            "line": 40.0,
+            "branch": 0.0
+          },
+          "app/notifiers/request_resolved_notifier.rb": {
+            "line": 25.0,
+            "branch": 0.0
+          },
+          "app/notifiers/sensitive_file_removed_notifier.rb": {
+            "line": 0.0,
+            "branch": 100.0
+          },
+          "app/notifiers/service_updated_notifier.rb": {
+            "line": 0.0,
+            "branch": 100.0
+          },
+          "app/notifiers/service_usage_log_confirmed_notifier.rb": {
+            "line": 66.66,
+            "branch": 100.0
+          },
+          "app/notifiers/service_usage_log_requested_notifier.rb": {
+            "line": 66.66,
+            "branch": 100.0
+          },
+          "app/notifiers/telephone_changed_notifier.rb": {
+            "line": 54.54,
+            "branch": 0.0
+          },
+          "app/notifiers/tenant_added_notifier.rb": {
+            "line": 66.66,
+            "branch": 100.0
+          },
+          "app/notifiers/tenant_moved_notifier.rb": {
+            "line": 0.0,
+            "branch": 100.0
+          },
+          "app/notifiers/tenant_removed_notifier.rb": {
+            "line": 40.0,
+            "branch": 0.0
+          },
+          "app/notifiers/vehicle_removed_notifier.rb": {
+            "line": 35.71,
+            "branch": 0.0
+          },
+          "app/notifiers/vehicle_request_created_notifier.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/account_deletion.rb": {
+            "line": 88.88,
+            "branch": 75.0
+          },
+          "app/services/account_deletion_check.rb": {
+            "line": 93.61,
+            "branch": 72.72
+          },
+          "app/services/admin_portal/house_assets_filter.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/admin_portal/house_rooms_filter.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/admin_portal/sensitive_file_deleter.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/admin_portal/uploaded_files_filter.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/admin_portal/uploaded_files_stats_service.rb": {
+            "line": 0.0,
+            "branch": 100.0
+          },
+          "app/services/available_slots_builder.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/checkin.rb": {
+            "line": 96.42,
+            "branch": 50.0
+          },
+          "app/services/checkout.rb": {
+            "line": 90.0,
+            "branch": 62.5
+          },
+          "app/services/contract_closing.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/contract_extension.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/contract_filter.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/contract_renewal.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/contract_signing.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/contract_update.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/house_creation.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/house_fixed_services_summary.rb": {
+            "line": 94.44,
+            "branch": 79.16
+          },
+          "app/services/house_mode_changer.rb": {
+            "line": 97.22,
+            "branch": 66.66
+          },
+          "app/services/invoice_filter.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/invoices/cancel_service.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/invoices/create_custom_service.rb": {
+            "line": 91.95,
+            "branch": 62.85
+          },
+          "app/services/invoices/draft_calculator.rb": {
+            "line": 68.53,
+            "branch": 29.16
+          },
+          "app/services/invoices/filter_service.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/invoices/issue_service.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/invoices/mark_paid_service.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/invoices/occupied_rooms_query.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/invoices/stats_service.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/invoices/undo_paid_service.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/invoices/update_service.rb": {
+            "line": 80.48,
+            "branch": 36.36
+          },
+          "app/services/landlord_asset_filter.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/landlord_asset_stats_service.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/landlord_contract_archive_filter.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/landlord_dashboard/contract_stats_calculator.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/services/landlord_dashboard/invoice_stats_calculator.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/services/landlord_dashboard/occupancy_calculator.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/services/landlord_dashboard/request_stats_calculator.rb": {
+            "line": 76.19,
+            "branch": 50.0
+          },
+          "app/services/landlord_dashboard/revenue_stats_calculator.rb": {
+            "line": 91.46,
+            "branch": 50.0
+          },
+          "app/services/landlord_dashboard/tenant_flow_calculator.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/services/landlord_dashboard_broadcaster.rb": {
+            "line": 100.0,
+            "branch": 87.5
+          },
+          "app/services/landlord_dashboard_stats_service.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/landlord_invoice_archive_filter.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/landlord_maintenance_log_filter.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/landlord_request_badge_broadcaster.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/landlord_request_filter.rb": {
+            "line": 0.0,
+            "branch": 100.0
+          },
+          "app/services/landlord_request_stats_service.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/landlord_service_usage_logs_filter.rb": {
+            "line": 88.13,
+            "branch": 84.61
+          },
+          "app/services/landlord_service_usage_logs_index_builder.rb": {
+            "line": 91.07,
+            "branch": 71.42
+          },
+          "app/services/landlord_vehicle_stats_service.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/leave_house_request_submission.rb": {
+            "line": 78.78,
+            "branch": 50.0
+          },
+          "app/services/password_recovery.rb": {
+            "line": 96.29,
+            "branch": 83.33
+          },
+          "app/services/payos/process_webhook_service.rb": {
+            "line": 55.88,
+            "branch": 38.88
+          },
+          "app/services/payos_service.rb": {
+            "line": 37.76,
+            "branch": 59.25
+          },
+          "app/services/phone_recycling.rb": {
+            "line": 90.47,
+            "branch": 40.0
+          },
+          "app/services/phone_verification.rb": {
+            "line": 53.84,
+            "branch": 12.5
+          },
+          "app/services/repair_request_submission.rb": {
+            "line": 95.83,
+            "branch": 50.0
+          },
+          "app/services/request_filter.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/request_handling.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/room_fixed_services_summary.rb": {
+            "line": 89.9,
+            "branch": 83.33
+          },
+          "app/services/room_update.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/service_usage_log_confirmer.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/service_usage_log_creator.rb": {
+            "line": 96.66,
+            "branch": 66.66
+          },
+          "app/services/service_variant_updater.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/tenant_dashboard_stats_service.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/tenant_filter.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/tenant_mover.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/tenant_request_filter.rb": {
+            "line": 0.0,
+            "branch": 100.0
+          },
+          "app/services/tenant_services_filter.rb": {
+            "line": 96.15,
+            "branch": 87.5
+          },
+          "app/services/transfer_note_builder.rb": {
+            "line": 100.0,
+            "branch": 66.66
+          },
+          "app/services/vehicle_deletion.rb": {
+            "line": 96.29,
+            "branch": 75.0
+          },
+          "app/services/vehicle_request_submission.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/vietqr_service.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          }
+        }
+      },
+      {
+        "created_at": "2026-09-28T21:32:30Z",
+        "branch": "main",
+        "commit": "0acfb8a0338ada780de3854c8cc4305d778bb9c2",
+        "totals": {
+          "line": 46.85,
+          "branch": 29.73
+        },
+        "groups": {
+          "Controllers": {
+            "line": 26.86,
+            "branch": 6.23
+          },
+          "Helpers": {
+            "line": 64.6,
+            "branch": 47.58
+          },
+          "Jobs": {
+            "line": 37.62,
+            "branch": 21.05
+          },
+          "Models": {
+            "line": 76.78,
+            "branch": 44.84
+          },
+          "Services": {
+            "line": 48.52,
+            "branch": 34.53
+          },
+          "Notifiers": {
+            "line": 23.48,
+            "branch": 0.0
+          },
+          "Ungrouped": {
+            "line": 61.15,
+            "branch": 64.86
+          }
+        },
+        "files": {
+          "app/controllers/admin_portal/admins_controller.rb": {
+            "line": 34.21,
+            "branch": 0.0
+          },
+          "app/controllers/admin_portal/assets_controller.rb": {
+            "line": 50.0,
+            "branch": 100.0
+          },
+          "app/controllers/admin_portal/base_controller.rb": {
+            "line": 85.71,
+            "branch": 25.0
+          },
+          "app/controllers/admin_portal/contracts_controller.rb": {
+            "line": 42.85,
+            "branch": 100.0
+          },
+          "app/controllers/admin_portal/dashboard_controller.rb": {
+            "line": 14.28,
+            "branch": 100.0
+          },
+          "app/controllers/admin_portal/houses_controller.rb": {
+            "line": 23.8,
+            "branch": 0.0
+          },
+          "app/controllers/admin_portal/invoices_controller.rb": {
+            "line": 34.61,
+            "branch": 100.0
+          },
+          "app/controllers/admin_portal/issue_reports_controller.rb": {
+            "line": 27.58,
+            "branch": 0.0
+          },
+          "app/controllers/admin_portal/notifications_controller.rb": {
+            "line": 20.0,
+            "branch": 0.0
+          },
+          "app/controllers/admin_portal/requests_controller.rb": {
+            "line": 0.0,
+            "branch": 100.0
+          },
+          "app/controllers/admin_portal/services_controller.rb": {
+            "line": 50.0,
+            "branch": 100.0
+          },
+          "app/controllers/admin_portal/sessions_controller.rb": {
+            "line": 85.71,
+            "branch": 70.0
+          },
+          "app/controllers/admin_portal/uploaded_files_controller.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/controllers/admin_portal/users_controller.rb": {
+            "line": 27.08,
+            "branch": 0.0
+          },
+          "app/controllers/application_controller.rb": {
+            "line": 59.37,
+            "branch": 20.0
+          },
+          "app/controllers/authentication_controller.rb": {
+            "line": 78.12,
+            "branch": 50.0
+          },
+          "app/controllers/concerns/session_helper.rb": {
+            "line": 65.78,
+            "branch": 50.0
+          },
+          "app/controllers/landlord_portal/archived_contracts_controller.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/archived_invoices_controller.rb": {
+            "line": 26.31,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/assets_controller.rb": {
+            "line": 28.3,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/bank_accounts_controller.rb": {
+            "line": 25.97,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/base_controller.rb": {
+            "line": 60.0,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/beds_controller.rb": {
+            "line": 21.97,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/contracts_controller.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/dashboards_controller.rb": {
+            "line": 26.66,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/floors_controller.rb": {
+            "line": 29.41,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/houses_controller.rb": {
+            "line": 31.14,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/invoices_controller.rb": {
+            "line": 17.82,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/maintenance_logs_controller.rb": {
+            "line": 30.0,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/profiles_controller.rb": {
+            "line": 28.07,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/requests_controller.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/rooms_controller.rb": {
+            "line": 19.58,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/service_usage_logs_controller.rb": {
+            "line": 24.48,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/service_variants_controller.rb": {
+            "line": 35.41,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/services_controller.rb": {
+            "line": 32.6,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/tenants_controller.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/vehicles_controller.rb": {
+            "line": 30.0,
+            "branch": 100.0
+          },
+          "app/controllers/notifications_controller.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/controllers/otp_controller.rb": {
+            "line": 15.49,
+            "branch": 0.0
+          },
+          "app/controllers/payments/payos_controller.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/controllers/public_pages_controller.rb": {
+            "line": 93.33,
+            "branch": 75.0
+          },
+          "app/controllers/tenant_portal/base_controller.rb": {
+            "line": 66.66,
+            "branch": 0.0
+          },
+          "app/controllers/tenant_portal/contracts_controller.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/controllers/tenant_portal/dashboard_controller.rb": {
+            "line": 0.0,
+            "branch": 100.0
+          },
+          "app/controllers/tenant_portal/invoices_controller.rb": {
+            "line": 30.61,
+            "branch": 0.0
+          },
+          "app/controllers/tenant_portal/leave_house_requests_controller.rb": {
+            "line": 40.0,
+            "branch": 100.0
+          },
+          "app/controllers/tenant_portal/profiles_controller.rb": {
+            "line": 28.07,
+            "branch": 0.0
+          },
+          "app/controllers/tenant_portal/repair_requests_controller.rb": {
+            "line": 45.45,
+            "branch": 100.0
+          },
+          "app/controllers/tenant_portal/requests_controller.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/controllers/tenant_portal/rooms_controller.rb": {
+            "line": 25.0,
+            "branch": 100.0
+          },
+          "app/controllers/tenant_portal/service_usage_logs_controller.rb": {
+            "line": 19.51,
+            "branch": 0.0
+          },
+          "app/controllers/tenant_portal/services_controller.rb": {
+            "line": 71.42,
+            "branch": 100.0
+          },
+          "app/controllers/tenant_portal/vehicle_requests_controller.rb": {
+            "line": 45.45,
+            "branch": 100.0
+          },
+          "app/controllers/tenant_portal/vehicles_controller.rb": {
+            "line": 30.0,
+            "branch": 100.0
+          },
+          "app/controllers/users_controller.rb": {
+            "line": 43.58,
+            "branch": 18.75
+          },
+          "app/controllers/webhooks/payos_controller.rb": {
+            "line": 80.0,
+            "branch": 100.0
+          },
+          "app/forms/bed_creation_form.rb": {
+            "line": 96.29,
+            "branch": 50.0
+          },
+          "app/forms/broadcast_notification_form.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/forms/house_creation_form.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/forms/tenant_link_form.rb": {
+            "line": 96.15,
+            "branch": 77.77
+          },
+          "app/helpers/admin_portal/uploaded_files_helper.rb": {
+            "line": 16.66,
+            "branch": 0.0
+          },
+          "app/helpers/application_helper.rb": {
+            "line": 76.36,
+            "branch": 68.96
+          },
+          "app/helpers/assets_helper.rb": {
+            "line": 94.11,
+            "branch": 100.0
+          },
+          "app/helpers/contracts_helper.rb": {
+            "line": 25.0,
+            "branch": 0.0
+          },
+          "app/helpers/form_helper.rb": {
+            "line": 31.03,
+            "branch": 16.66
+          },
+          "app/helpers/houses_helper.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/helpers/invoices_helper.rb": {
+            "line": 98.24,
+            "branch": 85.71
+          },
+          "app/helpers/issue_reports_helper.rb": {
+            "line": 18.18,
+            "branch": 0.0
+          },
+          "app/helpers/locations_helper.rb": {
+            "line": 41.66,
+            "branch": 0.0
+          },
+          "app/helpers/nav_helper.rb": {
+            "line": 45.83,
+            "branch": 20.58
+          },
+          "app/helpers/notifications_helper.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/helpers/requests_helper.rb": {
+            "line": 75.0,
+            "branch": 60.0
+          },
+          "app/helpers/service_usage_logs_helper.rb": {
+            "line": 100.0,
+            "branch": 80.0
+          },
+          "app/helpers/services_helper.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/helpers/users_helper.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/jobs/application_job.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/jobs/broadcast_custom_notification_job.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/jobs/cleanup_notifications_job.rb": {
+            "line": 0.0,
+            "branch": 100.0
+          },
+          "app/jobs/contract_due_reminder_job.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/jobs/contract_due_today_job.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/jobs/contract_overdue_close_job.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/jobs/invoice_creation_reminder_job.rb": {
+            "line": 90.0,
+            "branch": 50.0
+          },
+          "app/jobs/invoice_due_today_job.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/jobs/invoice_overdue_check_job.rb": {
+            "line": 88.23,
+            "branch": 41.66
+          },
+          "app/jobs/landlord_dashboard_broadcast_job.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/jobs/request_overdue_expire_job.rb": {
+            "line": 0.0,
+            "branch": 100.0
+          },
+          "app/models/ability.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/models/admin.rb": {
+            "line": 100.0,
+            "branch": 75.0
+          },
+          "app/models/application_record.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/models/asset.rb": {
+            "line": 76.0,
+            "branch": 100.0
+          },
+          "app/models/bank.rb": {
+            "line": 90.9,
+            "branch": 100.0
+          },
+          "app/models/bank_account.rb": {
+            "line": 83.01,
+            "branch": 63.33
+          },
+          "app/models/bed.rb": {
+            "line": 75.67,
+            "branch": 25.0
+          },
+          "app/models/concerns/otp.rb": {
+            "line": 81.81,
+            "branch": 100.0
+          },
+          "app/models/contract.rb": {
+            "line": 71.66,
+            "branch": 20.0
+          },
+          "app/models/floor.rb": {
+            "line": 94.44,
+            "branch": 55.55
+          },
+          "app/models/house.rb": {
+            "line": 71.33,
+            "branch": 50.0
+          },
+          "app/models/invoice.rb": {
+            "line": 76.19,
+            "branch": 50.0
+          },
+          "app/models/invoice_item.rb": {
+            "line": 72.22,
+            "branch": 0.0
+          },
+          "app/models/invoice_service_usage_log.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/models/issue_report.rb": {
+            "line": 100.0,
+            "branch": 25.0
+          },
+          "app/models/landlord.rb": {
+            "line": 91.66,
+            "branch": 100.0
+          },
+          "app/models/leave_house_request.rb": {
+            "line": 46.66,
+            "branch": 16.66
+          },
+          "app/models/maintenance_log.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/models/payment_order.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/models/rental_unit.rb": {
+            "line": 100.0,
+            "branch": 66.66
+          },
+          "app/models/repair_request.rb": {
+            "line": 87.75,
+            "branch": 55.0
+          },
+          "app/models/request.rb": {
+            "line": 63.33,
+            "branch": 34.37
+          },
+          "app/models/room.rb": {
+            "line": 70.87,
+            "branch": 0.0
+          },
+          "app/models/room_service.rb": {
+            "line": 93.33,
+            "branch": 66.66
+          },
+          "app/models/service.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/models/service_usage_log.rb": {
+            "line": 86.48,
+            "branch": 58.33
+          },
+          "app/models/service_variant.rb": {
+            "line": 84.09,
+            "branch": 83.33
+          },
+          "app/models/tenant.rb": {
+            "line": 77.41,
+            "branch": 0.0
+          },
+          "app/models/tenant_stay.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/models/user.rb": {
+            "line": 89.23,
+            "branch": 62.5
+          },
+          "app/models/vehicle.rb": {
+            "line": 80.95,
+            "branch": 33.33
+          },
+          "app/models/vehicle_request.rb": {
+            "line": 50.0,
+            "branch": 0.0
+          },
+          "app/notifiers/application_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/contract_closed_notifier.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/notifiers/contract_due_today_notifier.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/notifiers/contract_expiring_soon_notifier.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/notifiers/contract_extended_notifier.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/notifiers/contract_overdue_closed_notifier.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/notifiers/contract_signed_notifier.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/notifiers/contract_updated_notifier.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/notifiers/custom_announcement_notifier.rb": {
+            "line": 64.28,
+            "branch": 100.0
+          },
+          "app/notifiers/delivery_methods/turbo_stream.rb": {
+            "line": 11.76,
+            "branch": 0.0
+          },
+          "app/notifiers/invoice_cancelled_notifier.rb": {
+            "line": 0.0,
+            "branch": 100.0
+          },
+          "app/notifiers/invoice_creation_reminder_notifier.rb": {
+            "line": 60.0,
+            "branch": 100.0
+          },
+          "app/notifiers/invoice_due_today_notifier.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/notifiers/invoice_issued_notifier.rb": {
+            "line": 66.66,
+            "branch": 100.0
+          },
+          "app/notifiers/invoice_overdue_notifier.rb": {
+            "line": 40.0,
+            "branch": 0.0
+          },
+          "app/notifiers/invoice_paid_notifier.rb": {
+            "line": 19.44,
+            "branch": 0.0
+          },
+          "app/notifiers/invoice_unpaid_notifier.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/notifiers/invoice_updated_notifier.rb": {
+            "line": 66.66,
+            "branch": 100.0
+          },
+          "app/notifiers/leave_house_request_created_notifier.rb": {
+            "line": 40.0,
+            "branch": 0.0
+          },
+          "app/notifiers/repair_request_created_notifier.rb": {
+            "line": 40.0,
+            "branch": 0.0
+          },
+          "app/notifiers/request_resolved_notifier.rb": {
+            "line": 25.0,
+            "branch": 0.0
+          },
+          "app/notifiers/sensitive_file_removed_notifier.rb": {
+            "line": 0.0,
+            "branch": 100.0
+          },
+          "app/notifiers/service_updated_notifier.rb": {
+            "line": 0.0,
+            "branch": 100.0
+          },
+          "app/notifiers/service_usage_log_confirmed_notifier.rb": {
+            "line": 66.66,
+            "branch": 100.0
+          },
+          "app/notifiers/service_usage_log_requested_notifier.rb": {
+            "line": 66.66,
+            "branch": 100.0
+          },
+          "app/notifiers/telephone_changed_notifier.rb": {
+            "line": 54.54,
+            "branch": 0.0
+          },
+          "app/notifiers/tenant_added_notifier.rb": {
+            "line": 66.66,
+            "branch": 100.0
+          },
+          "app/notifiers/tenant_moved_notifier.rb": {
+            "line": 0.0,
+            "branch": 100.0
+          },
+          "app/notifiers/tenant_removed_notifier.rb": {
+            "line": 40.0,
+            "branch": 0.0
+          },
+          "app/notifiers/vehicle_removed_notifier.rb": {
+            "line": 35.71,
+            "branch": 0.0
+          },
+          "app/notifiers/vehicle_request_created_notifier.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/account_deletion.rb": {
+            "line": 88.88,
+            "branch": 75.0
+          },
+          "app/services/account_deletion_check.rb": {
+            "line": 93.61,
+            "branch": 72.72
+          },
+          "app/services/admin_portal/house_assets_filter.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/admin_portal/house_rooms_filter.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/admin_portal/sensitive_file_deleter.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/admin_portal/uploaded_files_filter.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/admin_portal/uploaded_files_stats_service.rb": {
+            "line": 0.0,
+            "branch": 100.0
+          },
+          "app/services/available_slots_builder.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/checkin.rb": {
+            "line": 96.42,
+            "branch": 50.0
+          },
+          "app/services/checkout.rb": {
+            "line": 90.0,
+            "branch": 62.5
+          },
+          "app/services/contract_closing.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/contract_extension.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/contract_filter.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/contract_renewal.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/contract_signing.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/contract_update.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/house_creation.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/house_fixed_services_summary.rb": {
+            "line": 94.44,
+            "branch": 79.16
+          },
+          "app/services/house_mode_changer.rb": {
+            "line": 97.22,
+            "branch": 66.66
+          },
+          "app/services/invoice_filter.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/invoices/cancel_service.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/invoices/create_custom_service.rb": {
+            "line": 91.95,
+            "branch": 62.85
+          },
+          "app/services/invoices/draft_calculator.rb": {
+            "line": 68.53,
+            "branch": 29.16
+          },
+          "app/services/invoices/filter_service.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/invoices/issue_service.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/invoices/mark_paid_service.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/invoices/occupied_rooms_query.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/invoices/stats_service.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/invoices/undo_paid_service.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/invoices/update_service.rb": {
+            "line": 80.48,
+            "branch": 36.36
+          },
+          "app/services/landlord_asset_filter.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/landlord_asset_stats_service.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/landlord_contract_archive_filter.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/landlord_dashboard/contract_stats_calculator.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/services/landlord_dashboard/invoice_stats_calculator.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/services/landlord_dashboard/occupancy_calculator.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/services/landlord_dashboard/request_stats_calculator.rb": {
+            "line": 76.19,
+            "branch": 50.0
+          },
+          "app/services/landlord_dashboard/revenue_stats_calculator.rb": {
+            "line": 91.46,
+            "branch": 50.0
+          },
+          "app/services/landlord_dashboard/tenant_flow_calculator.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/services/landlord_dashboard_broadcaster.rb": {
+            "line": 100.0,
+            "branch": 87.5
+          },
+          "app/services/landlord_dashboard_stats_service.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/landlord_invoice_archive_filter.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/landlord_maintenance_log_filter.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/landlord_request_badge_broadcaster.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/landlord_request_filter.rb": {
+            "line": 0.0,
+            "branch": 100.0
+          },
+          "app/services/landlord_request_stats_service.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/landlord_service_usage_logs_filter.rb": {
+            "line": 88.13,
+            "branch": 84.61
+          },
+          "app/services/landlord_service_usage_logs_index_builder.rb": {
+            "line": 91.07,
+            "branch": 71.42
+          },
+          "app/services/landlord_vehicle_stats_service.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/leave_house_request_submission.rb": {
+            "line": 78.78,
+            "branch": 50.0
+          },
+          "app/services/password_recovery.rb": {
+            "line": 96.29,
+            "branch": 83.33
+          },
+          "app/services/payos/process_webhook_service.rb": {
+            "line": 55.88,
+            "branch": 38.88
+          },
+          "app/services/payos_service.rb": {
+            "line": 37.76,
+            "branch": 59.25
+          },
+          "app/services/phone_recycling.rb": {
+            "line": 90.47,
+            "branch": 40.0
+          },
+          "app/services/phone_verification.rb": {
+            "line": 53.84,
+            "branch": 12.5
+          },
+          "app/services/repair_request_submission.rb": {
+            "line": 95.83,
+            "branch": 50.0
+          },
+          "app/services/request_filter.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/request_handling.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/room_fixed_services_summary.rb": {
+            "line": 89.9,
+            "branch": 83.33
+          },
+          "app/services/room_update.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/service_usage_log_confirmer.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/service_usage_log_creator.rb": {
+            "line": 96.66,
+            "branch": 66.66
+          },
+          "app/services/service_variant_updater.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/tenant_dashboard_stats_service.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/tenant_filter.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/tenant_mover.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/tenant_request_filter.rb": {
+            "line": 0.0,
+            "branch": 100.0
+          },
+          "app/services/tenant_services_filter.rb": {
+            "line": 96.15,
+            "branch": 87.5
+          },
+          "app/services/transfer_note_builder.rb": {
+            "line": 100.0,
+            "branch": 66.66
+          },
+          "app/services/vehicle_deletion.rb": {
+            "line": 96.29,
+            "branch": 75.0
+          },
+          "app/services/vehicle_request_submission.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/vietqr_service.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          }
+        }
+      },
+      {
+        "created_at": "2026-09-28T21:33:06Z",
+        "branch": "main",
+        "commit": "0acfb8a0338ada780de3854c8cc4305d778bb9c2",
+        "totals": {
+          "line": 45.36,
+          "branch": 29.73
+        },
+        "groups": {
+          "Controllers": {
+            "line": 26.86,
+            "branch": 6.23
+          },
+          "Helpers": {
+            "line": 41.76,
+            "branch": 47.58
+          },
+          "Jobs": {
+            "line": 37.62,
+            "branch": 21.05
+          },
+          "Models": {
+            "line": 76.78,
+            "branch": 44.84
+          },
+          "Services": {
+            "line": 48.52,
+            "branch": 34.53
+          },
+          "Notifiers": {
+            "line": 23.48,
+            "branch": 0.0
+          },
+          "Ungrouped": {
+            "line": 61.15,
+            "branch": 64.86
+          }
+        },
+        "files": {
+          "app/controllers/admin_portal/admins_controller.rb": {
+            "line": 34.21,
+            "branch": 0.0
+          },
+          "app/controllers/admin_portal/assets_controller.rb": {
+            "line": 50.0,
+            "branch": 100.0
+          },
+          "app/controllers/admin_portal/base_controller.rb": {
+            "line": 85.71,
+            "branch": 25.0
+          },
+          "app/controllers/admin_portal/contracts_controller.rb": {
+            "line": 42.85,
+            "branch": 100.0
+          },
+          "app/controllers/admin_portal/dashboard_controller.rb": {
+            "line": 14.28,
+            "branch": 100.0
+          },
+          "app/controllers/admin_portal/houses_controller.rb": {
+            "line": 23.8,
+            "branch": 0.0
+          },
+          "app/controllers/admin_portal/invoices_controller.rb": {
+            "line": 34.61,
+            "branch": 100.0
+          },
+          "app/controllers/admin_portal/issue_reports_controller.rb": {
+            "line": 27.58,
+            "branch": 0.0
+          },
+          "app/controllers/admin_portal/notifications_controller.rb": {
+            "line": 20.0,
+            "branch": 0.0
+          },
+          "app/controllers/admin_portal/requests_controller.rb": {
+            "line": 0.0,
+            "branch": 100.0
+          },
+          "app/controllers/admin_portal/services_controller.rb": {
+            "line": 50.0,
+            "branch": 100.0
+          },
+          "app/controllers/admin_portal/sessions_controller.rb": {
+            "line": 85.71,
+            "branch": 70.0
+          },
+          "app/controllers/admin_portal/uploaded_files_controller.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/controllers/admin_portal/users_controller.rb": {
+            "line": 27.08,
+            "branch": 0.0
+          },
+          "app/controllers/application_controller.rb": {
+            "line": 59.37,
+            "branch": 20.0
+          },
+          "app/controllers/authentication_controller.rb": {
+            "line": 78.12,
+            "branch": 50.0
+          },
+          "app/controllers/concerns/session_helper.rb": {
+            "line": 65.78,
+            "branch": 50.0
+          },
+          "app/controllers/landlord_portal/archived_contracts_controller.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/archived_invoices_controller.rb": {
+            "line": 26.31,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/assets_controller.rb": {
+            "line": 28.3,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/bank_accounts_controller.rb": {
+            "line": 25.97,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/base_controller.rb": {
+            "line": 60.0,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/beds_controller.rb": {
+            "line": 21.97,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/contracts_controller.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/dashboards_controller.rb": {
+            "line": 26.66,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/floors_controller.rb": {
+            "line": 29.41,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/houses_controller.rb": {
+            "line": 31.14,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/invoices_controller.rb": {
+            "line": 17.82,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/maintenance_logs_controller.rb": {
+            "line": 30.0,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/profiles_controller.rb": {
+            "line": 28.07,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/requests_controller.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/rooms_controller.rb": {
+            "line": 19.58,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/service_usage_logs_controller.rb": {
+            "line": 24.48,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/service_variants_controller.rb": {
+            "line": 35.41,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/services_controller.rb": {
+            "line": 32.6,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/tenants_controller.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/vehicles_controller.rb": {
+            "line": 30.0,
+            "branch": 100.0
+          },
+          "app/controllers/notifications_controller.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/controllers/otp_controller.rb": {
+            "line": 15.49,
+            "branch": 0.0
+          },
+          "app/controllers/payments/payos_controller.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/controllers/public_pages_controller.rb": {
+            "line": 93.33,
+            "branch": 75.0
+          },
+          "app/controllers/tenant_portal/base_controller.rb": {
+            "line": 66.66,
+            "branch": 0.0
+          },
+          "app/controllers/tenant_portal/contracts_controller.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/controllers/tenant_portal/dashboard_controller.rb": {
+            "line": 0.0,
+            "branch": 100.0
+          },
+          "app/controllers/tenant_portal/invoices_controller.rb": {
+            "line": 30.61,
+            "branch": 0.0
+          },
+          "app/controllers/tenant_portal/leave_house_requests_controller.rb": {
+            "line": 40.0,
+            "branch": 100.0
+          },
+          "app/controllers/tenant_portal/profiles_controller.rb": {
+            "line": 28.07,
+            "branch": 0.0
+          },
+          "app/controllers/tenant_portal/repair_requests_controller.rb": {
+            "line": 45.45,
+            "branch": 100.0
+          },
+          "app/controllers/tenant_portal/requests_controller.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/controllers/tenant_portal/rooms_controller.rb": {
+            "line": 25.0,
+            "branch": 100.0
+          },
+          "app/controllers/tenant_portal/service_usage_logs_controller.rb": {
+            "line": 19.51,
+            "branch": 0.0
+          },
+          "app/controllers/tenant_portal/services_controller.rb": {
+            "line": 71.42,
+            "branch": 100.0
+          },
+          "app/controllers/tenant_portal/vehicle_requests_controller.rb": {
+            "line": 45.45,
+            "branch": 100.0
+          },
+          "app/controllers/tenant_portal/vehicles_controller.rb": {
+            "line": 30.0,
+            "branch": 100.0
+          },
+          "app/controllers/users_controller.rb": {
+            "line": 43.58,
+            "branch": 18.75
+          },
+          "app/controllers/webhooks/payos_controller.rb": {
+            "line": 80.0,
+            "branch": 100.0
+          },
+          "app/forms/bed_creation_form.rb": {
+            "line": 96.29,
+            "branch": 50.0
+          },
+          "app/forms/broadcast_notification_form.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/forms/house_creation_form.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/forms/tenant_link_form.rb": {
+            "line": 96.15,
+            "branch": 77.77
+          },
+          "app/helpers/admin_portal/uploaded_files_helper.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/helpers/application_helper.rb": {
+            "line": 49.09,
+            "branch": 68.96
+          },
+          "app/helpers/assets_helper.rb": {
+            "line": 47.05,
+            "branch": 100.0
+          },
+          "app/helpers/contracts_helper.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/helpers/form_helper.rb": {
+            "line": 6.89,
+            "branch": 16.66
+          },
+          "app/helpers/houses_helper.rb": {
+            "line": 71.42,
+            "branch": 100.0
+          },
+          "app/helpers/invoices_helper.rb": {
+            "line": 78.94,
+            "branch": 85.71
+          },
+          "app/helpers/issue_reports_helper.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/helpers/locations_helper.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/helpers/nav_helper.rb": {
+            "line": 27.08,
+            "branch": 20.58
+          },
+          "app/helpers/notifications_helper.rb": {
+            "line": 82.35,
+            "branch": 100.0
+          },
+          "app/helpers/requests_helper.rb": {
+            "line": 56.81,
+            "branch": 60.0
+          },
+          "app/helpers/service_usage_logs_helper.rb": {
+            "line": 73.17,
+            "branch": 80.0
+          },
+          "app/helpers/services_helper.rb": {
+            "line": 79.16,
+            "branch": 100.0
+          },
+          "app/helpers/users_helper.rb": {
+            "line": 0.0,
+            "branch": 100.0
+          },
+          "app/jobs/application_job.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/jobs/broadcast_custom_notification_job.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/jobs/cleanup_notifications_job.rb": {
+            "line": 0.0,
+            "branch": 100.0
+          },
+          "app/jobs/contract_due_reminder_job.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/jobs/contract_due_today_job.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/jobs/contract_overdue_close_job.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/jobs/invoice_creation_reminder_job.rb": {
+            "line": 90.0,
+            "branch": 50.0
+          },
+          "app/jobs/invoice_due_today_job.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/jobs/invoice_overdue_check_job.rb": {
+            "line": 88.23,
+            "branch": 41.66
+          },
+          "app/jobs/landlord_dashboard_broadcast_job.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/jobs/request_overdue_expire_job.rb": {
+            "line": 0.0,
+            "branch": 100.0
+          },
+          "app/models/ability.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/models/admin.rb": {
+            "line": 100.0,
+            "branch": 75.0
+          },
+          "app/models/application_record.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/models/asset.rb": {
+            "line": 76.0,
+            "branch": 100.0
+          },
+          "app/models/bank.rb": {
+            "line": 90.9,
+            "branch": 100.0
+          },
+          "app/models/bank_account.rb": {
+            "line": 83.01,
+            "branch": 63.33
+          },
+          "app/models/bed.rb": {
+            "line": 75.67,
+            "branch": 25.0
+          },
+          "app/models/concerns/otp.rb": {
+            "line": 81.81,
+            "branch": 100.0
+          },
+          "app/models/contract.rb": {
+            "line": 71.66,
+            "branch": 20.0
+          },
+          "app/models/floor.rb": {
+            "line": 94.44,
+            "branch": 55.55
+          },
+          "app/models/house.rb": {
+            "line": 71.33,
+            "branch": 50.0
+          },
+          "app/models/invoice.rb": {
+            "line": 76.19,
+            "branch": 50.0
+          },
+          "app/models/invoice_item.rb": {
+            "line": 72.22,
+            "branch": 0.0
+          },
+          "app/models/invoice_service_usage_log.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/models/issue_report.rb": {
+            "line": 100.0,
+            "branch": 25.0
+          },
+          "app/models/landlord.rb": {
+            "line": 91.66,
+            "branch": 100.0
+          },
+          "app/models/leave_house_request.rb": {
+            "line": 46.66,
+            "branch": 16.66
+          },
+          "app/models/maintenance_log.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/models/payment_order.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/models/rental_unit.rb": {
+            "line": 100.0,
+            "branch": 66.66
+          },
+          "app/models/repair_request.rb": {
+            "line": 87.75,
+            "branch": 55.0
+          },
+          "app/models/request.rb": {
+            "line": 63.33,
+            "branch": 34.37
+          },
+          "app/models/room.rb": {
+            "line": 70.87,
+            "branch": 0.0
+          },
+          "app/models/room_service.rb": {
+            "line": 93.33,
+            "branch": 66.66
+          },
+          "app/models/service.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/models/service_usage_log.rb": {
+            "line": 86.48,
+            "branch": 58.33
+          },
+          "app/models/service_variant.rb": {
+            "line": 84.09,
+            "branch": 83.33
+          },
+          "app/models/tenant.rb": {
+            "line": 77.41,
+            "branch": 0.0
+          },
+          "app/models/tenant_stay.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/models/user.rb": {
+            "line": 89.23,
+            "branch": 62.5
+          },
+          "app/models/vehicle.rb": {
+            "line": 80.95,
+            "branch": 33.33
+          },
+          "app/models/vehicle_request.rb": {
+            "line": 50.0,
+            "branch": 0.0
+          },
+          "app/notifiers/application_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/contract_closed_notifier.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/notifiers/contract_due_today_notifier.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/notifiers/contract_expiring_soon_notifier.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/notifiers/contract_extended_notifier.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/notifiers/contract_overdue_closed_notifier.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/notifiers/contract_signed_notifier.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/notifiers/contract_updated_notifier.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/notifiers/custom_announcement_notifier.rb": {
+            "line": 64.28,
+            "branch": 100.0
+          },
+          "app/notifiers/delivery_methods/turbo_stream.rb": {
+            "line": 11.76,
+            "branch": 0.0
+          },
+          "app/notifiers/invoice_cancelled_notifier.rb": {
+            "line": 0.0,
+            "branch": 100.0
+          },
+          "app/notifiers/invoice_creation_reminder_notifier.rb": {
+            "line": 60.0,
+            "branch": 100.0
+          },
+          "app/notifiers/invoice_due_today_notifier.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/notifiers/invoice_issued_notifier.rb": {
+            "line": 66.66,
+            "branch": 100.0
+          },
+          "app/notifiers/invoice_overdue_notifier.rb": {
+            "line": 40.0,
+            "branch": 0.0
+          },
+          "app/notifiers/invoice_paid_notifier.rb": {
+            "line": 19.44,
+            "branch": 0.0
+          },
+          "app/notifiers/invoice_unpaid_notifier.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/notifiers/invoice_updated_notifier.rb": {
+            "line": 66.66,
+            "branch": 100.0
+          },
+          "app/notifiers/leave_house_request_created_notifier.rb": {
+            "line": 40.0,
+            "branch": 0.0
+          },
+          "app/notifiers/repair_request_created_notifier.rb": {
+            "line": 40.0,
+            "branch": 0.0
+          },
+          "app/notifiers/request_resolved_notifier.rb": {
+            "line": 25.0,
+            "branch": 0.0
+          },
+          "app/notifiers/sensitive_file_removed_notifier.rb": {
+            "line": 0.0,
+            "branch": 100.0
+          },
+          "app/notifiers/service_updated_notifier.rb": {
+            "line": 0.0,
+            "branch": 100.0
+          },
+          "app/notifiers/service_usage_log_confirmed_notifier.rb": {
+            "line": 66.66,
+            "branch": 100.0
+          },
+          "app/notifiers/service_usage_log_requested_notifier.rb": {
+            "line": 66.66,
+            "branch": 100.0
+          },
+          "app/notifiers/telephone_changed_notifier.rb": {
+            "line": 54.54,
+            "branch": 0.0
+          },
+          "app/notifiers/tenant_added_notifier.rb": {
+            "line": 66.66,
+            "branch": 100.0
+          },
+          "app/notifiers/tenant_moved_notifier.rb": {
+            "line": 0.0,
+            "branch": 100.0
+          },
+          "app/notifiers/tenant_removed_notifier.rb": {
+            "line": 40.0,
+            "branch": 0.0
+          },
+          "app/notifiers/vehicle_removed_notifier.rb": {
+            "line": 35.71,
+            "branch": 0.0
+          },
+          "app/notifiers/vehicle_request_created_notifier.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/account_deletion.rb": {
+            "line": 88.88,
+            "branch": 75.0
+          },
+          "app/services/account_deletion_check.rb": {
+            "line": 93.61,
+            "branch": 72.72
+          },
+          "app/services/admin_portal/house_assets_filter.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/admin_portal/house_rooms_filter.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/admin_portal/sensitive_file_deleter.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/admin_portal/uploaded_files_filter.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/admin_portal/uploaded_files_stats_service.rb": {
+            "line": 0.0,
+            "branch": 100.0
+          },
+          "app/services/available_slots_builder.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/checkin.rb": {
+            "line": 96.42,
+            "branch": 50.0
+          },
+          "app/services/checkout.rb": {
+            "line": 90.0,
+            "branch": 62.5
+          },
+          "app/services/contract_closing.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/contract_extension.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/contract_filter.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/contract_renewal.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/contract_signing.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/contract_update.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/house_creation.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/house_fixed_services_summary.rb": {
+            "line": 94.44,
+            "branch": 79.16
+          },
+          "app/services/house_mode_changer.rb": {
+            "line": 97.22,
+            "branch": 66.66
+          },
+          "app/services/invoice_filter.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/invoices/cancel_service.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/invoices/create_custom_service.rb": {
+            "line": 91.95,
+            "branch": 62.85
+          },
+          "app/services/invoices/draft_calculator.rb": {
+            "line": 68.53,
+            "branch": 29.16
+          },
+          "app/services/invoices/filter_service.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/invoices/issue_service.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/invoices/mark_paid_service.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/invoices/occupied_rooms_query.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/invoices/stats_service.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/invoices/undo_paid_service.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/invoices/update_service.rb": {
+            "line": 80.48,
+            "branch": 36.36
+          },
+          "app/services/landlord_asset_filter.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/landlord_asset_stats_service.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/landlord_contract_archive_filter.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/landlord_dashboard/contract_stats_calculator.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/services/landlord_dashboard/invoice_stats_calculator.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/services/landlord_dashboard/occupancy_calculator.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/services/landlord_dashboard/request_stats_calculator.rb": {
+            "line": 76.19,
+            "branch": 50.0
+          },
+          "app/services/landlord_dashboard/revenue_stats_calculator.rb": {
+            "line": 91.46,
+            "branch": 50.0
+          },
+          "app/services/landlord_dashboard/tenant_flow_calculator.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/services/landlord_dashboard_broadcaster.rb": {
+            "line": 100.0,
+            "branch": 87.5
+          },
+          "app/services/landlord_dashboard_stats_service.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/landlord_invoice_archive_filter.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/landlord_maintenance_log_filter.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/landlord_request_badge_broadcaster.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/landlord_request_filter.rb": {
+            "line": 0.0,
+            "branch": 100.0
+          },
+          "app/services/landlord_request_stats_service.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/landlord_service_usage_logs_filter.rb": {
+            "line": 88.13,
+            "branch": 84.61
+          },
+          "app/services/landlord_service_usage_logs_index_builder.rb": {
+            "line": 91.07,
+            "branch": 71.42
+          },
+          "app/services/landlord_vehicle_stats_service.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/leave_house_request_submission.rb": {
+            "line": 78.78,
+            "branch": 50.0
+          },
+          "app/services/password_recovery.rb": {
+            "line": 96.29,
+            "branch": 83.33
+          },
+          "app/services/payos/process_webhook_service.rb": {
+            "line": 55.88,
+            "branch": 38.88
+          },
+          "app/services/payos_service.rb": {
+            "line": 37.76,
+            "branch": 59.25
+          },
+          "app/services/phone_recycling.rb": {
+            "line": 90.47,
+            "branch": 40.0
+          },
+          "app/services/phone_verification.rb": {
+            "line": 53.84,
+            "branch": 12.5
+          },
+          "app/services/repair_request_submission.rb": {
+            "line": 95.83,
+            "branch": 50.0
+          },
+          "app/services/request_filter.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/request_handling.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/room_fixed_services_summary.rb": {
+            "line": 89.9,
+            "branch": 83.33
+          },
+          "app/services/room_update.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/service_usage_log_confirmer.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/service_usage_log_creator.rb": {
+            "line": 96.66,
+            "branch": 66.66
+          },
+          "app/services/service_variant_updater.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/tenant_dashboard_stats_service.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/tenant_filter.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/tenant_mover.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/tenant_request_filter.rb": {
+            "line": 0.0,
+            "branch": 100.0
+          },
+          "app/services/tenant_services_filter.rb": {
+            "line": 96.15,
+            "branch": 87.5
+          },
+          "app/services/transfer_note_builder.rb": {
+            "line": 100.0,
+            "branch": 66.66
+          },
+          "app/services/vehicle_deletion.rb": {
+            "line": 96.29,
+            "branch": 75.0
+          },
+          "app/services/vehicle_request_submission.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/vietqr_service.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          }
+        }
+      },
+      {
+        "created_at": "2026-09-28T21:33:37Z",
+        "branch": "main",
+        "commit": "0acfb8a0338ada780de3854c8cc4305d778bb9c2",
+        "totals": {
+          "line": 45.36,
+          "branch": 29.73
+        },
+        "groups": {
+          "Controllers": {
+            "line": 26.86,
+            "branch": 6.23
+          },
+          "Helpers": {
+            "line": 41.76,
+            "branch": 47.58
+          },
+          "Jobs": {
+            "line": 37.62,
+            "branch": 21.05
+          },
+          "Models": {
+            "line": 76.78,
+            "branch": 44.84
+          },
+          "Services": {
+            "line": 48.52,
+            "branch": 34.53
+          },
+          "Notifiers": {
+            "line": 23.48,
+            "branch": 0.0
+          },
+          "Ungrouped": {
+            "line": 61.15,
+            "branch": 64.86
+          }
+        },
+        "files": {
+          "app/controllers/admin_portal/admins_controller.rb": {
+            "line": 34.21,
+            "branch": 0.0
+          },
+          "app/controllers/admin_portal/assets_controller.rb": {
+            "line": 50.0,
+            "branch": 100.0
+          },
+          "app/controllers/admin_portal/base_controller.rb": {
+            "line": 85.71,
+            "branch": 25.0
+          },
+          "app/controllers/admin_portal/contracts_controller.rb": {
+            "line": 42.85,
+            "branch": 100.0
+          },
+          "app/controllers/admin_portal/dashboard_controller.rb": {
+            "line": 14.28,
+            "branch": 100.0
+          },
+          "app/controllers/admin_portal/houses_controller.rb": {
+            "line": 23.8,
+            "branch": 0.0
+          },
+          "app/controllers/admin_portal/invoices_controller.rb": {
+            "line": 34.61,
+            "branch": 100.0
+          },
+          "app/controllers/admin_portal/issue_reports_controller.rb": {
+            "line": 27.58,
+            "branch": 0.0
+          },
+          "app/controllers/admin_portal/notifications_controller.rb": {
+            "line": 20.0,
+            "branch": 0.0
+          },
+          "app/controllers/admin_portal/requests_controller.rb": {
+            "line": 0.0,
+            "branch": 100.0
+          },
+          "app/controllers/admin_portal/services_controller.rb": {
+            "line": 50.0,
+            "branch": 100.0
+          },
+          "app/controllers/admin_portal/sessions_controller.rb": {
+            "line": 85.71,
+            "branch": 70.0
+          },
+          "app/controllers/admin_portal/uploaded_files_controller.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/controllers/admin_portal/users_controller.rb": {
+            "line": 27.08,
+            "branch": 0.0
+          },
+          "app/controllers/application_controller.rb": {
+            "line": 59.37,
+            "branch": 20.0
+          },
+          "app/controllers/authentication_controller.rb": {
+            "line": 78.12,
+            "branch": 50.0
+          },
+          "app/controllers/concerns/session_helper.rb": {
+            "line": 65.78,
+            "branch": 50.0
+          },
+          "app/controllers/landlord_portal/archived_contracts_controller.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/archived_invoices_controller.rb": {
+            "line": 26.31,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/assets_controller.rb": {
+            "line": 28.3,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/bank_accounts_controller.rb": {
+            "line": 25.97,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/base_controller.rb": {
+            "line": 60.0,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/beds_controller.rb": {
+            "line": 21.97,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/contracts_controller.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/dashboards_controller.rb": {
+            "line": 26.66,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/floors_controller.rb": {
+            "line": 29.41,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/houses_controller.rb": {
+            "line": 31.14,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/invoices_controller.rb": {
+            "line": 17.82,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/maintenance_logs_controller.rb": {
+            "line": 30.0,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/profiles_controller.rb": {
+            "line": 28.07,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/requests_controller.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/rooms_controller.rb": {
+            "line": 19.58,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/service_usage_logs_controller.rb": {
+            "line": 24.48,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/service_variants_controller.rb": {
+            "line": 35.41,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/services_controller.rb": {
+            "line": 32.6,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/tenants_controller.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/controllers/landlord_portal/vehicles_controller.rb": {
+            "line": 30.0,
+            "branch": 100.0
+          },
+          "app/controllers/notifications_controller.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/controllers/otp_controller.rb": {
+            "line": 15.49,
+            "branch": 0.0
+          },
+          "app/controllers/payments/payos_controller.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/controllers/public_pages_controller.rb": {
+            "line": 93.33,
+            "branch": 75.0
+          },
+          "app/controllers/tenant_portal/base_controller.rb": {
+            "line": 66.66,
+            "branch": 0.0
+          },
+          "app/controllers/tenant_portal/contracts_controller.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/controllers/tenant_portal/dashboard_controller.rb": {
+            "line": 0.0,
+            "branch": 100.0
+          },
+          "app/controllers/tenant_portal/invoices_controller.rb": {
+            "line": 30.61,
+            "branch": 0.0
+          },
+          "app/controllers/tenant_portal/leave_house_requests_controller.rb": {
+            "line": 40.0,
+            "branch": 100.0
+          },
+          "app/controllers/tenant_portal/profiles_controller.rb": {
+            "line": 28.07,
+            "branch": 0.0
+          },
+          "app/controllers/tenant_portal/repair_requests_controller.rb": {
+            "line": 45.45,
+            "branch": 100.0
+          },
+          "app/controllers/tenant_portal/requests_controller.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/controllers/tenant_portal/rooms_controller.rb": {
+            "line": 25.0,
+            "branch": 100.0
+          },
+          "app/controllers/tenant_portal/service_usage_logs_controller.rb": {
+            "line": 19.51,
+            "branch": 0.0
+          },
+          "app/controllers/tenant_portal/services_controller.rb": {
+            "line": 71.42,
+            "branch": 100.0
+          },
+          "app/controllers/tenant_portal/vehicle_requests_controller.rb": {
+            "line": 45.45,
+            "branch": 100.0
+          },
+          "app/controllers/tenant_portal/vehicles_controller.rb": {
+            "line": 30.0,
+            "branch": 100.0
+          },
+          "app/controllers/users_controller.rb": {
+            "line": 43.58,
+            "branch": 18.75
+          },
+          "app/controllers/webhooks/payos_controller.rb": {
+            "line": 80.0,
+            "branch": 100.0
+          },
+          "app/forms/bed_creation_form.rb": {
+            "line": 96.29,
+            "branch": 50.0
+          },
+          "app/forms/broadcast_notification_form.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/forms/house_creation_form.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/forms/tenant_link_form.rb": {
+            "line": 96.15,
+            "branch": 77.77
+          },
+          "app/helpers/admin_portal/uploaded_files_helper.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/helpers/application_helper.rb": {
+            "line": 49.09,
+            "branch": 68.96
+          },
+          "app/helpers/assets_helper.rb": {
+            "line": 47.05,
+            "branch": 100.0
+          },
+          "app/helpers/contracts_helper.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/helpers/form_helper.rb": {
+            "line": 6.89,
+            "branch": 16.66
+          },
+          "app/helpers/houses_helper.rb": {
+            "line": 71.42,
+            "branch": 100.0
+          },
+          "app/helpers/invoices_helper.rb": {
+            "line": 78.94,
+            "branch": 85.71
+          },
+          "app/helpers/issue_reports_helper.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/helpers/locations_helper.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/helpers/nav_helper.rb": {
+            "line": 27.08,
+            "branch": 20.58
+          },
+          "app/helpers/notifications_helper.rb": {
+            "line": 82.35,
+            "branch": 100.0
+          },
+          "app/helpers/requests_helper.rb": {
+            "line": 56.81,
+            "branch": 60.0
+          },
+          "app/helpers/service_usage_logs_helper.rb": {
+            "line": 73.17,
+            "branch": 80.0
+          },
+          "app/helpers/services_helper.rb": {
+            "line": 79.16,
+            "branch": 100.0
+          },
+          "app/helpers/users_helper.rb": {
+            "line": 0.0,
+            "branch": 100.0
+          },
+          "app/jobs/application_job.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/jobs/broadcast_custom_notification_job.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/jobs/cleanup_notifications_job.rb": {
+            "line": 0.0,
+            "branch": 100.0
+          },
+          "app/jobs/contract_due_reminder_job.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/jobs/contract_due_today_job.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/jobs/contract_overdue_close_job.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/jobs/invoice_creation_reminder_job.rb": {
+            "line": 90.0,
+            "branch": 50.0
+          },
+          "app/jobs/invoice_due_today_job.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/jobs/invoice_overdue_check_job.rb": {
+            "line": 88.23,
+            "branch": 41.66
+          },
+          "app/jobs/landlord_dashboard_broadcast_job.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/jobs/request_overdue_expire_job.rb": {
+            "line": 0.0,
+            "branch": 100.0
+          },
+          "app/models/ability.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/models/admin.rb": {
+            "line": 100.0,
+            "branch": 75.0
+          },
+          "app/models/application_record.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/models/asset.rb": {
+            "line": 76.0,
+            "branch": 100.0
+          },
+          "app/models/bank.rb": {
+            "line": 90.9,
+            "branch": 100.0
+          },
+          "app/models/bank_account.rb": {
+            "line": 83.01,
+            "branch": 63.33
+          },
+          "app/models/bed.rb": {
+            "line": 75.67,
+            "branch": 25.0
+          },
+          "app/models/concerns/otp.rb": {
+            "line": 81.81,
+            "branch": 100.0
+          },
+          "app/models/contract.rb": {
+            "line": 71.66,
+            "branch": 20.0
+          },
+          "app/models/floor.rb": {
+            "line": 94.44,
+            "branch": 55.55
+          },
+          "app/models/house.rb": {
+            "line": 71.33,
+            "branch": 50.0
+          },
+          "app/models/invoice.rb": {
+            "line": 76.19,
+            "branch": 50.0
+          },
+          "app/models/invoice_item.rb": {
+            "line": 72.22,
+            "branch": 0.0
+          },
+          "app/models/invoice_service_usage_log.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/models/issue_report.rb": {
+            "line": 100.0,
+            "branch": 25.0
+          },
+          "app/models/landlord.rb": {
+            "line": 91.66,
+            "branch": 100.0
+          },
+          "app/models/leave_house_request.rb": {
+            "line": 46.66,
+            "branch": 16.66
+          },
+          "app/models/maintenance_log.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/models/payment_order.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/models/rental_unit.rb": {
+            "line": 100.0,
+            "branch": 66.66
+          },
+          "app/models/repair_request.rb": {
+            "line": 87.75,
+            "branch": 55.0
+          },
+          "app/models/request.rb": {
+            "line": 63.33,
+            "branch": 34.37
+          },
+          "app/models/room.rb": {
+            "line": 70.87,
+            "branch": 0.0
+          },
+          "app/models/room_service.rb": {
+            "line": 93.33,
+            "branch": 66.66
+          },
+          "app/models/service.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/models/service_usage_log.rb": {
+            "line": 86.48,
+            "branch": 58.33
+          },
+          "app/models/service_variant.rb": {
+            "line": 84.09,
+            "branch": 83.33
+          },
+          "app/models/tenant.rb": {
+            "line": 77.41,
+            "branch": 0.0
+          },
+          "app/models/tenant_stay.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/models/user.rb": {
+            "line": 89.23,
+            "branch": 62.5
+          },
+          "app/models/vehicle.rb": {
+            "line": 80.95,
+            "branch": 33.33
+          },
+          "app/models/vehicle_request.rb": {
+            "line": 50.0,
+            "branch": 0.0
+          },
+          "app/notifiers/application_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/contract_closed_notifier.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/notifiers/contract_due_today_notifier.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/notifiers/contract_expiring_soon_notifier.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/notifiers/contract_extended_notifier.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/notifiers/contract_overdue_closed_notifier.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/notifiers/contract_signed_notifier.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/notifiers/contract_updated_notifier.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/notifiers/custom_announcement_notifier.rb": {
+            "line": 64.28,
+            "branch": 100.0
+          },
+          "app/notifiers/delivery_methods/turbo_stream.rb": {
+            "line": 11.76,
+            "branch": 0.0
+          },
+          "app/notifiers/invoice_cancelled_notifier.rb": {
+            "line": 0.0,
+            "branch": 100.0
+          },
+          "app/notifiers/invoice_creation_reminder_notifier.rb": {
+            "line": 60.0,
+            "branch": 100.0
+          },
+          "app/notifiers/invoice_due_today_notifier.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/notifiers/invoice_issued_notifier.rb": {
+            "line": 66.66,
+            "branch": 100.0
+          },
+          "app/notifiers/invoice_overdue_notifier.rb": {
+            "line": 40.0,
+            "branch": 0.0
+          },
+          "app/notifiers/invoice_paid_notifier.rb": {
+            "line": 19.44,
+            "branch": 0.0
+          },
+          "app/notifiers/invoice_unpaid_notifier.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/notifiers/invoice_updated_notifier.rb": {
+            "line": 66.66,
+            "branch": 100.0
+          },
+          "app/notifiers/leave_house_request_created_notifier.rb": {
+            "line": 40.0,
+            "branch": 0.0
+          },
+          "app/notifiers/repair_request_created_notifier.rb": {
+            "line": 40.0,
+            "branch": 0.0
+          },
+          "app/notifiers/request_resolved_notifier.rb": {
+            "line": 25.0,
+            "branch": 0.0
+          },
+          "app/notifiers/sensitive_file_removed_notifier.rb": {
+            "line": 0.0,
+            "branch": 100.0
+          },
+          "app/notifiers/service_updated_notifier.rb": {
+            "line": 0.0,
+            "branch": 100.0
+          },
+          "app/notifiers/service_usage_log_confirmed_notifier.rb": {
+            "line": 66.66,
+            "branch": 100.0
+          },
+          "app/notifiers/service_usage_log_requested_notifier.rb": {
+            "line": 66.66,
+            "branch": 100.0
+          },
+          "app/notifiers/telephone_changed_notifier.rb": {
+            "line": 54.54,
+            "branch": 0.0
+          },
+          "app/notifiers/tenant_added_notifier.rb": {
+            "line": 66.66,
+            "branch": 100.0
+          },
+          "app/notifiers/tenant_moved_notifier.rb": {
+            "line": 0.0,
+            "branch": 100.0
+          },
+          "app/notifiers/tenant_removed_notifier.rb": {
+            "line": 40.0,
+            "branch": 0.0
+          },
+          "app/notifiers/vehicle_removed_notifier.rb": {
+            "line": 35.71,
+            "branch": 0.0
+          },
+          "app/notifiers/vehicle_request_created_notifier.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/account_deletion.rb": {
+            "line": 88.88,
+            "branch": 75.0
+          },
+          "app/services/account_deletion_check.rb": {
+            "line": 93.61,
+            "branch": 72.72
+          },
+          "app/services/admin_portal/house_assets_filter.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/admin_portal/house_rooms_filter.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/admin_portal/sensitive_file_deleter.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/admin_portal/uploaded_files_filter.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/admin_portal/uploaded_files_stats_service.rb": {
+            "line": 0.0,
+            "branch": 100.0
+          },
+          "app/services/available_slots_builder.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/checkin.rb": {
+            "line": 96.42,
+            "branch": 50.0
+          },
+          "app/services/checkout.rb": {
+            "line": 90.0,
+            "branch": 62.5
+          },
+          "app/services/contract_closing.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/contract_extension.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/contract_filter.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/contract_renewal.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/contract_signing.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/contract_update.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/house_creation.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/house_fixed_services_summary.rb": {
+            "line": 94.44,
+            "branch": 79.16
+          },
+          "app/services/house_mode_changer.rb": {
+            "line": 97.22,
+            "branch": 66.66
+          },
+          "app/services/invoice_filter.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/invoices/cancel_service.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/invoices/create_custom_service.rb": {
+            "line": 91.95,
+            "branch": 62.85
+          },
+          "app/services/invoices/draft_calculator.rb": {
+            "line": 68.53,
+            "branch": 29.16
+          },
+          "app/services/invoices/filter_service.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/invoices/issue_service.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/invoices/mark_paid_service.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/invoices/occupied_rooms_query.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/invoices/stats_service.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/invoices/undo_paid_service.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/invoices/update_service.rb": {
+            "line": 80.48,
+            "branch": 36.36
+          },
+          "app/services/landlord_asset_filter.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/landlord_asset_stats_service.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/landlord_contract_archive_filter.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/landlord_dashboard/contract_stats_calculator.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/services/landlord_dashboard/invoice_stats_calculator.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/services/landlord_dashboard/occupancy_calculator.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/services/landlord_dashboard/request_stats_calculator.rb": {
+            "line": 76.19,
+            "branch": 50.0
+          },
+          "app/services/landlord_dashboard/revenue_stats_calculator.rb": {
+            "line": 91.46,
+            "branch": 50.0
+          },
+          "app/services/landlord_dashboard/tenant_flow_calculator.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/services/landlord_dashboard_broadcaster.rb": {
+            "line": 100.0,
+            "branch": 87.5
+          },
+          "app/services/landlord_dashboard_stats_service.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/landlord_invoice_archive_filter.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/landlord_maintenance_log_filter.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/landlord_request_badge_broadcaster.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/landlord_request_filter.rb": {
+            "line": 0.0,
+            "branch": 100.0
+          },
+          "app/services/landlord_request_stats_service.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/landlord_service_usage_logs_filter.rb": {
+            "line": 88.13,
+            "branch": 84.61
+          },
+          "app/services/landlord_service_usage_logs_index_builder.rb": {
+            "line": 91.07,
+            "branch": 71.42
+          },
+          "app/services/landlord_vehicle_stats_service.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/leave_house_request_submission.rb": {
+            "line": 78.78,
+            "branch": 50.0
+          },
+          "app/services/password_recovery.rb": {
+            "line": 96.29,
+            "branch": 83.33
+          },
+          "app/services/payos/process_webhook_service.rb": {
+            "line": 55.88,
+            "branch": 38.88
+          },
+          "app/services/payos_service.rb": {
+            "line": 37.76,
+            "branch": 59.25
+          },
+          "app/services/phone_recycling.rb": {
+            "line": 90.47,
+            "branch": 40.0
+          },
+          "app/services/phone_verification.rb": {
+            "line": 53.84,
+            "branch": 12.5
+          },
+          "app/services/repair_request_submission.rb": {
+            "line": 95.83,
+            "branch": 50.0
+          },
+          "app/services/request_filter.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/request_handling.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/room_fixed_services_summary.rb": {
+            "line": 89.9,
+            "branch": 83.33
+          },
+          "app/services/room_update.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/service_usage_log_confirmer.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/service_usage_log_creator.rb": {
+            "line": 96.66,
+            "branch": 66.66
+          },
+          "app/services/service_variant_updater.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/tenant_dashboard_stats_service.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/tenant_filter.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/tenant_mover.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/tenant_request_filter.rb": {
+            "line": 0.0,
+            "branch": 100.0
+          },
+          "app/services/tenant_services_filter.rb": {
+            "line": 96.15,
+            "branch": 87.5
+          },
+          "app/services/transfer_note_builder.rb": {
+            "line": 100.0,
+            "branch": 66.66
+          },
+          "app/services/vehicle_deletion.rb": {
+            "line": 96.29,
+            "branch": 75.0
+          },
+          "app/services/vehicle_request_submission.rb": {
+            "line": 0.0,
+            "branch": 0.0
+          },
+          "app/services/vietqr_service.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          }
+        }
+      },
+      {
+        "created_at": "2026-09-28T21:33:56Z",
+        "branch": "main",
+        "commit": "0acfb8a0338ada780de3854c8cc4305d778bb9c2",
+        "totals": {
+          "line": 91.21,
+          "branch": 72.29
+        },
+        "groups": {
+          "Controllers": {
+            "line": 87.05,
+            "branch": 66.13
+          },
+          "Helpers": {
+            "line": 93.41,
+            "branch": 83.27
+          },
+          "Jobs": {
+            "line": 99.0,
+            "branch": 55.26
+          },
+          "Models": {
+            "line": 93.06,
+            "branch": 67.48
+          },
+          "Services": {
+            "line": 91.52,
+            "branch": 72.89
+          },
+          "Notifiers": {
+            "line": 99.75,
+            "branch": 96.69
+          },
+          "Ungrouped": {
+            "line": 96.4,
+            "branch": 67.56
+          }
+        },
+        "files": {
+          "app/controllers/admin_portal/admins_controller.rb": {
+            "line": 92.1,
+            "branch": 71.42
+          },
+          "app/controllers/admin_portal/assets_controller.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/controllers/admin_portal/base_controller.rb": {
+            "line": 100.0,
+            "branch": 87.5
+          },
+          "app/controllers/admin_portal/contracts_controller.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/controllers/admin_portal/dashboard_controller.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/controllers/admin_portal/houses_controller.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/controllers/admin_portal/invoices_controller.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/controllers/admin_portal/issue_reports_controller.rb": {
+            "line": 89.65,
+            "branch": 50.0
+          },
+          "app/controllers/admin_portal/notifications_controller.rb": {
+            "line": 93.33,
+            "branch": 81.25
+          },
+          "app/controllers/admin_portal/requests_controller.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/controllers/admin_portal/services_controller.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/controllers/admin_portal/sessions_controller.rb": {
+            "line": 92.85,
+            "branch": 70.0
+          },
+          "app/controllers/admin_portal/uploaded_files_controller.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/controllers/admin_portal/users_controller.rb": {
+            "line": 87.5,
+            "branch": 57.89
+          },
+          "app/controllers/application_controller.rb": {
+            "line": 93.75,
+            "branch": 70.0
+          },
+          "app/controllers/authentication_controller.rb": {
+            "line": 85.93,
+            "branch": 54.54
+          },
+          "app/controllers/concerns/session_helper.rb": {
+            "line": 97.36,
+            "branch": 78.57
+          },
+          "app/controllers/landlord_portal/archived_contracts_controller.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/controllers/landlord_portal/archived_invoices_controller.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/controllers/landlord_portal/assets_controller.rb": {
+            "line": 90.56,
+            "branch": 37.5
+          },
+          "app/controllers/landlord_portal/bank_accounts_controller.rb": {
+            "line": 93.5,
+            "branch": 70.0
+          },
+          "app/controllers/landlord_portal/base_controller.rb": {
+            "line": 100.0,
+            "branch": 83.33
+          },
+          "app/controllers/landlord_portal/beds_controller.rb": {
+            "line": 64.83,
+            "branch": 47.05
+          },
+          "app/controllers/landlord_portal/contracts_controller.rb": {
+            "line": 53.33,
+            "branch": 16.66
+          },
+          "app/controllers/landlord_portal/dashboards_controller.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/controllers/landlord_portal/floors_controller.rb": {
+            "line": 82.35,
+            "branch": 50.0
+          },
+          "app/controllers/landlord_portal/houses_controller.rb": {
+            "line": 72.13,
+            "branch": 50.0
+          },
+          "app/controllers/landlord_portal/invoices_controller.rb": {
+            "line": 85.64,
+            "branch": 77.77
+          },
+          "app/controllers/landlord_portal/maintenance_logs_controller.rb": {
+            "line": 98.0,
+            "branch": 66.66
+          },
+          "app/controllers/landlord_portal/profiles_controller.rb": {
+            "line": 94.73,
+            "branch": 72.22
+          },
+          "app/controllers/landlord_portal/requests_controller.rb": {
+            "line": 91.17,
+            "branch": 71.42
+          },
+          "app/controllers/landlord_portal/rooms_controller.rb": {
+            "line": 64.94,
+            "branch": 45.71
+          },
+          "app/controllers/landlord_portal/service_usage_logs_controller.rb": {
+            "line": 89.11,
+            "branch": 63.15
+          },
+          "app/controllers/landlord_portal/service_variants_controller.rb": {
+            "line": 91.66,
+            "branch": 75.0
+          },
+          "app/controllers/landlord_portal/services_controller.rb": {
+            "line": 82.6,
+            "branch": 50.0
+          },
+          "app/controllers/landlord_portal/tenants_controller.rb": {
+            "line": 93.02,
+            "branch": 71.42
+          },
+          "app/controllers/landlord_portal/vehicles_controller.rb": {
+            "line": 93.33,
+            "branch": 100.0
+          },
+          "app/controllers/notifications_controller.rb": {
+            "line": 100.0,
+            "branch": 70.0
+          },
+          "app/controllers/otp_controller.rb": {
+            "line": 80.28,
+            "branch": 61.53
+          },
+          "app/controllers/payments/payos_controller.rb": {
+            "line": 82.5,
+            "branch": 58.33
+          },
+          "app/controllers/public_pages_controller.rb": {
+            "line": 100.0,
+            "branch": 75.0
+          },
+          "app/controllers/tenant_portal/base_controller.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/controllers/tenant_portal/contracts_controller.rb": {
+            "line": 100.0,
+            "branch": 75.0
+          },
+          "app/controllers/tenant_portal/dashboard_controller.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/controllers/tenant_portal/invoices_controller.rb": {
+            "line": 97.95,
+            "branch": 100.0
+          },
+          "app/controllers/tenant_portal/leave_house_requests_controller.rb": {
+            "line": 80.0,
+            "branch": 100.0
+          },
+          "app/controllers/tenant_portal/profiles_controller.rb": {
+            "line": 87.71,
+            "branch": 55.55
+          },
+          "app/controllers/tenant_portal/repair_requests_controller.rb": {
+            "line": 81.81,
+            "branch": 100.0
+          },
+          "app/controllers/tenant_portal/requests_controller.rb": {
+            "line": 100.0,
+            "branch": 75.0
+          },
+          "app/controllers/tenant_portal/rooms_controller.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/controllers/tenant_portal/service_usage_logs_controller.rb": {
+            "line": 89.02,
+            "branch": 81.25
+          },
+          "app/controllers/tenant_portal/services_controller.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/controllers/tenant_portal/vehicle_requests_controller.rb": {
+            "line": 54.54,
+            "branch": 100.0
+          },
+          "app/controllers/tenant_portal/vehicles_controller.rb": {
+            "line": 90.0,
+            "branch": 100.0
+          },
+          "app/controllers/users_controller.rb": {
+            "line": 76.92,
+            "branch": 62.5
+          },
+          "app/controllers/webhooks/payos_controller.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/forms/bed_creation_form.rb": {
+            "line": 96.29,
+            "branch": 50.0
+          },
+          "app/forms/broadcast_notification_form.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/forms/house_creation_form.rb": {
+            "line": 94.23,
+            "branch": 50.0
+          },
+          "app/forms/tenant_link_form.rb": {
+            "line": 96.15,
+            "branch": 77.77
+          },
+          "app/helpers/admin_portal/uploaded_files_helper.rb": {
+            "line": 95.55,
+            "branch": 86.88
+          },
+          "app/helpers/application_helper.rb": {
+            "line": 92.72,
+            "branch": 86.2
+          },
+          "app/helpers/assets_helper.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/helpers/contracts_helper.rb": {
+            "line": 66.66,
+            "branch": 37.5
+          },
+          "app/helpers/form_helper.rb": {
+            "line": 86.2,
+            "branch": 66.66
+          },
+          "app/helpers/houses_helper.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/helpers/invoices_helper.rb": {
+            "line": 100.0,
+            "branch": 92.85
+          },
+          "app/helpers/issue_reports_helper.rb": {
+            "line": 81.81,
+            "branch": 50.0
+          },
+          "app/helpers/locations_helper.rb": {
+            "line": 41.66,
+            "branch": 0.0
+          },
+          "app/helpers/nav_helper.rb": {
+            "line": 95.83,
+            "branch": 82.35
+          },
+          "app/helpers/notifications_helper.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/helpers/requests_helper.rb": {
+            "line": 88.63,
+            "branch": 75.0
+          },
+          "app/helpers/service_usage_logs_helper.rb": {
+            "line": 100.0,
+            "branch": 80.0
+          },
+          "app/helpers/services_helper.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/helpers/users_helper.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/jobs/application_job.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/jobs/broadcast_custom_notification_job.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/jobs/cleanup_notifications_job.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/jobs/contract_due_reminder_job.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/jobs/contract_due_today_job.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/jobs/contract_overdue_close_job.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/jobs/invoice_creation_reminder_job.rb": {
+            "line": 90.0,
+            "branch": 50.0
+          },
+          "app/jobs/invoice_due_today_job.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/jobs/invoice_overdue_check_job.rb": {
+            "line": 100.0,
+            "branch": 66.66
+          },
+          "app/jobs/landlord_dashboard_broadcast_job.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/jobs/request_overdue_expire_job.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/models/ability.rb": {
+            "line": 100.0,
+            "branch": 75.0
+          },
+          "app/models/admin.rb": {
+            "line": 100.0,
+            "branch": 75.0
+          },
+          "app/models/application_record.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/models/asset.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/models/bank.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/models/bank_account.rb": {
+            "line": 88.67,
+            "branch": 76.66
+          },
+          "app/models/bed.rb": {
+            "line": 89.18,
+            "branch": 50.0
+          },
+          "app/models/concerns/otp.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/models/contract.rb": {
+            "line": 88.33,
+            "branch": 55.0
+          },
+          "app/models/floor.rb": {
+            "line": 94.44,
+            "branch": 55.55
+          },
+          "app/models/house.rb": {
+            "line": 91.33,
+            "branch": 65.38
+          },
+          "app/models/invoice.rb": {
+            "line": 92.38,
+            "branch": 73.58
+          },
+          "app/models/invoice_item.rb": {
+            "line": 94.44,
+            "branch": 33.33
+          },
+          "app/models/invoice_service_usage_log.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/models/issue_report.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/models/landlord.rb": {
+            "line": 91.66,
+            "branch": 100.0
+          },
+          "app/models/leave_house_request.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/models/maintenance_log.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/models/payment_order.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/models/rental_unit.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/models/repair_request.rb": {
+            "line": 87.75,
+            "branch": 55.0
+          },
+          "app/models/request.rb": {
+            "line": 90.0,
+            "branch": 56.25
+          },
+          "app/models/room.rb": {
+            "line": 87.37,
+            "branch": 56.25
+          },
+          "app/models/room_service.rb": {
+            "line": 93.33,
+            "branch": 66.66
+          },
+          "app/models/service.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/models/service_usage_log.rb": {
+            "line": 93.24,
+            "branch": 80.55
+          },
+          "app/models/service_variant.rb": {
+            "line": 93.18,
+            "branch": 83.33
+          },
+          "app/models/tenant.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/models/tenant_stay.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/models/user.rb": {
+            "line": 93.84,
+            "branch": 62.5
+          },
+          "app/models/vehicle.rb": {
+            "line": 95.23,
+            "branch": 88.88
+          },
+          "app/models/vehicle_request.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/notifiers/application_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/contract_closed_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/contract_due_today_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/contract_expiring_soon_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/contract_extended_notifier.rb": {
+            "line": 100.0,
+            "branch": 75.0
+          },
+          "app/notifiers/contract_overdue_closed_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/contract_signed_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/contract_updated_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/custom_announcement_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/delivery_methods/turbo_stream.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/notifiers/invoice_cancelled_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/invoice_creation_reminder_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/invoice_due_today_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/invoice_issued_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/invoice_overdue_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/invoice_paid_notifier.rb": {
+            "line": 97.22,
+            "branch": 96.15
+          },
+          "app/notifiers/invoice_unpaid_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/invoice_updated_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/leave_house_request_created_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/repair_request_created_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/request_resolved_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/sensitive_file_removed_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/service_updated_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/service_usage_log_confirmed_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/service_usage_log_requested_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/telephone_changed_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/tenant_added_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/tenant_moved_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/tenant_removed_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/vehicle_removed_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/vehicle_request_created_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/account_deletion.rb": {
+            "line": 88.88,
+            "branch": 75.0
+          },
+          "app/services/account_deletion_check.rb": {
+            "line": 97.87,
+            "branch": 81.81
+          },
+          "app/services/admin_portal/house_assets_filter.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/services/admin_portal/house_rooms_filter.rb": {
+            "line": 91.42,
+            "branch": 72.72
+          },
+          "app/services/admin_portal/sensitive_file_deleter.rb": {
+            "line": 89.28,
+            "branch": 50.0
+          },
+          "app/services/admin_portal/uploaded_files_filter.rb": {
+            "line": 94.28,
+            "branch": 77.77
+          },
+          "app/services/admin_portal/uploaded_files_stats_service.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/available_slots_builder.rb": {
+            "line": 83.33,
+            "branch": 50.0
+          },
+          "app/services/checkin.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/services/checkout.rb": {
+            "line": 96.66,
+            "branch": 81.25
+          },
+          "app/services/contract_closing.rb": {
+            "line": 64.51,
+            "branch": 40.0
+          },
+          "app/services/contract_extension.rb": {
+            "line": 90.0,
+            "branch": 62.5
+          },
+          "app/services/contract_filter.rb": {
+            "line": 93.1,
+            "branch": 77.77
+          },
+          "app/services/contract_renewal.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/services/contract_signing.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/services/contract_update.rb": {
+            "line": 100.0,
+            "branch": 90.0
+          },
+          "app/services/house_creation.rb": {
+            "line": 77.77,
+            "branch": 50.0
+          },
+          "app/services/house_fixed_services_summary.rb": {
+            "line": 98.14,
+            "branch": 87.5
+          },
+          "app/services/house_mode_changer.rb": {
+            "line": 97.22,
+            "branch": 66.66
+          },
+          "app/services/invoice_filter.rb": {
+            "line": 91.17,
+            "branch": 72.72
+          },
+          "app/services/invoices/cancel_service.rb": {
+            "line": 73.68,
+            "branch": 37.5
+          },
+          "app/services/invoices/create_custom_service.rb": {
+            "line": 93.1,
+            "branch": 65.71
+          },
+          "app/services/invoices/draft_calculator.rb": {
+            "line": 84.26,
+            "branch": 50.0
+          },
+          "app/services/invoices/filter_service.rb": {
+            "line": 83.82,
+            "branch": 78.12
+          },
+          "app/services/invoices/issue_service.rb": {
+            "line": 90.9,
+            "branch": 60.71
+          },
+          "app/services/invoices/mark_paid_service.rb": {
+            "line": 100.0,
+            "branch": 78.57
+          },
+          "app/services/invoices/occupied_rooms_query.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/invoices/stats_service.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/invoices/undo_paid_service.rb": {
+            "line": 100.0,
+            "branch": 66.66
+          },
+          "app/services/invoices/update_service.rb": {
+            "line": 95.12,
+            "branch": 68.18
+          },
+          "app/services/landlord_asset_filter.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/services/landlord_asset_stats_service.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/landlord_contract_archive_filter.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/landlord_dashboard/contract_stats_calculator.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/services/landlord_dashboard/invoice_stats_calculator.rb": {
+            "line": 100.0,
+            "branch": 75.0
+          },
+          "app/services/landlord_dashboard/occupancy_calculator.rb": {
+            "line": 100.0,
+            "branch": 75.0
+          },
+          "app/services/landlord_dashboard/request_stats_calculator.rb": {
+            "line": 100.0,
+            "branch": 75.0
+          },
+          "app/services/landlord_dashboard/revenue_stats_calculator.rb": {
+            "line": 98.78,
+            "branch": 91.66
+          },
+          "app/services/landlord_dashboard/tenant_flow_calculator.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/services/landlord_dashboard_broadcaster.rb": {
+            "line": 100.0,
+            "branch": 87.5
+          },
+          "app/services/landlord_dashboard_stats_service.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/landlord_invoice_archive_filter.rb": {
+            "line": 96.96,
+            "branch": 90.0
+          },
+          "app/services/landlord_maintenance_log_filter.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/landlord_request_badge_broadcaster.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/landlord_request_filter.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/landlord_request_stats_service.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/landlord_service_usage_logs_filter.rb": {
+            "line": 88.13,
+            "branch": 84.61
+          },
+          "app/services/landlord_service_usage_logs_index_builder.rb": {
+            "line": 94.64,
+            "branch": 78.57
+          },
+          "app/services/landlord_vehicle_stats_service.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/leave_house_request_submission.rb": {
+            "line": 90.9,
+            "branch": 60.0
+          },
+          "app/services/password_recovery.rb": {
+            "line": 96.29,
+            "branch": 83.33
+          },
+          "app/services/payos/process_webhook_service.rb": {
+            "line": 94.11,
+            "branch": 83.33
+          },
+          "app/services/payos_service.rb": {
+            "line": 48.95,
+            "branch": 68.51
+          },
+          "app/services/phone_recycling.rb": {
+            "line": 90.47,
+            "branch": 40.0
+          },
+          "app/services/phone_verification.rb": {
+            "line": 82.05,
+            "branch": 75.0
+          },
+          "app/services/repair_request_submission.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/services/request_filter.rb": {
+            "line": 97.72,
+            "branch": 87.5
+          },
+          "app/services/request_handling.rb": {
+            "line": 95.34,
+            "branch": 68.42
+          },
+          "app/services/room_fixed_services_summary.rb": {
+            "line": 96.33,
+            "branch": 87.5
+          },
+          "app/services/room_update.rb": {
+            "line": 93.15,
+            "branch": 80.76
+          },
+          "app/services/service_usage_log_confirmer.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/service_usage_log_creator.rb": {
+            "line": 96.66,
+            "branch": 75.0
+          },
+          "app/services/service_variant_updater.rb": {
+            "line": 67.85,
+            "branch": 30.0
+          },
+          "app/services/tenant_dashboard_stats_service.rb": {
+            "line": 98.03,
+            "branch": 80.0
+          },
+          "app/services/tenant_filter.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/tenant_mover.rb": {
+            "line": 97.36,
+            "branch": 66.66
+          },
+          "app/services/tenant_request_filter.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/tenant_services_filter.rb": {
+            "line": 96.15,
+            "branch": 87.5
+          },
+          "app/services/transfer_note_builder.rb": {
+            "line": 100.0,
+            "branch": 66.66
+          },
+          "app/services/vehicle_deletion.rb": {
+            "line": 100.0,
+            "branch": 75.0
+          },
+          "app/services/vehicle_request_submission.rb": {
+            "line": 100.0,
+            "branch": 83.33
+          },
+          "app/services/vietqr_service.rb": {
+            "line": 100.0,
+            "branch": 66.66
+          }
+        }
+      },
+      {
+        "created_at": "2026-09-28T21:39:57Z",
+        "branch": "main",
+        "commit": "0acfb8a0338ada780de3854c8cc4305d778bb9c2",
+        "totals": {
+          "line": 91.21,
+          "branch": 72.29
+        },
+        "groups": {
+          "Controllers": {
+            "line": 87.05,
+            "branch": 66.13
+          },
+          "Helpers": {
+            "line": 93.41,
+            "branch": 83.27
+          },
+          "Jobs": {
+            "line": 99.0,
+            "branch": 55.26
+          },
+          "Models": {
+            "line": 93.06,
+            "branch": 67.48
+          },
+          "Services": {
+            "line": 91.52,
+            "branch": 72.89
+          },
+          "Notifiers": {
+            "line": 99.75,
+            "branch": 96.69
+          },
+          "Ungrouped": {
+            "line": 96.4,
+            "branch": 67.56
+          }
+        },
+        "files": {
+          "app/controllers/admin_portal/admins_controller.rb": {
+            "line": 92.1,
+            "branch": 71.42
+          },
+          "app/controllers/admin_portal/assets_controller.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/controllers/admin_portal/base_controller.rb": {
+            "line": 100.0,
+            "branch": 87.5
+          },
+          "app/controllers/admin_portal/contracts_controller.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/controllers/admin_portal/dashboard_controller.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/controllers/admin_portal/houses_controller.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/controllers/admin_portal/invoices_controller.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/controllers/admin_portal/issue_reports_controller.rb": {
+            "line": 89.65,
+            "branch": 50.0
+          },
+          "app/controllers/admin_portal/notifications_controller.rb": {
+            "line": 93.33,
+            "branch": 81.25
+          },
+          "app/controllers/admin_portal/requests_controller.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/controllers/admin_portal/services_controller.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/controllers/admin_portal/sessions_controller.rb": {
+            "line": 92.85,
+            "branch": 70.0
+          },
+          "app/controllers/admin_portal/uploaded_files_controller.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/controllers/admin_portal/users_controller.rb": {
+            "line": 87.5,
+            "branch": 57.89
+          },
+          "app/controllers/application_controller.rb": {
+            "line": 93.75,
+            "branch": 70.0
+          },
+          "app/controllers/authentication_controller.rb": {
+            "line": 85.93,
+            "branch": 54.54
+          },
+          "app/controllers/concerns/session_helper.rb": {
+            "line": 97.36,
+            "branch": 78.57
+          },
+          "app/controllers/landlord_portal/archived_contracts_controller.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/controllers/landlord_portal/archived_invoices_controller.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/controllers/landlord_portal/assets_controller.rb": {
+            "line": 90.56,
+            "branch": 37.5
+          },
+          "app/controllers/landlord_portal/bank_accounts_controller.rb": {
+            "line": 93.5,
+            "branch": 70.0
+          },
+          "app/controllers/landlord_portal/base_controller.rb": {
+            "line": 100.0,
+            "branch": 83.33
+          },
+          "app/controllers/landlord_portal/beds_controller.rb": {
+            "line": 64.83,
+            "branch": 47.05
+          },
+          "app/controllers/landlord_portal/contracts_controller.rb": {
+            "line": 53.33,
+            "branch": 16.66
+          },
+          "app/controllers/landlord_portal/dashboards_controller.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/controllers/landlord_portal/floors_controller.rb": {
+            "line": 82.35,
+            "branch": 50.0
+          },
+          "app/controllers/landlord_portal/houses_controller.rb": {
+            "line": 72.13,
+            "branch": 50.0
+          },
+          "app/controllers/landlord_portal/invoices_controller.rb": {
+            "line": 85.64,
+            "branch": 77.77
+          },
+          "app/controllers/landlord_portal/maintenance_logs_controller.rb": {
+            "line": 98.0,
+            "branch": 66.66
+          },
+          "app/controllers/landlord_portal/profiles_controller.rb": {
+            "line": 94.73,
+            "branch": 72.22
+          },
+          "app/controllers/landlord_portal/requests_controller.rb": {
+            "line": 91.17,
+            "branch": 71.42
+          },
+          "app/controllers/landlord_portal/rooms_controller.rb": {
+            "line": 64.94,
+            "branch": 45.71
+          },
+          "app/controllers/landlord_portal/service_usage_logs_controller.rb": {
+            "line": 89.11,
+            "branch": 63.15
+          },
+          "app/controllers/landlord_portal/service_variants_controller.rb": {
+            "line": 91.66,
+            "branch": 75.0
+          },
+          "app/controllers/landlord_portal/services_controller.rb": {
+            "line": 82.6,
+            "branch": 50.0
+          },
+          "app/controllers/landlord_portal/tenants_controller.rb": {
+            "line": 93.02,
+            "branch": 71.42
+          },
+          "app/controllers/landlord_portal/vehicles_controller.rb": {
+            "line": 93.33,
+            "branch": 100.0
+          },
+          "app/controllers/notifications_controller.rb": {
+            "line": 100.0,
+            "branch": 70.0
+          },
+          "app/controllers/otp_controller.rb": {
+            "line": 80.28,
+            "branch": 61.53
+          },
+          "app/controllers/payments/payos_controller.rb": {
+            "line": 82.5,
+            "branch": 58.33
+          },
+          "app/controllers/public_pages_controller.rb": {
+            "line": 100.0,
+            "branch": 75.0
+          },
+          "app/controllers/tenant_portal/base_controller.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/controllers/tenant_portal/contracts_controller.rb": {
+            "line": 100.0,
+            "branch": 75.0
+          },
+          "app/controllers/tenant_portal/dashboard_controller.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/controllers/tenant_portal/invoices_controller.rb": {
+            "line": 97.95,
+            "branch": 100.0
+          },
+          "app/controllers/tenant_portal/leave_house_requests_controller.rb": {
+            "line": 80.0,
+            "branch": 100.0
+          },
+          "app/controllers/tenant_portal/profiles_controller.rb": {
+            "line": 87.71,
+            "branch": 55.55
+          },
+          "app/controllers/tenant_portal/repair_requests_controller.rb": {
+            "line": 81.81,
+            "branch": 100.0
+          },
+          "app/controllers/tenant_portal/requests_controller.rb": {
+            "line": 100.0,
+            "branch": 75.0
+          },
+          "app/controllers/tenant_portal/rooms_controller.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/controllers/tenant_portal/service_usage_logs_controller.rb": {
+            "line": 89.02,
+            "branch": 81.25
+          },
+          "app/controllers/tenant_portal/services_controller.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/controllers/tenant_portal/vehicle_requests_controller.rb": {
+            "line": 54.54,
+            "branch": 100.0
+          },
+          "app/controllers/tenant_portal/vehicles_controller.rb": {
+            "line": 90.0,
+            "branch": 100.0
+          },
+          "app/controllers/users_controller.rb": {
+            "line": 76.92,
+            "branch": 62.5
+          },
+          "app/controllers/webhooks/payos_controller.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/forms/bed_creation_form.rb": {
+            "line": 96.29,
+            "branch": 50.0
+          },
+          "app/forms/broadcast_notification_form.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/forms/house_creation_form.rb": {
+            "line": 94.23,
+            "branch": 50.0
+          },
+          "app/forms/tenant_link_form.rb": {
+            "line": 96.15,
+            "branch": 77.77
+          },
+          "app/helpers/admin_portal/uploaded_files_helper.rb": {
+            "line": 95.55,
+            "branch": 86.88
+          },
+          "app/helpers/application_helper.rb": {
+            "line": 92.72,
+            "branch": 86.2
+          },
+          "app/helpers/assets_helper.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/helpers/contracts_helper.rb": {
+            "line": 66.66,
+            "branch": 37.5
+          },
+          "app/helpers/form_helper.rb": {
+            "line": 86.2,
+            "branch": 66.66
+          },
+          "app/helpers/houses_helper.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/helpers/invoices_helper.rb": {
+            "line": 100.0,
+            "branch": 92.85
+          },
+          "app/helpers/issue_reports_helper.rb": {
+            "line": 81.81,
+            "branch": 50.0
+          },
+          "app/helpers/locations_helper.rb": {
+            "line": 41.66,
+            "branch": 0.0
+          },
+          "app/helpers/nav_helper.rb": {
+            "line": 95.83,
+            "branch": 82.35
+          },
+          "app/helpers/notifications_helper.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/helpers/requests_helper.rb": {
+            "line": 88.63,
+            "branch": 75.0
+          },
+          "app/helpers/service_usage_logs_helper.rb": {
+            "line": 100.0,
+            "branch": 80.0
+          },
+          "app/helpers/services_helper.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/helpers/users_helper.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/jobs/application_job.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/jobs/broadcast_custom_notification_job.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/jobs/cleanup_notifications_job.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/jobs/contract_due_reminder_job.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/jobs/contract_due_today_job.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/jobs/contract_overdue_close_job.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/jobs/invoice_creation_reminder_job.rb": {
+            "line": 90.0,
+            "branch": 50.0
+          },
+          "app/jobs/invoice_due_today_job.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/jobs/invoice_overdue_check_job.rb": {
+            "line": 100.0,
+            "branch": 66.66
+          },
+          "app/jobs/landlord_dashboard_broadcast_job.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/jobs/request_overdue_expire_job.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/models/ability.rb": {
+            "line": 100.0,
+            "branch": 75.0
+          },
+          "app/models/admin.rb": {
+            "line": 100.0,
+            "branch": 75.0
+          },
+          "app/models/application_record.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/models/asset.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/models/bank.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/models/bank_account.rb": {
+            "line": 88.67,
+            "branch": 76.66
+          },
+          "app/models/bed.rb": {
+            "line": 89.18,
+            "branch": 50.0
+          },
+          "app/models/concerns/otp.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/models/contract.rb": {
+            "line": 88.33,
+            "branch": 55.0
+          },
+          "app/models/floor.rb": {
+            "line": 94.44,
+            "branch": 55.55
+          },
+          "app/models/house.rb": {
+            "line": 91.33,
+            "branch": 65.38
+          },
+          "app/models/invoice.rb": {
+            "line": 92.38,
+            "branch": 73.58
+          },
+          "app/models/invoice_item.rb": {
+            "line": 94.44,
+            "branch": 33.33
+          },
+          "app/models/invoice_service_usage_log.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/models/issue_report.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/models/landlord.rb": {
+            "line": 91.66,
+            "branch": 100.0
+          },
+          "app/models/leave_house_request.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/models/maintenance_log.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/models/payment_order.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/models/rental_unit.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/models/repair_request.rb": {
+            "line": 87.75,
+            "branch": 55.0
+          },
+          "app/models/request.rb": {
+            "line": 90.0,
+            "branch": 56.25
+          },
+          "app/models/room.rb": {
+            "line": 87.37,
+            "branch": 56.25
+          },
+          "app/models/room_service.rb": {
+            "line": 93.33,
+            "branch": 66.66
+          },
+          "app/models/service.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/models/service_usage_log.rb": {
+            "line": 93.24,
+            "branch": 80.55
+          },
+          "app/models/service_variant.rb": {
+            "line": 93.18,
+            "branch": 83.33
+          },
+          "app/models/tenant.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/models/tenant_stay.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/models/user.rb": {
+            "line": 93.84,
+            "branch": 62.5
+          },
+          "app/models/vehicle.rb": {
+            "line": 95.23,
+            "branch": 88.88
+          },
+          "app/models/vehicle_request.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/notifiers/application_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/contract_closed_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/contract_due_today_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/contract_expiring_soon_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/contract_extended_notifier.rb": {
+            "line": 100.0,
+            "branch": 75.0
+          },
+          "app/notifiers/contract_overdue_closed_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/contract_signed_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/contract_updated_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/custom_announcement_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/delivery_methods/turbo_stream.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/notifiers/invoice_cancelled_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/invoice_creation_reminder_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/invoice_due_today_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/invoice_issued_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/invoice_overdue_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/invoice_paid_notifier.rb": {
+            "line": 97.22,
+            "branch": 96.15
+          },
+          "app/notifiers/invoice_unpaid_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/invoice_updated_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/leave_house_request_created_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/repair_request_created_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/request_resolved_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/sensitive_file_removed_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/service_updated_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/service_usage_log_confirmed_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/service_usage_log_requested_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/telephone_changed_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/tenant_added_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/tenant_moved_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/tenant_removed_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/vehicle_removed_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/notifiers/vehicle_request_created_notifier.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/account_deletion.rb": {
+            "line": 88.88,
+            "branch": 75.0
+          },
+          "app/services/account_deletion_check.rb": {
+            "line": 97.87,
+            "branch": 81.81
+          },
+          "app/services/admin_portal/house_assets_filter.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/services/admin_portal/house_rooms_filter.rb": {
+            "line": 91.42,
+            "branch": 72.72
+          },
+          "app/services/admin_portal/sensitive_file_deleter.rb": {
+            "line": 89.28,
+            "branch": 50.0
+          },
+          "app/services/admin_portal/uploaded_files_filter.rb": {
+            "line": 94.28,
+            "branch": 77.77
+          },
+          "app/services/admin_portal/uploaded_files_stats_service.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/available_slots_builder.rb": {
+            "line": 83.33,
+            "branch": 50.0
+          },
+          "app/services/checkin.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/services/checkout.rb": {
+            "line": 96.66,
+            "branch": 81.25
+          },
+          "app/services/contract_closing.rb": {
+            "line": 64.51,
+            "branch": 40.0
+          },
+          "app/services/contract_extension.rb": {
+            "line": 90.0,
+            "branch": 62.5
+          },
+          "app/services/contract_filter.rb": {
+            "line": 93.1,
+            "branch": 77.77
+          },
+          "app/services/contract_renewal.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/services/contract_signing.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/services/contract_update.rb": {
+            "line": 100.0,
+            "branch": 90.0
+          },
+          "app/services/house_creation.rb": {
+            "line": 77.77,
+            "branch": 50.0
+          },
+          "app/services/house_fixed_services_summary.rb": {
+            "line": 98.14,
+            "branch": 87.5
+          },
+          "app/services/house_mode_changer.rb": {
+            "line": 97.22,
+            "branch": 66.66
+          },
+          "app/services/invoice_filter.rb": {
+            "line": 91.17,
+            "branch": 72.72
+          },
+          "app/services/invoices/cancel_service.rb": {
+            "line": 73.68,
+            "branch": 37.5
+          },
+          "app/services/invoices/create_custom_service.rb": {
+            "line": 93.1,
+            "branch": 65.71
+          },
+          "app/services/invoices/draft_calculator.rb": {
+            "line": 84.26,
+            "branch": 50.0
+          },
+          "app/services/invoices/filter_service.rb": {
+            "line": 83.82,
+            "branch": 78.12
+          },
+          "app/services/invoices/issue_service.rb": {
+            "line": 90.9,
+            "branch": 60.71
+          },
+          "app/services/invoices/mark_paid_service.rb": {
+            "line": 100.0,
+            "branch": 78.57
+          },
+          "app/services/invoices/occupied_rooms_query.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/invoices/stats_service.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/invoices/undo_paid_service.rb": {
+            "line": 100.0,
+            "branch": 66.66
+          },
+          "app/services/invoices/update_service.rb": {
+            "line": 95.12,
+            "branch": 68.18
+          },
+          "app/services/landlord_asset_filter.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/services/landlord_asset_stats_service.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/landlord_contract_archive_filter.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/landlord_dashboard/contract_stats_calculator.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/services/landlord_dashboard/invoice_stats_calculator.rb": {
+            "line": 100.0,
+            "branch": 75.0
+          },
+          "app/services/landlord_dashboard/occupancy_calculator.rb": {
+            "line": 100.0,
+            "branch": 75.0
+          },
+          "app/services/landlord_dashboard/request_stats_calculator.rb": {
+            "line": 100.0,
+            "branch": 75.0
+          },
+          "app/services/landlord_dashboard/revenue_stats_calculator.rb": {
+            "line": 98.78,
+            "branch": 91.66
+          },
+          "app/services/landlord_dashboard/tenant_flow_calculator.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/services/landlord_dashboard_broadcaster.rb": {
+            "line": 100.0,
+            "branch": 87.5
+          },
+          "app/services/landlord_dashboard_stats_service.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/landlord_invoice_archive_filter.rb": {
+            "line": 96.96,
+            "branch": 90.0
+          },
+          "app/services/landlord_maintenance_log_filter.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/landlord_request_badge_broadcaster.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/landlord_request_filter.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/landlord_request_stats_service.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/landlord_service_usage_logs_filter.rb": {
+            "line": 88.13,
+            "branch": 84.61
+          },
+          "app/services/landlord_service_usage_logs_index_builder.rb": {
+            "line": 94.64,
+            "branch": 78.57
+          },
+          "app/services/landlord_vehicle_stats_service.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/leave_house_request_submission.rb": {
+            "line": 90.9,
+            "branch": 60.0
+          },
+          "app/services/password_recovery.rb": {
+            "line": 96.29,
+            "branch": 83.33
+          },
+          "app/services/payos/process_webhook_service.rb": {
+            "line": 94.11,
+            "branch": 83.33
+          },
+          "app/services/payos_service.rb": {
+            "line": 48.95,
+            "branch": 68.51
+          },
+          "app/services/phone_recycling.rb": {
+            "line": 90.47,
+            "branch": 40.0
+          },
+          "app/services/phone_verification.rb": {
+            "line": 82.05,
+            "branch": 75.0
+          },
+          "app/services/repair_request_submission.rb": {
+            "line": 100.0,
+            "branch": 50.0
+          },
+          "app/services/request_filter.rb": {
+            "line": 97.72,
+            "branch": 87.5
+          },
+          "app/services/request_handling.rb": {
+            "line": 95.34,
+            "branch": 68.42
+          },
+          "app/services/room_fixed_services_summary.rb": {
+            "line": 96.33,
+            "branch": 87.5
+          },
+          "app/services/room_update.rb": {
+            "line": 93.15,
+            "branch": 80.76
+          },
+          "app/services/service_usage_log_confirmer.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/service_usage_log_creator.rb": {
+            "line": 96.66,
+            "branch": 75.0
+          },
+          "app/services/service_variant_updater.rb": {
+            "line": 67.85,
+            "branch": 30.0
+          },
+          "app/services/tenant_dashboard_stats_service.rb": {
+            "line": 98.03,
+            "branch": 80.0
+          },
+          "app/services/tenant_filter.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/tenant_mover.rb": {
+            "line": 97.36,
+            "branch": 66.66
+          },
+          "app/services/tenant_request_filter.rb": {
+            "line": 100.0,
+            "branch": 100.0
+          },
+          "app/services/tenant_services_filter.rb": {
+            "line": 96.15,
+            "branch": 87.5
+          },
+          "app/services/transfer_note_builder.rb": {
+            "line": 100.0,
+            "branch": 66.66
+          },
+          "app/services/vehicle_deletion.rb": {
+            "line": 100.0,
+            "branch": 75.0
+          },
+          "app/services/vehicle_request_submission.rb": {
+            "line": 100.0,
+            "branch": 83.33
+          },
+          "app/services/vietqr_service.rb": {
+            "line": 100.0,
+            "branch": 66.66
+          }
+        }
       }
     ]
   }
