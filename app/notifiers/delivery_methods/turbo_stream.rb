@@ -4,7 +4,7 @@ class DeliveryMethods::TurboStream < Noticed::DeliveryMethod
     return unless user.is_a?(User)
 
     unread_count = user.notifications.unread.count
-    notifications = user.notifications.order(created_at: :desc).limit(10)
+    notifications = user.notifications.includes(:event).order(created_at: :desc).limit(10)
 
     # 1. Update dropdown & bell icon in navbar (with ringing animation)
     box_html = ApplicationController.render(

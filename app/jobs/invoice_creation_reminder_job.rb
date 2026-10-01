@@ -18,5 +18,7 @@ class InvoiceCreationReminderJob < ApplicationJob
         house_name: house.name
       ).deliver_later(house.landlord.user)
     end
+
+    GC.start
   end
 end

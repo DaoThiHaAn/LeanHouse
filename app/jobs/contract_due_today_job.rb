@@ -6,7 +6,6 @@ class ContractDueTodayJob < ApplicationJob
             .where(due_date: Date.current)
             .includes(tenant: :user, landlord: :user, house: {})
             .find_each do |contract|
-      contract.reload
       # Guard against concurrent extensions or termination
       next if contract.finished? || contract.due_date != Date.current
 
@@ -21,5 +20,7 @@ class ContractDueTodayJob < ApplicationJob
         house_id: contract.house_id
       ).deliver_later(recipients)
     end
+
+    GC.start
   end
 end

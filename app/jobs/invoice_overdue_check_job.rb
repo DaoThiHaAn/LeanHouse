@@ -5,9 +5,8 @@ class InvoiceOverdueCheckJob < ApplicationJob
     Invoice.kept
            .where(status: [ :pending, :overdue ])
            .where("due_date < ?", Date.current)
-           .includes(:house, :room, :tenant, :created_by)
+           .includes({ house: { landlord: :user } }, :room, :tenant, :created_by)
            .find_each do |invoice|
-      invoice.reload
       # Guard against concurrent payment, cancellation, or due_date extension
       next unless invoice.kept? && (invoice.pending? || invoice.overdue?)
       next unless invoice.due_date < Date.current
@@ -51,5 +50,7 @@ class InvoiceOverdueCheckJob < ApplicationJob
         ).deliver_later(tenant_users)
       end
     end
+
+    GC.start
   end
 end

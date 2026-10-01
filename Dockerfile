@@ -16,14 +16,18 @@ WORKDIR /rails
 
 # Install base packages
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl libjemalloc2 libvips postgresql-client && \
+    apt-get install --no-install-recommends -y curl imagemagick libjemalloc2 libvips postgresql-client && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Set production environment
 ENV RAILS_ENV="production" \
     BUNDLE_DEPLOYMENT="1" \
     BUNDLE_PATH="/usr/local/bundle" \
-    BUNDLE_WITHOUT="development"
+    BUNDLE_WITHOUT="development" \
+    MALLOC_CONF="dirty_decay_ms:1000,narenas:2,background_thread:true" \
+    RUBY_GC_HEAP_GROWTH_FACTOR="1.1" \
+    RUBY_GC_MALLOC_LIMIT="16777216" \
+    RUBY_GC_HEAP_FREE_SLOTS="10000"
 
 # Throw-away build stage to reduce size of final image
 FROM base AS build

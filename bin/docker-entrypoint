@@ -6,6 +6,17 @@ if [ -z "${LD_PRELOAD+x}" ]; then
     export LD_PRELOAD
 fi
 
+# Jemalloc configuration:
+# - dirty_decay_ms:1000: Return unused dirty memory back to the OS within 1 second.
+# - narenas:2: Limit memory arenas to 2 to eliminate multi-threaded memory fragmentation.
+# - background_thread:true: Purge memory asynchronously without blocking Ruby execution.
+export MALLOC_CONF="${MALLOC_CONF:-dirty_decay_ms:1000,narenas:2,background_thread:true}"
+
+# Ruby GC tuning for memory-constrained environments (Render 512MB RAM)
+export RUBY_GC_HEAP_GROWTH_FACTOR="${RUBY_GC_HEAP_GROWTH_FACTOR:-1.1}"
+export RUBY_GC_MALLOC_LIMIT="${RUBY_GC_MALLOC_LIMIT:-16777216}"
+export RUBY_GC_HEAP_FREE_SLOTS="${RUBY_GC_HEAP_FREE_SLOTS:-10000}"
+
 # If running the rails server then create or migrate existing database
 if [ "${@: -2:1}" == "./bin/rails" ] && [ "${@: -1:1}" == "server" ]; then
   ./bin/rails db:prepare

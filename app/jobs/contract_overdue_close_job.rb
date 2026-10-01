@@ -33,5 +33,7 @@ class ContractOverdueCloseJob < ApplicationJob
         house_id: contract.house_id
       ).deliver_later(recipients)
     end
+
+    GC.start
   end
 end
