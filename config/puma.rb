@@ -35,8 +35,10 @@ plugin :tmp_restart
 
 # Run the Solid Queue supervisor inside of Puma for single-server deployments
 # Use async mode (single process / in-thread) by default to prevent forking 3+ processes in 512MB RAM
-solid_queue_mode ENV.fetch("SOLID_QUEUE_SUPERVISOR_MODE", "async").to_sym
-plugin :solid_queue if ENV["SOLID_QUEUE_IN_PUMA"]
+if ENV["SOLID_QUEUE_IN_PUMA"]
+  plugin :solid_queue
+  solid_queue_mode ENV.fetch("SOLID_QUEUE_SUPERVISOR_MODE", "async").to_sym if respond_to?(:solid_queue_mode)
+end
 
 # Specify the PID file. Defaults to tmp/pids/server.pid in development.
 # In other environments, only set the PID file if requested.
