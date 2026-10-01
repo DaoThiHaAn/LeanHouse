@@ -41,13 +41,14 @@ class ContractRenewal
   attr_reader :house, :old_contract, :tenant_stay, :landlord, :params
 
   def send_notifications(contract)
-    recipients = [ tenant_stay.tenant.user, landlord.user ].compact.uniq
+    # Gửi cho khách thuê
+    recipients = [ tenant_stay.tenant.user ].compact
 
     ContractSignedNotifier.with(
       contract: contract,
       contract_name: contract.name,
       tenant_name: tenant_stay.tenant.user.fullname,
       house_id: house.id
-    ).deliver_later(recipients)
+    ).deliver_later(recipients) if recipients.any?
   end
 end

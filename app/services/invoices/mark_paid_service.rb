@@ -14,7 +14,13 @@ module Invoices
           payment_note: payment_note
         )
 
-        recipients = [ invoice.house.landlord.user, *invoice.target_users ].compact.uniq
+        recipients = if paid_by&.landlord?
+                       # Landlord marked paid: notify tenants only
+                       invoice.target_users.compact.uniq
+                     else
+                       # Tenant paid or automated (payOS): notify landlord and tenants
+                       [ invoice.house.landlord.user, *invoice.target_users ].compact.uniq
+                     end
 
         method_label = if invoice.cash?
                          I18n.t("invoice.payment_methods.cash", default: "Tiền mặt")

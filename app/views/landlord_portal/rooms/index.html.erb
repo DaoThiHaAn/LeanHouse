@@ -2,16 +2,55 @@
 
 <% content_for :title, t("page_titles.room_mng") %>
 
-<div class="w-100 py-3 short-house-info">
-	<h1 class="w-50 text-center text-clamp-2 mx-auto my-2"><%=@house.name%></h1>
-	<div class="w-50 mx-auto d-flex align-items-center justify-content-center gap-2 fw-semibold">
-		<span class="material-symbols-filled fs-1"><%=house_mode_icon(@house)%></span>
-		<span class="fs-5"><%=house_mode(@house)%></span>
-	</div>
-	<p class="w-50 text-center text-clamp-2 mx-auto fs-5 fw-semibold">
-		<%="#{t("form.house.total_floors")}: #{@house.floors_count}"%>
-		<%="- #{t("form.house.total_rooms")}: #{@house.total_rooms}"%>
-	</p>
+<div class="main-info-zone p-4 rounded-4 position-relative overflow-hidden mb-4">
+  <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3 position-relative" style="z-index: 1;">
+    <div class="d-flex align-items-start align-items-sm-center gap-3">
+      <div class="house-icon-wrapper rounded-3 d-flex align-items-center justify-content-center flex-shrink-0">
+        <span class="material-symbols-filled fs-1">roofing</span>
+      </div>
+      <div>
+        <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+          <h1 class="zone-house-name mb-0 fs-3"><%= @house.name %></h1>
+          <span class="zone-status-badge d-inline-flex align-items-center gap-1" title="<%= t('form.house.mode', default: 'Hình thức cho thuê') %>">
+            <span class="status-dot"></span>
+            <span class="material-symbols-filled fs-6"><%= house_mode_icon(@house) %></span>
+            <span><%= house_mode(@house).tr("()", "") %></span>
+          </span>
+        </div>
+        <% if @house.full_address.present? %>
+          <div class="zone-address d-flex align-items-center gap-1">
+            <span class="material-symbols-outlined fs-5">location_on</span>
+            <span><%= @house.full_address %></span>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="d-flex flex-wrap flex-md-column align-items-start align-items-md-end gap-2 ms-0 ms-md-auto pt-2 pt-md-0">
+      <div class="zone-room-badge d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill"
+           title="<%= t('form.house.total_floors') %>">
+        <span class="material-symbols-outlined fs-5">layers</span>
+        <span>
+          <%= t("form.house.total_floors") %>: <strong><%= @house.floors_count %></strong>
+        </span>
+      </div>
+      <div class="zone-checkin-badge d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill"
+           title="<%= t('form.house.total_rooms') %>">
+        <span class="material-symbols-outlined fs-5"><%= @house.room? ? "meeting_room" : "bed" %></span>
+        <span>
+          <%= t("form.house.total_rooms") %>: <strong><%= @house.total_rooms %></strong>
+          <% if @house.bed? %>
+            (<%= @house.total_slots %> <%= t("form.bed.self").downcase %>)
+          <% end %>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <%# Decorative background icon %>
+  <div class="zone-bg-decoration" aria-hidden="true">
+    <span class="material-symbols-outlined"><%= @house.room? ? "apartment" : "bed" %></span>
+  </div>
 </div>
 
 <%# Main section %>

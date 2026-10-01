@@ -110,7 +110,7 @@ class Checkout
 
   def send_notification
     rental_unit = tenant_stay.rental_unit
-    recipients = [ tenant_stay.tenant.user, house.landlord.user ].compact.uniq
+    recipients = [ tenant_stay.tenant.user ].compact
 
     TenantRemovedNotifier.with(
       tenant_stay: tenant_stay,
@@ -119,6 +119,6 @@ class Checkout
       floor: rental_unit.floor.name,
       rental_unit: rental_unit.title_name,
       tenant_name: tenant_stay.tenant.user.fullname
-    ).deliver_later(recipients)
+    ).deliver_later(recipients) if recipients.any?
   end
 end

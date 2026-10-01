@@ -45,7 +45,8 @@ class ContractExtension
   end
 
   def send_notifications(contract)
-    recipients = [ contract.tenant.user, contract.landlord.user ].compact.uniq
+    # Gửi cho khách thuê
+    recipients = [ contract.tenant.user ].compact
 
     ContractExtendedNotifier.with(
       contract: contract,
@@ -54,6 +55,6 @@ class ContractExtension
       tenant_name: contract.tenant.user.fullname,
       due_date: contract.due_date,
       house_id: house.id
-    ).deliver_later(recipients)
+    ).deliver_later(recipients) if recipients.any?
   end
 end

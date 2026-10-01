@@ -54,7 +54,8 @@ class ContractUpdate
   attr_reader :house, :contract, :params
 
   def send_notifications(contract)
-    recipients = [ contract.tenant.user, contract.landlord.user ].compact.uniq
+    # Gửi cho khách thuê
+    recipients = [ contract.tenant.user ].compact
 
     ContractUpdatedNotifier.with(
       contract: contract,
@@ -62,6 +63,6 @@ class ContractUpdate
       contract_name: contract.name,
       tenant_name: contract.tenant.user.fullname,
       house_id: house.id
-    ).deliver_later(recipients)
+    ).deliver_later(recipients) if recipients.any?
   end
 end

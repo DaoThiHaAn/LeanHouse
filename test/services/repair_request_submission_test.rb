@@ -52,7 +52,7 @@ class RepairRequestSubmissionTest < ActiveSupport::TestCase
   test "creates repair request and request, then sends notifications" do
     assert_difference -> { RepairRequest.count }, 1 do
       assert_difference -> { Request.count }, 1 do
-        assert_difference -> { Noticed::Notification.count }, 2 do
+        assert_difference -> { Noticed::Notification.count }, 1 do
           RepairRequestSubmission.call(
             tenant: @tenant,
             house: @house,

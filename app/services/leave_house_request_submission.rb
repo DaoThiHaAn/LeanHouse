@@ -48,15 +48,14 @@ class LeaveHouseRequestSubmission
 
   def send_notifications(request)
     landlord_user = house.landlord.user
-    tenant_user = tenant.user
-    recipients = [ tenant_user, landlord_user ].compact.uniq
+    recipients = [ landlord_user ].compact
 
     LeaveHouseRequestCreatedNotifier.with(
       request: request,
-      tenant_name: tenant_user.fullname,
+      tenant_name: tenant.user.fullname,
       house_id: house.id,
       house_name: house.name,
       location: tenant_stay&.rental_unit&.location_info
-    ).deliver_later(recipients)
+    ).deliver_later(recipients) if recipients.any?
   end
 end

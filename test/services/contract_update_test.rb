@@ -72,7 +72,7 @@ class ContractUpdateTest < ActiveSupport::TestCase
   test "updates contract attributes successfully and sends notifications" do
     new_doc = Rack::Test::UploadedFile.new(Rails.root.join("test/fixtures/files/normal.png"), "image/png")
 
-    assert_difference -> { @landlord_user.notifications.count }, 1 do
+    assert_no_difference -> { @landlord_user.notifications.count } do
       assert_difference -> { @tenant_user.notifications.count }, 1 do
         ContractUpdate.call(
           house: @house,

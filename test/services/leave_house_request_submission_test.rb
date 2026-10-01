@@ -52,7 +52,7 @@ class LeaveHouseRequestSubmissionTest < ActiveSupport::TestCase
   test "creates leave house request and sends notification" do
     assert_difference -> { LeaveHouseRequest.count }, 1 do
       assert_difference -> { Request.count }, 1 do
-        assert_difference -> { Noticed::Notification.count }, 2 do
+        assert_difference -> { Noticed::Notification.count }, 1 do
           LeaveHouseRequestSubmission.call(
             tenant: @tenant,
             house: @house,

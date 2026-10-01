@@ -1,6 +1,10 @@
 class TelephoneChangedNotifier < ApplicationNotifier
   required_param :new_tel
 
+  def show_toast?
+    false
+  end
+
   notification_methods do
     def title
       t("noti.titles.tel_changed")

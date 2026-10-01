@@ -14,11 +14,11 @@
       </h1>
       <div class="d-flex align-items-center gap-2 flex-wrap">
         <% if @view_mode == :overall %>
-          <p class="text-success-emphasis mb-0">
+          <p class="text-success-emphasis">
             <%= t('dashboard.landlord.month_stats_label', month: @target_date.strftime('%m/%Y')) %>
           </p>
         <% else %>
-          <p class="text-secondary mb-0">
+          <p class="text-secondary">
             <%= t('dashboard.landlord.realtime_ops_subtitle') %>
           </p>
           <span class="badge rounded-pill bg-warning-subtle text-warning-emphasis border border-warning-subtle d-inline-flex align-items-center gap-1 font-monospace">

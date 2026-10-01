@@ -7,7 +7,8 @@ module Invoices
       ActiveRecord::Base.transaction do
         invoice.undo_paid!(by_user: undone_by, explanation: explanation)
 
-        recipients = [ invoice.house.landlord.user, *invoice.target_users ].compact.uniq
+        # Notify tenants (target users) only; landlord is the actor who undid payment
+        recipients = invoice.target_users.compact.uniq
 
         InvoiceUnpaidNotifier.with(
           invoice: invoice,

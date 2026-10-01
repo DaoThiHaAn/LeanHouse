@@ -542,7 +542,7 @@ class LandlordPortal::InvoicesControllerTest < ActionDispatch::IntegrationTest
       total_amount: 1_000_000
     )
 
-    assert_difference -> { Noticed::Notification.count }, 3 do # Landlord + Tenant 1 + Tenant 2
+    assert_difference -> { Noticed::Notification.count }, 2 do # Tenant 1 + Tenant 2 (Landlord is the actor, so not notified)
       patch undo_paid_landlord_house_invoice_path(bed_house, room_inv),
             params: { explanation: "Chưa đối soát được tài khoản" }
     end

@@ -24,7 +24,7 @@ class VehicleDeletion
     end
 
     if @send_noti
-      recipients = [ tenant_user, landlord_user ].compact.uniq
+      recipients = [ tenant_user, landlord_user ].compact.uniq - [ @actor_user ]
       VehicleRemovedNotifier.with(
         license_plate: license_plate,
         house_id: house.id,
@@ -33,7 +33,7 @@ class VehicleDeletion
         reason: @reason,
         actor_role: @actor_user.role,
         actor_name: @actor_user.fullname
-      ).deliver_later(recipients)
+      ).deliver_later(recipients) if recipients.any?
     end
 
     true

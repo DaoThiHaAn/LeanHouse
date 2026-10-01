@@ -41,8 +41,15 @@ class DeliveryMethods::TurboStream < Noticed::DeliveryMethod
       streams << Turbo::StreamsChannel.turbo_stream_action_tag(:remove, target: "notifications_empty_state")
       # Update unread badge on "Chưa đọc" filter tab
       streams << Turbo::StreamsChannel.turbo_stream_action_tag(:update, target: "unread_filter_badge", template: badge_html)
-      # Update floating toast notification (guarantees at most 1 active toast with zero overlapping duplicates)
-      streams << Turbo::StreamsChannel.turbo_stream_action_tag(:update, target: "notification_toast", template: toast_html)
+
+      # Update floating toast notification (only if toast is enabled for this event and recipient is not the actor)
+      if should_display_toast?(user)
+        toast_html = ApplicationController.render(
+          partial: "layouts/shared_components/notification_toast",
+          locals: { notification: notification }
+        )
+        streams << Turbo::StreamsChannel.turbo_stream_action_tag(:update, target: "notification_toast", template: toast_html)
+      end
     end
 
     # Broadcast atomic Turbo Stream batch to user's private notification channel
@@ -50,5 +57,23 @@ class DeliveryMethods::TurboStream < Noticed::DeliveryMethod
       [ user, :notifications ],
       content: streams.join
     )
+  end
+
+  private
+
+  def should_display_toast?(user)
+    target_event = notification&.event
+    return false if target_event.respond_to?(:show_toast?) && !target_event.show_toast?
+
+    params = target_event&.params || {}
+    if params.is_a?(Hash)
+      return false if params[:show_toast] == false
+
+      # Suppress toast if this recipient is the actor of the event
+      actor_id = params[:actor_id] || params[:paid_by_id]
+      return false if actor_id.present? && actor_id.to_s == user.id.to_s
+    end
+
+    true
   end
 end

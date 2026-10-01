@@ -32,10 +32,12 @@
   </head>
 
   <body class="d-flex flex-column min-vh-100">
-    <div id="flash">
-      <%= render "layouts/shared_components/flash_message" %>
+    <div class="notifications-fixed-stack">
+      <div id="flash">
+        <%= render "layouts/shared_components/flash_message" %>
+      </div>
+      <div id="notification_toast"></div>
     </div>
-    <div id="notification_toast"></div>
 
     <!-- Admin Header Navbar -->
     <nav class="navbar sticky-top navbar-expand-lg navbar-light py-0 admin-navbar">

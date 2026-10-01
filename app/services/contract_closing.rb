@@ -50,7 +50,7 @@ class ContractClosing
   attr_reader :house, :contract
 
   def send_contract_closed_notifications
-    recipients = [ contract.tenant.user, contract.landlord.user ].compact.uniq
+    recipients = [ contract.tenant.user ].compact
 
     ContractClosedNotifier.with(
       contract: contract,
@@ -58,12 +58,12 @@ class ContractClosing
       contract_name: contract.name,
       tenant_name: contract.tenant.user.fullname,
       house_id: house.id
-    ).deliver_later(recipients)
+    ).deliver_later(recipients) if recipients.any?
   end
 
   def send_tenant_removed_notifications(tenant_stay)
     rental_unit = tenant_stay.rental_unit
-    recipients = [ tenant_stay.tenant.user, house.landlord.user ].compact.uniq
+    recipients = [ tenant_stay.tenant.user ].compact
 
     TenantRemovedNotifier.with(
       tenant_stay: tenant_stay,
@@ -72,6 +72,6 @@ class ContractClosing
       floor: rental_unit.floor.name,
       rental_unit: rental_unit.title_name,
       tenant_name: tenant_stay.tenant.user.fullname
-    ).deliver_later(recipients)
+    ).deliver_later(recipients) if recipients.any?
   end
 end

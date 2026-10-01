@@ -36,10 +36,12 @@
   </head>
 
   <body class="d-flex flex-column">
-    <div id="flash">
-      <%= render "layouts/shared_components/flash_message" %>
+    <div class="notifications-fixed-stack">
+      <div id="flash">
+        <%= render "layouts/shared_components/flash_message" %>
+      </div>
+      <div id="notification_toast"></div>
     </div>
-    <div id="notification_toast"></div>
     <div id="events"></div>
 
     <%= render "layouts/shared_components/header",

@@ -49,9 +49,9 @@ class VehicleDeletionTest < ActiveSupport::TestCase
     )
   end
 
-  test "deletes vehicle and sends notification to tenant and landlord" do
+  test "deletes vehicle and sends notification to non-actor" do
     assert_difference -> { Vehicle.count }, -1 do
-      assert_difference -> { Noticed::Notification.count }, 2 do
+      assert_difference -> { Noticed::Notification.count }, 1 do
         VehicleDeletion.call(
           vehicle: @vehicle,
           actor_user: @landlord_user,
@@ -61,7 +61,9 @@ class VehicleDeletionTest < ActiveSupport::TestCase
     end
 
     assert_not Vehicle.exists?(@vehicle.id)
-    noti = Noticed::Notification.last
+    assert_equal 0, @landlord_user.notifications.count
+    assert_equal 1, @tenant_user.notifications.count
+    noti = @tenant_user.notifications.last
     assert_includes noti.event.params[:reason], "Khách đã bán xe"
   end
 

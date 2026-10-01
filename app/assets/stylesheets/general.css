@@ -6,7 +6,7 @@
   --alert-text: #CF0000;
   --lang-bg: #D7E2E7;
   --border: #A6BBC6;
-  --body-bg-color: #ededed;
+  --body-bg-color: #faf9f9;
   --primary-button-bg: #0087CA;
   --primary-button-hover-bg: #176850;
   --primary-text: #164E5D;
@@ -83,7 +83,6 @@ body {
   font-family: "Nunito Sans", system-ui, sans-serif;
   color: var(--normal-text);
   background-color: var(--body-bg-color);
-  /* min-width: 700px; */
   font-size: 1rem;
   min-height: 100vh;
 }
@@ -329,6 +328,30 @@ textarea {
   font-size: 1.3rem
 }
 
+.notifications-fixed-stack {
+  position: fixed;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1065; /* above navbar */
+  width: min(90%, 480px);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  pointer-events: none;
+}
+
+.notifications-fixed-stack > * {
+  width: 100%;
+}
+
+.notifications-fixed-stack .flash-container {
+  position: static;
+  transform: none;
+  width: 100%;
+  pointer-events: auto;
+}
+
 .flash-container {
   position: fixed;
   top: 1rem;
@@ -448,10 +471,11 @@ textarea {
 .house-main-container {
   width: 100%;
   background-color: rgb(252, 255, 254);
-  padding: 10px 20px 20px 20px;
+  padding: 20px;
   max-width: 1400px;
   min-height: 100%;
   flex-grow: 1;
+  margin: 0 auto;
 }
 
 .empty.card {
