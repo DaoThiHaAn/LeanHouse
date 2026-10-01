@@ -42,7 +42,9 @@
     <div class="small fw-semibold text-dark">
       <% admin_link = record_admin_link(attachment) %>
       <% if admin_link %>
-        <%= link_to record_friendly_description(attachment), admin_link, class: "text-decoration-none text-primary hover-underline", data: { turbo_frame: "_top" } %>
+        <%= link_to record_friendly_description(attachment), admin_link,
+            class: "hover-underline text-primary hover-underline",
+            data: { turbo_frame: record_admin_turbo_frame(attachment) } %>
       <% else %>
         <%= record_friendly_description(attachment) %>
       <% end %>

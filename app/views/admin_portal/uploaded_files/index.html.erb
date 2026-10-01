@@ -138,7 +138,7 @@
                        ["#{t('admin.uploaded_files.record_types.VehicleRequest')}", "VehicleRequest"],
                        ["#{t('admin.uploaded_files.record_types.Vehicle')}", "Vehicle"],
                        ["#{t('admin.uploaded_files.record_types.House')} (#{t('admin.uploaded_files.types.house')})", "House"],
-                       ["#{t('admin.uploaded_files.record_types.VariantRecord')}", "ActiveStorage::VariantRecord"]
+                       ["#{t('admin.uploaded_files.record_types.VariantRecord')} (#{t('admin.uploaded_files.types.variant_cached')})", "ActiveStorage::VariantRecord"]
                      ], @record_type_filter),
                      {},
                      { id: "admin_files_record_type", class: "form-select form-select-sm", data: { action: "change->search#changed" } } %>

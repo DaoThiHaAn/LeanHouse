@@ -79,7 +79,7 @@
               data-search-target="clearButton"
               data-action="click->search#clear">
         <span class="material-symbols-outlined fs-6">filter_alt_off</span>
-        <%= t("admin.houses.clear_filter") %>
+        <%= t("clear_filter") %>
       </button>
     </div>
   <% end %>
@@ -127,7 +127,7 @@
               <% @houses.each do |house| %>
                 <tr class="<%= 'admin-house-deleted-row' if house.is_deleted? %>">
                   <td class="ps-3 fw-bold">
-                    <%= link_to house.name, admin_house_path(house), class: "text-dark text-decoration-none hover-underline", data: { turbo_frame: "_top" } %>
+                    <%= link_to house.name, admin_house_path(house), class: "text-dark hover-underline", data: { turbo_frame: "_top" } %>
                     <% if house.is_deleted? %>
                       <span class="badge bg-danger-subtle text-danger border border-danger-subtle ms-1"><%= t("admin.houses.status_deleted") %></span>
                     <% end %>

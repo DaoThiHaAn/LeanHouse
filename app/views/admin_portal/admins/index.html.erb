@@ -94,22 +94,18 @@
 
           <td class="text-center">
             <div class="d-inline-flex gap-1 align-items-center">
-              <%= link_to edit_admin_admin_path(admin), class: "btn btn-sm btn-light border", title: t("admin.admins.edit_admin") do %>
+              <% edit_path = (admin == current_admin) ? edit_admin_profile_path : edit_admin_admin_path(admin) %>
+              <% edit_title = (admin == current_admin) ? t("admin.profile.title") : t("admin.admins.edit_admin") %>
+              <%= link_to edit_path, class: "btn btn-sm btn-light border", title: edit_title do %>
                 <span class="material-symbols-outlined fs-6 align-middle">edit</span>
               <% end %>
 
               <% unless admin == current_admin %>
-                <% if admin.super_admin? && admin.is_active? && Admin.super_admin.active.count <= 1 %>
-                  <button type="button" class="btn btn-sm btn-light border text-muted" disabled title="<%= t("admin.admins.cannot_lock_last_super_admin") %>">
-                    <span class="material-symbols-filled fs-6 align-middle">lock</span>
-                  </button>
-                <% else %>
-                  <%= button_to toggle_active_admin_admin_path(admin), method: :patch,
-                      data: { turbo_confirm: admin.is_active? ? t("admin.admins.confirm_lock", name: admin.fullname) : t("admin.admins.confirm_unlock", name: admin.fullname) },
-                      class: "btn btn-sm #{admin.is_active? ? 'btn-outline-danger' : 'btn-outline-success'}",
-                      title: admin.is_active? ? t("admin.admins.lock_button") : t("admin.admins.unlock_button") do %>
-                    <span class="material-symbols-filled fs-6 align-middle"><%= admin.is_active? ? "lock" : "lock_open" %></span>
-                  <% end %>
+                <%= button_to toggle_active_admin_admin_path(admin), method: :patch,
+                    data: { turbo_confirm: admin.is_active? ? t("admin.admins.confirm_lock", name: admin.fullname) : t("admin.admins.confirm_unlock", name: admin.fullname) },
+                    class: "btn btn-sm #{admin.is_active? ? 'btn-outline-danger' : 'btn-outline-success'}",
+                    title: admin.is_active? ? t("admin.admins.lock_button") : t("admin.admins.unlock_button") do %>
+                  <span class="material-symbols-filled fs-6 align-middle"><%= admin.is_active? ? "lock" : "lock_open" %></span>
                 <% end %>
               <% end %>
             </div>

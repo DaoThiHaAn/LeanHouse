@@ -48,7 +48,7 @@
             <div class="col-md-6">
               <div class="p-3 border rounded-3 h-100">
                 <h6 class="fw-bold text-dark border-bottom pb-2 mb-2 d-flex align-items-center gap-1">
-                  <span class="material-symbols-outlined fs-6 text-primary">info</span>
+                  <span class="material-symbols-outlined fs-5">info</span>
                   <span><%= t("admin.uploaded_files.detail.file_info") %></span>
                 </h6>
                 <div class="d-flex justify-content-between py-1 border-bottom border-light">
@@ -73,7 +73,7 @@
             <div class="col-md-6">
               <div class="p-3 border rounded-3 h-100">
                 <h6 class="fw-bold text-dark border-bottom pb-2 mb-2 d-flex align-items-center gap-1">
-                  <span class="material-symbols-outlined fs-6 text-primary">link</span>
+                  <span class="material-symbols-outlined fs-5">link</span>
                   <span><%= t("admin.uploaded_files.detail.linked_record") %></span>
                 </h6>
                 <div class="d-flex justify-content-between py-1 border-bottom border-light">
@@ -85,7 +85,13 @@
                   <span class="small fw-semibold">
                     <% admin_link = record_admin_link(@attachment) %>
                     <% if admin_link %>
-                      <%= link_to record_friendly_description(@attachment), admin_link, class: "text-decoration-none text-primary", data: { turbo_frame: "_top" } %>
+                      <% target_frame = record_admin_turbo_frame(@attachment) %>
+                      <%= link_to record_friendly_description(@attachment), admin_link,
+                          class: "text-decoration-none text-primary",
+                          data: {
+                            turbo_frame: target_frame,
+                            bs_dismiss: (target_frame != "_top" ? "modal" : nil)
+                          }.compact %>
                     <% else %>
                       <%= record_friendly_description(@attachment) %>
                     <% end %>

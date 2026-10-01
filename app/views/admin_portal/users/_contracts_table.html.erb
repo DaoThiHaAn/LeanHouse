@@ -40,15 +40,7 @@
               <% end %>
             </td>
             <td>
-              <% if c.end_date.present? %>
-                <span class="badge bg-secondary"><%= t("admin.users.contract_ended") %></span>
-              <% elsif c.due_date < Date.current %>
-                <span class="badge bg-danger"><%= t("admin.users.contract_overdue") %></span>
-              <% elsif c.due_date <= Date.current + Contract::NEARLY_DUE_DAYS.days %>
-                <span class="badge bg-warning text-dark"><%= t("admin.contracts.state_nearly_due") %></span>
-              <% else %>
-                <span class="badge bg-success"><%= t("admin.users.contract_active") %></span>
-              <% end %>
+              <%= contract_state_tag(c, style: :badge) %>
             </td>
             <td class="text-end pe-3">
               <%= link_to admin_contract_path(c),

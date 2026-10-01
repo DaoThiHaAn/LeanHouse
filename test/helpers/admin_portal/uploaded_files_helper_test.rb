@@ -110,7 +110,7 @@ module AdminPortal
 
       # Contract
       contract_att = FakeAttachment.new(@contract, "Contract", @contract.id, nil)
-      assert_includes find_senders_for_attachment(contract_att), @tenant_user
+      assert_equal [ @landlord_user ], find_senders_for_attachment(contract_att)
       assert_includes record_friendly_description(contract_att), "HD-HELPER"
       assert_not_nil record_admin_link(contract_att)
 
@@ -201,6 +201,40 @@ module AdminPortal
 
       landlord_wrapper = Struct.new(:landlord).new(@landlord_user.landlord)
       assert_equal [ @landlord_user ], find_senders_for_attachment(FakeAttachment.new(landlord_wrapper, "Other", 1, nil))
+
+      # ActiveStorage::VariantRecord with original attachment
+      variant_blob = FakeBlob.new("image/jpeg", "avatar.jpg", [ user_att ])
+      fake_vr = Struct.new(:blob).new(variant_blob)
+      variant_att = FakeAttachment.new(fake_vr, "ActiveStorage::VariantRecord", 999, FakeBlob.new("image/jpeg", "avatar_thumb.jpg", []))
+
+      assert_equal [ @landlord_user ], find_senders_for_attachment(variant_att)
+      assert_includes record_friendly_description(variant_att), I18n.t("admin.uploaded_files.types.variant_of")
+      assert_includes record_friendly_description(variant_att), @landlord_user.fullname
+      assert_equal admin_user_path(@landlord_user), record_admin_link(variant_att)
+      assert_equal "_top", record_admin_turbo_frame(variant_att)
+
+      # Variant on Contract
+      contract_variant_blob = FakeBlob.new("image/jpeg", "contract.jpg", [ contract_att ])
+      contract_fake_vr = Struct.new(:blob).new(contract_variant_blob)
+      contract_variant_att = FakeAttachment.new(contract_fake_vr, "ActiveStorage::VariantRecord", 777, FakeBlob.new("image/jpeg", "contract_thumb.jpg", []))
+      assert_equal "contract_detail_modal", record_admin_turbo_frame(contract_variant_att)
+
+      # ActiveStorage::VariantRecord with missing original attachment
+      orphan_blob = FakeBlob.new("image/jpeg", "orphan.jpg", [])
+      orphan_vr = Struct.new(:blob).new(orphan_blob)
+      orphan_att = FakeAttachment.new(orphan_vr, "ActiveStorage::VariantRecord", 888, FakeBlob.new("image/jpeg", "orphan.jpg", []))
+
+      assert_equal [], find_senders_for_attachment(orphan_att)
+      assert_equal I18n.t("admin.uploaded_files.types.variant_cached"), record_friendly_description(orphan_att)
+      assert_nil record_admin_link(orphan_att)
+      assert_equal "_top", record_admin_turbo_frame(orphan_att)
+
+      # Frame targeting on direct models
+      assert_equal "contract_detail_modal", record_admin_turbo_frame(contract_att)
+      assert_equal "invoice_detail_modal", record_admin_turbo_frame(inv_att)
+      assert_equal "request_detail_modal", record_admin_turbo_frame(rep_att)
+      assert_equal "_top", record_admin_turbo_frame(user_att)
+      assert_equal "_top", record_admin_turbo_frame(house_att)
 
       empty_wrapper = Object.new
       assert_equal [], find_senders_for_attachment(FakeAttachment.new(empty_wrapper, "Other", 1, nil))

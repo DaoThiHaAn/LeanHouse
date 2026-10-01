@@ -256,6 +256,7 @@ Rails.application.routes.draw do
 
     root to: "dashboard#show"
     resource :dashboard, only: [ :show ], controller: "dashboard"
+    resource :profile, only: [ :edit, :update ]
     resources :users, only: [ :index, :show ] do
       member do
         patch :toggle_active

@@ -38,23 +38,27 @@ module AdminPortal
       record = attachment.record
       return [] unless record
 
+      if attachment.record_type == "ActiveStorage::VariantRecord" || record.is_a?(ActiveStorage::VariantRecord)
+        original_attachment = find_original_attachment_for_variant(record)
+        return (original_attachment && original_attachment != attachment ? find_senders_for_attachment(original_attachment) : [])
+      end
+
       case record
       when User
         [ record ]
-      when Contract, Vehicle
-        [ record.tenant.user, record.house.landlord.user ].compact.uniq
+      when Contract
+        [ record.landlord&.user || record.house&.landlord&.user ].compact
+      when Vehicle
+        [ record.tenant&.user ].compact
       when ServiceUsageLog
         senders_for_room_record(record, record.submitted_by)
       when Invoice
         senders_for_room_record(record, record.paid_by)
       when RepairRequest, VehicleRequest
         req = record.request
-        [ req.tenant.user, req.house.landlord.user ].compact.uniq
+        [ req&.tenant&.user ].compact
       when House
         [ record.landlord.user ].compact
-      when ActiveStorage::VariantRecord
-        original_attachment = record.blob.attachments.first
-        original_attachment && original_attachment != attachment ? find_senders_for_attachment(original_attachment) : []
       else
         fallback_senders_for_record(record)
       end
@@ -94,7 +98,11 @@ module AdminPortal
       when "House"
         "#{I18n.t('admin.uploaded_files.types.house')}: #{record.name.presence || 'Nhà trọ'}"
       when "ActiveStorage::VariantRecord"
-        "#{I18n.t('admin.uploaded_files.types.variant')}: #{attachment.blob.filename}"
+        if (orig = find_original_attachment_for_variant(record)) && orig != attachment
+          "#{I18n.t('admin.uploaded_files.types.variant_of')}: #{record_friendly_description(orig)}"
+        else
+          I18n.t("admin.uploaded_files.types.variant_cached")
+        end
       else
         "#{record_type_badge_text(attachment.record_type)} ##{attachment.record_id}"
       end
@@ -138,6 +146,11 @@ module AdminPortal
       record = attachment.record
       return nil unless record
 
+      if attachment.record_type == "ActiveStorage::VariantRecord" || record.is_a?(ActiveStorage::VariantRecord)
+        orig = find_original_attachment_for_variant(record)
+        return (record_admin_link(orig) if orig && orig != attachment)
+      end
+
       case record
       when User
         admin_user_path(record)
@@ -152,7 +165,34 @@ module AdminPortal
       end
     end
 
+    def record_admin_turbo_frame(attachment)
+      record = attachment.record
+      return "_top" unless record
+
+      if attachment.record_type == "ActiveStorage::VariantRecord" || record.is_a?(ActiveStorage::VariantRecord)
+        orig = find_original_attachment_for_variant(record)
+        return (orig && orig != attachment ? record_admin_turbo_frame(orig) : "_top")
+      end
+
+      case record
+      when Contract
+        "contract_detail_modal"
+      when Invoice
+        "invoice_detail_modal"
+      when RepairRequest, VehicleRequest
+        "request_detail_modal"
+      else
+        "_top"
+      end
+    end
+
     private
+
+    def find_original_attachment_for_variant(variant_record)
+      return nil unless variant_record.respond_to?(:blob) && variant_record.blob
+
+      variant_record.blob.attachments.find { |a| a.record_type != "ActiveStorage::VariantRecord" } || variant_record.blob.attachments.first
+    end
 
     def senders_for_room_record(record, actor)
       return [ actor ] if actor

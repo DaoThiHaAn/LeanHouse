@@ -69,4 +69,18 @@ class AdminTest < ActiveSupport::TestCase
     @admin.role = "support"
     assert_not @admin.super_admin?
   end
+
+  test "system only allows a single super admin" do
+    @admin.save!
+    second_super = Admin.new(
+      email: "another_super@leanhouse.vn",
+      fullname: "Second Super Admin",
+      password: "Password123!",
+      password_confirmation: "Password123!",
+      role: "super_admin",
+      is_active: true
+    )
+    assert_not second_super.valid?
+    assert_includes second_super.errors[:role], I18n.t("activerecord.errors.models.admin.attributes.role.single_super_admin")
+  end
 end

@@ -87,16 +87,110 @@ class AdminPortal::AdminsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "support", new_staff.role
   end
 
-  test "super admin can update an existing admin" do
+  test "super admin can view edit page with 2 separate forms" do
+    login_as(@super_admin)
+    get edit_admin_admin_url(@support_admin)
+    assert_response :success
+    # Form 1: Account Info
+    assert_select "input[type=hidden][name=form_type][value=account_info]"
+    assert_select "#adminFullname"
+    assert_select "#adminEmail"
+    assert_select "input[type=hidden][name='admin[role]'][value=support]"
+    # Form 2: Reset Password
+    assert_select "input[type=hidden][name=form_type][value=password]"
+    assert_select "#adminResetPassword"
+    assert_select "#adminResetPasswordConfirmation"
+  end
+
+  test "super admin can update an existing admin account info via Form 1" do
     login_as(@super_admin)
     patch admin_admin_url(@support_admin), params: {
+      form_type: "account_info",
       admin: {
-        fullname: "Updated Support Staff"
+        fullname: "Updated Support Staff",
+        email: "updated_support@leanhouse.vn",
+        role: "support"
       }
     }
     assert_redirected_to admin_admins_url
+    follow_redirect!
+    assert_includes flash[:notice], I18n.t("admin.admins.update_success", name: "Updated Support Staff")
     @support_admin.reload
     assert_equal "Updated Support Staff", @support_admin.fullname
+    assert_equal "updated_support@leanhouse.vn", @support_admin.email
+    # Password remains working
+    assert @support_admin.authenticate("Password123!")
+  end
+
+  test "super admin cannot update account info with invalid email via Form 1" do
+    login_as(@super_admin)
+    patch admin_admin_url(@support_admin), params: {
+      form_type: "account_info",
+      admin: {
+        fullname: "Updated Support Staff",
+        email: "not-an-email"
+      }
+    }
+    assert_response :unprocessable_entity
+    assert_select ".invalid-feedback", text: /Email không đúng định dạng|invalid/i
+    assert_not_equal "not-an-email", @support_admin.reload.email
+  end
+
+  test "super admin can reset admin password via Form 2" do
+    login_as(@super_admin)
+    patch admin_admin_url(@support_admin), params: {
+      form_type: "password",
+      admin: {
+        password: "NewPassword789!",
+        password_confirmation: "NewPassword789!"
+      }
+    }
+    assert_redirected_to admin_admins_url
+    follow_redirect!
+    assert_includes flash[:notice], I18n.t("admin.admins.reset_password_success", name: @support_admin.fullname)
+    @support_admin.reload
+    assert @support_admin.authenticate("NewPassword789!")
+    assert_not @support_admin.authenticate("Password123!")
+  end
+
+  test "super admin cannot reset password with blank password via Form 2" do
+    login_as(@super_admin)
+    patch admin_admin_url(@support_admin), params: {
+      form_type: "password",
+      admin: {
+        password: "",
+        password_confirmation: ""
+      }
+    }
+    assert_response :unprocessable_entity
+    assert_select ".invalid-feedback", text: /Mật khẩu không được để trống|blank/i
+    assert @support_admin.reload.authenticate("Password123!")
+  end
+
+  test "super admin cannot reset password when confirmation does not match via Form 2" do
+    login_as(@super_admin)
+    patch admin_admin_url(@support_admin), params: {
+      form_type: "password",
+      admin: {
+        password: "NewPassword789!",
+        password_confirmation: "Mismatch123!"
+      }
+    }
+    assert_response :unprocessable_entity
+    assert @support_admin.reload.authenticate("Password123!")
+  end
+
+  test "super admin cannot reset password when complexity requirements fail via Form 2" do
+    login_as(@super_admin)
+    patch admin_admin_url(@support_admin), params: {
+      form_type: "password",
+      admin: {
+        password: "weak",
+        password_confirmation: "weak"
+      }
+    }
+    assert_response :unprocessable_entity
+    assert @support_admin.reload.authenticate("Password123!")
   end
 
   test "super admin can lock and unlock support staff" do
@@ -124,36 +218,34 @@ class AdminPortal::AdminsControllerTest < ActionDispatch::IntegrationTest
     assert @super_admin.is_active?
   end
 
-  test "super admin cannot lock the last remaining active super admin" do
-    second_super_admin = Admin.create!(
-      email: "second_super@leanhouse.vn",
-      fullname: "Second Super Admin",
-      password: "Password123!",
-      password_confirmation: "Password123!",
-      role: "super_admin",
-      is_active: false # already inactive
-    )
-
+  test "creating new admin always enforces role support even if role super_admin is passed" do
     login_as(@super_admin)
-
-    # Attempting to lock @super_admin when they are the only ACTIVE super admin
-    patch toggle_active_admin_admin_url(@super_admin)
+    assert_difference("Admin.count", 1) do
+      post admin_admins_url, params: {
+        admin: {
+          fullname: "Sneaky Super Admin",
+          email: "sneaky@leanhouse.vn",
+          password: "Password123!",
+          password_confirmation: "Password123!",
+          role: "super_admin"
+        }
+      }
+    end
     assert_redirected_to admin_admins_url
-    assert_includes flash[:alert], "không thể tự khóa"
-    @super_admin.reload
-    assert @super_admin.is_active?
+    sneaky = Admin.find_by(email: "sneaky@leanhouse.vn")
+    assert_equal "support", sneaky.role
   end
 
-  test "cannot demote last remaining active super admin" do
+  test "super admin editing themself is redirected to profile edit" do
     login_as(@super_admin)
-    patch admin_admin_url(@super_admin), params: {
-      admin: {
-        role: "support"
-      }
-    }
-    assert_response :unprocessable_entity
-    assert_equal "Không thể hạ quyền Super Admin cuối cùng đang hoạt động!", flash[:alert]
-    @super_admin.reload
-    assert_equal "super_admin", @super_admin.role
+    get edit_admin_admin_url(@super_admin)
+    assert_redirected_to edit_admin_profile_url
+
+    patch admin_admin_url(@super_admin), params: { admin: { fullname: "New Name" } }
+    assert_redirected_to edit_admin_profile_url
+
+    get admin_admins_url
+    assert_response :success
+    assert_select "a[href='#{edit_admin_profile_path}']"
   end
 end

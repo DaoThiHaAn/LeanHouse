@@ -20,11 +20,29 @@ en:
           attributes:
             fee:
               taken: "A service variant with this fee, unit, and calculation method already exists!"
+        admin:
+          attributes:
+            role:
+              single_super_admin: "The system only allows a single Super Administrator!"
+            current_password:
+              blank: "Current password cannot be blank!"
+              invalid: "Current password is invalid!"
+            password:
+              blank: "Password cannot be blank!"
+            password_confirmation:
+              confirmation: "Password confirmation doesn't match Password"
 
     attributes:
       service_usage_log:
         latest_reading: "Latest reading"
         prev_reading: "Previous reading"
+      admin:
+        fullname: "Full Name"
+        email: "Email"
+        password: "New Password"
+        password_confirmation: "Confirm New Password"
+        current_password: "Current Password"
+        role: "Role"
 
   enums:
     room_service:

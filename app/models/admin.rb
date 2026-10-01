@@ -1,6 +1,8 @@
 class Admin < ApplicationRecord
   has_secure_password
 
+  attr_accessor :current_password
+
   enum :role, { super_admin: "super_admin", support: "support" }
 
   before_validation :normalize_inputs
@@ -14,6 +16,7 @@ class Admin < ApplicationRecord
   validates :password, length: { in: 8..72 }, allow_nil: true, on: :update
   validate :pw_complexity, if: -> { password.present? }
   validates :role, presence: true
+  validate :single_super_admin, if: -> { super_admin? && (new_record? || role_changed?) }
 
   scope :active, -> { where(is_active: true) }
 
@@ -38,6 +41,14 @@ class Admin < ApplicationRecord
 
     unless password.match?(/\d/) && password.match?(/[A-Za-z]/)
       errors.add(:password, :invalid_pw)
+    end
+  end
+
+  def single_super_admin
+    existing = Admin.where(role: "super_admin")
+    existing = existing.where.not(id: id) if persisted?
+    if existing.exists?
+      errors.add(:role, :single_super_admin)
     end
   end
 end

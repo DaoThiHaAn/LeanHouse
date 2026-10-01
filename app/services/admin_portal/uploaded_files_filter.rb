@@ -37,9 +37,11 @@ module AdminPortal
     end
 
     def apply_record_type(scope)
-      return scope if record_type == "all" || !ALLOWED_RECORD_TYPES.include?(record_type)
-
-      scope.where(record_type: record_type)
+      if ALLOWED_RECORD_TYPES.include?(record_type)
+        scope.where(record_type: record_type)
+      else
+        scope.where.not(record_type: "ActiveStorage::VariantRecord")
+      end
     end
 
     def apply_file_type(scope)

@@ -1,0 +1,205 @@
+<% content_for :title, t("admin.profile.title") %>
+
+<div class="container py-3" style="max-width: 860px;">
+  <!-- Header -->
+  <div class="d-flex align-items-center gap-3 mb-4 pb-3 border-bottom">
+    <%= back_link_to admin_dashboard_path, t("admin.nav.dashboard") %>
+    <div class="flex-grow-1 text-center pe-md-5">
+      <h1 class="mb-0"><%= t("admin.profile.title") %></h1>
+      <p class="text-secondary small mb-0"><%= t("admin.profile.subtitle") %></p>
+    </div>
+  </div>
+
+  <!-- Personal Info Card (Read-only) -->
+  <div class="w-75 card shadow-sm border-0 mb-4 mx-auto">
+    <div class="card-header bg-white py-3 border-bottom d-flex align-items-center gap-2">
+      <h2 class="mb-0 d-flex align-items-center gap-2">
+        <span class="icon material-symbols-filled fs-3">badge</span>
+        <%= t("admin.profile.account_info_title") %>
+      </h2>
+      <span class="ms-auto badge <%= @admin.super_admin? ? 'bg-primary-subtle text-primary border border-primary-subtle' : 'bg-info-subtle text-info-emphasis border border-info-subtle' %> px-2 py-1 rounded-pill small">
+        <%= @admin.super_admin? ? t("admin.admins.role_super_admin") : t("admin.admins.role_support") %>
+      </span>
+    </div>
+
+    <div class="card-body p-4">
+      <div class="alert alert-light border shadow-none d-flex align-items-start gap-2 mb-4 p-3 rounded">
+        <span class="material-symbols-outlined text-primary fs-5 mt-1">info</span>
+        <p class="small text-secondary">
+          <%= t("admin.profile.account_info_notice") %>
+        </p>
+      </div>
+
+      <div class="row g-3">
+        <!-- Fullname (Read-only) -->
+        <div class="col-12 col-md-6">
+          <div class="form-floating shadow-sm rounded">
+            <input type="text" class="form-control bg-light" id="adminProfileFullname" value="<%= @admin.fullname %>" readonly disabled>
+            <label for="adminProfileFullname">
+              <%= t("admin.profile.fullname_label") %>
+            </label>
+          </div>
+          <div class="form-text small text-secondary mt-1">
+            <span class="material-symbols-outlined fs-6 align-middle">lock</span>
+            <%= t("admin.profile.readonly_managed_by_admin") %>
+          </div>
+        </div>
+
+        <!-- Email (Read-only) -->
+        <div class="col-12 col-md-6">
+          <div class="form-floating shadow-sm rounded">
+            <input type="email" class="form-control bg-light" id="adminProfileEmail" value="<%= @admin.email %>" readonly disabled>
+            <label for="adminProfileEmail">
+              <%= t("admin.profile.email_label") %>
+            </label>
+          </div>
+          <div class="form-text small text-secondary mt-1">
+            <span class="material-symbols-outlined fs-6 align-middle">lock</span>
+            <%= t("admin.profile.email_immutable") %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%= form_with model: @admin, url: admin_profile_path, method: :patch,
+                local: true,
+                class: "admin-form needs-validation",
+                data: {
+                  controller: "loading",
+                  loading_text_value: t("saving", default: "Đang lưu..."),
+                  action: "submit->loading#submit"
+                } do |f| %>
+
+    <!-- Change Password Card -->
+    <div class="card shadow-sm border-0 mb-4">
+      <div class="card-header bg-white py-3 border-bottom d-flex align-items-center gap-2">
+        <span class="icon material-symbols-filled fs-3">lock</span>
+        <h2 class="mb-0"><%= t("admin.profile.change_password_title") %></h2>
+      </div>
+      <div class="card-body p-4" data-controller="password-validation">
+        <p class="text-secondary small mb-3">
+          <%= t("admin.profile.change_password_hint") %>
+        </p>
+
+        <div class="row g-3">
+          <!-- Current Password -->
+          <div class="col-12" data-controller="form">
+            <div class="form-floating rounded position-relative">
+              <%= f.password_field :current_password,
+                  class: "form-control shadow-sm pe-5 #{invalid_class(@admin, :current_password)}",
+                  id: "adminCurrentPassword",
+                  autocomplete: "current-password",
+                  placeholder: "••••••••",
+                  required: true,
+                  data: { form_target: "input" } %>
+              <label for="adminCurrentPassword">
+                <%= t("admin.profile.current_password") %> <span class="text-danger">*</span>
+              </label>
+              <span class="eye position-absolute end-0 top-50 translate-middle-y me-3 material-symbols-outlined"
+                    style="cursor: pointer; z-index: 5;"
+                    data-action="click->form#togglePasswordVisibility">
+                visibility
+              </span>
+              <%= field_error(@admin, :current_password, classes: "mt-2") %>
+            </div>
+          </div>
+
+          <!-- New Password -->
+          <div class="col-12 col-md-6" data-controller="form">
+            <div class="form-floating rounded position-relative">
+              <%= f.password_field :password,
+                  class: "form-control shadow-sm pe-5 #{invalid_class(@admin, :password)}",
+                  id: "adminNewPassword",
+                  autocomplete: "new-password",
+                  placeholder: "••••••••",
+                  required: true,
+                  data: {
+                    form_target: "input",
+                    password_validation_target: "input"
+                  } %>
+              <label for="adminNewPassword">
+                <%= t("admin.profile.new_password") %> <span class="text-danger">*</span>
+              </label>
+              <span class="eye position-absolute end-0 top-50 translate-middle-y me-3 material-symbols-outlined"
+                    style="cursor: pointer; z-index: 5;"
+                    data-action="click->form#togglePasswordVisibility">
+                visibility
+              </span>
+
+              <%= field_error(@admin, :password, classes: "mt-2") %>
+            </div>
+          </div>
+
+          <!-- New Password Confirmation -->
+          <div class="col-12 col-md-6" data-controller="form">
+            <div class="form-floating rounded position-relative">
+              <%= f.password_field :password_confirmation,
+                  class: "form-control shadow-sm pe-5 #{invalid_class(@admin, :password_confirmation)}",
+                  id: "adminNewPasswordConfirmation",
+                  autocomplete: "new-password",
+                  placeholder: "••••••••",
+                  required: true,
+                  data: { form_target: "input" } %>
+              <label for="adminNewPasswordConfirmation">
+                <%= t("admin.profile.new_password_confirmation") %> <span class="text-danger">*</span>
+              </label>
+              <span class="eye position-absolute end-0 top-50 translate-middle-y me-3 material-symbols-outlined"
+                    style="cursor: pointer; z-index: 5;"
+                    data-action="click->form#togglePasswordVisibility">
+                visibility
+              </span>
+              <%= field_error(@admin, :password_confirmation, classes: "mt-2") %>
+            </div>
+          </div>
+
+          <!-- Dynamic Password Requirement Checklist -->
+          <div class="col-12">
+            <div class="p-3 bg-light rounded-3 border small">
+              <div class="field-info mb-2 d-flex align-items-center gap-1 fw-semibold text-secondary">
+                <span class="material-symbols-outlined fs-5">info</span>
+                <span class="mb-0"><%= t("form.profile.required_pw") %></span>
+              </div>
+              <ul class="field-info list-unstyled d-flex flex-column gap-1 mb-0 ps-1 pw-requirements" id="profile-password-rules" aria-live="polite">
+                <li class="pw-requirement d-flex align-items-center gap-2"
+                    data-password-validation-target="rule"
+                    data-rule="length">
+                  <span class="material-symbols-outlined pw-rule-icon fs-6" data-password-validation-target="icon" aria-hidden="true">radio_button_unchecked</span>
+                  <span class="pw-rule-text"><%= t("form.profile.pw_length") %></span>
+                </li>
+                <li class="pw-requirement d-flex align-items-center gap-2"
+                    data-password-validation-target="rule"
+                    data-rule="letter">
+                  <span class="material-symbols-outlined pw-rule-icon fs-6" data-password-validation-target="icon" aria-hidden="true">radio_button_unchecked</span>
+                  <span class="pw-rule-text"><%= t("form.profile.pw_letters") %></span>
+                </li>
+                <li class="pw-requirement d-flex align-items-center gap-2"
+                    data-password-validation-target="rule"
+                    data-rule="number">
+                  <span class="material-symbols-outlined pw-rule-icon fs-6" data-password-validation-target="icon" aria-hidden="true">radio_button_unchecked</span>
+                  <span class="pw-rule-text"><%= t("form.profile.pw_numbers") %></span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="d-flex justify-content-end gap-3">
+      <%= link_to admin_dashboard_path, class: "btn btn-outline-secondary px-3 align-self-center d-flex align-items-center gap-1" do %>
+        <span class="material-symbols-outlined fs-5">close</span>
+        <span><%= t("cancel") %></span>
+      <% end %>
+
+      <%= f.button type: :submit,
+                   class: "custom-primary-btn py-2 px-4 d-flex align-items-center gap-2 shadow-sm",
+                   data: { loading_target: "button" } do %>
+        <span class="material-symbols-outlined fs-5">lock_reset</span>
+        <span data-loading-target="text"><%= t("admin.profile.update_btn") %></span>
+        <span class="material-symbols-outlined spin d-none" data-loading-target="spinner">progress_activity</span>
+      <% end %>
+    </div>
+  <% end %>
+</div>

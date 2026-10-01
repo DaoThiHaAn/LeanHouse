@@ -151,6 +151,12 @@
                   <p class="small text-secondary mb-0"><%= current_admin.email %></p>
                 </li>
                 <li>
+                  <%= link_to edit_admin_profile_path, class: "dropdown-item d-flex align-items-center gap-2 py-2" do %>
+                    <span class="material-symbols-outlined fs-5">manage_accounts</span>
+                    <span><%= t("admin.profile.title", default: "Hồ sơ & Đổi mật khẩu") %></span>
+                  <% end %>
+                </li>
+                <li>
                   <%= button_to admin_logout_path, method: :delete, class: "dropdown-item text-danger d-flex align-items-center gap-2 py-2" do %>
                     <span class="material-symbols-outlined fs-5">logout</span>
                     <span><%= t("auth.log_out") %></span>
