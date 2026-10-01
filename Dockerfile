@@ -27,7 +27,13 @@ ENV RAILS_ENV="production" \
     MALLOC_CONF="dirty_decay_ms:1000,narenas:2,background_thread:true" \
     RUBY_GC_HEAP_GROWTH_FACTOR="1.1" \
     RUBY_GC_MALLOC_LIMIT="16777216" \
-    RUBY_GC_HEAP_FREE_SLOTS="10000"
+    RUBY_GC_HEAP_FREE_SLOTS="10000" \
+    SOLID_QUEUE_SUPERVISOR_MODE="async" \
+    MAGICK_MEMORY_LIMIT="32MiB" \
+    MAGICK_MAP_LIMIT="64MiB" \
+    MAGICK_AREA_LIMIT="16MiB" \
+    MAGICK_DISK_LIMIT="1GiB" \
+    MAGICK_THREAD_LIMIT="1"
 
 # Throw-away build stage to reduce size of final image
 FROM base AS build

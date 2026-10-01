@@ -28,15 +28,15 @@
 
     <%# Metrics & Occupancy %>
     <div class="house-metrics-box d-flex align-items-center justify-content-between mb-2">
+      <% occupied_slots = house.occupied_slots.to_i %>
+      <% total_slots = house.total_slots.to_i %>
       <div class="d-flex align-items-center gap-1 small">
         <span class="material-symbols-outlined fs-6 text-primary-bg">group</span>
-        <span class="fw-bold text-dark"><%= occupied_rate_format(house) %></span>
+        <span class="fw-bold text-dark"><%= "#{occupied_slots} / #{total_slots}" %></span>
         <span class="text-secondary"><%= house.room? ? t("form.house.occupant") : t("form.bed.self") %></span>
       </div>
 
       <%# Status badge %>
-      <% occupied_slots = house.occupied_slots.to_i %>
-      <% total_slots = house.total_slots.to_i %>
       <% if occupied_slots == 0 %>
         <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle small fw-normal">
           <%= t("form.house.state_empty") %>
