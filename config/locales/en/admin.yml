@@ -22,6 +22,7 @@ en:
       logout_success: "Logged out from the Administration Backoffice."
       restricted_notice: "Secured area reserved for LeanHouse platform administration."
       login_subtitle: "Internal administration system for LeanHouse"
+      logged_in_user_hint: "You are currently signed in as a user (%{name}). This account cannot access Administration. Please sign in with an Administrator account."
     dashboard:
       title: "SaaS Platform Overview"
       subtitle: "Real-time statistics of all users, properties, and operations across the LeanHouse platform."

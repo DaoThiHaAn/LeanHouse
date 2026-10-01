@@ -17,6 +17,16 @@ class AdminPortal::SessionsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "should show warning notice on login page when already signed in as normal user" do
+    user = create_tenant(tel: "0911223344", password: "Password123", fullname: "Normal Tenant")
+    post handle_login_url, params: { user: { tel: user.tel, password: "Password123", role: user.role } }
+
+    get admin_login_url
+    assert_response :success
+    assert_includes response.body, user.fullname
+    assert_includes response.body, I18n.t("admin.auth.logged_in_user_hint", name: user.fullname)
+  end
+
   test "should login successfully with valid credentials" do
     post admin_handle_login_url, params: { email: @admin.email, password: "Password123!" }
     assert_redirected_to admin_dashboard_url

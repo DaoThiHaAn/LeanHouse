@@ -11,22 +11,20 @@ class AdminPortal::DashboardAndUsersControllerTest < ActionDispatch::Integration
       is_active: true
     )
 
-    @user = User.create!(
-      fullname: "Nguyen Van A",
-      tel: "0901234567",
-      password: "Password123!",
-      password_confirmation: "Password123!",
-      sex: "male",
-      bday: 20.years.ago.to_date,
-      address: "123 Le Loi, Q1",
-      role: "landlord",
-      is_active: true
-    )
+    @user = create_landlord(tel: "0901234567", password: "Password123!", fullname: "Nguyen Van A")
   end
 
   test "should redirect dashboard to login when unauthenticated" do
     get admin_dashboard_url
     assert_redirected_to admin_login_url
+  end
+
+  test "should block logged-in normal user with forbidden 403 when accessing admin dashboard" do
+    post handle_login_url, params: { user: { tel: @user.tel, password: "Password123!", role: @user.role } }
+
+    get admin_dashboard_url
+    assert_response :forbidden
+    assert_includes response.body, I18n.t("error_pages.unauthorized.title")
   end
 
   test "should access dashboard when authenticated and display monthly metrics" do

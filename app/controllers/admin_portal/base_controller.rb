@@ -14,7 +14,11 @@ module AdminPortal
     def authenticate_admin!
       return if current_admin
 
-      redirect_to admin_login_path, alert: t("admin.auth.login_required", default: "Vui lòng đăng nhập với tài khoản Quản trị viên.")
+      if logged_in?
+        raise CanCan::AccessDenied
+      else
+        redirect_to admin_login_path, alert: t("admin.auth.login_required", default: "Vui lòng đăng nhập với tài khoản Quản trị viên.")
+      end
     end
 
     def ensure_super_admin!
