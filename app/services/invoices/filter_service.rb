@@ -26,7 +26,7 @@ module Invoices
 
       scope = apply_tab_and_type(scope)
       scope = apply_search(scope)
-      scope = scope.where(status: params[:status]) if status_valid?
+      scope = apply_statuses(scope)
       scope = apply_floor_and_room(scope)
 
       scope
@@ -115,6 +115,42 @@ module Invoices
         "invoices.code ILIKE :q OR invoices.title ILIKE :q OR users.fullname ILIKE :q OR users.tel ILIKE :q",
         q: q
       )
+    end
+
+    def apply_statuses(scope)
+      # 1. Period / Term status: in_term vs overdue
+      term_status = params[:term_status].presence || (params[:status] if params[:status] == "overdue")
+      if %w[overdue in_term].include?(term_status)
+        today = Date.current
+        scope = if term_status == "overdue"
+                  scope.where(
+                    "invoices.status = 'overdue' OR (invoices.status = 'pending' AND invoices.due_date < :today)",
+                    today: today
+                  )
+                else
+                  scope.where(
+                    "invoices.status = 'paid' OR (invoices.status = 'pending' AND invoices.due_date >= :today)",
+                    today: today
+                  )
+                end
+      end
+
+      # 2. Payment status: pending, paid, cancelled
+      payment_status = params[:payment_status].presence || (params[:status] if %w[pending paid cancelled].include?(params[:status]))
+      if %w[pending paid cancelled].include?(payment_status)
+        scope = case payment_status
+                when "pending"
+                  scope.where(status: %w[pending overdue])
+                when "paid"
+                  scope.where(status: "paid")
+                when "cancelled"
+                  scope.where(status: "cancelled")
+                else
+                  scope
+                end
+      end
+
+      scope
     end
 
     def status_valid?

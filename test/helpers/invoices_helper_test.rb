@@ -147,7 +147,7 @@ class InvoicesHelperTest < ActionView::TestCase
       due_date: Date.current + 5.days
     )
     badge = invoice_term_badge(in_term_inv)
-    assert_includes badge, "invoice-badge-paid"
+    assert_includes badge, "invoice-badge-in-term"
     assert_includes badge, I18n.t("invoice.status.in_term")
 
     overdue_inv = @house.invoices.build(
@@ -167,7 +167,7 @@ class InvoicesHelperTest < ActionView::TestCase
     badge = invoice_payment_status_badge(overdue_pending_inv)
     assert_includes badge, "invoice-badge-pending"
     assert_includes badge, "hourglass_top"
-    assert_includes badge, I18n.t("invoice.status.pending")
+    assert_includes badge, I18n.t("invoice.status.waiting_payment")
     refute_includes badge, "invoice-badge-overdue"
 
     paid_inv = @house.invoices.build(status: :paid)
@@ -188,7 +188,7 @@ class InvoicesHelperTest < ActionView::TestCase
     )
     badges = invoice_header_badges(inv)
     assert_includes badges, I18n.t("invoice.status.in_term")
-    assert_includes badges, I18n.t("invoice.status.pending")
+    assert_includes badges, I18n.t("invoice.status.waiting_payment")
   end
 
   test "invoice_transfer_note_mode detects correct mode" do

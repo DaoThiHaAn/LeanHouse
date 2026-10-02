@@ -11,7 +11,7 @@ module InvoicesHelper
           t("invoice.status.paid")
         ])
       end
-    when "pending"
+    when "pending", "overdue"
       if check_overdue && invoice.overdue?
         content_tag(:span, class: "invoice-badge invoice-badge-overdue") do
           safe_join([
@@ -42,14 +42,53 @@ module InvoicesHelper
   end
 
   def invoice_payment_status_badge(invoice)
-    invoice_status_badge(invoice, check_overdue: false)
+    case invoice.status
+    when "paid"
+      content_tag(:span, class: "invoice-badge invoice-badge-paid") do
+        safe_join([
+          content_tag(:span, "check_circle", class: "material-symbols-filled fs-6"),
+          " ",
+          t("invoice.status.paid")
+        ])
+      end
+    when "pending", "overdue"
+      content_tag(:span, class: "invoice-badge invoice-badge-pending") do
+        safe_join([
+          content_tag(:span, "hourglass_top", class: "material-symbols-filled fs-6"),
+          " ",
+          t("invoice.status.waiting_payment")
+        ])
+      end
+    when "cancelled"
+      content_tag(:span, class: "invoice-badge invoice-badge-cancelled text-decoration-none") do
+        safe_join([
+          content_tag(:span, "cancel", class: "material-symbols-filled fs-6"),
+          " ",
+          t("invoice.status.cancelled")
+        ])
+      end
+    end
   end
 
   def invoice_term_badge(invoice)
-    if invoice.overdue?
-      content_tag(:span, t("invoice.status.overdue"), class: "invoice-badge invoice-badge-overdue")
+    if invoice.cancelled?
+      content_tag(:span, "—", class: "text-secondary small fw-medium")
+    elsif invoice.overdue?
+      content_tag(:span, class: "invoice-badge invoice-badge-overdue") do
+        safe_join([
+          content_tag(:span, "error", class: "material-symbols-filled fs-6"),
+          " ",
+          t("invoice.status.overdue")
+        ])
+      end
     else
-      content_tag(:span, t("invoice.status.in_term"), class: "invoice-badge invoice-badge-paid")
+      content_tag(:span, class: "invoice-badge invoice-badge-in-term") do
+        safe_join([
+          content_tag(:span, "schedule", class: "material-symbols-filled fs-6"),
+          " ",
+          t("invoice.status.in_term")
+        ])
+      end
     end
   end
 

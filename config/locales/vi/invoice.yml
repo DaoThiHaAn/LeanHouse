@@ -87,6 +87,10 @@ vi:
     all_rooms: "Tất cả các phòng"
     all_status: "Tất cả trạng thái"
     status_label: "Trạng thái"
+    period_status_label: "Kỳ hạn"
+    payment_status_label: "Trạng thái thanh toán"
+    all_term_status: "Tất cả kỳ hạn"
+    all_payment_status: "Tất cả thanh toán"
     invoice_type: "Loại hóa đơn"
     all_types: "Tất cả hình thức"
     type_room: "Thu theo phòng"
@@ -403,9 +407,9 @@ vi:
     status:
       pending: "Chưa thanh toán"
       paid: "Đã thanh toán"
-      overdue: "Quá hạn thanh toán"
+      overdue: "Quá hạn"
       cancelled: "Đã hủy"
-      in_term: "Trong thời hạn"
+      in_term: "Trong hạn"
       waiting_payment: "Chờ thanh toán"
 
     phone_abbr: "SĐT"

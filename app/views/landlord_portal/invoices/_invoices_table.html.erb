@@ -3,7 +3,7 @@
 <% if invoices.empty? %>
   <div class="invoice-empty-state mx-auto">
     <span class="material-symbols-outlined invoice-empty-icon"><%= local_assigns[:current_tab] == "individual" ? "person_search" : "receipt" %></span>
-    <% if local_assigns[:current_tab] == "individual" && params[:q].blank? && params[:status].blank? %>
+    <% if local_assigns[:current_tab] == "individual" && params[:q].blank? && params[:status].blank? && params[:term_status].blank? && params[:payment_status].blank? %>
       <p class="fs-5 fw-bold mb-1"><%= t('invoice.no_custom_invoices', month: billing_month.strftime("%m/%Y")) %></p>
       <p class="text-secondary small mb-0"><%= t('invoice.no_custom_invoices_hint') %></p>
     <% else %>
@@ -21,7 +21,8 @@
           <th><%= t('invoice.billing_month') %></th>
           <th><%= t('invoice.due_date') %></th>
           <th><%= t('invoice.total') %></th>
-          <th class="text-center"><%= t('invoice.status_label') %></th>
+          <th class="text-center"><%= t('invoice.period_status_label') %></th>
+          <th class="text-center"><%= t('invoice.payment_status_label') %></th>
           <th class="text-center"><%= t("actions") %></th>
         </tr>
       </thead>
@@ -42,6 +43,8 @@
                      floor_id: params[:floor_id].presence,
                      room_id: params[:room_id].presence,
                      invoice_type: params[:invoice_type].presence,
+                     term_status: params[:term_status].presence,
+                     payment_status: params[:payment_status].presence,
                      status: params[:status].presence,
                      q: params[:q].presence
                    } %>

@@ -256,6 +256,78 @@ class LandlordPortal::InvoicesControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, @invoice2.code
   end
 
+  test "landlord can filter by term_status and payment_status independently and combined" do
+    sign_in_as(@landlord_user)
+
+    # 1. Filter by term_status: in_term
+    get filtered_landlord_house_invoices_path(@house, term_status: "in_term")
+    assert_response :success
+    assert_includes response.body, @invoice1.code
+    assert_includes response.body, @invoice2.code
+    assert_not_includes response.body, @past_invoice.code
+
+    # 2. Filter by term_status: overdue
+    get filtered_landlord_house_invoices_path(@house, term_status: "overdue")
+    assert_response :success
+    assert_not_includes response.body, @invoice1.code
+    assert_not_includes response.body, @invoice2.code
+    assert_includes response.body, @past_invoice.code
+
+    # 3. Filter by payment_status: pending
+    get filtered_landlord_house_invoices_path(@house, payment_status: "pending")
+    assert_response :success
+    assert_includes response.body, @invoice1.code
+    assert_includes response.body, @past_invoice.code
+    assert_not_includes response.body, @invoice2.code
+
+    # 4. Filter by payment_status: paid
+    get filtered_landlord_house_invoices_path(@house, payment_status: "paid")
+    assert_response :success
+    assert_not_includes response.body, @invoice1.code
+    assert_not_includes response.body, @past_invoice.code
+    assert_includes response.body, @invoice2.code
+
+    # 5. Filter by payment_status: cancelled
+    get filtered_landlord_house_invoices_path(@house, payment_status: "cancelled")
+    assert_response :success
+    assert_includes response.body, @cancelled_invoice.code
+    assert_not_includes response.body, @invoice1.code
+    assert_not_includes response.body, @invoice2.code
+
+    # 6. Combined filter: term_status = in_term AND payment_status = pending
+    get filtered_landlord_house_invoices_path(@house, term_status: "in_term", payment_status: "pending")
+    assert_response :success
+    assert_includes response.body, @invoice1.code
+    assert_not_includes response.body, @invoice2.code
+    assert_not_includes response.body, @past_invoice.code
+
+    # 7. Combined filter: term_status = overdue AND payment_status = pending
+    get filtered_landlord_house_invoices_path(@house, term_status: "overdue", payment_status: "pending")
+    assert_response :success
+    assert_not_includes response.body, @invoice1.code
+    assert_not_includes response.body, @invoice2.code
+    assert_includes response.body, @past_invoice.code
+  end
+
+  test "invoices index displays separate period status and payment status table headers and badges" do
+    sign_in_as(@landlord_user)
+
+    get landlord_house_invoices_path(@house)
+    assert_response :success
+
+    # Table headers
+    assert_select "th", text: I18n.t("invoice.period_status_label")
+    assert_select "th", text: I18n.t("invoice.payment_status_label")
+
+    # Filter selects exist
+    assert_select "select[name='term_status']"
+    assert_select "select[name='payment_status']"
+
+    # Badges for in_term and waiting_payment
+    assert_select ".invoice-badge-in-term"
+    assert_select ".invoice-badge-pending"
+  end
+
   test "invoices index includes pagination-sync controller for url synchronization" do
     sign_in_as(@landlord_user)
 
