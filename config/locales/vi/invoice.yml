@@ -356,6 +356,8 @@ vi:
         order_code: "Mã đơn hàng"
         back_to_home: "Về trang chủ"
         login_btn: "Đăng nhập tài khoản"
+        view_invoice: "Xem chi tiết hóa đơn"
+        unauthenticated_notice: "Thanh toán của bạn đã được ghi nhận thành công. Vui lòng đăng nhập để xem chi tiết hóa đơn."
         not_found: "Không tìm thấy thông tin giao dịch hoặc hóa đơn."
 
     transfer_note: "Nội dung chuyển khoản"

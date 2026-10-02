@@ -119,4 +119,33 @@ class LandlordPortalTest < ApplicationSystemTestCase
     assert_text "Yêu cầu sửa chữa"
     assert_text "Le Thi Khach Thue"
   end
+
+  test "landlord deletes a vehicle via modal, closes the modal and removes the row" do
+    vehicle = Vehicle.create!(
+      tenant: @tenant,
+      house: @house_room,
+      license_plate: "59A-12345",
+      vehicle_type: :motorbike,
+      brand: "Honda",
+      model: "Vision"
+    )
+
+    sign_in_as(@landlord_user)
+    visit landlord_house_vehicles_path(@house_room)
+
+    assert_text "59A-12345", wait: 5
+
+    find("button[data-bs-target='#deleteVehicleModal_#{vehicle.id}']").click
+    assert_selector "#deleteVehicleModal_#{vehicle.id}", visible: true, wait: 5
+
+    within "#deleteVehicleModal_#{vehicle.id}" do
+      fill_in "reason", with: "Khách đã mang xe đi"
+      find("button[type='submit']").click
+    end
+
+    assert_no_selector "#deleteVehicleModal_#{vehicle.id}", visible: true, wait: 5
+    assert_no_selector ".modal-backdrop", wait: 5
+    assert_text I18n.t("success_messages.vehicle_deleted", default: "Đã xóa phương tiện thành công!"), wait: 5
+    assert_no_text "59A-12345"
+  end
 end

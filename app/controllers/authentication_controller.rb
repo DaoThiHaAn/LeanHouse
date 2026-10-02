@@ -4,6 +4,7 @@ class AuthenticationController < ApplicationController
   end
 
   def login_form
+    session[:return_to] = params[:return_to] if params[:return_to].present?
     return redirect_after_login if logged_in?
 
     @user = User.new
@@ -88,6 +89,11 @@ class AuthenticationController < ApplicationController
 
 
   def redirect_after_login
+    return_target = session.delete(:return_to) || params[:return_to]
+    if return_target.present? && return_target.start_with?("/") && !return_target.start_with?("//")
+      return redirect_to return_target, status: :see_other
+    end
+
     target = if current_user.landlord?
       landlord_dashboard_path
     elsif current_user.tenant?

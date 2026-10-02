@@ -118,7 +118,7 @@ class PayosService
         checkout_url: data["checkoutUrl"],
         qr_code: data["qrCode"],
         status: data["status"] || "PENDING",
-        metadata: data
+        metadata: data.merge("app_base_url" => base_url)
       )
       { success: true, data: data }
     else

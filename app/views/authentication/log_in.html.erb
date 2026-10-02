@@ -16,6 +16,7 @@
                         action: "submit->loading#submit"
                       },
                       class: "signup-form w-100 d-flex align-items-center justify-content-center flex-column gap-4") do |f| %>
+            <%= hidden_field_tag :return_to, (params[:return_to].presence || session[:return_to]) if (params[:return_to].presence || session[:return_to]).present? %>
 
             <!-- Role selection -->
             <div data-controller="role-selector" class="form-group gap-2 d-flex flex-column align-items-center mb-2">

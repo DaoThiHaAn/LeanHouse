@@ -1,6 +1,6 @@
 <%# Local variables: house, vehicle %>
 
-<tr id="<%= dom_id(vehicle, :vehicle_row) %>">
+<tr id="vehicle_row_<%= vehicle.id %>">
   <!-- 1. Type -->
   <td class="text-center">
     <span class="badge bg-light text-dark border d-inline-flex align-items-center gap-1 px-2 py-1">
@@ -82,7 +82,7 @@
     </button>
 
     <!-- Delete Vehicle Modal -->
-    <div class="modal fade" id="deleteVehicleModal_<%= vehicle.id %>" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="deleteVehicleModal_<%= vehicle.id %>" tabindex="-1" aria-hidden="true" data-controller="modal">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content text-start">
           <div class="modal-header">

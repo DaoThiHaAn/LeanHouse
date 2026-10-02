@@ -32,7 +32,7 @@ class UsersController < ApplicationController
                         login_path
         end
         clear_session_keys(:is_reset_pw, :verified_tel, :pending_role, :pending_tel)
-        format.html { redirect_to target_path, notice: t("success_messages.user_update_pw_success") }
+        format.html { redirect_to target_path, notice: t("success_messages.pw_updated") }
       else
         format.html { render "authentication/reset_pw", status: :unprocessable_entity }
         format.json { render json: @user.errors, status: :unprocessable_entity }

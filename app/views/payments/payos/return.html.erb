@@ -93,15 +93,33 @@
             </div>
           <% end %>
 
+          <!-- Unauthenticated notice -->
+          <% unless logged_in? %>
+            <div class="alert alert-light border small text-secondary mb-3 text-center">
+              <%= t("invoice.payos.result.unauthenticated_notice") %>
+            </div>
+          <% end %>
+
           <!-- Action buttons -->
           <div class="d-flex flex-column gap-2">
             <% if logged_in? %>
-              <%= link_to root_path, class: "btn btn-primary d-flex align-items-center justify-content-center gap-2 py-2 fw-semibold" do %>
+              <% if current_user.tenant? && @invoice.present? && tenant_can_access_invoice?(current_user, @invoice) %>
+                <%= link_to tenant_invoice_path(@invoice), class: "btn btn-primary d-flex align-items-center justify-content-center gap-2 py-2 fw-semibold" do %>
+                  <span class="material-symbols-outlined fs-5">receipt_long</span>
+                  <span><%= t("invoice.payos.result.view_invoice") %></span>
+                <% end %>
+              <% elsif current_user.landlord? && @invoice.present? && current_user.id == @invoice.house.landlord_id %>
+                <%= link_to landlord_house_invoice_path(@invoice.house, @invoice), class: "btn btn-primary d-flex align-items-center justify-content-center gap-2 py-2 fw-semibold" do %>
+                  <span class="material-symbols-outlined fs-5">receipt_long</span>
+                  <span><%= t("invoice.payos.result.view_invoice") %></span>
+                <% end %>
+              <% end %>
+              <%= link_to root_path, class: "btn btn-outline-secondary d-flex align-items-center justify-content-center gap-2 py-2" do %>
                 <span class="material-symbols-outlined fs-5">home</span>
                 <span><%= t("invoice.payos.result.back_to_home") %></span>
               <% end %>
             <% else %>
-              <%= link_to login_path, class: "btn btn-primary d-flex align-items-center justify-content-center gap-2 py-2 fw-semibold" do %>
+              <%= link_to login_path(return_to: request.fullpath), class: "btn btn-primary d-flex align-items-center justify-content-center gap-2 py-2 fw-semibold" do %>
                 <span class="material-symbols-outlined fs-5">login</span>
                 <span><%= t("invoice.payos.result.login_btn") %></span>
               <% end %>

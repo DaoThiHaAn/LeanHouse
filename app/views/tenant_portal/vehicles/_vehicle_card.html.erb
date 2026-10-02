@@ -1,6 +1,6 @@
 <%# Local variables: vehicle %>
 
-<div class="col-12 col-md-6 col-lg-4" id="<%= dom_id(vehicle, :vehicle_card) %>">
+<div class="col-12 col-md-6 col-lg-4" id="vehicle_card_<%= vehicle.id %>">
   <div class="card h-100 border rounded-4 shadow-sm overflow-hidden bg-white">
     <!-- Vehicle Photo or Placeholder Header -->
     <div class="position-relative bg-light text-center border-bottom d-flex align-items-center justify-content-center" style="height: 180px;">
@@ -81,7 +81,7 @@
   <% end %>
 
   <!-- Delete Modal for Tenant -->
-  <div class="modal fade" id="tenantDeleteVehicleModal_<%= vehicle.id %>" tabindex="-1" aria-hidden="true">
+  <div class="modal fade" id="tenantDeleteVehicleModal_<%= vehicle.id %>" tabindex="-1" aria-hidden="true" data-controller="modal">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content text-start">
         <div class="modal-header">

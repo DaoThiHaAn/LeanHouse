@@ -165,6 +165,44 @@ class Payments::PayosControllerTest < ActionDispatch::IntegrationTest
     refute_equal login_url, response.location
   end
 
+  test "unauthenticated return redirects to origin stored in metadata when host differs on local origin" do
+    @payment_order.update!(metadata: { "app_base_url" => "http://127.0.0.1:3000" })
+
+    get "http://localhost:3000/payments/payos/return/#{@invoice.id}", params: {
+      code: "00",
+      status: "PAID",
+      orderCode: @payment_order.order_code
+    }
+
+    assert_response :redirect
+    assert_includes response.location, "http://127.0.0.1:3000/payments/payos/return/#{@invoice.id}"
+  end
+
+  test "unauthenticated user return page contains login link with return_to parameter" do
+    get payments_payos_return_url(
+      @invoice.id,
+      code: "00",
+      status: "PAID",
+      orderCode: @payment_order.order_code
+    )
+
+    assert_response :success
+    assert_includes response.body, "return_to="
+    assert_includes response.body, CGI.escapeHTML(I18n.t("invoice.payos.result.unauthenticated_notice"))
+
+    # Test login with return_to
+    post handle_login_path, params: {
+      user: {
+        tel: @tenant_user.tel,
+        password: "Password123",
+        role: @tenant_user.role
+      },
+      return_to: tenant_invoice_path(@invoice)
+    }
+
+    assert_redirected_to tenant_invoice_path(@invoice)
+  end
+
   private
 
   def sign_in_as(user)

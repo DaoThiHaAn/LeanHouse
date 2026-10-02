@@ -1,4 +1,5 @@
 require "test_helper"
+require "minitest/mock"
 
 class InvoiceTest < ActiveSupport::TestCase
   setup do
@@ -275,5 +276,55 @@ class InvoiceTest < ActiveSupport::TestCase
 
     assert_equal "Nguyễn Văn A (#{@room.title_name}, #{@floor.title_name})", @invoice.target_name
     assert_equal "Nguyễn Văn A", @invoice.target_name(include_room: false)
+  end
+
+  test "ensure_payos_payment_link! stores host and cancels old order if host changes" do
+    mb_bank = Bank.find_or_create_by!(code: "MB", bin: "970422", short_name: "MB", name: "MB Bank")
+    payos_account = BankAccount.create!(
+      landlord: @landlord,
+      bank: mb_bank,
+      account_number: "0987654399",
+      account_holder: "PAYOS LANDLORD",
+      payos_enabled: true,
+      payos_client_id: "client-id",
+      payos_api_key: "api-key",
+      payos_checksum_key: "checksum-key"
+    )
+    @invoice.update!(bank_account: payos_account)
+
+    order = @invoice.payment_orders.create!(
+      provider: "payos",
+      order_code: 998877,
+      status: "PENDING",
+      checkout_url: "https://pay.payos.vn/web/test-link",
+      metadata: { "app_base_url" => "http://localhost:3000" }
+    )
+
+    cancel_called = false
+    create_called_with_host = nil
+
+    PayosService.stub(:cancel_payment_link, ->(inv, reason: nil) {
+      cancel_called = true
+      order.update!(status: "CANCELLED")
+      { success: true }
+    }) do
+      PayosService.stub(:create_payment_link, ->(inv, host: nil) {
+        create_called_with_host = host
+        new_order = inv.payment_orders.create!(
+          provider: "payos",
+          order_code: 998878,
+          status: "PENDING",
+          checkout_url: "https://pay.payos.vn/web/new-test-link",
+          metadata: { "app_base_url" => host }
+        )
+        { success: true, data: { "checkoutUrl" => new_order.checkout_url } }
+      }) do
+        res = @invoice.ensure_payos_payment_link!(payos_account, host: "http://127.0.0.1:3000")
+        assert cancel_called, "Expected cancel_payment_link to be called when host changed"
+        assert_equal "http://127.0.0.1:3000", create_called_with_host
+        assert_equal 998878, res.order_code
+        assert_equal "http://127.0.0.1:3000", res.metadata["app_base_url"]
+      end
+    end
   end
 end

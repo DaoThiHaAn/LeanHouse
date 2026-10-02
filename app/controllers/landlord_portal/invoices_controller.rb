@@ -25,7 +25,7 @@ class LandlordPortal::InvoicesController < LandlordPortal::BaseController
   def show
     @items = @invoice.invoice_items.order(created_at: :asc)
     @bank_account = @invoice.bank_account || @landlord.bank_accounts.default_first.first
-    @invoice.ensure_payos_payment_link!(@bank_account)
+    @invoice.ensure_payos_payment_link!(@bank_account, host: request.base_url)
   end
 
   def new

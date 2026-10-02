@@ -200,8 +200,8 @@ class Invoice < ApplicationRecord
   def ensure_payos_order!(account = bank_account)
     return nil unless payos_configured?(account)
 
-    existing = payment_orders.find_by(provider: "payos")
-    if existing
+    existing = payment_orders.where(provider: "payos").order(id: :desc).first
+    if existing && existing.status == "PENDING"
       association(:payos_order).target = existing
       return existing
     end
@@ -237,12 +237,34 @@ class Invoice < ApplicationRecord
     paid? && (paid_by_role == "payos" || payos_order&.status == "PAID" || note.to_s.include?("payOS"))
   end
 
-  def ensure_payos_payment_link!(account = bank_account)
+  def ensure_payos_payment_link!(account = bank_account, host: nil)
     return nil unless payos_configured?(account)
-    return payos_order if payos_order&.checkout_url.present?
     return nil if paid? || cancelled?
 
-    PayosService.create_payment_link(self)
+    target_base_url = PayosService.base_app_url(host: host)
+    existing_order = payos_order
+
+    if existing_order&.checkout_url.present?
+      stored_base_url = existing_order.metadata.to_h["app_base_url"]
+      needs_recreation = host.present? &&
+                         existing_order.status == "PENDING" &&
+                         stored_base_url.present? &&
+                         stored_base_url != target_base_url
+
+      if needs_recreation
+        PayosService.cancel_payment_link(self, reason: "Host origin changed")
+        association(:payos_order).reset
+        PayosService.create_payment_link(self, host: host)
+      elsif host.present? && stored_base_url.blank? && existing_order.status == "PENDING"
+        existing_order.update!(metadata: existing_order.metadata.to_h.merge("app_base_url" => target_base_url))
+      end
+
+      association(:payos_order).reset
+      return payos_order
+    end
+
+    PayosService.create_payment_link(self, host: host)
+    association(:payos_order).reset
     payos_order
   end
 
