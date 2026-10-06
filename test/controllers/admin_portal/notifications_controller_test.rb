@@ -120,6 +120,31 @@ class AdminPortal::NotificationsControllerTest < ActionDispatch::IntegrationTest
     assert_select "header", count: 0
     assert_select ".admin-title", count: 0
     assert_includes response.body, "Khẩn cấp kiểm tra PCCC"
+    assert_select ".badge", text: I18n.t("admin.notifications.total_broadcasts", count: 1)
+  end
+
+  test "admin can filter notifications by sending date range" do
+    login_as(@admin)
+
+    # Broadcast created today
+    BroadcastCustomNotificationJob.perform_now(
+      admin_id: @admin.id,
+      target_audience: "all",
+      title: "Thông báo hôm nay",
+      message: "Nội dung thông báo hôm nay.",
+      level: "info"
+    )
+
+    get admin_notifications_url, params: { from_date: Date.current.to_s, to_date: Date.current.to_s }
+    assert_response :success
+    assert_includes response.body, "Thông báo hôm nay"
+    assert_select ".badge", text: I18n.t("admin.notifications.total_broadcasts", count: 1)
+
+    # Filter with yesterday's date range
+    get admin_notifications_url, params: { from_date: 2.days.ago.to_date.to_s, to_date: 1.day.ago.to_date.to_s }
+    assert_response :success
+    assert_not_includes response.body, "Thông báo hôm nay"
+    assert_select ".badge", text: I18n.t("admin.notifications.total_broadcasts", count: 0)
   end
 
   test "admin can view new notification form" do

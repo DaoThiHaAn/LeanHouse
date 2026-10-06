@@ -18,28 +18,28 @@
             <div class="row g-2 px-3">
               <div class="col-6">
                 <p class="small text-secondary mb-1"><%= t("form.profile.fullname") %></p>
-                <p class="fw-semibold mb-0"><%= vn_name(@user.fullname) %></p>
+                <p class="fw-semibold"><%= vn_name(@user.fullname) %></p>
               </div>
               <div class="col-6">
                 <p class="small text-secondary mb-1"><%= t("form.profile.tel") %></p>
-                <p class="fw-semibold mb-0">
-                  <a href="tel:<%= @user.tel %>" class="text-decoration-none text-dark d-inline-flex align-items-center gap-1">
-                    <span class="material-symbols-filled fs-5">call</span>
+                <p class="fw-semibold">
+                  <a href="tel:<%= @user.tel %>" class="text-decoration-none d-inline-flex align-items-center gap-1 font-monospace">
+                    <span class="material-symbols-filled fs-6">call</span>
                     <%= @user.tel %>
                   </a>
                 </p>
               </div>
               <div class="col-6">
                 <p class="small text-secondary mb-1"><%= t("form.profile.sex") %></p>
-                <p class="fw-semibold mb-0"><%= t("form.profile.#{@user.sex}", default: @user.sex.to_s.capitalize) %></p>
+                <p class="fw-semibold"><%= t("form.profile.#{@user.sex}", default: @user.sex.to_s.capitalize) %></p>
               </div>
               <div class="col-6">
                 <p class="small text-secondary mb-1"><%= t("form.profile.bday") %></p>
-                <p class="fw-semibold mb-0"><%= @user.bday&.strftime("%d/%m/%Y") || "-" %></p>
+                <p class="fw-semibold"><%= @user.bday&.strftime("%d/%m/%Y") || "-" %></p>
               </div>
               <div class="col-12">
                 <p class="small text-secondary mb-1"><%= t("form.profile.address") %></p>
-                <p class="fw-semibold mb-0"><%= @user.address.presence || "-" %></p>
+                <p class="fw-semibold"><%= @user.address.presence || "-" %></p>
               </div>
             </div>
           </div>
@@ -50,13 +50,13 @@
             <div class="row g-2 px-3">
               <div class="col-6">
                 <p class="small text-secondary mb-1"><%= t("form.tenant.rental_unit") %></p>
-                <p class="fw-semibold mb-0 text-primary d-inline-flex align-items-center gap-1">
+                <p class="fw-semibold text-primary d-inline-flex align-items-center gap-1">
                   <%= @tenant.current_staying_info.presence || "-" %>
                 </p>
               </div>
               <div class="col-6">
-                <p class="small text-secondary mb-1"><%= t("form.contract.citizen_id", default: "CCCD / CMND") %></p>
-                <p class="fw-semibold font-monospace mb-0"><%= @latest_contract&.tenant_citizen_id.presence || "-" %></p>
+                <p class="small text-secondary mb-1"><%= t("form.profile.citizen_id") %></p>
+                <p class="fw-semibold font-monospace"><%= @latest_contract&.tenant_citizen_id.presence || "-" %></p>
               </div>
               <div class="col-12">
                 <p class="small text-secondary mb-1"><%= t("form.contract.resid_register_due") %></p>
@@ -65,7 +65,7 @@
                     <span class="fw-semibold"><%= @latest_contract.temp_resid_due_date.strftime("%d/%m/%Y") %></span>
                     <%= due_status_icon_label(@latest_contract.temp_resid_due_status) %>
                   <% else %>
-                    <span class="badge bg-secondary-subtle text-secondary border"><%= t("not_yet", default: "Chưa đăng ký") %></span>
+                    <span class="badge bg-secondary-subtle text-secondary border"><%= t("not_yet") %></span>
                   <% end %>
                 </div>
               </div>
@@ -78,9 +78,9 @@
             <% if @latest_contract.present? %>
               <div class="d-flex align-items-center justify-content-between p-2 rounded bg-light border">
                 <div class="d-flex align-items-center gap-2">
-                  <span class="material-symbols-filled text-primary fs-5">description</span>
+                  <span class="material-symbols-filled fs-5">description</span>
                   <div>
-                    <p class="fw-semibold mb-0 small"><%= @latest_contract.name %></p>
+                    <p class="fw-semibold small"><%= @latest_contract.name %></p>
                     <small class="text-secondary"><%= @latest_contract.formatted_period %></small>
                   </div>
                 </div>
@@ -97,7 +97,7 @@
               </div>
             <% else %>
               <div class="d-flex align-items-center justify-content-between p-2 rounded bg-light border">
-                <span class="badge bg-warning-subtle text-warning-emphasis border"><%= t("form.tenant.unsigned", default: "Chưa ký hợp đồng") %></span>
+                <span class="badge bg-warning-subtle text-warning-emphasis border"><%= t("form.tenant.unsigned") %></span>
                 <%= link_to new_landlord_house_tenant_contract_path(@house, @tenant),
                             data: {turbo_frame: "_top"},
                             class: "btn btn-sm btn-primary py-0 px-2 d-inline-flex align-items-center gap-1" do %>
@@ -111,7 +111,8 @@
           <%# Footer timestamps %>
           <div class="text-end pt-2">
             <small class="text-secondary fst-italic">
-              <%= t("last_updated", default: "Cập nhật lần cuối") %>: <%= l(@user.updated_at, format: :default) rescue @user.updated_at.strftime("%d/%m/%Y %H:%M") %>
+              <%= t("last_updated") %>:
+              <%= l(@user.updated_at, format: :default) rescue @user.updated_at.strftime("%d/%m/%Y %H:%M") %>
             </small>
           </div>
         </div>

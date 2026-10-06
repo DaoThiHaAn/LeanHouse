@@ -41,12 +41,16 @@ class AdminPortal::IssueReportsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to admin_login_url
   end
 
-  test "should get index and display KPI counts when authenticated" do
+  test "should get index and display filtered count when authenticated" do
     sign_in_admin
 
     get admin_issue_reports_url
     assert_response :success
     assert_select "h1", text: I18n.t("admin.issue_reports.title")
+    assert_select ".admin-stat-card", count: 0
+    assert_select ".badge", text: I18n.t("admin.issue_reports.pending_count", count: 1)
+    assert_select ".badge", text: I18n.t("admin.issue_reports.in_progress_count", count: 0)
+    assert_select ".badge", text: I18n.t("admin.issue_reports.total_reports", count: 2)
 
     assert_includes response.body, "Broken payment gateway"
     assert_includes response.body, "Cannot reset password"
@@ -67,6 +71,16 @@ class AdminPortal::IssueReportsControllerTest < ActionDispatch::IntegrationTest
     sign_in_admin
 
     get admin_issue_reports_url, params: { q: "payment" }
+    assert_response :success
+    assert_includes response.body, "Broken payment gateway"
+    assert_not_includes response.body, "Cannot reset password"
+  end
+
+  test "should filter issue reports by date range" do
+    sign_in_admin
+
+    # @report_pending created Time.current (today)
+    get admin_issue_reports_url, params: { from_date: Date.current.to_s, to_date: Date.current.to_s }
     assert_response :success
     assert_includes response.body, "Broken payment gateway"
     assert_not_includes response.body, "Cannot reset password"

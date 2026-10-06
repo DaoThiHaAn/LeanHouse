@@ -7,45 +7,49 @@
   </p>
 </div>
 
-<!-- Header Stats & Action Bar -->
-<div class="row g-3 mb-4 align-items-center justify-content-between">
-  <div class="col-12 col-md-auto">
-    <div class="d-flex align-items-center gap-3 flex-wrap">
-      <h2 class="mb-0">
-        <span class="material-symbols-filled fs-3">campaign</span>
-        <%= t("admin.notifications.history_title") %>
-      </h2>
-      <span class="badge bg-light text-dark border p-2">
-        <%= t("admin.notifications.total_broadcasts", count: @total_broadcasts) %>
-      </span>
-      <% if @total_recipients_delivered.to_i > 0 %>
-        <span class="badge bg-primary-subtle text-primary border border-primary-subtle p-2">
-          <%= t("admin.notifications.total_delivered", count: @total_recipients_delivered) %>
-        </span>
-      <% end %>
-    </div>
-  </div>
-
-  <div class="col-12 col-md-auto">
-    <%= link_to new_admin_notification_path, class: "main-btn d-inline-flex align-items-center gap-2 shadow-sm text-decoration-none" do %>
-      <span class="material-symbols-filled fs-4">notification_add</span>
-      <span><%= t("admin.notifications.new_broadcast") %></span>
-    <% end %>
-  </div>
-</div>
-
 <!-- Filter Form -->
-<div class="mb-4">
+<div class="mb-5">
   <%= form_with url: admin_notifications_path, method: :get,
-                class: "row g-3 align-items-center",
+                class: "row g-3 align-items-center justify-content-center",
                 data: {
                   controller: "search",
                   turbo_frame: "admin_notifications_table",
                   turbo_action: "advance"
                 } do |f| %>
 
+    <!-- Time Range Filter (From Date - To Date, limited up to today) with Floating Label -->
+    <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+      <div class="position-relative border rounded-3 bg-white shadow-sm px-3 pt-2 pb-1" style="min-height: 58px;">
+        <label class="text-secondary small fw-medium d-flex align-items-center gap-1 mb-0" style="font-size: 0.75rem; line-height: 1;">
+          <span class="material-symbols-outlined fs-6">calendar_month</span>
+          <span><%= t("admin.notifications.sent_time", default: "Thời gian gửi") %></span>
+        </label>
+        <div class="d-flex align-items-center gap-2 mt-1">
+          <span class="text-secondary small"><%= t("admin.notifications.from_date", default: "Từ") %></span>
+          <%= f.date_field :from_date,
+              value: @from_date,
+              max: Date.current,
+              id: "from_date",
+              class: "form-control form-control-sm border-0 p-0 shadow-none bg-transparent",
+              data: {
+                action: "change->search#changed"
+              } %>
+          <span class="text-secondary small"><%= t("admin.notifications.to_date", default: "Đến") %></span>
+          <%= f.date_field :to_date,
+              value: @to_date.presence || Date.current,
+              max: Date.current,
+              id: "to_date",
+              class: "form-control form-control-sm border-0 p-0 shadow-none bg-transparent",
+              data: {
+                default_value: Date.current.to_s,
+                action: "change->search#changed"
+              } %>
+        </div>
+      </div>
+    </div>
+
     <!-- Priority / Level Filter -->
-    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+    <div class="col-6 col-sm-6 col-md-3 col-xl-2">
       <div class="form-floating shadow-sm rounded">
         <%= f.select :level,
             options_for_select([
@@ -67,7 +71,7 @@
     </div>
 
     <!-- Recipients / Target Audience Filter -->
-    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+    <div class="col-6 col-sm-6 col-md-3 col-xl-2">
       <div class="form-floating shadow-sm rounded">
         <%= f.select :audience,
             options_for_select([
@@ -89,9 +93,9 @@
     </div>
 
     <!-- Clear Filter Button -->
-    <div class="col-auto <%= 'd-none' unless @level.present? || @audience.present? %>" data-search-target="clearButton">
+    <div class="col-auto <%= 'd-none' unless @from_date.present? || (@to_date.present? && @to_date != Date.current.to_s) || @level.present? || @audience.present? %>" data-search-target="clearButton">
       <button type="button"
-              class="btn btn-outline-secondary d-flex align-items-center gap-1 shadow-sm align-self-center px-3"
+              class="btn btn-outline-secondary d-flex align-items-center gap-1 shadow-sm px-3"
               data-action="click->search#clear">
         <span class="material-symbols-outlined fs-6">filter_alt_off</span>
         <span class="small"><%= t("clear_filter") %></span>

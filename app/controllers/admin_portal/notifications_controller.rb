@@ -3,18 +3,38 @@ module AdminPortal
     def index
       @level = params[:level].presence_in(%w[info warning urgent])
       @audience = params[:audience].presence_in(%w[all landlords tenants])
+      @from_date = params[:from_date].presence
+      @to_date = params[:to_date].presence
 
       scope = Noticed::Event.where(type: "CustomAnnouncementNotifier")
       scope = scope.where("params->>'level' = ?", @level) if @level.present?
       scope = scope.where("params->>'target_audience' = ?", @audience) if @audience.present?
 
+      if @from_date.present? || @to_date.present?
+        begin
+          start_time = @from_date.present? ? Date.parse(@from_date.to_s).beginning_of_day : nil
+          end_time = @to_date.present? ? Date.parse(@to_date.to_s).end_of_day : nil
+
+          if start_time && end_time
+            start_time, end_time = end_time.beginning_of_day, start_time.end_of_day if start_time > end_time
+            scope = scope.where(created_at: start_time..end_time)
+          elsif start_time
+            scope = scope.where("created_at >= ?", start_time)
+          elsif end_time
+            scope = scope.where("created_at <= ?", end_time)
+          end
+        rescue Date::Error, ArgumentError
+          # ignore invalid dates
+        end
+      end
+
+      @total_broadcasts = scope.count
+      @total_recipients_delivered = scope.sum(:notifications_count).to_i
+
       @events = scope.order(created_at: :desc).page(params[:page]).per(15)
 
       if turbo_frame_request?
         render partial: "table"
-      else
-        @total_broadcasts = Noticed::Event.where(type: "CustomAnnouncementNotifier").count
-        @total_recipients_delivered = Noticed::Event.where(type: "CustomAnnouncementNotifier").sum(:notifications_count)
       end
     end
 

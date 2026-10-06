@@ -3,18 +3,19 @@ module AdminPortal
     before_action :set_issue_report, only: [ :show, :update ]
 
     def index
-      @total_count = IssueReport.count
-      @pending_count = IssueReport.pending.count
-      @in_progress_count = IssueReport.in_progress.count
-      @resolved_count = IssueReport.resolved.count
-
       @query = params[:q].presence
       @status = params[:status].presence
+      @from_date = params[:from_date].presence
+      @to_date = params[:to_date].presence
 
-      scope = IssueReport.includes(:resolved_by).recent
-      scope = scope.filter_by_status(@status)
-      scope = scope.search(@query)
+      base_scope = IssueReport.includes(:resolved_by).recent
+      base_scope = base_scope.filter_by_date_range(@from_date, @to_date)
+      base_scope = base_scope.search(@query)
 
+      @pending_count = base_scope.pending.count
+      @in_progress_count = base_scope.in_progress.count
+
+      scope = @status.present? ? base_scope.filter_by_status(@status) : base_scope
       @issue_reports = scope.page(params[:page]).per(15)
     end
 

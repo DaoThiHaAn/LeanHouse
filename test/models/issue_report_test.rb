@@ -86,6 +86,17 @@ class IssueReportTest < ActiveSupport::TestCase
     assert_not_includes results, r1
   end
 
+  test "filter_by_date_range filters by created_at range" do
+    r_old = IssueReport.create!(@valid_attributes.merge(created_at: 5.days.ago))
+    r_mid = IssueReport.create!(@valid_attributes.merge(created_at: 2.days.ago))
+    r_new = IssueReport.create!(@valid_attributes.merge(created_at: Time.current))
+
+    range_results = IssueReport.filter_by_date_range(3.days.ago.to_date.to_s, 1.day.ago.to_date.to_s)
+    assert_includes range_results, r_mid
+    assert_not_includes range_results, r_old
+    assert_not_includes range_results, r_new
+  end
+
   test "broadcast_pending_badge_later calls broadcast_pending_badge" do
     called = false
     IssueReport.stub :broadcast_pending_badge, -> { called = true } do

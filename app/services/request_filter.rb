@@ -24,15 +24,18 @@ class RequestFilter
     @per_page = per_page || REQUESTS_PER_PAGE
   end
 
-  def call
+  def unpaginated_scope
     scope = base_scope
     scope = apply_search(scope)
     scope = apply_house_filter(scope)
     scope = apply_sent_time_filter(scope)
     scope = apply_status_filter(scope)
     scope = apply_request_type_filter(scope)
-
     scope
+  end
+
+  def call
+    unpaginated_scope
       .includes(:house, :requestable, :resolved_by, tenant: :user)
       .order(created_at: :desc, id: :desc)
       .page(page)

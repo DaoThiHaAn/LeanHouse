@@ -148,19 +148,21 @@ class AdminPortal::RequestsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to admin_login_url
   end
 
-  test "should render requests index with stats when signed in as super admin" do
+  test "should render requests index with filtered count when signed in as super admin" do
     sign_in_admin(@admin)
 
     get admin_requests_url
     assert_response :success
     assert_select "h1", text: I18n.t("admin.requests.title")
-    assert_select ".admin-stat-card", count: 6
+    assert_select ".admin-stat-card", count: 0
+    assert_select ".badge", text: I18n.t("admin.requests.pending_count", count: 1)
+    assert_select ".badge", text: I18n.t("admin.requests.handling_count", count: 1)
+    assert_select ".badge", text: I18n.t("admin.requests.total_requests", count: 3)
 
     # Verify no house dropdown is present
     assert_select "select[name='house_id']", count: 0
 
     # Verify requests are shown in table
-    assert_includes response.body, I18n.t("admin.requests.handling_subtext")
     assert_includes response.body, @req_vehicle.human_request_type
     assert_includes response.body, @req_repair.human_request_type
     assert_includes response.body, @req_leave.human_request_type

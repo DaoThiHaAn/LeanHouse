@@ -34,7 +34,7 @@ vi:
       send_otp: "Gửi OTP"
       verify: "Xác minh"
       otp_note: "Nếu chưa thấy tin nhắn, vui lòng đợi trong giây lát hoặc yêu cầu gửi lại mã."
-      otp_demo_title: "Chế độ Thử nghiệm (Demo Sandbox)"
+      otp_demo_title: "Chế độ Thử nghiệm"
       otp_demo_hint_html: "Môi trường thử nghiệm mô phỏng gửi SMS. Vui lòng sử dụng mã ngẫu nhiên hiển thị ở trên hoặc bấm 'Điền nhanh'."
       otp_demo_quick_fill: "Điền nhanh"
       otp_demo_copy: "Sao chép"
@@ -257,6 +257,7 @@ vi:
       unfound: "Không tìm thấy khách thuê nào!"
       no_house: "Bạn chưa được kết nối với Nhà nào!"
       let_link: "Hãy liên hệ với chủ nhà để bắt đầu nhận phòng và theo dõi quá trình lưu trú của bạn ở đây."
+      unsigned: "Chưa ký hợp đồng"
       stats:
         total_tenants: "Tổng khách thuê"
         signed_contracts: "Đã ký hợp đồng"

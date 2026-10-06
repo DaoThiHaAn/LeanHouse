@@ -21,6 +21,27 @@ class IssueReport < ApplicationRecord
 
   scope :recent, -> { order(created_at: :desc) }
   scope :filter_by_status, ->(status) { where(status: status) if status.present? && statuses.key?(status) }
+  scope :filter_by_date_range, ->(from_date, to_date) {
+    if from_date.present? || to_date.present?
+      begin
+        start_time = from_date.present? ? Date.parse(from_date.to_s).beginning_of_day : nil
+        end_time = to_date.present? ? Date.parse(to_date.to_s).end_of_day : nil
+
+        if start_time && end_time
+          start_time, end_time = end_time.beginning_of_day, start_time.end_of_day if start_time > end_time
+          where(created_at: start_time..end_time)
+        elsif start_time
+          where("issue_reports.created_at >= ?", start_time)
+        elsif end_time
+          where("issue_reports.created_at <= ?", end_time)
+        end
+      rescue Date::Error, ArgumentError
+        all
+      end
+    else
+      all
+    end
+  }
   scope :search, ->(query) {
     return all if query.blank?
     term = "%#{sanitize_sql_like(query.to_s.strip)}%"
