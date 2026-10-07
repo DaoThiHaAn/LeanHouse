@@ -123,10 +123,27 @@ class LandlordPortal::DashboardsControllerTest < ActionDispatch::IntegrationTest
     assert_select ".trend-bar-wrapper", 6
     assert_select ".trend-bar-wrapper[data-turbo-frame='_top']", 6
     assert_select ".trend-bar-wrapper.is-current-month", 1
+    assert_select ".trend-bar-wrapper.is-active", count: 0
     assert_select ".trend-bar-footer .current-month-badge", text: I18n.t("dashboard.landlord.current_month_btn")
     assert_select ".chip-avg"
     assert_select ".chip-max"
     assert_select ".chip-min"
+  end
+
+  test "unselects active trend bar when returning from detailed mode to overall comparison mode" do
+    sign_in_as(@landlord_user)
+    curr_month = Date.current.beginning_of_month
+
+    # 1. Select current month in detailed view
+    get landlord_dashboard_path, params: { month: curr_month.strftime("%Y-%m") }
+    assert_response :success
+    assert_select ".trend-bar-wrapper.is-active", count: 1
+
+    # 2. Return to overall view mode
+    get landlord_dashboard_path
+    assert_response :success
+    assert_select ".trend-bar-wrapper.is-active", count: 0
+    assert_select ".trend-bar-wrapper.is-current-month", count: 1
   end
 
   test "renders dashboard in detailed mode when month param is present" do

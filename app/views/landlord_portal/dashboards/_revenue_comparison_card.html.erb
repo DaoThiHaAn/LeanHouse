@@ -102,16 +102,17 @@
                 <div class="chart-bars-layer position-relative w-100 h-100 d-flex align-items-end justify-content-between gap-2 px-1">
                   <% monthly_trend.each do |trend| %>
                     <% is_curr = trend[:is_current] %>
+                    <% is_selected = is_detailed && trend[:is_target] %>
                     <%= link_to landlord_dashboard_path(house_id: selected_house_id, month: trend[:month_param]),
-                                class: "trend-bar-wrapper #{'is-active' if trend[:is_target]} #{'is-current-month' if is_curr} position-relative",
+                                class: "trend-bar-wrapper #{'is-active' if is_selected} #{'is-current-month' if is_curr} position-relative",
                                 title: "#{trend[:month_full]}: #{format_money(trend[:paid_revenue])}#{' (' + t('dashboard.landlord.current_month_btn') + ')' if is_curr}",
                                 data: { turbo_frame: "_top", turbo_action: "advance" } do %>
                       <div class="trend-bar-col">
                         <div class="trend-bar-track">
-                          <div class="trend-bar-fill <%= (trend[:is_target] || is_curr) ? 'bg-indigo-active' : 'bg-indigo-bar' %>" style="height: <%= trend[:height_pct] %>%;"></div>
+                          <div class="trend-bar-fill <%= is_selected ? 'bg-indigo-active' : 'bg-indigo-bar' %>" style="height: <%= trend[:height_pct] %>%;"></div>
                         </div>
                         <div class="trend-bar-footer">
-                          <span class="trend-bar-label font-monospace <%= (trend[:is_target] || is_curr) ? 'fw-bold text-primary' : 'text-secondary' %>">
+                          <span class="trend-bar-label font-monospace <%= is_selected ? 'fw-bold text-primary' : 'text-secondary' %>">
                             <%= trend[:month_label] %>
                           </span>
                           <% if is_curr %>
