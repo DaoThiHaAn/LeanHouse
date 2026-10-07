@@ -155,9 +155,9 @@ class AdminPortal::RequestsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "h1", text: I18n.t("admin.requests.title")
     assert_select ".admin-stat-card", count: 0
-    assert_select ".badge", text: I18n.t("admin.requests.pending_count", count: 1)
-    assert_select ".badge", text: I18n.t("admin.requests.handling_count", count: 1)
-    assert_select ".badge", text: I18n.t("admin.requests.total_requests", count: 3)
+    assert_select ".badge", text: /#{Regexp.escape(I18n.t("admin.requests.pending_count", count: 1))}/
+    assert_select ".badge", text: /#{Regexp.escape(I18n.t("admin.requests.handling_count", count: 1))}/
+    assert_select ".badge", text: /#{Regexp.escape(I18n.t("admin.requests.total_requests", count: 3))}/
 
     # Verify no house dropdown is present
     assert_select "select[name='house_id']", count: 0

@@ -136,8 +136,13 @@ module LandlordDashboard
       total_6m = monthly_trend.sum { |t| t[:paid_revenue] }
       avg_monthly = (total_6m.to_f / 6).round
 
-      max_item = monthly_trend.max_by { |t| t[:paid_revenue] }
-      min_item = monthly_trend.min_by { |t| t[:paid_revenue] }
+      max_items = if max_trend_rev.positive?
+        monthly_trend.select { |t| t[:paid_revenue] == max_trend_rev }
+      else
+        []
+      end
+
+      min_items = monthly_trend.select { |t| t[:paid_revenue] == min_trend_rev }
 
       monthly_trend.each do |t|
         t[:height_pct] = if t[:paid_revenue].positive? && max_trend_rev.positive?
@@ -152,8 +157,12 @@ module LandlordDashboard
       macro_comparison = {
         avg_monthly_revenue: avg_monthly,
         total_6m_revenue: total_6m,
-        max_month: max_item,
-        min_month: min_item
+        max_month: max_items.first,
+        min_month: min_items.first,
+        max_months: max_items,
+        min_months: min_items,
+        max_revenue: max_trend_rev,
+        min_revenue: min_trend_rev
       }
 
       # Y-Axis Scale Levels (4 levels: 100%, 75%, 50%, 25%, 0%)
@@ -210,7 +219,11 @@ module LandlordDashboard
           avg_monthly_revenue: 0,
           total_6m_revenue: 0,
           max_month: nil,
-          min_month: nil
+          min_month: nil,
+          max_months: [],
+          min_months: [],
+          max_revenue: 0,
+          min_revenue: 0
         },
         y_axis_levels: []
       }

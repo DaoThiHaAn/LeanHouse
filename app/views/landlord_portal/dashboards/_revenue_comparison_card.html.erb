@@ -159,7 +159,7 @@
                     <% end %>
                   </div>
                   <span class="stat-value text-indigo-accent font-monospace fs-3">
-                    <%= format_money(rev[:paid_revenue] || 0) %>
+                    +<%= format_money(rev[:paid_revenue] || 0) %>
                   </span>
                 </div>
                 <div class="text-sm-end">
@@ -265,11 +265,16 @@
                       <span class="material-symbols-filled fs-6">trophy</span>
                       <span class="fw-semibold"><%= t('dashboard.landlord.max_revenue_title') %></span>
                     </div>
-                    <div class="fw-bold font-monospace text-success fs-6">
-                      <%= macro.dig(:max_month, :month_full) || "—" %>
+                    <% max_months = macro[:max_months].presence || (macro[:max_month] ? [macro[:max_month]] : []) %>
+                    <div class="fw-bold font-monospace text-success <%= max_months.size > 1 ? 'small' : 'fs-6' %>">
+                      <% if max_months.any? %>
+                        <%= max_months.map { |m| m[:month_full] }.join(", ") %>
+                      <% else %>
+                        —
+                      <% end %>
                     </div>
                     <div class="stat-subtext font-monospace fw-semibold mt-1">
-                      <%= format_money(macro.dig(:max_month, :paid_revenue) || 0) %>
+                      <%= format_money(macro.dig(:max_month, :paid_revenue) || macro[:max_revenue] || 0) %>
                     </div>
                   </div>
                 </div>
@@ -281,11 +286,18 @@
                       <span class="material-symbols-outlined fs-6">arrow_downward</span>
                       <span class="fw-semibold"><%= t('dashboard.landlord.min_revenue_title') %></span>
                     </div>
-                    <div class="fw-bold font-monospace text-secondary fs-6">
-                      <%= macro.dig(:min_month, :month_full) || "—" %>
+                    <% min_months = macro[:min_months].presence || (macro[:min_month] ? [macro[:min_month]] : []) %>
+                    <div class="fw-bold font-monospace text-secondary <%= min_months.size > 1 ? 'small' : 'fs-6' %>">
+                      <% if min_months.size == monthly_trend.size && monthly_trend.size > 1 %>
+                        <%= t('dashboard.landlord.all_months_count', count: monthly_trend.size) %>
+                      <% elsif min_months.any? %>
+                        <%= min_months.map { |m| m[:month_full] }.join(", ") %>
+                      <% else %>
+                        —
+                      <% end %>
                     </div>
                     <div class="stat-subtext font-monospace fw-semibold mt-1">
-                      <%= format_money(macro.dig(:min_month, :paid_revenue) || 0) %>
+                      <%= format_money(macro.dig(:min_month, :paid_revenue) || macro[:min_revenue] || 0) %>
                     </div>
                   </div>
                 </div>

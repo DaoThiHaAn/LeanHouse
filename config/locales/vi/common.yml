@@ -283,7 +283,7 @@ vi:
     edit_contract: "Chỉnh sửa hợp đồng"
     sign_new_contract: "Ký hợp đồng mới"
     new_service: "Dịch vụ mới"
-    maintenance_log_mng: "Quản lý Lịch sử sửa chữa, bão dưỡng"
+    maintenance_log_mng: "Quản lý Lịch sử sửa chữa, bảo dưỡng"
     vehicle_mng: "Quản lý Phương tiện"
     my_vehicles: "Phương tiện của tôi"
     admin_login: "Đăng nhập Quản trị viên"

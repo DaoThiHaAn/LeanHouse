@@ -42,7 +42,7 @@
           <span><%= t("admin.issue_reports.sent_time", default: "Thời gian gửi") %></span>
         </label>
         <div class="d-flex align-items-center gap-2 mt-1">
-          <span class="text-secondary small"><%= t("admin.issue_reports.from_date", default: "Từ") %></span>
+          <label for="from_date" class="text-secondary small"><%= t("admin.issue_reports.from_date", default: "Từ") %></label>
           <%= f.date_field :from_date,
               value: @from_date,
               max: Date.current,
@@ -51,7 +51,7 @@
               data: {
                 action: "change->search#changed"
               } %>
-          <span class="text-secondary small"><%= t("admin.issue_reports.to_date", default: "Đến") %></span>
+          <label for="to_date" class="text-secondary small"><%= t("admin.issue_reports.to_date", default: "Đến") %></label>
           <%= f.date_field :to_date,
               value: @to_date.presence || Date.current,
               max: Date.current,

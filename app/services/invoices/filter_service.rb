@@ -122,32 +122,34 @@ module Invoices
       term_status = params[:term_status].presence || (params[:status] if params[:status] == "overdue")
       if %w[overdue in_term].include?(term_status)
         today = Date.current
-        scope = if term_status == "overdue"
-                  scope.where(
-                    "invoices.status = 'overdue' OR (invoices.status = 'pending' AND invoices.due_date < :today)",
-                    today: today
-                  )
-                else
-                  scope.where(
-                    "invoices.status = 'paid' OR (invoices.status = 'pending' AND invoices.due_date >= :today)",
-                    today: today
-                  )
-                end
+        scope =
+          if term_status == "overdue"
+            scope.where(
+              "invoices.status = 'overdue' OR (invoices.status = 'pending' AND invoices.due_date < :today)",
+              today: today
+            )
+          else
+            scope.where(
+              "invoices.status = 'paid' OR (invoices.status = 'pending' AND invoices.due_date >= :today)",
+              today: today
+            )
+          end
       end
 
       # 2. Payment status: pending, paid, cancelled
       payment_status = params[:payment_status].presence || (params[:status] if %w[pending paid cancelled].include?(params[:status]))
       if %w[pending paid cancelled].include?(payment_status)
-        scope = case payment_status
-                when "pending"
-                  scope.where(status: %w[pending overdue])
-                when "paid"
-                  scope.where(status: "paid")
-                when "cancelled"
-                  scope.where(status: "cancelled")
-                else
-                  scope
-                end
+        scope =
+          case payment_status
+          when "pending"
+            scope.where(status: %w[pending overdue])
+          when "paid"
+            scope.where(status: "paid")
+          when "cancelled"
+            scope.where(status: "cancelled")
+          else
+            scope
+          end
       end
 
       scope

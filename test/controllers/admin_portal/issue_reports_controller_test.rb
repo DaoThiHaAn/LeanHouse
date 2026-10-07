@@ -25,6 +25,7 @@ class AdminPortal::IssueReportsControllerTest < ActionDispatch::IntegrationTest
       status: :resolved,
       resolved_by: @admin,
       resolved_at: 1.day.ago,
+      created_at: 1.day.ago,
       admin_notes: "Checked SMS logs and assisted user directly."
     )
   end
@@ -48,9 +49,9 @@ class AdminPortal::IssueReportsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "h1", text: I18n.t("admin.issue_reports.title")
     assert_select ".admin-stat-card", count: 0
-    assert_select ".badge", text: I18n.t("admin.issue_reports.pending_count", count: 1)
-    assert_select ".badge", text: I18n.t("admin.issue_reports.in_progress_count", count: 0)
-    assert_select ".badge", text: I18n.t("admin.issue_reports.total_reports", count: 2)
+    assert_select ".badge", text: /#{Regexp.escape(I18n.t("admin.issue_reports.pending_count", count: 1))}/
+    assert_select ".badge", text: /#{Regexp.escape(I18n.t("admin.issue_reports.in_progress_count", count: 0))}/
+    assert_select ".badge", text: /#{Regexp.escape(I18n.t("admin.issue_reports.total_reports", count: 2))}/
 
     assert_includes response.body, "Broken payment gateway"
     assert_includes response.body, "Cannot reset password"

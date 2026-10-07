@@ -77,6 +77,10 @@ class LandlordPortal::DashboardsControllerTest < ActionDispatch::IntegrationTest
     assert_select ".current-month-badge", text: I18n.t("dashboard.landlord.current_month_btn")
     assert_select ".card-indigo"
     assert_select ".card-indigo .badge", text: /#{I18n.t("dashboard.landlord.all_houses")}/
+    assert_select ".chip-max", text: /#{I18n.t("dashboard.landlord.max_revenue_title")}/
+    assert_select ".chip-max", text: /—/
+    assert_select ".chip-min", text: /#{I18n.t("dashboard.landlord.min_revenue_title")}/
+    assert_select ".chip-min", text: /#{Regexp.escape(I18n.t("dashboard.landlord.all_months_count", count: 6))}/
   end
 
   test "renders dashboard filtered by specific house" do
@@ -228,5 +232,45 @@ class LandlordPortal::DashboardsControllerTest < ActionDispatch::IntegrationTest
     assert_select ".dashboard-header p.text-success-emphasis", text: I18n.t("dashboard.landlord.month_stats_label", month: Date.current.strftime("%m/%Y"))
     assert_select ".dashboard-header .badge", count: 0
     assert_select ".comparison-bar-chart"
+  end
+
+  test "renders dashboard showing tied highest months when multiple months have max revenue" do
+    curr_month = Date.current.beginning_of_month
+    prev_month = 1.month.ago.beginning_of_month
+    room = Room.create!(floor: @floor, name: "P101", max_slots: 2, tenants_count: 1, area: 20.0)
+
+    Invoice.create!(
+      house: @house,
+      room: room,
+      code: "INV-MAX-01",
+      billing_month: curr_month,
+      due_date: curr_month + 10.days,
+      created_by_id: @landlord.id,
+      invoice_type: :room,
+      status: :paid,
+      subtotal: 5_000_000,
+      total_amount: 5_000_000,
+      paid_at: curr_month + 1.day
+    )
+    Invoice.create!(
+      house: @house,
+      room: room,
+      code: "INV-MAX-02",
+      billing_month: prev_month,
+      due_date: prev_month + 10.days,
+      created_by_id: @landlord.id,
+      invoice_type: :room,
+      status: :paid,
+      subtotal: 5_000_000,
+      total_amount: 5_000_000,
+      paid_at: prev_month + 1.day
+    )
+
+    sign_in_as(@landlord_user)
+    get landlord_dashboard_path
+
+    assert_response :success
+    expected_tied = [ prev_month.strftime("%m/%Y"), curr_month.strftime("%m/%Y") ].join(", ")
+    assert_select ".chip-max", text: /#{expected_tied}/
   end
 end

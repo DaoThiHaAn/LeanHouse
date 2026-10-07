@@ -91,6 +91,7 @@ en:
       avg_revenue_title: "Average Revenue"
       max_revenue_title: "Highest Month"
       min_revenue_title: "Lowest Month"
+      all_months_count: "All (%{count} months)"
       per_month: "mo"
       click_bar_to_view_details: "Click on any month bar above to explore detailed breakdown."
 

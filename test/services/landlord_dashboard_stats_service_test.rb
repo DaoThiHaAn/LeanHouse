@@ -470,6 +470,8 @@ class LandlordDashboardStatsServiceTest < ActiveSupport::TestCase
     assert_equal 1_500_000, macro[:avg_monthly_revenue]
     assert_equal 5_000_000, macro[:max_month][:paid_revenue]
     assert_equal 0, macro[:min_month][:paid_revenue]
+    assert_equal 1, macro[:max_months].size
+    assert_equal 4, macro[:min_months].size
   end
 
   test "computes stats for a historical target_date" do
@@ -494,5 +496,80 @@ class LandlordDashboardStatsServiceTest < ActiveSupport::TestCase
     assert_equal past_date, stats[:target_date]
     assert_equal 3_500_000, stats[:revenue][:paid_revenue]
     assert_equal 1, stats[:invoices][:paid]
+  end
+
+  test "computes macro comparison with multiple tied max months" do
+    curr_month = Date.current.beginning_of_month
+    prev_month = 1.month.ago.beginning_of_month
+
+    # Create two paid invoices in different months with identical highest revenue
+    Invoice.create!(
+      house: @house1,
+      room: @room1,
+      code: "INV-TIED-01",
+      billing_month: curr_month,
+      due_date: curr_month + 10.days,
+      created_by_id: @landlord.id,
+      invoice_type: :room,
+      status: :paid,
+      subtotal: 5_000_000,
+      total_amount: 5_000_000,
+      paid_at: curr_month + 1.day
+    )
+    Invoice.create!(
+      house: @house1,
+      room: @room1,
+      code: "INV-TIED-02",
+      billing_month: prev_month,
+      due_date: prev_month + 10.days,
+      created_by_id: @landlord.id,
+      invoice_type: :room,
+      status: :paid,
+      subtotal: 5_000_000,
+      total_amount: 5_000_000,
+      paid_at: prev_month + 1.day
+    )
+
+    stats = LandlordDashboardStatsService.call(landlord: @landlord, house_id: @house1.id, target_date: curr_month)
+    macro = stats[:revenue][:macro_comparison]
+
+    assert_equal 2, macro[:max_months].size
+    assert_equal [ 5_000_000, 5_000_000 ], macro[:max_months].map { |m| m[:paid_revenue] }
+    assert_equal 4, macro[:min_months].size
+    assert macro[:min_months].all? { |m| m[:paid_revenue] == 0 }
+  end
+
+  test "computes macro comparison when all months have zero revenue" do
+    # When no paid invoices exist, max_months is empty and min_months covers all 6 months
+    empty_landlord_user = User.create!(
+      fullname: "Zero Rev Landlord",
+      tel: "0988776655",
+      password: "Password123",
+      password_confirmation: "Password123",
+      role: "landlord",
+      sex: "male",
+      bday: 28.years.ago.to_date,
+      address: "000 Zero St",
+      tel_verified_at: Time.current
+    )
+    empty_landlord = Landlord.find_or_create_by!(id: empty_landlord_user.id)
+    empty_house = House.create!(
+      landlord: empty_landlord,
+      name: "Empty House",
+      mode: :room,
+      address_l1: "123 Street",
+      address_l2: "Ward 1",
+      address_l3: "District 1",
+      floors_count: 1,
+      inv_creation_date: 1
+    )
+
+    stats = LandlordDashboardStatsService.call(landlord: empty_landlord, house_id: empty_house.id, target_date: Date.current)
+    macro = stats[:revenue][:macro_comparison]
+
+    assert_empty macro[:max_months]
+    assert_nil macro[:max_month]
+    assert_equal 6, macro[:min_months].size
+    assert_equal 0, macro[:min_months].first[:paid_revenue]
   end
 end

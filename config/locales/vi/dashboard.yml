@@ -91,6 +91,7 @@ vi:
       avg_revenue_title: "Doanh thu trung bình"
       max_revenue_title: "Tháng cao nhất"
       min_revenue_title: "Tháng thấp nhất"
+      all_months_count: "Tất cả (%{count} tháng)"
       per_month: "tháng"
       click_bar_to_view_details: "Bấm vào từng cột tháng trên biểu đồ để xem chi tiết cơ cấu thu."
       collected_for_month: "Tháng được chọn: %{month}"
