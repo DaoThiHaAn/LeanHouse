@@ -89,5 +89,13 @@ class TenantPortalTest < ApplicationSystemTestCase
     find("button.dropdown-toggle", text: I18n.t("request.create")).click
     assert_selector "a[href='#{new_tenant_vehicle_request_path}']", visible: true
     assert_selector "a[href='#{new_tenant_repair_request_path}']", visible: true
+
+    # Filter by status and verify clear button visibility toggle
+    assert_selector "form.request-form"
+    select Request.status_options.first.first, from: "status"
+    assert_selector "[data-filter-form-target='clearButton']", visible: true, wait: 5
+
+    find("[data-filter-form-target='clearButton'] button").click
+    assert_selector "[data-filter-form-target='clearButton'].d-none", visible: :all, wait: 5
   end
 end

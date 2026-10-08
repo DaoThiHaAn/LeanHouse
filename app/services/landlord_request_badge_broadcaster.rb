@@ -11,5 +11,7 @@ class LandlordRequestBadgeBroadcaster
       partial: "landlord_portal/requests/nav_badge",
       locals: { count: count }
     )
+  rescue StandardError => e
+    Rails.logger.error("[LandlordRequestBadgeBroadcaster] Failed to broadcast request badge update: #{e.class}: #{e.message}")
   end
 end

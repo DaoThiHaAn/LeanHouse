@@ -57,6 +57,8 @@ class DeliveryMethods::TurboStream < Noticed::DeliveryMethod
       [ user, :notifications ],
       content: streams.join
     )
+  rescue StandardError => e
+    Rails.logger.error("[DeliveryMethods::TurboStream] Failed to broadcast notification stream to user #{user.id}: #{e.class}: #{e.message}")
   end
 
   private

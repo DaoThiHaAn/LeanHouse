@@ -62,7 +62,7 @@
   <!-- Filter Form -->
   <%= form_with url: filtered_tenant_requests_path,
       method: :get,
-      class: "request-form d-flex align-items-center flex-wrap gap-3 mt-4 p-3 justify-content-around rounded-3",
+      class: "request-form rounded-3 p-3 p-md-4 mt-4 shadow-sm",
       data: {
         controller: "filter-form",
         filter_form_default_house_value: @house&.id&.to_s || "",
@@ -70,80 +70,81 @@
         turbo_action: "advance"
       } do |f| %>
 
-    <!-- 1. House Filter -->
-    <div class="d-flex flex-column gap-1">
-      <%= f.label :house_id, t("request.house_filter"), class: "form-label fw-semibold mb-0" %>
-      <%= f.select :house_id,
-            tenant_house_filter_options(@linked_houses, @house),
-            { selected: @selected_house_id },
-            class: "form-select form-select-sm shadow-sm",
-            data: {
-              filter_form_target: "houseSelect",
-              action: "change->filter-form#changed"
-            } %>
-    </div>
-
-    <!-- 2. Sent Time Filter (Month + Year) -->
-    <div class="d-flex flex-column gap-1">
-      <%= f.label :month, t("request.sent_time"), class: "form-label fw-semibold mb-0" %>
-
-      <div class="input-group flex-nowrap">
-        <span class="input-group-text"><%= t("request.sent_month") %></span>
-        <%= f.select :month,
-              [[t("all"), ""]] + (1..12).map { |m| [m.to_s.rjust(2, "0"), m.to_s] },
-              { selected: params[:month] },
+    <div class="row g-2 g-md-3 align-items-end">
+      <!-- 1. House Filter -->
+      <div class="col-12 col-sm-6 col-lg-6 col-xl-3">
+        <%= f.label :house_id, t("request.house_filter"), class: "form-label fw-semibold small mb-1" %>
+        <%= f.select :house_id,
+              tenant_house_filter_options(@linked_houses, @house),
+              { selected: @selected_house_id },
               class: "form-select form-select-sm shadow-sm",
               data: {
-                filter_form_target: "monthSelect",
-                action: "change->filter-form#changed"
-              } %>
-
-        <span class="input-group-text"><%= t("request.sent_year") %></span>
-        <%= f.select :year,
-              tenant_year_filter_options(@tenant),
-              { selected: params[:year] },
-              class: "form-select form-select-sm shadow-sm",
-              data: {
-                filter_form_target: "yearSelect",
+                filter_form_target: "houseSelect",
                 action: "change->filter-form#changed"
               } %>
       </div>
-    </div>
 
-    <!-- 3. Status Filter -->
-    <div class="d-flex flex-column gap-1">
-      <%= f.label :status, t("request.status"), class: "form-label  fw-semibold mb-0" %>
-      <%= f.select :status,
-            [[t("all"), ""]] + Request.status_options,
-            { selected: params[:status] },
-            class: "form-select form-select-sm shadow-sm",
-            data: {
-              filter_form_target: "statusSelect",
-              action: "change->filter-form#changed"
-            } %>
-    </div>
+      <!-- 2. Sent Time Filter (Month + Year) -->
+      <div class="col-12 col-sm-6 col-xl-3">
+        <%= f.label :month, t("request.sent_time"), class: "form-label fw-semibold small mb-1" %>
+        <div class="input-group input-group-sm flex-nowrap shadow-sm sent-time-group">
+          <span class="input-group-text bg-white text-secondary small px-2"><%= t("request.sent_month") %></span>
+          <%= f.select :month,
+                [[t("all"), ""]] + (1..12).map { |m| [m.to_s.rjust(2, "0"), m.to_s] },
+                { selected: params[:month] },
+                class: "form-select form-select-sm",
+                data: {
+                  filter_form_target: "monthSelect",
+                  action: "change->filter-form#changed"
+                } %>
 
-    <!-- 4. Request Type Filter -->
-    <div class="d-flex flex-column gap-1">
-      <%= f.label :request_type, t("request.type"), class: "form-label  fw-semibold mb-0" %>
-      <%= f.select :request_type,
-            [[t("all"), ""]] + Request.request_type_options,
-            { selected: params[:request_type] },
-            class: "form-select form-select-sm shadow-sm",
-            data: {
-              filter_form_target: "requestTypeSelect",
-              action: "change->filter-form#changed"
-            } %>
-    </div>
+          <span class="input-group-text bg-white text-secondary small px-2"><%= t("request.sent_year") %></span>
+          <%= f.select :year,
+                tenant_year_filter_options(@tenant),
+                { selected: params[:year] },
+                class: "form-select form-select-sm",
+                data: {
+                  filter_form_target: "yearSelect",
+                  action: "change->filter-form#changed"
+                } %>
+        </div>
+      </div>
 
-    <!-- Clear Filter Button (Dynamically toggled by Stimulus) -->
-    <div class="align-self-end ms-auto d-none" data-filter-form-target="clearButton">
-      <button type="button"
-              class="filter-off btn btn-sm btn-outline-secondary bg-light d-flex align-items-center gap-1"
-              data-action="click->filter-form#clear">
-        <span class="material-symbols-outlined fs-6">filter_alt_off</span>
-        <%= t("clear_filter") %>
-      </button>
+      <!-- 3. Status Filter -->
+      <div class="col-6 col-sm-4 col-lg-4 col-xl-2">
+        <%= f.label :status, t("request.status"), class: "form-label fw-semibold small mb-1" %>
+        <%= f.select :status,
+              [[t("all"), ""]] + Request.status_options,
+              { selected: params[:status] },
+              class: "form-select form-select-sm shadow-sm",
+              data: {
+                filter_form_target: "statusSelect",
+                action: "change->filter-form#changed"
+              } %>
+      </div>
+
+      <!-- 4. Request Type Filter -->
+      <div class="col-6 col-sm-4 col-lg-4 col-xl-2">
+        <%= f.label :request_type, t("request.type"), class: "form-label fw-semibold small mb-1" %>
+        <%= f.select :request_type,
+              [[t("all"), ""]] + Request.request_type_options,
+              { selected: params[:request_type] },
+              class: "form-select form-select-sm shadow-sm",
+              data: {
+                filter_form_target: "requestTypeSelect",
+                action: "change->filter-form#changed"
+              } %>
+      </div>
+
+      <!-- Clear Filter Button (Dynamically toggled by Stimulus) -->
+      <div class="col-12 col-sm-4 col-lg-4 col-xl-2 d-none" data-filter-form-target="clearButton">
+        <button type="button"
+                class="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-center gap-1 shadow-sm text-nowrap"
+                data-action="click->filter-form#clear">
+          <span class="material-symbols-outlined fs-6">filter_alt_off</span>
+          <span><%= t("clear_filter") %></span>
+        </button>
+      </div>
     </div>
   <% end %>
 

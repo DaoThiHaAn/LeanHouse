@@ -35,5 +35,7 @@ class LandlordDashboardBroadcaster
         selected_house: nil
       }
     )
+  rescue StandardError => e
+    Rails.logger.error("[LandlordDashboardBroadcaster] Failed to broadcast dashboard update for house #{house_id}: #{e.class}: #{e.message}")
   end
 end

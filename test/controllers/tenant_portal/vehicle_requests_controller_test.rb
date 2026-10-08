@@ -1,4 +1,5 @@
 require "test_helper"
+require "minitest/mock"
 
 class TenantPortal::VehicleRequestsControllerTest < ActionDispatch::IntegrationTest
   setup do
@@ -91,5 +92,55 @@ class TenantPortal::VehicleRequestsControllerTest < ActionDispatch::IntegrationT
     assert_response :success
     assert_includes response.body, I18n.t("form.tenant.no_house")
     assert_equal 0, VehicleRequest.count
+  end
+
+  test "linked tenant can submit valid vehicle request" do
+    sign_in_as(@tenant_user)
+
+    file = fixture_file_upload("normal.png", "image/png")
+    assert_difference -> { VehicleRequest.count }, 1 do
+      assert_difference -> { Request.count }, 1 do
+        post tenant_vehicle_requests_path, params: {
+          accept_terms: "1",
+          vehicle_request: {
+            license_plate: "59A-12345",
+            vehicle_type: "motorbike",
+            brand: "Honda",
+            model: "Vision",
+            vehicle_photo: file,
+            registration_card_image: file
+          }
+        }
+      end
+    end
+    assert_response :see_other
+    assert_redirected_to tenant_requests_path
+    follow_redirect!
+    assert_response :success
+  end
+
+  test "submitting vehicle request succeeds even if ActionCable broadcasting raises an error" do
+    sign_in_as(@tenant_user)
+
+    Turbo::StreamsChannel.stub(:broadcast_replace_to, ->(*) { raise "Simulated ActionCable Connection Failure" }) do
+      file = fixture_file_upload("normal.png", "image/png")
+      assert_difference -> { VehicleRequest.count }, 1 do
+        assert_difference -> { Request.count }, 1 do
+          post tenant_vehicle_requests_path, params: {
+            accept_terms: "1",
+            vehicle_request: {
+              license_plate: "59A-12345",
+              vehicle_type: "motorbike",
+              brand: "Honda",
+              model: "Vision",
+              vehicle_photo: file,
+              registration_card_image: file
+            }
+          }
+        end
+      end
+      assert_response :see_other
+      assert_redirected_to tenant_requests_path
+    end
   end
 end
