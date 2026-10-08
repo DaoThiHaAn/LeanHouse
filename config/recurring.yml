@@ -15,7 +15,10 @@ production:
     schedule: every hour at minute 12
 
   # 1. Deep Night Silent Maintenance Batch (03:00 AM - 03:30 AM)
-  # Runs when human activity is zero. Mutates data states and cleans up records without user notifications.
+  sync_vietqr_banks:
+    class: SyncVietqrBanksJob
+    schedule: every monday at 2:55am
+
   contract_overdue_close:
     class: ContractOverdueCloseJob
     schedule: every day at 3:05am
@@ -29,7 +32,6 @@ production:
     args: [ { read_days: 30, unread_days: 180 } ]
     schedule: every day at 3:40am
 
-  # 2. Early Morning User Notification Window (06:30 AM)
   # Prepares notifications so users see fresh alerts right as they wake up.
   contract_due_reminder:
     class: ContractDueReminderJob
@@ -43,7 +45,6 @@ production:
     class: InvoiceCreationReminderJob
     schedule: every day at 5:00am
 
-  # 3. Morning Financial Notification Window (07:00 AM - 07:15 AM)
   # Alerts landlords and tenants during active banking & payment hours.
   invoice_due_today:
     class: InvoiceDueTodayJob

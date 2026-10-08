@@ -3549,6 +3549,7 @@ ALTER TABLE ONLY public.payment_orders
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20261009013000'),
 ('20260927130000'),
 ('20260922000000'),
 ('20260921000002'),

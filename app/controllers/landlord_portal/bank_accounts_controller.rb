@@ -120,6 +120,7 @@ class LandlordPortal::BankAccountsController < ApplicationController
   end
 
   def load_banks
+    Bank.seed_defaults! if Bank.none? && !Rails.env.test?
     @banks = Bank.sorted
   end
 

@@ -11,6 +11,7 @@
 puts "🌱 Running all seeds..."
 
 seed_files = %w[
+  banks
   admins
 ]
 

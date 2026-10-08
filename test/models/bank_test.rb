@@ -1,4 +1,5 @@
 require "test_helper"
+require "minitest/mock"
 
 class BankTest < ActiveSupport::TestCase
   test "payos_supported? returns true for supported banks and false for unsupported banks" do
@@ -36,5 +37,20 @@ class BankTest < ActiveSupport::TestCase
     supported_banks = Bank.payos_supported
     assert_includes supported_banks, mb
     assert_not_includes supported_banks, vcb
+  end
+
+  test "seed_defaults! loads banks from data file" do
+    Bank.delete_all
+    assert_difference -> { Bank.count }, 65 do
+      Bank.seed_defaults!
+    end
+    assert Bank.exists?(code: "VCB")
+    assert Bank.exists?(code: "MB")
+  end
+
+  test "sync_from_vietqr! handles network failure gracefully" do
+    Net::HTTP.stub :new, ->(*_args) { raise StandardError, "Network unreachable" } do
+      assert_equal false, Bank.sync_from_vietqr!
+    end
   end
 end

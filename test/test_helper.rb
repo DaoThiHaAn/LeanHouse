@@ -25,6 +25,7 @@ module ActiveSupport
 
     setup do
       Admin.delete_all
+      Bank.delete_all
     end
 
     def create_landlord(tel: "0901234567", password: "Password123", fullname: "Nguyen Van Chu Nha")

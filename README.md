@@ -126,12 +126,14 @@ Make sure you have the following installed on your machine:
    bin/rails db:prepare
    bin/rails db:seed
    ```
+   *Note: Default admin accounts and all 65 Vietnamese banks (with BIN codes, logos, and payOS support flags) are automatically seeded from local defaults, ensuring zero-latency startup even offline.*
 
-5. **Synchronize Vietnamese Banks (VietQR):**
-   Fetch and cache the up-to-date list of all Vietnamese banks and BIN codes from VietQR:
+5. **(Optional) Live Sync Banks from VietQR:**
+   To fetch real-time updates directly from the VietQR Public API:
    ```bash
    bin/rails vietqr:sync_banks
    ```
+   *(In production, `SyncVietqrBanksJob` automatically runs every Monday at 03:00 AM via Solid Queue to synchronize new banks and updated logos in the background).*
 
 6. **Start the Development Server:**
    ```bash
