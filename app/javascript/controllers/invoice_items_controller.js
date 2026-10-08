@@ -62,7 +62,7 @@ export default class extends Controller {
         </select>
       </td>
       <td>
-        <input type="number" min="0" step="1000" name="invoice[items][${uid}][unit_price]" value="0" class="form-control form-control-sm font-monospace text-end item-price invoice-input-price" data-action="input->invoice-items#calculateRow" />
+        <input type="number" min="0" name="invoice[items][${uid}][unit_price]" value="0" class="form-control form-control-sm font-monospace text-end item-price invoice-input-price" data-action="input->invoice-items#calculateRow" />
       </td>
       <td>
         <input type="number" min="0" step="0.1" name="invoice[items][${uid}][quantity]" value="1" class="form-control form-control-sm font-monospace text-center item-qty invoice-input-qty" data-action="input->invoice-items#calculateRow" />
@@ -110,7 +110,7 @@ export default class extends Controller {
         </select>
       </td>
       <td>
-        <input type="number" min="0" step="1000" name="invoice[items][${uid}][unit_price]" value="0" class="form-control form-control-sm font-monospace text-end item-price text-danger invoice-input-price" data-action="input->invoice-items#calculateRow" />
+        <input type="number" min="0" name="invoice[items][${uid}][unit_price]" value="0" class="form-control form-control-sm font-monospace text-end item-price text-danger invoice-input-price" data-action="input->invoice-items#calculateRow" />
       </td>
       <td>
         <input type="number" min="0" step="0.1" name="invoice[items][${uid}][quantity]" value="1" class="form-control form-control-sm font-monospace text-center item-qty invoice-input-qty" data-action="input->invoice-items#calculateRow" />

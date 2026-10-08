@@ -32,7 +32,7 @@
         <% if local_assigns[:invoice_type] == "individual" %>
           <span class="invoice-badge invoice-badge-pending flex-shrink-0 d-inline-flex align-items-center gap-1">
             <span class="material-symbols-outlined fs-6">call_split</span>
-            <%= t('invoice.mode_individual_desc') %> (<%= t('invoice.divided_per_tenant', count: [room.tenants_count, 1].max) %>)
+            <%= t('invoice.mode_individual_desc') %>
           </span>
         <% else %>
           <span class="invoice-badge invoice-badge-room flex-shrink-0"><%= t('invoice.auto_calculated_badge', default: 'Tự động tính từ phòng & chỉ số') %></span>
@@ -64,6 +64,7 @@
                                     class: "form-check-input item-select-check",
                                     data: { action: "change->invoice-items#recalculate" } %>
                   <%= hidden_field_tag "invoice[items][#{idx}][item_type]", item[:item_type], id: nil, class: "item-type-val" %>
+                  <%= hidden_field_tag "invoice[items][#{idx}][bed_id]", item[:bed_id], id: nil %>
                   <%= hidden_field_tag "invoice[items][#{idx}][service_variant_id]", item[:service_variant_id], id: nil %>
                   <%= hidden_field_tag "invoice[items][#{idx}][service_usage_log_id]", item[:service_usage_log_id], id: nil %>
                   <%= hidden_field_tag "invoice[items][#{idx}][start_date]", item[:start_date], id: nil %>
@@ -226,13 +227,26 @@
 
         <div class="col-md-5 text-md-end">
           <div class="text-secondary small mb-1">
-            <%= (local_assigns[:invoice_type] == "individual") ? t('invoice.each_tenant_pays') : t('invoice.total_need_payment', default: 'TỔNG TIỀN CẦN THANH TOÁN') %>:
+            <% if local_assigns[:invoice_type] == "individual" %>
+              <% if room.house.bed? %>
+                <%= t('invoice.total_room_billing', default: 'TỔNG CỘNG CẢ PHÒNG') %>:
+              <% else %>
+                <%= t('invoice.each_tenant_pays') %>:
+              <% end %>
+            <% else %>
+              <%= t('invoice.total_need_payment', default: 'TỔNG TIỀN CẦN THANH TOÁN') %>:
+            <% end %>
           </div>
           <div class="d-inline-flex align-items-center gap-2">
             <span id="summary_total" data-invoice-items-target="totalSummary" class="fs-4 fw-bolder px-3 py-1 rounded-3 font-monospace invoice-badge invoice-badge-pending">
               0 đ
             </span>
           </div>
+          <% if room.house.bed? && local_assigns[:invoice_type] == "individual" %>
+            <div class="text-secondary small mt-1">
+              <%= t('invoice.bed_mode_individual_total_hint', default: 'Tổng các hóa đơn sẽ xuất cho phòng. Mỗi khách thanh toán theo giá giường riêng + dịch vụ chia đều.') %>
+            </div>
+          <% end %>
         </div>
       </div>
     </div>

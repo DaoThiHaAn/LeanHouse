@@ -7,6 +7,8 @@ export default class extends Controller {
     "roomSelect",
     "invoiceTypeSelect",
     "individualNotice",
+    "individualNoticeIcon",
+    "individualNoticeTitle",
     "individualNoticeText",
     "tenantWrapper",
     "tenantSelect"
@@ -18,7 +20,13 @@ export default class extends Controller {
     selectRoomPrompt: String,
     selectTenantPrompt: String,
     previewErrorText: String,
-    retryText: String
+    retryText: String,
+    isBedMode: Boolean,
+    bedNoticeText: String,
+    bedRoomNoticeText: String,
+    roomNoticeText: String,
+    modeRoomTitle: String,
+    modeIndividualTitle: String
   }
 
   connect() {
@@ -66,13 +74,39 @@ export default class extends Controller {
   toggleIndividualNotice() {
     if (!this.hasInvoiceTypeSelectTarget || !this.hasIndividualNoticeTarget) return
     const isIndividual = this.invoiceTypeSelectTarget.value === "individual"
-    this.individualNoticeTarget.classList.toggle("d-none", !isIndividual)
+    const room = this.hasRoomSelectTarget ? this.findRoom(this.roomSelectTarget.value) : null
+    const count = room ? room.tenants_count : 0
 
-    if (isIndividual && this.hasIndividualNoticeTextTarget && this.hasRoomSelectTarget) {
-      const room = this.findRoom(this.roomSelectTarget.value)
-      if (room && room.tenants_count) {
-        this.individualNoticeTextTarget.textContent = `Hệ thống sẽ tự động chia đều tiền phòng và các dịch vụ chung theo số người đang ở trong phòng (${room.tenants_count} người), và xuất hóa đơn riêng cho từng người thuê.`
+    if (isIndividual) {
+      this.individualNoticeTarget.classList.remove("d-none")
+      if (this.hasIndividualNoticeIconTarget) {
+        this.individualNoticeIconTarget.textContent = "call_split"
       }
+      if (this.hasIndividualNoticeTitleTarget) {
+        this.individualNoticeTitleTarget.textContent = this.modeIndividualTitleValue || "Tự thanh toán (Từng người)"
+      }
+      if (this.hasIndividualNoticeTextTarget) {
+        if (this.isBedModeValue) {
+          const tpl = this.bedNoticeTextValue || "Đối với nhà thuê theo giường: Tiền thuê tính theo giá giường thực tế của từng khách thuê. Các khoản phí dịch vụ chung được chia đều theo số người đang ở (%{count} người), và xuất hóa đơn riêng cho từng người."
+          this.individualNoticeTextTarget.textContent = tpl.replace("%{count}", count)
+        } else {
+          const tpl = this.roomNoticeTextValue || "Hệ thống sẽ tự động chia đều tiền phòng và các dịch vụ chung theo số người đang ở trong phòng (%{count} người), và xuất hóa đơn riêng cho từng người thuê."
+          this.individualNoticeTextTarget.textContent = tpl.replace("%{count}", count)
+        }
+      }
+    } else if (this.isBedModeValue) {
+      this.individualNoticeTarget.classList.remove("d-none")
+      if (this.hasIndividualNoticeIconTarget) {
+        this.individualNoticeIconTarget.textContent = "meeting_room"
+      }
+      if (this.hasIndividualNoticeTitleTarget) {
+        this.individualNoticeTitleTarget.textContent = this.modeRoomTitleValue || "Đại diện phòng (Cả phòng)"
+      }
+      if (this.hasIndividualNoticeTextTarget) {
+        this.individualNoticeTextTarget.textContent = this.bedRoomNoticeTextValue || "Tiền thuê của tất cả các giường đang có người ở thực tế được cộng dồn vào hóa đơn chung của phòng (đã loại trừ giường trống). Các chi phí dịch vụ tính chung cho cả phòng."
+      }
+    } else {
+      this.individualNoticeTarget.classList.add("d-none")
     }
   }
 

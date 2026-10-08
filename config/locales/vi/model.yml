@@ -1,8 +1,6 @@
 vi:
   activerecord:
     errors:
-      messages:
-        record_invalid: "%{errors}"
       models:
         # For model-specific error messages
         user:
@@ -16,7 +14,7 @@ vi:
               existed_acc: "Số điện thoại đã được đăng ký cho loại tài khoản này!"
               same_as_current: "Số điện thoại mới không được trùng với số điện thoại hiện tại!"
             bday:
-              invalid_bday: "Bạn phải đủ #{min_age} tuổi để đăng ký tài khoản!"
+              invalid_bday: "Bạn phải đủ %{min_age} tuổi để đăng ký tài khoản!"
               blank: "Ngày sinh không được để trống!"
             password:
               invalid_pw: "Mật khẩu không thỏa yêu cầu!"
@@ -139,6 +137,7 @@ vi:
 
       # Global messages
       messages:
+        record_invalid: "%{errors}"
         blank: "Không được để trống!"
         # taken: "Đã tồn tại!"
         not_a_number: "Phải là một số!"

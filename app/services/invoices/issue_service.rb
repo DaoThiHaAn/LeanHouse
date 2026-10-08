@@ -130,12 +130,18 @@ module Invoices
         # If bed house and item is rent, adjust rent specifically for this tenant's bed if applicable
         if @house.bed? && item_type == "rent" && tenant.present?
           stay = @house.tenant_stay_for(tenant.id)
+          tenant_bed_id = stay&.rental_unit&.rentable_id
+
+          # If this rent item specifies a bed_id, only include the one matching this tenant's bed
+          if item_param[:bed_id].present? && tenant_bed_id.present?
+            next unless item_param[:bed_id].to_s == tenant_bed_id.to_s
+          end
+
           bed_rent = stay ? stay.rental_unit.rent : nil
           if bed_rent.present? && bed_rent > 0
             unit_price = bed_rent
             amount = bed_rent
-            location = stay.rental_unit.location_info.presence || "#{@room.title_name} (Giường)"
-            name = "Tiền thuê #{location}"
+            name = item_param[:name].presence || "Tiền thuê #{stay.rental_unit.title_name}"
           end
         end
 

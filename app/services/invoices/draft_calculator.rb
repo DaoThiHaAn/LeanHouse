@@ -13,8 +13,8 @@ module Invoices
     def build_items
       items = []
 
-      # 1. Rent Line Item
-      items << build_rent_item
+      # 1. Rent Line Item(s)
+      items.concat(build_rent_items)
 
       # 2. Fixed Services Line Items
       items.concat(build_fixed_service_items)
@@ -34,41 +34,80 @@ module Invoices
       end
     end
 
-    def build_rent_item
-      if invoice_type == "individual"
-        stay = tenant.present? ? house.tenant_stay_for(tenant.id) : nil
-        stay_unit = stay&.rental_unit
-        total_rent = (stay_unit ? stay_unit.rent : room.rental_unit&.rent) || 0
-        rent_amount = if house.bed?
-          (stay_unit && stay_unit.rent) || room.beds.joins(:rental_unit).average("rental_units.rent")&.round || room.rental_unit&.rent || 0
-        else
-          (total_rent.to_f / active_tenants_count).round
-        end
-
-        location = if house.bed?
-                     (stay_unit && stay_unit.location_info) || "#{room.title_name} (Giường)"
-        else
-                     (stay_unit && stay_unit.location_info) || room.title_name
-        end
-
-        {
-          item_type: :rent,
-          name: "Tiền thuê #{location}",
-          unit: "tháng",
-          unit_price: rent_amount,
-          quantity: 1.0,
-          amount: rent_amount,
-          start_date: billing_month.beginning_of_month,
-          end_date: billing_month.end_of_month,
-          selected: true
-        }
+    def build_rent_items
+      if house.bed?
+        build_bed_rent_items
       else
-        rent_amount = if house.bed?
-                        bed_rents = room.beds.joins(:rental_unit).sum("rental_units.rent")
-                        bed_rents.positive? ? bed_rents : (room.rental_unit&.rent || 0)
-        else
-                        room.rental_unit&.rent || 0
+        build_room_rent_items
+      end
+    end
+
+    def build_bed_rent_items
+      if tenant.present?
+        stay = house.tenant_stay_for(tenant.id)
+        stay_unit = stay&.rental_unit
+        bed_rent = stay_unit&.rent.to_i
+        location = stay_unit&.title_name.presence || "#{room.title_name} (Giường)"
+        return [
+          {
+            item_type: :rent,
+            bed_id: stay_unit&.rentable_id,
+            name: "Tiền thuê #{location}",
+            unit: "tháng",
+            unit_price: bed_rent,
+            quantity: 1.0,
+            amount: bed_rent,
+            start_date: billing_month.beginning_of_month,
+            end_date: billing_month.end_of_month,
+            selected: true
+          }
+        ]
+      end
+
+      occupied_stays = room.all_staying_bed_tenants.uniq { |item| item[:bed].id }
+      if occupied_stays.any?
+        occupied_stays.map do |stay_item|
+          bed = stay_item[:bed]
+          bed_rent = bed.rental_unit&.rent.to_i
+          {
+            item_type: :rent,
+            bed_id: bed.id,
+            name: "Tiền thuê #{bed.title_name}",
+            unit: "tháng",
+            unit_price: bed_rent,
+            quantity: 1.0,
+            amount: bed_rent,
+            start_date: billing_month.beginning_of_month,
+            end_date: billing_month.end_of_month,
+            selected: true
+          }
         end
+      else
+        [
+          {
+            item_type: :rent,
+            name: "Tiền thuê #{room.title_name}",
+            unit: "tháng",
+            unit_price: room.rental_unit&.rent || 0,
+            quantity: 1.0,
+            amount: room.rental_unit&.rent || 0,
+            start_date: billing_month.beginning_of_month,
+            end_date: billing_month.end_of_month,
+            selected: true
+          }
+        ]
+      end
+    end
+
+    def build_room_rent_items
+      total_rent = room.rental_unit&.rent || 0
+      rent_amount = if invoice_type == "individual"
+                      (total_rent.to_f / active_tenants_count).round
+                    else
+                      total_rent
+                    end
+
+      [
         {
           item_type: :rent,
           name: "Tiền thuê #{room.title_name}",
@@ -80,7 +119,11 @@ module Invoices
           end_date: billing_month.end_of_month,
           selected: true
         }
-      end
+      ]
+    end
+
+    def build_rent_item
+      build_rent_items.first
     end
 
     def build_fixed_service_items

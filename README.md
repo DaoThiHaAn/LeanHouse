@@ -28,8 +28,11 @@ By combining real-time communication (Hotwire Turbo & ActionCable), utility trac
   * Meter reading recording with photo proof uploads.
   * Review and approve tenant self-reported utility readings.
 * **Smart Invoicing & Billing:**
-  * Automated monthly invoice batch generation based on contract terms, room rent, and actual utility consumption.
-  * One-off custom invoices with custom line items.
+  * Automated monthly invoice batch generation based on contract terms, room/bed rent, and actual utility consumption.
+  * **Dual Billing Modes**:
+    * **Room Representative (`room`)**: Single consolidated invoice per room. In dormitory / bed mode properties, calculates rent from active occupied beds only (excluding empty beds).
+    * **Self-Pay (`individual`)**: Separate invoices per occupant. In room properties, rent and utilities are split equally; in bed mode properties, each tenant is billed their exact bed rate while shared utilities are equalized.
+  * One-off custom invoices with custom line items for ad-hoc charges.
   * Instant invoice issue, preview, PDF export, and browser printing.
 * **FinTech & Payments:**
   * **VietQR Generation:** Automatically generates standardized VietQR codes with exact payment amount and invoice reference.

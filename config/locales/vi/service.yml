@@ -34,6 +34,7 @@ vi:
     filter_empty: "Không tìm thấy dịch vụ nào phù hợp!"
     meter_logs_action: "Theo dõi Mức sử dụng dịch vụ"
     no_matching_services: "Không tìm thấy dịch vụ nào phù hợp!"
+    no_matching_services_hint: "Vui lòng thử tìm kiếm với từ khóa khác hoặc xóa bộ lọc tìm kiếm."
     select_service_prompt: "Chọn dịch vụ từ danh sách bên trái để xem và quản lý các phiên bản"
     no_variants: "Chưa có phiên bản dịch vụ nào"
     no_variants_prompt: "Hãy tạo phiên bản đầu tiên (đơn giá, đơn vị tính) để bắt đầu áp dụng cho các phòng."

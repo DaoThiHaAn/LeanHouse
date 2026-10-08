@@ -1,0 +1,88 @@
+en:
+  privacy_policy:
+    title: "Privacy Policy - LEANHOUSE"
+
+    last_updated: "Last updated: %{date}"
+
+    introduction: "LeanHouse is committed to protecting users' personal data. This policy explains how LeanHouse collects, uses, stores, and protects information."
+
+    collection:
+      title: "1. Information We Collect"
+      content: "LeanHouse collects the following types of information:"
+
+      user_provided:
+        title: "1.1. Information Provided by Users"
+        content_1: "Full name, phone number, citizen ID / national ID number"
+        content_2: "Room details and rental contracts"
+        content_3: "Document images (if uploaded by users)"
+        content_4: "Landlord payout bank account information (Bank name, account number, account holder name)"
+        content_5: "Payment gateway API connection keys (Client ID, API Key, Checksum Key) if landlord opts to enable automatic reconciliation"
+
+      technical:
+        title: "1.2. Automatically Collected Technical Information"
+        content_1: "IP address"
+        content_2: "Device and browser information"
+        content_3: "Access logs to optimize user experience"
+
+    usage:
+      title: "2. Purpose of Information Use"
+      content: "Collected information is used to:"
+      content_1: "Manage user accounts and tenant/room data"
+      content_2: "Display contracts, invoices, VietQR payment details, service requests, and automatic payment reconciliation"
+      content_3: "Improve features and ensure system security"
+      content_4: "Provide customer support when needed"
+      content_5: "LeanHouse does not use information for commercialization or sending unsolicited advertising"
+
+    sharing:
+      title: "3. Information Sharing"
+      content: "LeanHouse does not share personal information with third parties, except:"
+      content_1: "With user consent"
+      content_2: "When required by competent authorities pursuant to law"
+      content_3: "When necessary to operate the system (e.g., data hosting services)"
+      content_4: "Technical partners are only granted access to the minimum necessary extent"
+      content_5: "Landlord receiving bank account information is displayed on invoices and VietQR codes for tenants of corresponding rooms to facilitate rent payment"
+      content_6: "For invoices with payOS auto-reconciliation enabled, order information (amount, invoice code, transfer memo) is securely transmitted to the payOS gateway to generate dynamic QR codes and receive reconciliation webhooks"
+
+    security:
+      title: "4. Data Storage and Security"
+      content: "LeanHouse implements security measures including:"
+      content_1: "Data encryption during transmission"
+      content_2: "Role-based access control internally"
+      content_3: "Regular data backups"
+      content_4: "Secure hosting infrastructure"
+
+      payment_security:
+        title: "4.1. VietQR and payOS Payment Security"
+        content: "To ensure absolute security of cash flow and financial data, LeanHouse complies with the following principles:"
+        content_1: "Direct Account-to-Account (A2A) model: LeanHouse is NOT an e-wallet or payment intermediary and DOES NOT hold user funds. 100% of rent is transferred directly from tenant account to landlord bank account."
+        content_2: "Never storing sensitive credentials: The system NEVER requests, collects, or stores Internet Banking passwords, card PINs, or bank OTPs of any user."
+        content_3: "Protection of API credentials: Landlord API configuration keys (Client ID, API Key, Checksum Key) are stored encrypted and securely in the database, used strictly for technical integrations to generate payment links and verify transactions."
+        content_4: "HMAC-SHA256 Webhook digital signature verification: All payment status notifications received from payOS must pass HMAC-SHA256 cryptographic signature validation with the secret Checksum Key. The system only marks an invoice 'Paid' when signatures are fully valid, preventing fraudulent transactions."
+
+      user_responsibility: "However, no system is completely immune to risks. Users must also:"
+      user_responsibility_1: "Protect their login credentials"
+      user_responsibility_2: "Never share passwords with others"
+
+    user_rights:
+      title: "5. User Rights"
+      content: "You have the right to:"
+      content_1: "View and update your personal information"
+      content_2: "Request data deletion (provided it does not violate regulations or impede system operations)"
+      content_3: "Request an export of personal data"
+      content_4: "Submit complaints if you suspect information misuse"
+
+    cookies:
+      title: "6. Cookies and Tracking Technologies"
+      content: "LeanHouse may use:"
+      content_1: "Session cookies"
+      content_2: "Interface optimization cookies"
+      content_3: "Cookies are not used for tracking outside the platform"
+
+    external_links:
+      title: "7. External Links"
+      content: "If LeanHouse links to third-party websites, we are not responsible for the content or privacy practices of those external sites."
+
+    changes:
+      title: "8. Policy Changes"
+      content: "LeanHouse reserves the right to modify this policy to align with regulations or operational needs. Any changes will be announced on the platform."
+

@@ -23,6 +23,12 @@
                   invoice_form_select_tenant_prompt_value: t('invoice.select_tenant_prompt'),
                   invoice_form_preview_error_text_value: t('invoice.preview_error'),
                   invoice_form_retry_text_value: t('invoice.retry'),
+                  invoice_form_is_bed_mode_value: @house.bed?,
+                  invoice_form_bed_notice_text_value: t('invoice.bed_mode_individual_form_notice', default: 'Đối với nhà thuê theo giường: Tiền thuê tính theo giá giường thực tế của từng khách thuê. Các khoản phí dịch vụ chung được chia đều theo số người đang ở (%{count} người), và xuất hóa đơn riêng cho từng người.'),
+                  invoice_form_bed_room_notice_text_value: t('invoice.bed_mode_room_notice_desc'),
+                  invoice_form_room_notice_text_value: t('invoice.individual_split_note', default: 'Hệ thống sẽ tự động chia đều tiền phòng và các dịch vụ chung theo số người đang ở trong phòng (%{count} người), và xuất hóa đơn riêng cho từng người thuê.'),
+                  invoice_form_mode_room_title_value: t('invoice.mode_room_desc'),
+                  invoice_form_mode_individual_title_value: t('invoice.mode_individual_desc'),
                   loading_text_value: t('invoice.issuing'),
                   action: "submit->loading#submit"
                 } do |f| %>
@@ -100,15 +106,25 @@
                     } %>
             </div>
 
-            <!-- Thông báo chia đều khi chọn tự thanh toán từng người -->
-            <div class="col-12 <%= 'd-none' unless @invoice_type == 'individual' %>"
+            <!-- Thông báo chế độ thanh toán -->
+            <div class="col-12 <%= 'd-none' unless (@invoice_type == 'individual' || @house.bed?) %>"
                  id="individual_split_notice"
                  data-invoice-form-target="individualNotice">
               <div class="alert alert-info border-0 rounded-3 mb-0 d-flex align-items-start gap-2 shadow-sm">
-                <span class="material-symbols-outlined text-info-emphasis fs-5 mt-1">call_split</span>
+                <span class="material-symbols-outlined text-info-emphasis fs-5 mt-1" data-invoice-form-target="individualNoticeIcon">
+                  <%= @invoice_type == 'individual' ? 'call_split' : 'meeting_room' %>
+                </span>
                 <div>
-                  <strong class="d-block text-info-emphasis mb-1"><%= t('invoice.mode_individual_desc') %></strong>
-                  <span data-invoice-form-target="individualNoticeText"><%= t('invoice.individual_split_note_no_count') %></span>
+                  <strong class="d-block text-info-emphasis mb-1" data-invoice-form-target="individualNoticeTitle">
+                    <%= @invoice_type == 'individual' ? t('invoice.mode_individual_desc') : t('invoice.mode_room_desc') %>
+                  </strong>
+                  <span data-invoice-form-target="individualNoticeText">
+                    <% if @invoice_type == 'individual' %>
+                      <%= @house.bed? ? t('invoice.bed_mode_individual_notice_desc') : t('invoice.individual_split_note_no_count') %>
+                    <% else %>
+                      <%= t('invoice.bed_mode_room_notice_desc') %>
+                    <% end %>
+                  </span>
                 </div>
               </div>
             </div>

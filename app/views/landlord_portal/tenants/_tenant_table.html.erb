@@ -22,7 +22,15 @@
     </thead>
 
     <tbody id="tenant_table_body">
-      <%= render partial: "landlord_portal/tenants/tenant_row", collection: signed_tenants, as: :tenant, locals: { house: house } %>
+      <% if signed_tenants.any? %>
+        <%= render partial: "landlord_portal/tenants/tenant_row", collection: signed_tenants, as: :tenant, locals: { house: house } %>
+      <% else %>
+        <tr>
+          <td colspan="7" class="text-center text-secondary py-2 fw-semibold">
+            <%= t("form.tenant.no") %>
+          </td>
+        </tr>
+      <% end %>
     </tbody>
   </table>
 </div>

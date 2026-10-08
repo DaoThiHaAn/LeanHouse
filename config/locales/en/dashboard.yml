@@ -18,8 +18,8 @@ en:
       tenant_flow_title: "Tenant Flow"
       tenant_flow_desc: "Monthly tenant turnover"
       tenant_flow_month_desc: "Tenant turnover for %{month}"
-      new_tenants_count: "+%{count} new tenants"
-      leaved_tenants_count: "-%{count} checked out"
+      new_tenants_count: "new tenants"
+      leaved_tenants_count: "departed tenants"
       view_tenants: "View tenants list"
 
       # Card 2: Occupancy rate
@@ -94,6 +94,7 @@ en:
       all_months_count: "All (%{count} months)"
       per_month: "mo"
       click_bar_to_view_details: "Click on any month bar above to explore detailed breakdown."
+      collected_for_month: "Selected month: %{month}"
 
       # Fallback
       no_house_selected_tip: "Select a specific house to access detailed management pages."

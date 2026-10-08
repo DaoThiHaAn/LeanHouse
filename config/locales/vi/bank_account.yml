@@ -28,6 +28,7 @@ vi:
     account_holder_help: "Tên Chủ tài khoản (Không dấu)"
     account_holder_placeholder: "Ví dụ: NGUYEN VAN A"
     set_as_default_checkbox: "Đặt làm tài khoản nhận tiền mặc định"
+    consent_checkbox: "Tôi xác nhận thông tin trên là chính xác và đồng ý để LeanHouse lưu trữ, tạo mã VietQR và hiển thị thông tin này trên hóa đơn cho khách thuê."
     consent_checkbox_html: "Tôi xác nhận thông tin trên là <strong>chính xác</strong> và <strong>đồng ý</strong> để LeanHouse lưu trữ, tạo mã VietQR và hiển thị thông tin này trên hóa đơn cho khách thuê."
     consent_error: "Bạn cần đồng ý với điều khoản thu thập và hiển thị thông tin tài khoản ngân hàng."
     save_button: "Lưu Tài khoản Ngân hàng"

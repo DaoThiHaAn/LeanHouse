@@ -144,6 +144,7 @@ vi:
     default_current_month_title: "Mặc định - Tháng hiện tại"
     default_current_month_hint: "Hệ thống mặc định chọn kỳ tính toán của tháng hiện tại. Bạn có thể chọn tháng khác trên bộ lọc để xem lại các kỳ trước đó."
     filtering_month: "Đang lọc: Tháng %{month}"
+    filtered_hint: "Hiển thị chỉ số dịch vụ cho kỳ tính phí tháng %{month}."
     view_all_months: "Xem tất cả các tháng"
     filter_current_month: "Lọc tháng này (%{month})"
     outside_stay_period: "Ngoài thời gian lưu trú"

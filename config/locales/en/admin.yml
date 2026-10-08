@@ -1,5 +1,6 @@
 en:
   admin:
+    self: "LeanHouse Administrator"
     portal: "Admin Portal"
     nav:
       dashboard: "Dashboard"
@@ -34,8 +35,8 @@ en:
       recent_users: "Recently Registered Users"
       recent_houses: "Recently Added Properties"
       this_month_badge: "+%{count} in %{month}"
-      new_users_month_summary: "%{count} new users registered in %{month} (%{landlords} landlords, %{tenants} tenants)"
-      new_houses_month_summary: "%{count} new properties added in %{month} (%{room_houses} room-based, %{bed_houses} bed-based)"
+      new_users_month_summary: "(%{landlords} landlords, %{tenants} tenants)"
+      new_houses_month_summary: "(Room rentals: %{room_houses}, Bed rentals: %{bed_houses})"
       active_count: "Active"
       locked_count: "Locked"
       room_houses: "Room-based"
@@ -47,6 +48,8 @@ en:
       no_houses_yet: "No properties added yet."
     users:
       title: "User Management"
+      list: "Users List"
+      status: "Activity Status"
       subtitle: "Manage all landlords and tenants, monitor account status across the platform."
       total_users: "Total: %{count} users"
       search_placeholder: "Search by name, telephone, address..."
@@ -104,6 +107,9 @@ en:
       clear_filter: "Clear filter"
     houses:
       title: "Property Management"
+      list: "Properties List"
+      structure: "Structure"
+      house_menu: "Management Menu"
       subtitle: "Inspect all houses and units created by landlords on the platform."
       total_houses: "Total: %{count} properties"
       search_placeholder: "Search by property name, address..."
@@ -325,6 +331,7 @@ en:
       total_admins: "Total: %{count} staff member(s)"
       add_admin: "Add new staff"
       list: "Administrator List"
+      last_logged_in: "Last logged in"
       never_logged_in: "Never logged in"
       edit_admin: "Edit Staff"
       new_title: "Add New Staff Member (Support)"
@@ -421,6 +428,7 @@ en:
       status_pending: "Pending"
       status_in_progress: "In Progress"
       status_resolved: "Resolved"
+      status_resolved_note: "After resolving the issue, please send an email notification to the customer!"
 
     notifications:
       title: "System Announcements"
@@ -432,6 +440,7 @@ en:
       new_title: "Compose System Announcement"
       new_subtitle: "Broadcast a message to selected platform users. Notifications will appear in their navbar bell and notification center."
       show_title: "Announcement Details"
+      back: "Back to Notifications List"
       back_to_history: "Back to Broadcast History"
       immutable_badge: "Broadcasted · Immutable"
       immutability_warning_title: "Important Note: Announcements cannot be edited or retracted"

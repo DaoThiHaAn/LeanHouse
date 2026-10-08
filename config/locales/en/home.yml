@@ -1,0 +1,13 @@
+en:
+  home:
+    about_us: "About Us"
+    message1_html: At <strong>LeanHouse</strong>, we want finding accommodation or managing rental rooms and dormitories to be easier for everyone. Our platform is built to provide a straightforward rental process and a comfortable living experience, helping landlords and tenants connect quickly and conveniently.
+    message2_html: <strong>LeanHouse</strong> is a reliable assistant supporting you with neat paperwork, clear information tracking, and smooth operations, so you can enjoy life to the fullest.
+    features: "Key Features"
+    feature_landlord: "Smart rental management tools for modern landlords"
+    feature_tenant: "A genuinely simple room renting experience"
+    simple: "Or simply"
+    seeker: "Looking for a room?"
+    browse_rooms: "Find rooms easily"
+    select_room: "Choose a room in minutes"
+    real_info: "Real rooms, real prices, transparent information"

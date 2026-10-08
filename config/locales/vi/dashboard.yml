@@ -123,4 +123,5 @@ vi:
       invoices_overdue_alert: "%{count} hóa đơn quá hạn!"
       invoice_due_date: "Hạn chót: %{date}"
       invoice_due_today_alert: "Hạn thanh toán hôm nay!"
+      invoice_due_today_badge: "Hạn hôm nay"
       unpaid_amount_label: "Số tiền cần thanh toán"

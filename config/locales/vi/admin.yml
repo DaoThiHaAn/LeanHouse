@@ -107,6 +107,8 @@ vi:
       filter_all_roles: "Tất cả vai trò"
       filter_landlord: "Chủ nhà"
       filter_tenant: "Khách thuê"
+      filter_all_statuses: "Tất cả trạng thái"
+      clear_filter: "Xóa bộ lọc"
 
     houses:
       title: "Quản lý Nhà"
@@ -167,6 +169,7 @@ vi:
       status_active: "Đang hoạt động"
       status_deleted: "Đã xóa"
       deleted_banner: "Nhà này đã bị xóa (Dữ liệu lưu trữ lịch sử)"
+      clear_filter: "Xóa bộ lọc"
       house_menu: "Danh mục quản lý"
 
     services:
@@ -493,10 +496,13 @@ vi:
         level_label: "2. Mức độ ưu tiên"
         title_label: "3. Tiêu đề thông báo"
         title_placeholder: "Tiêu đề nên ngắn gọn, rõ ràng để hiển thị tốt trên chuông thông báo."
+        title_hint: "Tối đa 150 ký tự. Viết ngắn gọn để hiển thị tối ưu trong thanh thông báo."
         message_label: "4. Nội dung thông báo chi tiết"
         message_placeholder: "Nhập nội dung thông báo đầy đủ gửi đến người dùng..."
+        message_hint: "Nội dung này sẽ được lưu trong trung tâm thông báo của người nhận."
         url_label: "5. Đường dẫn đính kèm (URL)"
         url_placeholder: "Người dùng có thể nhấp vào để mở liên kết này trực tiếp từ thông báo. Ví dụ: /terms-of-use hoặc https://..."
+        url_hint: "Người dùng có thể nhấp vào để điều hướng trực tiếp từ thông báo."
         submit_btn: "Phát hành thông báo"
       preview:
         header: "Xem trước giao diện người dùng"

@@ -77,6 +77,7 @@ vi:
         unpaid_invoices: "Vẫn còn %{count} hóa đơn chưa thanh toán hoặc cần đối soát."
       resolutions:
         view_house: "Xem nhà"
+        view_houses: "Xem danh sách nhà"
         view_dashboard: "Về trang tổng quan"
         view_requests: "Xem yêu cầu"
         view_invoices: "Xem hóa đơn"
@@ -276,6 +277,7 @@ vi:
         view_details: "Xem chi tiết"
         collapse_view: "Thu gọn"
         click_to_view: "Nhấp để xem danh sách"
+      "no": "Không tìm thấy khách thuê nào!"
 
     bed:
       self: "Giường"
@@ -424,6 +426,7 @@ vi:
       finished_edit_note: "Hợp đồng này đã kết thúc. Để đảm bảo tính toàn vẹn của hợp đồng, bạn chỉ có thể gia hạn ngày hết hạn mà không thể chỉnh sửa các thông tin khác."
       extend_finished_title: "Gia hạn hợp đồng đã kết thúc"
       extend_period_note: "Nhập ngày hết hạn mới để gia hạn hợp đồng (ngày mới phải sau ngày hết hạn hiện tại)."
+      cannot_edit_finished: "Không thể chỉnh sửa thông tin của hợp đồng đã kết thúc."
       my_contract_note_html: "Trang hiển thị hợp đồng đang có hiệu lực giữa chủ nhà với bạn. Nếu muốn xem tất cả hợp đồng (bao gồm cả hợp đồng đã hết hạn, hãy nhấn vào <strong>Tất cả hợp đồng</strong> bên dưới)"
       archive_title: "Kho lưu trữ hợp đồng"
       archive_sub: "Tra cứu tất cả hợp đồng của tất cả nhà đã xóa"

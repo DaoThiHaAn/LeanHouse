@@ -1,41 +1,158 @@
 en:
   activerecord:
     errors:
+      messages:
+        record_invalid: "%{errors}"
+        blank: "cannot be blank!"
+        not_a_number: "must be a number!"
+        greater_than: "must be greater than %{count}!"
       models:
+        user:
+          attributes:
+            fullname:
+              invalid: "Full name can only contain letters and spaces"
+              blank: "Name cannot be blank!"
+            tel:
+              invalid: "Phone number must be 10 digits and start with 0!"
+              blank: "Phone number cannot be blank!"
+              existed_acc: "This phone number has already been registered for this account type!"
+              same_as_current: "New phone number cannot be the same as your current phone number!"
+            bday:
+              invalid_bday: "You must be at least %{min_age} years old to register an account!"
+              blank: "Date of birth cannot be blank!"
+            password:
+              invalid_pw: "Password does not meet requirements!"
+              blank: "Password cannot be blank!"
+            password_confirmation:
+              confirmation: "Password confirmation doesn't match Password"
+              blank: "Password confirmation cannot be blank!"
+            address:
+              blank: "Address cannot be blank!"
+            mode:
+              blank: "Rental model cannot be blank!"
+            role:
+              blank: "Please select a role!"
+
+        admin:
+          attributes:
+            role:
+              single_super_admin: "The system only allows a single Super Administrator!"
+            fullname:
+              blank: "Name cannot be blank!"
+              invalid: "Full name can only contain letters and spaces"
+            email:
+              blank: "Email cannot be blank!"
+              invalid: "Email is invalid!"
+              taken: "This email address is already in use!"
+            current_password:
+              blank: "Please enter your current password!"
+              invalid: "Current password is invalid!"
+            password:
+              invalid_pw: "Password must contain at least 1 letter (a-z) and 1 digit (0-9)!"
+              blank: "Password cannot be blank!"
+              too_short: "Password is too short (minimum 8 characters)"
+              too_long: "Password is too long (maximum 72 characters)"
+            password_confirmation:
+              confirmation: "Password confirmation doesn't match Password"
+
+        house:
+          attributes:
+            regulation_file:
+              invalid_type: "File must be in PDF format"
+              too_large: "File size must be under 50 MB"
+
+        service:
+          attributes:
+            name:
+              taken: "already exists!"
+
+        service_variant:
+          attributes:
+            fee:
+              taken: "A service variant with this fee, unit, and calculation method already exists!"
+
+        room_service:
+          attributes:
+            base:
+              different_house: "Service and room do not belong to the same property!"
+            fee:
+              invalid_fee: "Service fee must be a positive integer!"
+
+        floor:
+          attributes:
+            name:
+              taken: "Floor %{value} already exists in this property!"
+
+        room:
+          attributes:
+            name:
+              taken: "Room %{value} already exists on the selected floor!"
+
         bank_account:
           attributes:
             account_number:
               already_added: "This bank account has already been added to your list!"
-              invalid: "Account number can only contain letters and numbers!"
+              invalid: "Account number can only contain letters and digits!"
               blank: "Account number cannot be blank!"
             account_holder:
               blank: "Account holder name cannot be blank!"
             consent_accepted:
               accepted: "You must agree to the terms of collecting and displaying bank account information."
+
+        contract:
+          attributes:
+            tenant_citizen_id:
+              invalid: "Citizen ID must be exactly 12 digits!"
+              blank: "Cannot be blank!"
+            landlord_citizen_id:
+              invalid: "Citizen ID must be exactly 12 digits!"
+              blank: "Cannot be blank!"
+            due_date:
+              must_be_after_start_date: "End date must be after start date!"
+              must_be_after_current_due_date: "New end date must be after current end date!"
+            documents:
+              blank: "Must upload at least 1 contract document photo!"
+              too_long: "You can only upload up to %{count} photos!"
+              file_too_big: "Each photo size must not exceed %{size}!"
+              invalid_content_type: "Only image files are accepted!"
+
+        repair_request:
+          attributes:
+            title:
+              blank: "Subject cannot be blank!"
+              too_long: "Subject must not exceed %{count} characters!"
+            content:
+              blank: "Issue description cannot be blank!"
+              too_long: "Issue description must not exceed %{count} characters!"
+            images:
+              too_long: "You can only upload up to %{count} photos!"
+              file_too_big: "Each photo size must not exceed %{size}!"
+              invalid_content_type: "Only image files (JPG, PNG, WEBP, HEIC) are accepted!"
+            video:
+              file_too_big: "Video size must not exceed %{size}!"
+              invalid_content_type: "Only video files (MP4, MOV, WEBM) are accepted!"
+
         service_usage_log:
           attributes:
             latest_reading:
               greater_than_or_equal_to_prev: "must be greater than or equal to previous reading (%{count})!"
-        service_variant:
-          attributes:
-            fee:
-              taken: "A service variant with this fee, unit, and calculation method already exists!"
-        admin:
-          attributes:
-            role:
-              single_super_admin: "The system only allows a single Super Administrator!"
-            current_password:
-              blank: "Current password cannot be blank!"
-              invalid: "Current password is invalid!"
-            password:
-              blank: "Password cannot be blank!"
-            password_confirmation:
-              confirmation: "Password confirmation doesn't match Password"
+            service_id:
+              taken: "A reading for this service variant has already been recorded for this room in this cycle!"
 
     attributes:
       service_usage_log:
-        latest_reading: "Latest reading"
+        latest_reading: "Current reading"
         prev_reading: "Previous reading"
+      contract:
+        tenant_citizen_id: "Tenant Citizen ID"
+        landlord_citizen_id: "Landlord Citizen ID"
+        start_date: "Start Date"
+        due_date: "End Date"
+      repair_request:
+        title: "Subject"
+        content: "Issue Description"
+        images: "Photos"
+        video: "Video"
       admin:
         fullname: "Full Name"
         email: "Email"
@@ -55,3 +172,42 @@ en:
         per_use: "Per Use"
         per_kwh: "kWh"
         per_m3: "m3"
+
+    asset:
+      categories:
+        fridge: "Refrigerator"
+        air_con: "Air Conditioner"
+        camera: "Camera"
+        elec_stove: "Electric Stove"
+        wash_mach: "Washing Machine"
+        dryer: "Dryer"
+        smart_door: "Smart Door Lock"
+        water_heater: "Water Heater"
+        tv: "Television"
+        microwave: "Microwave"
+
+      status:
+        normal: "Normal"
+        damaged: "Damaged"
+        under_repair: "Under Repair"
+
+    request:
+      status:
+        pending: "Pending"
+        handling: "In Progress"
+        completed: "Completed"
+        approved: "Approved"
+        rejected: "Rejected"
+        overdue: "Expired"
+
+    vehicle:
+      vehicle_type:
+        motorbike: "Motorbike"
+        electric_bike: "Electric Bike"
+        bicycle: "Bicycle"
+        car: "Car"
+
+    admin:
+      roles:
+        super_admin: "System Administrator"
+        support: "Support Staff"

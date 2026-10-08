@@ -39,7 +39,7 @@ class LandlordPortal::InvoicesController < LandlordPortal::BaseController
     @room = if params[:room_id].present?
               @occupied_rooms.find { |r| r.id.to_s == params[:room_id].to_s }
     end
-    @invoice_type = params[:invoice_type].presence || "room"
+    @invoice_type = params[:invoice_type].presence || (@house.bed? ? "individual" : "room")
 
     if @room
       calculator = Invoices::DraftCalculator.new(
@@ -79,7 +79,7 @@ class LandlordPortal::InvoicesController < LandlordPortal::BaseController
       return
     end
 
-    @invoice_type = params[:invoice_type].presence || "room"
+    @invoice_type = params[:invoice_type].presence || (@house.bed? ? "individual" : "room")
 
     calculator = Invoices::DraftCalculator.new(
       room: @room,
@@ -345,7 +345,7 @@ class LandlordPortal::InvoicesController < LandlordPortal::BaseController
     if params[:invoice][:items].present?
       permitted[:items] = permit_invoice_items(
         params[:invoice][:items],
-        %i[selected item_type service_variant_id service_usage_log_id name unit unit_price quantity amount start_date end_date prev_reading latest_reading note]
+        %i[selected item_type bed_id service_variant_id service_usage_log_id name unit unit_price quantity amount start_date end_date prev_reading latest_reading note]
       )
     end
 

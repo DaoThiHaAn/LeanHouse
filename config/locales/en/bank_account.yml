@@ -29,6 +29,7 @@ en:
     account_holder_placeholder: "Example: NGUYEN VAN A"
     set_as_default_checkbox: "Set as default receiving account"
     consent_checkbox: "I confirm that the above information is accurate and agree that LeanHouse may store it, generate VietQR codes, and display this information on invoices for tenants."
+    consent_checkbox_html: "I confirm that the above information is <strong>accurate</strong> and <strong>agree</strong> that LeanHouse may store it, generate VietQR codes, and display this information on invoices for tenants."
     consent_error: "You must agree to the terms of collecting and displaying bank account information."
     save_button: "Save Bank Account"
     created_success: "Bank account added successfully!"

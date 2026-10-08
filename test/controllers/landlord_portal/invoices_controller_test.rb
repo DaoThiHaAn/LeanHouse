@@ -1598,4 +1598,129 @@ class LandlordPortal::InvoicesControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to landlord_house_invoices_path(empty_house, month: Date.current.strftime("%Y-%m"))
     assert_equal I18n.t("invoice.no_staying_tenants_warning"), flash[:alert]
   end
+
+  test "bed mode draft calculator only includes occupied beds and excludes empty beds" do
+    bed_house = House.create!(
+      landlord: @landlord,
+      name: "Bed Mode Draft House",
+      mode: :bed,
+      address_l1: "456 Bed St",
+      address_l2: "Ward 1",
+      address_l3: "District 1",
+      floors_count: 1,
+      inv_creation_date: 1
+    )
+    floor = bed_house.floors.create!(name: "Floor 1", position: 1, rooms_count: 1)
+    room = floor.rooms.create!(name: "Room 101", max_slots: 4, tenants_count: 2, area: 30.0)
+    bed1 = room.beds.create!(name: "Giường 1")
+    bed2 = room.beds.create!(name: "Giường 2")
+    bed3 = room.beds.create!(name: "Giường 3") # Empty bed
+    bed4 = room.beds.create!(name: "Giường 4") # Empty bed
+
+    ru1 = bed1.create_rental_unit!(rent: 1_500_000, deposit: 1_500_000)
+    ru2 = bed2.create_rental_unit!(rent: 1_800_000, deposit: 1_800_000)
+    bed3.create_rental_unit!(rent: 2_000_000, deposit: 2_000_000)
+    bed4.create_rental_unit!(rent: 2_000_000, deposit: 2_000_000)
+
+    u1 = User.create!(fullname: "Tenant One", tel: "0933112233", password: "Password123", password_confirmation: "Password123", role: "tenant", sex: "male", bday: 22.years.ago.to_date, address: "St 1", tel_verified_at: Time.current)
+    u2 = User.create!(fullname: "Tenant Two", tel: "0933112244", password: "Password123", password_confirmation: "Password123", role: "tenant", sex: "female", bday: 23.years.ago.to_date, address: "St 2", tel_verified_at: Time.current)
+    t1 = Tenant.find_or_create_by!(id: u1.id)
+    t2 = Tenant.find_or_create_by!(id: u2.id)
+
+    TenantStay.create!(rental_unit: ru1, tenant: t1, checkin_at: 1.month.ago)
+    TenantStay.create!(rental_unit: ru2, tenant: t2, checkin_at: 1.month.ago)
+
+    calculator = Invoices::DraftCalculator.new(
+      room: room,
+      billing_month: @billing_month,
+      invoice_type: "room"
+    )
+    items = calculator.build_items
+    rent_items = items.select { |i| i[:item_type] == :rent }
+
+    assert_equal 2, rent_items.size
+    assert_equal [ 1_500_000, 1_800_000 ], rent_items.map { |i| i[:unit_price] }
+    # Tenant names must NOT be shown in the bed rent item name
+    rent_items.each do |item|
+      assert_no_match(/Tenant One|Tenant Two/, item[:name])
+    end
+  end
+
+  test "bed mode individual invoice applies different bed rents to each tenant" do
+    sign_in_as(@landlord_user)
+
+    bed_house = House.create!(
+      landlord: @landlord,
+      name: "Diff Rent Dorm",
+      mode: :bed,
+      address_l1: "789 Diff St",
+      address_l2: "Ward 1",
+      address_l3: "District 1",
+      floors_count: 1,
+      inv_creation_date: 1
+    )
+    floor = bed_house.floors.create!(name: "Floor 1", position: 1, rooms_count: 1)
+    room = floor.rooms.create!(name: "Room 201", max_slots: 3, tenants_count: 2, area: 25.0)
+    bed1 = room.beds.create!(name: "Giường 1")
+    bed2 = room.beds.create!(name: "Giường 2")
+    bed3 = room.beds.create!(name: "Giường 3") # Empty
+
+    ru1 = bed1.create_rental_unit!(rent: 1_400_000, deposit: 1_400_000)
+    ru2 = bed2.create_rental_unit!(rent: 1_900_000, deposit: 1_900_000)
+    bed3.create_rental_unit!(rent: 2_000_000, deposit: 2_000_000)
+
+    u1 = User.create!(fullname: "User Diff One", tel: "0944112233", password: "Password123", password_confirmation: "Password123", role: "tenant", sex: "male", bday: 22.years.ago.to_date, address: "St 1", tel_verified_at: Time.current)
+    u2 = User.create!(fullname: "User Diff Two", tel: "0944112244", password: "Password123", password_confirmation: "Password123", role: "tenant", sex: "female", bday: 23.years.ago.to_date, address: "St 2", tel_verified_at: Time.current)
+    t1 = Tenant.find_or_create_by!(id: u1.id)
+    t2 = Tenant.find_or_create_by!(id: u2.id)
+
+    TenantStay.create!(rental_unit: ru1, tenant: t1, checkin_at: 1.month.ago)
+    TenantStay.create!(rental_unit: ru2, tenant: t2, checkin_at: 1.month.ago)
+
+    assert_difference -> { bed_house.invoices.count }, 2 do
+      post landlord_house_invoices_path(bed_house), params: {
+        invoice: {
+          room_id: room.id,
+          invoice_type: "individual",
+          billing_month: @billing_month.strftime("%Y-%m"),
+          due_date: Date.current + 5.days,
+          title: "Hóa đơn tháng #{@billing_month.strftime('%m/%Y')}",
+          items: [
+            {
+              selected: "1",
+              item_type: "rent",
+              bed_id: bed1.id,
+              name: "Tiền thuê Giường 1",
+              unit: "tháng",
+              unit_price: 1_400_000,
+              quantity: 1,
+              amount: 1_400_000
+            },
+            {
+              selected: "1",
+              item_type: "rent",
+              bed_id: bed2.id,
+              name: "Tiền thuê Giường 2",
+              unit: "tháng",
+              unit_price: 1_900_000,
+              quantity: 1,
+              amount: 1_900_000
+            }
+          ]
+        }
+      }
+    end
+
+    inv_t1 = bed_house.invoices.find_by(tenant_id: t1.id)
+    inv_t2 = bed_house.invoices.find_by(tenant_id: t2.id)
+
+    assert_not_nil inv_t1
+    assert_not_nil inv_t2
+    assert_equal 1, inv_t1.invoice_items.select(&:rent?).size
+    assert_equal 1, inv_t2.invoice_items.select(&:rent?).size
+    assert_equal 1_400_000, inv_t1.invoice_items.select(&:rent?).first.amount
+    assert_equal 1_900_000, inv_t2.invoice_items.select(&:rent?).first.amount
+    assert_equal 1_400_000, inv_t1.total_amount
+    assert_equal 1_900_000, inv_t2.total_amount
+  end
 end

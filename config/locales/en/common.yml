@@ -1,33 +1,5 @@
-# Files in the config/locales directory are used for internationalization and
-# are automatically loaded by Rails. If you want to use locales other than
-# English, add the necessary files in this directory.
-#
-# To use the locales, use `I18n.t`:
-#
-#     I18n.t "hello"
-#
-# In views, this is aliased to just `t`:
-#
-#     <%= t("hello") %>
-#
-# To use a different locale, set it with `I18n.locale`:
-#
-#     I18n.locale = :es
-#
-# This would use the information in config/locales/es.yml.
-#
-# To learn more about the API, please read the Rails Internationalization guide
-# at https://guides.rubyonrails.org/i18n.html.
-#
-# Be aware that YAML interprets the following case-insensitive strings as
-# booleans: `true`, `false`, `on`, `off`, `yes`, `no`. Therefore, these strings
-# must be quoted to be interpreted as strings. For example:
-#
-#     en:
-#       "yes": yup
-#       enabled: "ON"
-
 en:
+  # Used in view: l(variable, format: :default/:short)
   date:
     formats:
       default: "%Y-%m-%d"
@@ -40,34 +12,62 @@ en:
       short: "%d %b %H:%M"
       long: "%B %d, %Y %H:%M"
 
-  hello: "Hello world"
-  noti:
-    self: "Notifications"
-    notification_center: "Notification Center"
-    view_all: "View all notifications"
-    mark_all_as_read: "Mark all as read"
-    mark_as_read: "Mark as read"
-    empty: "No notifications."
-    no_notifications_in_filter: "No notifications found in this filter."
-    all: "All"
-    unread: "Unread"
-    read: "Read"
+  lang:
+    en: "English"
+    vi: "Vietnamese"
+
   bar:
+    home: "Home"
+    about: "About Us"
+    features: "Features"
+    find_rooms: "Find Rooms"
+    contact: "Contact"
+    terms: "Terms of Service"
+    privacy: "Privacy Policy"
+    company_name: "ANAN Joint Stock Company"
+    address: "268 Ly Thuong Kiet, Dien Hong Ward, Ho Chi Minh City"
+    working_hours: "Working hours: 8:00 - 22:00, Monday - Friday"
+    tel: "Phone Number"
+    copy_rights: "© 2025 LeanHouse. All rights reserved by ANAN Joint Stock Company"
+    report_issues: "Report Issue"
+    registered: "Registered with Ministry of Industry and Trade"
+    notified: "Notified to Ministry of Industry and Trade"
     my_profile: "My Profile"
     my_bank_acc: "Bank Accounts"
     my_vehicle: "My Vehicles"
     my_saved_post: "Saved Posts"
+    dashboard: "Dashboard"
+    house_mng: "Property Management"
+    post_mng: "Post Management"
+    request_handle: "Handle Requests"
+    my_room: "My Room"
     my_contract: "My Contract"
     all_contracts: "All Contracts"
     contract_archive: "Contract Archive"
     invoice_archive: "Invoice Archive"
     old_contracts: "Old Contracts"
-    toggle_nav: "Toggle navigation"
-    lang_switch: "Switch language"
-  role:
-    landlord: "Landlord"
-    tenant: "Tenant"
-    admin: "Admin"
+    applied_services: "Subscribed Services"
+    my_requests: "My Requests"
+    my_invoices: "My Invoices"
+    other_houses: "Select Another Property"
+    no_other_houses: "No Other Properties"
+    rooms: "Rooms"
+    invoices: "Invoices"
+    vehicles: "Vehicles"
+    contracts: "Contracts"
+    tenants: "Tenants"
+    services: "Services"
+    properties: "Assets"
+    secondary_toggle_expand: "Show Management Bar"
+    secondary_toggle_close: "Close Management Bar"
+    back_house_index: "Back to Properties List"
+    lang_switch: "Switch Language"
+    toggle_nav: "Toggle Navigation"
+    backoffice: "Internal Backoffice"
+
+  sidebar:
+    click_to_open: "Click to toggle sidebar"
+
   auth:
     sign_up: "Sign Up"
     log_in: "Log In"
@@ -75,12 +75,83 @@ en:
     auth_fields_reminder: "Note: Full Name and Date of Birth will be used for identity verification when recovering your account (Forgot Password). Please provide accurate information and keep it in mind."
     auth_fields_reminder_html: "Note: <strong>Full Name</strong> and <strong>Date of Birth</strong> will be used for identity verification when recovering your account (Forgot Password). Please provide accurate information and keep it in mind."
 
+  role:
+    self: "Role"
+    landlord: "Landlord"
+    tenant: "Tenant"
+    admin: "Admin"
+
+  welcome:
+    greeting: "Welcome to"
+    back: "Welcome back"
+
+  and: "and"
+  turn_back: "Back"
+  last_updated: "Last updated at"
+  created_at: "Created at"
+  none: "None"
+  view_detail: "View details"
+  view_all: "View all"
+  view: "View"
+  edit: "Edit"
+  delete: "Delete"
+  total: "Total"
+  all: "All"
+  actions: "Actions"
+  note: "Note"
+  loading: "Loading"
+  filtering: "Filtering"
+  filter: "Filter"
+  clear_filter: "Clear filter"
+  save: "Save"
+  save_changes: "Save changes"
+  cancel: "Cancel"
+  reset: "Reset"
+  saving: "Saving"
+  checking: "Checking"
+  status_deleted: "Deleted"
+  check: "Check"
+  add: "Add"
+  adding: "Adding"
+  general_info: "General Information"
+  detail_info: "Detailed Information"
+  create: "Create"
+  close: "Close"
+  download: "Download"
+  extract: "Type"
+  select_another: "Select another account"
+  save_order: "Save order"
+  click_open: "Click to open notification"
+  click_choose: "Click to select"
+  click_expand: "Click to expand"
+  ago: "ago"
+  send: "Send"
+  sending: "Sending"
+  min: "Minimum %{val}"
+  note_placeholder: "Enter note"
+  other: "Other"
+  not_redo: "Note: This action cannot be undone"
+  add_img: "Add image"
+  not_yet: "Not registered"
+  month: "Month"
+  month_val: "Month %{val}"
+  year: "Year"
+  person_unit: "Tenants"
+  you: "You"
+  clear_search: "Clear search"
+  status: "Status"
+  guide: "Guide"
+  open_in_new_tab: "Open in new tab"
+  required_fields: "Required fields"
+  clear_img: "Clear image"
+  staying: "Occupied"
+
   error_pages:
     actions:
       back: "Go Back"
       home: "Back to Home"
     unauthorized:
-      title: "Access Denied"
+      title: "Access Denied!"
       message: "Your account does not have sufficient permissions to access this page."
     not_found:
       title: "Page Not Found"
@@ -93,115 +164,218 @@ en:
       message: "An unexpected error occurred on our end. Please try again later."
 
   errors:
+    session_expired: |
+      Verified phone number not found!
+      Please request OTP again.
+    tenant_tel_unregistered: "This phone number has not been registered as a Tenant account!"
+    wrong_otp: "Invalid OTP code!"
+    expired_otp: "OTP code has expired!"
+    otp_failed: "Error occurred while verifying OTP! Please try again."
+    signup_failed: "Sign up failed! Please try again."
+    wrong_pw: "Incorrect phone number or password!"
     tel_unregistered: "Phone number is not registered!"
     identity_mismatch: "Identity verification failed: Full Name or Date of Birth does not match the account!"
     identity_mismatch_with_remaining: "Identity verification failed! You have %{remaining} attempts remaining before temporary lockout."
     too_many_forgot_pw_attempts: "Too many failed attempts! Please try again in %{minutes} minutes or contact support."
-    missing_verification_fields: "Please provide Telephone, Full Name, and Date of Birth!"
-    inactive_acc: "Your account is disabled! Please contact support for assistance."
+    missing_verification_fields: "Please enter Phone Number, Full Name, and Date of Birth!"
+    inactive_acc: |
+      Account is disabled!
+      Please contact us for more information!
+    login_required: "You need to log in to perform this action!"
+    unprocessable_entity: "Invalid data. Please verify and try again!"
+    service_variant_required: "Select 1 version of this service!"
     tel_linked: "This account is already linked to another property"
     tel_linked_current_house: "This account is already linked to this property"
     tel_linked_current_house_with_location: "This account is already linked to this property (%{location})"
     rental_unit_unavailable: "This rental unit is no longer available. Please select another."
-    house_full: "House is full! There are no available slots."
-    capacity_below_tenants: "Cannot reduce capacity below the current number of staying tenants (%{count})!"
-    tenant_has_pending_invoices: "Cannot remove tenant because there are %{count} unpaid invoice(s). Please resolve or cancel them first."
-    leave_request_has_pending_invoices: "Cannot approve leave request because the tenant has %{count} unpaid invoice(s). Please resolve them first."
+    house_full: "Property is full!"
+    not_bed_mode: "This property is not rented by Bed!"
+    capacity_below_tenants: "Cannot reduce capacity below the current number of staying tenants (%{count} tenants)!"
+    house_cant_deleted: "Cannot delete this property while there are still tenants or pending requests!"
+    floor_cant_deleted: "Cannot delete this floor because at least 1 room still has tenants"
+    room_cant_deleted: "Cannot delete this room while there are still tenants!"
+    bed_cant_deleted: "Cannot delete this bed while there are still tenants!"
+    cannot_delete_room_occupied: "Cannot delete room because tenants are currently staying in it."
+    cannot_delete_bed_occupied: "Cannot delete bed because a tenant is currently staying in it."
+    vehicle_delete_reason_required: "Please provide a reason for deleting the vehicle!"
+    vehicle_delete_failed: "Unable to delete vehicle!"
+    landlord_confirm: "This index reading has been confirmed by the landlord and cannot be edited."
+    account_cant_deleted: "Cannot delete this account while there are still active constraints!"
+    tenant_has_pending_invoices: "Cannot remove tenant because there are %{count} unpaid invoice(s). Please check and resolve these invoices first."
+    leave_request_has_pending_invoices: "Cannot approve leave request because the tenant has %{count} unpaid invoice(s). Please resolve the invoices before approving."
+
+  success_messages:
+    tenant_linked: "Tenant linked successfully!"
+    send_otp: "OTP has been sent!"
+    resend_otp: "OTP code resent successfully!"
+    signup: "Sign up successful!"
+    login: "Logged in successfully!"
+    logout: "Logged out successfully!"
+    user_updated: "Account information updated successfully!"
+    avatar_updated: "Avatar updated successfully!"
+    tel_updated: "Phone number changed successfully!"
+    pw_updated: "Password updated successfully!"
+    house_created: "Property created successfully!"
+    house_updated: "Property information updated successfully!"
+    house_deleted: "Property deleted successfully!"
+    house_mode_changed: "Property rental model changed successfully!"
+    floor_created: "Floor created successfully!"
+    floor_updated: "Floor information updated successfully!"
+    floor_deleted: "Floor deleted successfully!"
+    floor_sorted: "Floors reordered successfully!"
+    room_created: "Room created successfully!"
+    room_updated: "Room updated successfully!"
+    room_deleted: "Room deleted successfully!"
+    bed_created: "Bed created successfully!"
+    bed_updated: "Bed updated successfully!"
+    bed_deleted: "Bed deleted successfully!"
+    tenant_removed: "Tenant removed successfully!"
+    tenant_moved: "Rental unit transferred successfully!"
+    asset_created: "New asset added successfully!"
+    asset_updated: "Asset updated successfully!"
+    asset_deleted: "Asset deleted successfully!"
+    contract_created: "Contract created successfully!"
+    contract_updated: "Contract updated successfully!"
+    account_deleted: "Account deleted successfully!"
+    contract_extended: "Contract renewed successfully!"
+    contract_signed_new: "New contract signed successfully!"
+    contract_closed: "Contract has ended"
+    maintenance_log_created: "Maintenance record added successfully!"
+    maintenance_log_deleted: "Maintenance record deleted successfully!"
+    maintenance_log_updated: "Maintenance record updated successfully!"
+    vehicle_created_success: "Vehicle registration request sent successfully! Please wait for Landlord approval."
+    repair_created_success: "Repair request sent successfully! Please wait for Landlord to process."
+    leave_house_created_success: "Move-out request sent successfully! Please wait for Landlord approval."
+    vehicle_deleted: "Vehicle deleted successfully!"
+    request_approved: "Request approved successfully!"
+    request_handling: "Request marked as handling successfully!"
+    request_completed: "Request confirmed as completed successfully!"
+    request_rejected: "Request rejected successfully!"
+    request_updated: "Request updated successfully!"
+
   page_titles:
+    home: "Home"
+    about: "About Us"
+    features: "Features"
+    find_rooms: "Find Rooms"
+    contact: "Contact"
+    terms: "Terms of Service"
+    privacy: "Privacy Policy"
+    new_house: "Create New Property"
+    new_room: "Create New Room"
+    edit_house: "Edit Property"
+    house_mng: "Property Management"
+    tenant_mng: "Tenant Management"
+    room_mng: "Room Management"
+    bed_mng: "Bed Management"
+    asset_mng: "Asset Management"
+    service_mng: "Service Management"
+    contract_mng: "Contract Management"
+    issue_report: "Report Issue"
+    my_room: "My Room"
+    room_info: "Room Information"
+    my_contract: "My Contract"
+    used_sv: "Subscribed Services"
+    new_contract: "New Contract"
+    edit_contract: "Edit Contract"
+    sign_new_contract: "Sign New Contract"
+    new_service: "New Service"
+    maintenance_log_mng: "Maintenance History Management"
+    vehicle_mng: "Vehicle Management"
+    my_vehicles: "My Vehicles"
     admin_login: "Administrator Login"
     user_detail: "User Detail"
     admin_dashboard: "Admin Dashboard"
     admin_users: "User Management"
     admin_houses: "Property Management"
-    admin_house_detail: "Property Detail - %{name}"
+    admin_house_detail: "Property Detail"
     admin_house_assets: "Assets: %{house_name}"
     admin_house_services: "Services: %{house_name}"
     admin_house_contracts: "Contracts: %{house_name}"
     admin_house_invoices: "Invoices: %{house_name}"
     admin_requests: "Request Management"
     admin_issue_reports: "Issue Reports Management"
-    admin_issue_report_detail: "Issue Report Detail"
-    issue_report: "Report an Issue"
-    my_contract: "My Contract"
+    admin_issue_report_detail: "Issue Detail"
     all_contracts: "All Contracts"
     old_contracts: "Old Contracts"
-    house_mng: "House"
-  view_detail: "View details"
-  view_all: "View all"
-  view: "View"
-  edit: "Edit"
-  delete: "Delete"
-  cancel: "Cancel"
-  close: "Close"
-  download: "Download"
-  all: "All"
-  actions: "Actions"
-  note: "Note"
-  none: "None"
-  saving: "Saving"
-  sending: "Sending"
-  status_deleted: "Deleted"
-  common:
-    month: "Month"
-    status: "Status"
-  request:
-    sent_time: "Sent time"
-    from_date: "From"
-    to_date: "To"
-    time_range: "Time range"
-    past_house: "Past House"
-    past_house_notice: "This is an archived request from a property you previously rented (read-only)."
-    rejection_reason_checkout: "Tenant has checked out / left the property."
-  filter: "Filter"
-  clear_filter: "Clear filter"
-  clear_search: "Clear search"
-  turn_back: "Back"
-  required_fields: "Required fields"
-  clear_img: "Clear image"
-  ago: "ago"
-  success_messages:
-    avatar_updated: "Avatar updated successfully!"
-    room_created: "Room created successfully!"
-    room_updated: "Room updated successfully!"
-    bed_created: "Bed created successfully!"
-    bed_updated: "Bed updated successfully!"
-    house_mode_changed: "House mode changed successfully!"
-    house_deleted: "House deleted successfully!"
-    account_deleted: "Account deleted successfully!"
-  errors:
-    account_cant_deleted: "Cannot delete this account while there are still active constraints!"
-  form:
-    asset:
-      stats:
-        metric: "Metric"
-        value: "Quantity / Value"
-        total_assets: "Total Assets"
-        condition: "Condition"
-        good_condition: "Good Condition"
-        damaged_condition: "Damaged / Repair"
-        normal_short: "good"
-        damaged_short: "damaged/repair"
-        total_value: "Total Investment"
-        unit: "items"
-        all_good: "All items in good condition"
-        needs_repair: "item(s) need inspection/repair"
-        total_subtext: "In the entire property"
-        investment_subtext: "Total equipment purchase value"
-    tenant:
-      end_contract_on_move: "Terminate current rental contract"
-      end_contract_on_move_hint: "The contract for the current unit will be ended immediately. The landlord can sign a new contract for the new unit afterwards."
-  vehicle:
-    stats:
-      total_vehicles: "Total Vehicles"
-      unit: "vehicle(s)"
-      types_breakdown: "Breakdown by Type"
-  enums:
-    vehicle:
-      vehicle_type:
-        motorbike: "Motorbike"
-        electric_bike: "Electric Bike"
-        bicycle: "Bicycle"
-        car: "Car"
+    contract_detail: "Invoice Details"
+
+  pagination:
+    first: "First"
+    last: "Last"
+    prev: "Previous"
+    next: "Next"
+
+  datetime:
+    just_now: "Just now"
+    distance_in_words:
+      less_than_x_seconds:
+        one: "less than a second"
+        other: "less than %{count} seconds"
+
+      x_seconds:
+        one: "1 second"
+        other: "%{count} seconds"
+
+      less_than_x_minutes:
+        one: "less than a minute"
+        other: "less than %{count} minutes"
+
+      x_minutes:
+        one: "1 minute"
+        other: "%{count} minutes"
+
+      about_x_hours:
+        one: "about 1 hour"
+        other: "about %{count} hours"
+
+      x_days:
+        one: "1 day"
+        other: "%{count} days"
+
+      about_x_weeks:
+        one: "about 1 week"
+        other: "about %{count} weeks"
+
+      x_weeks:
+        one: "1 week"
+        other: "%{count} weeks"
+
+      about_x_months:
+        one: "about 1 month"
+        other: "about %{count} months"
+
+      x_months:
+        one: "1 month"
+        other: "%{count} months"
+
+      about_x_years:
+        one: "about 1 year"
+        other: "about %{count} years"
+
+      over_x_years:
+        one: "over 1 year"
+        other: "over %{count} years"
+
+      almost_x_years:
+        one: "almost 1 year"
+        other: "almost %{count} years"
+
+  new_tel_owner:
+    self: "Phone Number Verification Help"
+    title: "Verify Phone Number"
+    case_2: "Case 2: You are a landlord creating a new account for a Tenant"
+    case_1: "Case 1: You are the owner of the phone number"
+    content_1: "The notification indicates that the phone number is already registered, possibly by a previous owner. To verify ownership, please follow these steps:"
+    content_2_html: "<em>Step 1</em>: Send an SMS to  <strong>1414</strong> (free customer service number for mobile carriers in Vietnam) with syntax <strong>TTTB [National ID / Citizen ID Number]</strong>"
+    content_3_html: "<em>Step 2</em>: Take a screenshot of the sent message and carrier response as shown."
+    content_4_html: "<em>Step 3</em>: Send an email to us at <a class='text-decoration-underline' target='_blank' rel='noopener noreferrer' href='mailto:customerservice@leanhouse.com?subject=Help with Phone Number Verification'>customerservice@leanhouse.com</a>. In the email, attach the screenshot from step 2."
+    content_4_1_html: "(<strong>Note</strong>: Phone number and Citizen ID / National ID number must be clearly visible. All personal information provided will be kept confidential, used solely for verifying phone number ownership, and will not be shared with third parties.)"
+    fig_caption: "Illustration of verification SMS and carrier response confirming genuine phone number ownership"
+    content_5: "The verified phone number is the one confirmed by the carrier in the incoming SMS response."
+    content_6: "We will process and respond within 1-2 business days (excluding Saturdays, Sundays, and holidays). If you haven't received an email, please check your Spam or Junk folder."
+    content_7: "Please contact the Tenant and guide them through the above steps, or switch to a new phone number."
+
   incident_reports:
     title: "Report an Issue"
     subtitle: "If you encounter any technical problems or unexpected errors while using the system, please fill in the form below for support."
@@ -222,5 +396,3 @@ en:
   deposit_paid: "Deposit paid"
   deposit_unpaid: "Deposit unpaid"
   waiting_for_contract: "Awaiting contract registration"
-  person_unit: "tenants"
-  month: "month"

@@ -1,0 +1,79 @@
+en:
+  terms:
+    title: "Terms of Service - LEANHOUSE"
+
+    last_updated: "Last updated: %{date}"
+
+    introduction_html: >
+      Welcome to
+      <strong>LeanHouse</strong>
+      – a management support system for rental houses and dormitories.
+      By using this website or registering an account, you agree
+      to the following Terms of Service. Please read them carefully before continuing.
+
+    scope:
+      title: "1. Scope of Service"
+      content: "LeanHouse provides a management platform for rental houses/dormitories, including:"
+      content_1: "Room and tenant management"
+      content_2: "Storage of profiles, contracts, and invoices"
+      content_3: "Tracking requests, services, and room status"
+      content_4: "The system functions as a support tool only and does not replace official legal documents or agreements."
+
+    accounts:
+      title: "2. User Accounts"
+
+      responsibilities:
+        title: "2.1. Responsibilities"
+        content: "Users agree to:"
+        content_1: "Provide accurate information when registering"
+        content_2: "Maintain account security and take responsibility for all activities under their account"
+        content_3: "Do not use another person's account without permission"
+
+      leanhouse_rights:
+        title: "2.2. LeanHouse Rights"
+        content: "LeanHouse reserves the right to:"
+        content_1: "Suspend or lock accounts that violate policies"
+        content_2: "Request additional verification if suspicious activity is detected"
+
+    user_data:
+      title: "3. User Data and Content"
+      content: "Users are solely responsible for all data entered into the system."
+      content_1: "Users must not upload content or files that:"
+      content_2: "Violate the law, copyright, are offensive, obscene, or infringe upon privacy rights"
+      content_3: "Contain malware, misleading information, fraud, or disrupt system operations"
+      content_4: "LeanHouse reserves the right to review and remove violating files or content without prior consent, and will send a notification stating the reason for removal to the uploader's account."
+
+    accuracy:
+      title: "4. Accuracy of Information"
+      content: "LeanHouse strives to maintain accurate data and functionality, but:"
+      content_1: "Does not guarantee that all user-entered information is completely correct"
+      content_2: "Is not liable for errors resulting from data entry mistakes, network disruptions, or third-party services"
+
+    contracts:
+      title: "5. Contracts and Legal Validity"
+      content: "Content displayed in LeanHouse is for management purposes only."
+      content_1: "Signed paper contracts constitute the official legal document."
+      content_2: "LeanHouse does not participate in and is not responsible for disputes between landlords and tenants."
+
+    payments:
+      title: "6. Invoices and Payments"
+      content: "The system only assists in record-keeping and does not process financial transactions."
+      content_1: "All fees, debts, or payments are agreements between the relevant parties."
+
+    liability:
+      title: "7. Limitation of Liability"
+      content: "LeanHouse is not responsible for:"
+      content_1: "Data loss due to personal device malfunctions"
+      content_2: "Indirect damages, business interruptions, or lost profits"
+      content_3: "Unlawful acts committed by users"
+
+    prohibited:
+      title: "8. Prohibited Conduct"
+      content_1: "Unauthorized access to the system"
+      content_2: "Using LeanHouse for fraudulent or deceptive activities"
+      content_3: "Misusing other users' data"
+      content_4: "Causing disruption or attempting to damage the system"
+
+    changes:
+      title: "9. Changes to Terms"
+      content: "LeanHouse may update these terms to reflect operational needs. By continuing to use the service, you agree to the latest changes."

@@ -245,9 +245,28 @@
                   </div>
                 </div>
 
-                <div class="alert alert-warning border-0 rounded-3 mt-3 mb-0 d-flex align-items-center gap-2 py-2">
-                  <span class="material-symbols-outlined text-warning-emphasis fs-5">info</span>
-                  <span class="small"><%= t('invoice.guide.mode_individual_room_split_note') %></span>
+                <!-- So sánh chi tiết theo mô hình nhà -->
+                <div class="card border border-primary-subtle bg-light rounded-3 p-3 mt-3">
+                  <h6 class="fw-bold text-primary d-flex align-items-center gap-2 mb-2">
+                    <span class="material-symbols-outlined fs-5">compare_arrows</span>
+                    <%= t('invoice.guide.guide_house_mode_comparison_title') %>
+                  </h6>
+                  <div class="row g-2">
+                    <div class="col-md-6">
+                      <div class="p-3 bg-white rounded-2 border h-100 small">
+                        <strong class="d-block text-dark mb-1"><%= t('invoice.guide.guide_room_mode_heading') %></strong>
+                        <div class="text-secondary mb-1"><%= t('invoice.guide.guide_room_mode_room_pay') %></div>
+                        <div class="text-secondary"><%= t('invoice.guide.guide_room_mode_indiv_pay') %></div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="p-3 bg-white rounded-2 border h-100 small">
+                        <strong class="d-block text-info-emphasis mb-1"><%= t('invoice.guide.guide_bed_mode_heading') %></strong>
+                        <div class="text-secondary mb-1"><%= t('invoice.guide.guide_bed_mode_room_pay') %></div>
+                        <div class="text-secondary"><%= t('invoice.guide.guide_bed_mode_indiv_pay') %></div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
