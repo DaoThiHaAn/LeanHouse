@@ -73,10 +73,22 @@
           </div>
 
           <div class="mb-3">
-            <%= f.label :due_date, class: "form-label fw-semibold" do %>
-              <%= t('invoice.due_date') %> <span class="text-danger">*</span>
-            <% end %>
+            <div class="d-flex align-items-center justify-content-between mb-1">
+              <%= f.label :due_date, class: "form-label fw-semibold mb-0" do %>
+                <%= t('invoice.due_date') %> <span class="text-danger">*</span>
+              <% end %>
+              <span class="material-symbols-outlined fs-6 text-secondary cursor-pointer"
+                    tabindex="0"
+                    role="button"
+                    aria-label="<%= t('invoice.due_date') %>"
+                    <%= tooltip("top", :"invoice.due_date_tooltip") %>>
+                info
+              </span>
+            </div>
             <%= f.date_field :due_date, value: (@invoice.due_date || (Date.current + 5.days)), class: "form-control shadow-sm", required: true %>
+            <div class="form-text text-secondary small mt-1">
+              <%= t('invoice.due_date_hint') %>
+            </div>
           </div>
 
           <div class="mb-3">

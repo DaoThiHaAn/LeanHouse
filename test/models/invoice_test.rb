@@ -327,4 +327,19 @@ class InvoiceTest < ActiveSupport::TestCase
       end
     end
   end
+
+  test "payment_period_text formats date range starting from creation date to due date" do
+    inv = @house.invoices.create!(
+      code: "HD-PERIOD-TEST",
+      title: "Tiền phòng",
+      room: @room,
+      created_by: @user,
+      billing_month: Date.new(2026, 10, 1),
+      due_date: Date.new(2026, 10, 10),
+      invoice_type: :room,
+      status: :pending,
+      created_at: Time.zone.local(2026, 10, 5, 10, 0, 0)
+    )
+    assert_equal "05/10/2026 - 10/10/2026", inv.payment_period_text
+  end
 end

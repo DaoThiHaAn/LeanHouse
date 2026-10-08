@@ -169,8 +169,15 @@ class Invoice < ApplicationRecord
     end_date || billing_month.end_of_month
   end
 
+  def payment_start_date
+    created_at ? created_at.to_date : Date.current
+  end
+
   def payment_period_text
-    "#{effective_start_date.strftime('%d/%m/%Y')} - #{due_date.strftime('%d/%m/%Y')}"
+    return "" unless due_date.present?
+
+    start_dt = [ payment_start_date, due_date ].min
+    "#{start_dt.strftime('%d/%m/%Y')} - #{due_date.strftime('%d/%m/%Y')}"
   end
 
   def rent_period_text

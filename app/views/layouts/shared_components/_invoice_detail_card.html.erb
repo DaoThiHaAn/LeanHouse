@@ -137,10 +137,22 @@
           </div>
         </div>
         <div class="col-6 col-md-4">
-          <div class="invoice-meta-item-label"><%= t('invoice.payment_term') %></div>
+          <div class="invoice-meta-item-label d-flex align-items-center gap-1 justify-content-center justify-content-sm-start">
+            <span><%= t('invoice.payment_term') %></span>
+            <span class="material-symbols-outlined fs-6 text-secondary cursor-pointer"
+                  tabindex="0"
+                  role="button"
+                  aria-label="<%= t('invoice.payment_term') %>"
+                  <%= tooltip("top", :"invoice.payment_term_tooltip") %>>
+              info
+            </span>
+          </div>
           <div class="invoice-meta-item-value">
             <span class="material-symbols-outlined fs-6 align-middle text-secondary me-1">date_range</span>
             <%= invoice.payment_period_text %>
+          </div>
+          <div class="small text-secondary mt-0.5">
+            <%= t('invoice.payment_term_hint') %>
           </div>
         </div>
         <% if invoice.overdue? %>

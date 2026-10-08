@@ -74,12 +74,22 @@
           <%= f.label "invoice[due_date]", class: "form-label fw-semibold mb-0" do %>
             <%= t('invoice.due_date') %> <span class="text-danger">*</span>
           <% end %>
+          <span class="material-symbols-outlined fs-6 text-secondary cursor-pointer"
+                tabindex="0"
+                role="button"
+                aria-label="<%= t('invoice.due_date') %>"
+                <%= tooltip("top", :"invoice.due_date_tooltip") %>>
+            info
+          </span>
         </div>
         <%= f.date_field "invoice[due_date]",
               value: due_date_default,
               min: due_date_min,
               class: "form-control shadow-sm",
               required: true %>
+        <div class="form-text text-secondary small mt-1">
+          <%= t('invoice.due_date_hint') %>
+        </div>
       </div>
     </div>
 

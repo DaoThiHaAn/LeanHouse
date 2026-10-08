@@ -155,7 +155,11 @@ vi:
 
     created_time: "Thời gian tạo"
     payment_term: "Thời hạn thanh toán"
+    payment_term_hint: "(Từ ngày tạo hóa đơn)"
+    payment_term_tooltip: "Thời hạn thanh toán được tính từ ngày xuất hóa đơn đến ngày hạn chót."
     due_date: "Hạn thanh toán"
+    due_date_hint: "Thời hạn thanh toán bắt đầu từ ngày xuất hóa đơn đến ngày này."
+    due_date_tooltip: "Thời hạn thanh toán bắt đầu từ ngày xuất hóa đơn đến hạn chót thanh toán."
     total: "Tổng cộng"
     total_payment: "TỔNG TIỀN THANH TOÁN"
     total_need_payment: "TỔNG TIỀN CẦN THANH TOÁN"
