@@ -26,6 +26,7 @@ vi:
       restricted_notice: "Khu vực bảo mật dành riêng cho nhân sự quản trị LeanHouse."
       login_subtitle: "Hệ thống quản trị nội bộ của LeanHouse"
       logged_in_user_hint: "Bạn đang đăng nhập bằng tài khoản người dùng (%{name}). Tài khoản này không thể truy cập Quản trị. Vui lòng đăng nhập bằng tài khoản Quản trị viên."
+      already_logged_in: "Bạn đang đăng nhập với tư cách Quản trị viên. Vui lòng đăng xuất quản trị trước nếu muốn sử dụng tài khoản người dùng."
 
     dashboard:
       title: "Tổng quan Hệ thống"

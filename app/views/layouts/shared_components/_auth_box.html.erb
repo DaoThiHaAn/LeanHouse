@@ -8,7 +8,7 @@
             </span>
             <div class="d-flex flex-column align-items-start">
                 <p class="fw-bold fullname"><%= format_name(current_user.fullname) %></p>
-                <p class="role"><%= get_role %></p>
+                <p class="role"><%= get_role(current_user) %></p>
             </div>
         </button>
 

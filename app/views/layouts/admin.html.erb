@@ -136,19 +136,19 @@
           <% if current_admin %>
             <div class="dropdown profile-dropdown">
               <button class="btn dropdown-toggle d-flex align-items-center gap-2 p-1" type="button" id="adminDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                <%= display_avatar %>
+                <%= display_avatar(current_admin) %>
                 <div class="text-start d-none d-sm-block">
                   <div class="fullname fw-bold text-dark small"
                       <%= tooltip("bottom",current_admin.fullname, html:true ) %>>
                     <%= format_name(current_admin.fullname) %>
                   </div>
-                  <div class="role text-secondary small"><%= get_role %></div>
+                  <div class="role text-secondary small"><%= get_role(current_admin) %></div>
                 </div>
               </button>
 
               <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="adminDropdown">
                 <li class="px-3 py-2 border-bottom">
-                  <p class="small text-secondary mb-0"><%= current_admin.email %></p>
+                  <p class="small text-secondary"><%= current_admin.email %></p>
                 </li>
                 <li>
                   <%= link_to edit_admin_profile_path, class: "dropdown-item d-flex align-items-center gap-2 py-2" do %>

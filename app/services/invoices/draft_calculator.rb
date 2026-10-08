@@ -101,11 +101,12 @@ module Invoices
 
     def build_room_rent_items
       total_rent = room.rental_unit&.rent || 0
-      rent_amount = if invoice_type == "individual"
-                      (total_rent.to_f / active_tenants_count).round
-                    else
-                      total_rent
-                    end
+      rent_amount =
+        if invoice_type == "individual"
+          (total_rent.to_f / active_tenants_count).round
+        else
+          total_rent
+        end
 
       [
         {

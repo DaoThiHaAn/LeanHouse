@@ -1,11 +1,13 @@
 class AuthenticationController < ApplicationController
+  before_action :redirect_if_admin, only: %i[ sign_up login_form handle_log_in forgot_pw handle_forgot_pw reset_pw ]
+  before_action :redirect_if_logged_in, only: %i[ sign_up login_form ]
+
   def sign_up
     @user = User.new
   end
 
   def login_form
     session[:return_to] = params[:return_to] if params[:return_to].present?
-    return redirect_after_login if logged_in?
 
     @user = User.new
     render "authentication/log_in"
@@ -87,6 +89,10 @@ class AuthenticationController < ApplicationController
     params.require(:user).permit(:tel, :role, :fullname, :bday)
   end
 
+
+  def redirect_if_logged_in
+    redirect_after_login if logged_in?
+  end
 
   def redirect_after_login
     return_target = session.delete(:return_to) || params[:return_to]

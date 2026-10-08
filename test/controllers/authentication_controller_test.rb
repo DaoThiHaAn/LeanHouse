@@ -146,4 +146,60 @@ class AuthenticationControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to root_path
     assert_nil session[:user_id]
   end
+
+  test "logged-in admin is blocked and redirected from signup and login pages" do
+    admin = Admin.create!(
+      fullname: "Super Admin Test",
+      email: "admin_blocked@leanhouse.vn",
+      password: "Password123!",
+      password_confirmation: "Password123!",
+      role: "super_admin",
+      is_active: true
+    )
+    post admin_handle_login_url, params: { email: admin.email, password: "Password123!" }
+    assert_equal session[:admin_id], admin.id
+
+    get signup_url
+    assert_redirected_to admin_dashboard_path
+    assert_equal I18n.t("admin.auth.already_logged_in"), flash[:alert]
+
+    get login_url
+    assert_redirected_to admin_dashboard_path
+    assert_equal I18n.t("admin.auth.already_logged_in"), flash[:alert]
+
+    post handle_login_url, params: { user: { tel: "0901234567", password: "Password123!", role: "tenant" } }
+    assert_redirected_to admin_dashboard_path
+    assert_equal I18n.t("admin.auth.already_logged_in"), flash[:alert]
+
+    get forgot_pw_url
+    assert_redirected_to admin_dashboard_path
+    assert_equal I18n.t("admin.auth.already_logged_in"), flash[:alert]
+
+    post users_url, params: { user: { fullname: "New User", tel: "0909998888", role: "tenant" } }
+    assert_redirected_to admin_dashboard_path
+    assert_equal I18n.t("admin.auth.already_logged_in"), flash[:alert]
+  end
+
+  test "logged-in user is redirected from sign_up to their dashboard" do
+    user = User.create!(
+      fullname: "User Redirect Test",
+      tel: "0911229997",
+      password: "Password123!",
+      password_confirmation: "Password123!",
+      sex: "male",
+      bday: Date.new(1995, 5, 20),
+      address: "123 Tran Hung Dao",
+      role: "landlord",
+      is_active: true,
+      tel_verified_at: Time.current
+    )
+    post handle_login_path, params: { user: { tel: user.tel, password: "Password123!", role: "landlord" } }
+    assert_equal session[:user_id], user.id
+
+    get signup_url
+    assert_redirected_to landlord_dashboard_path
+
+    get login_url
+    assert_redirected_to landlord_dashboard_path
+  end
 end

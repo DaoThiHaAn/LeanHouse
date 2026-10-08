@@ -1,4 +1,5 @@
 class UsersController < ApplicationController
+  before_action :redirect_if_admin, only: %i[ create ]
   before_action :set_user, only: %i[ update ]
 
   # POST /users

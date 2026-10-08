@@ -1,6 +1,6 @@
 <% if bank_accounts_count >= BankAccount::MAX_ACCOUNTS %>
   <div class="card bg-light border-0 text-center py-4 rounded-4 shadow-sm">
-    <p class="text-secondary mb-0">
+    <p class="text-secondary">
       <span class="material-symbols-outlined align-middle me-1">info</span>
       <%= t("bank_account.limit_reached_hint", max: BankAccount::MAX_ACCOUNTS) %>
     </p>

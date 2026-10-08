@@ -1,6 +1,10 @@
 module NavHelper
-  def display_avatar(default_anomy_size: 128)
-    user = current_user || (respond_to?(:current_admin) ? current_admin : nil)
+  def display_avatar(user = nil, default_anomy_size: 128)
+    user ||= if respond_to?(:controller_path) && controller_path.to_s.start_with?("admin_portal")
+      respond_to?(:current_admin) ? current_admin : nil
+    else
+      respond_to?(:current_user) && current_user.present? ? current_user : (respond_to?(:current_admin) ? current_admin : nil)
+    end
     return "" unless user
 
     if user.respond_to?(:avatar) && user.avatar.attached?
@@ -11,14 +15,22 @@ module NavHelper
     end
   end
 
-  def get_role
-    if respond_to?(:current_admin) && current_admin.present?
-      return t("enums.admin.roles.#{current_admin.role}", default: current_admin.role.titleize)
+  def get_role(user = nil)
+    user ||= if respond_to?(:controller_path) && controller_path.to_s.start_with?("admin_portal")
+      respond_to?(:current_admin) ? current_admin : nil
+    else
+      respond_to?(:current_user) && current_user.present? ? current_user : (respond_to?(:current_admin) ? current_admin : nil)
     end
 
-    if respond_to?(:current_user) && current_user.present?
-      return t("role.landlord") if current_user.role == "landlord"
-      return t("role.tenant") if current_user.role == "tenant"
+    return "" unless user
+
+    if user.is_a?(Admin)
+      return t("enums.admin.roles.#{user.role}", default: user.role.titleize)
+    end
+
+    if user.respond_to?(:role)
+      return t("role.landlord") if user.role == "landlord"
+      return t("role.tenant") if user.role == "tenant"
     end
 
     t("role.admin", default: "Quản trị viên")

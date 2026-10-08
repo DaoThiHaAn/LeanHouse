@@ -10,7 +10,7 @@
   <div class="invoice-empty-state mx-auto">
     <span class="material-symbols-outlined invoice-empty-icon"><%= is_custom_tab ? "tune" : "receipt_long" %></span>
     <p class="fs-5 fw-bold mb-1"><%= is_custom_tab ? t('invoice.no_custom_invoices_tenant') : t('invoice.no_invoices_tenant') %></p>
-    <p class="text-secondary mb-0"><%= is_custom_tab ? t('invoice.no_custom_invoices_tenant_hint') : t('invoice.no_invoices_tenant_hint') %></p>
+    <p class="text-secondary"><%= is_custom_tab ? t('invoice.no_custom_invoices_tenant_hint') : t('invoice.no_invoices_tenant_hint') %></p>
   </div>
 <% else %>
   <div class="table-responsive bg-white rounded-3 shadow-sm border">

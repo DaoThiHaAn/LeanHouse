@@ -23,6 +23,10 @@ module ActiveSupport
     # Run tests in parallel
     parallelize(workers: :number_of_processors)
 
+    setup do
+      Admin.delete_all
+    end
+
     def create_landlord(tel: "0901234567", password: "Password123", fullname: "Nguyen Van Chu Nha")
       user = User.create!(
         fullname: fullname,

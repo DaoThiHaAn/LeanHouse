@@ -61,6 +61,12 @@ module SessionHelper
     current_admin.present?
   end
 
+  def redirect_if_admin
+    if admin_logged_in?
+      redirect_to admin_dashboard_path, alert: t("admin.auth.already_logged_in")
+    end
+  end
+
   def destroy_session
     forget_user
     reset_session
