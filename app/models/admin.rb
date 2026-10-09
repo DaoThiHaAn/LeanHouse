@@ -3,6 +3,11 @@ class Admin < ApplicationRecord
 
   attr_accessor :current_password
 
+  def password=(new_password)
+    @password = new_password.presence
+    super
+  end
+
   enum :role, { super_admin: "super_admin", support: "support" }
 
   before_validation :normalize_inputs
@@ -12,11 +17,15 @@ class Admin < ApplicationRecord
             presence: true,
             uniqueness: { case_sensitive: false },
             format: { with: URI::MailTo::EMAIL_REGEXP, message: :invalid }
-  validates :password, length: { in: 8..72 }, on: :create
+  validates :password, length: { in: 8..72 }, on: [ :create, :change_password ]
   validates :password, length: { in: 8..72 }, allow_nil: true, on: :update
   validate :pw_complexity, if: -> { password.present? }
   validates :role, presence: true
   validate :single_super_admin, if: -> { super_admin? && (new_record? || role_changed?) }
+
+  validates :current_password, presence: true, on: :change_password
+  validate :current_password_matches, on: :change_password
+  validates :password, presence: true, on: :change_password
 
   scope :active, -> { where(is_active: true) }
 
@@ -49,6 +58,17 @@ class Admin < ApplicationRecord
     existing = existing.where.not(id: id) if persisted?
     if existing.exists?
       errors.add(:role, :single_super_admin)
+    end
+  end
+
+  def current_password_matches
+    return if current_password.blank?
+
+    expected_digest = password_digest_was || password_digest
+    return if expected_digest.blank?
+
+    unless BCrypt::Password.new(expected_digest).is_password?(current_password)
+      errors.add(:current_password, :invalid)
     end
   end
 end

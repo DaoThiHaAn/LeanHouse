@@ -333,6 +333,9 @@ vi:
       invalid_current_password: "Mật khẩu hiện tại không hợp lệ!"
       update_btn: "Đổi mật khẩu"
       update_success: "Đổi mật khẩu thành công!"
+      update_info_btn: "Cập nhật thông tin"
+      update_info_success: "Cập nhật thông tin tài khoản thành công!"
+      unauthorized_edit: "Bạn không có quyền chỉnh sửa thông tin tài khoản!"
 
     admins:
       title: "Quản lý Nhân sự"

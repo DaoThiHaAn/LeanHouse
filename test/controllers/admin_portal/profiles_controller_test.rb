@@ -47,13 +47,15 @@ module AdminPortal
       assert_includes response.body, I18n.t("admin.profile.account_info_notice")
     end
 
-    test "super admin can view their own profile edit page with read-only info" do
+    test "super admin can view their own profile edit page with editable account info" do
       login_as(@super_admin)
       get edit_admin_profile_url
       assert_response :success
       assert_includes response.body, "Super Admin User"
       assert_includes response.body, "super_profile@leanhouse.vn"
       assert_includes response.body, I18n.t("admin.admins.role_super_admin")
+      assert_includes response.body, I18n.t("admin.profile.update_info_btn")
+      assert_not_includes response.body, I18n.t("admin.profile.account_info_notice")
     end
 
     test "support staff cannot change password with blank current password" do
@@ -144,6 +146,57 @@ module AdminPortal
       assert_equal "support_profile@leanhouse.vn", @support_admin.email
       assert_equal "Support Staff User", @support_admin.fullname
       assert @support_admin.authenticate("NewPassword456!")
+    end
+
+    test "super admin can update their fullname and email" do
+      login_as(@super_admin)
+      patch admin_profile_url, params: {
+        form_type: "account_info",
+        admin: {
+          fullname: "Super Admin Updated",
+          email: "super_updated@leanhouse.vn"
+        }
+      }
+      assert_redirected_to edit_admin_profile_url
+      follow_redirect!
+      assert_includes flash[:notice], I18n.t("admin.profile.update_info_success")
+
+      @super_admin.reload
+      assert_equal "Super Admin Updated", @super_admin.fullname
+      assert_equal "super_updated@leanhouse.vn", @super_admin.email
+    end
+
+    test "super admin cannot update account info with blank fullname or invalid email" do
+      login_as(@super_admin)
+      patch admin_profile_url, params: {
+        form_type: "account_info",
+        admin: {
+          fullname: "",
+          email: "invalid-email"
+        }
+      }
+      assert_response :unprocessable_entity
+      assert_select ".invalid-feedback"
+
+      @super_admin.reload
+      assert_equal "Super Admin User", @super_admin.fullname
+    end
+
+    test "support staff cannot update account info" do
+      login_as(@support_admin)
+      patch admin_profile_url, params: {
+        form_type: "account_info",
+        admin: {
+          fullname: "Hacked Support Name",
+          email: "hacked_support@leanhouse.vn"
+        }
+      }
+      assert_redirected_to edit_admin_profile_url
+      follow_redirect!
+      assert_includes flash[:alert], I18n.t("admin.profile.unauthorized_edit")
+
+      @support_admin.reload
+      assert_equal "Support Staff User", @support_admin.fullname
     end
   end
 end

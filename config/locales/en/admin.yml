@@ -325,6 +325,9 @@ en:
       invalid_current_password: "Current password is incorrect!"
       update_btn: "Change Password"
       update_success: "Password changed successfully!"
+      update_info_btn: "Update Information"
+      update_info_success: "Account information updated successfully!"
+      unauthorized_edit: "You are not authorized to edit account information!"
 
     admins:
       title: "Staff & Administrator Management"

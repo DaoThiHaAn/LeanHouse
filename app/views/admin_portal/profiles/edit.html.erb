@@ -5,63 +5,137 @@
   <div class="d-flex align-items-center gap-3 mb-4 pb-3 border-bottom">
     <%= back_link_to admin_dashboard_path, t("admin.nav.dashboard") %>
     <div class="flex-grow-1 text-center pe-md-5">
-      <h1 class="mb-0"><%= t("admin.profile.title") %></h1>
-      <p class="text-secondary small mb-0"><%= t("admin.profile.subtitle") %></p>
+      <h1 class="mb-2"><%= t("admin.profile.title") %></h1>
+      <p class="text-secondary"><%= t("admin.profile.subtitle") %></p>
     </div>
   </div>
 
-  <!-- Personal Info Card (Read-only) -->
-  <div class="w-75 card shadow-sm border-0 mb-4 mx-auto">
-    <div class="card-header bg-white py-3 border-bottom d-flex align-items-center gap-2">
-      <h2 class="mb-0 d-flex align-items-center gap-2">
-        <span class="icon material-symbols-filled fs-3">badge</span>
-        <%= t("admin.profile.account_info_title") %>
-      </h2>
-      <span class="ms-auto badge <%= @admin.super_admin? ? 'bg-primary-subtle text-primary border border-primary-subtle' : 'bg-info-subtle text-info-emphasis border border-info-subtle' %> px-2 py-1 rounded-pill small">
-        <%= @admin.super_admin? ? t("admin.admins.role_super_admin") : t("admin.admins.role_support") %>
-      </span>
-    </div>
+  <% if @admin.super_admin? %>
+    <!-- Form 1: Account Information (Editable for Super Admin) -->
+    <%= form_with model: @admin, url: admin_profile_path, method: :patch,
+                  local: true,
+                  class: "admin-form needs-validation mb-4",
+                  data: {
+                    controller: "loading",
+                    loading_text_value: t("saving", default: "Đang lưu..."),
+                    action: "submit->loading#submit"
+                  } do |f| %>
+      <%= hidden_field_tag :form_type, "account_info" %>
 
-    <div class="card-body p-4">
-      <div class="alert alert-light border shadow-none d-flex align-items-start gap-2 mb-4 p-3 rounded">
-        <span class="material-symbols-outlined text-primary fs-5 mt-1">info</span>
-        <p class="small text-secondary">
-          <%= t("admin.profile.account_info_notice") %>
-        </p>
-      </div>
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-white py-3 border-bottom d-flex align-items-center gap-2">
+          <span class="icon material-symbols-filled fs-3">badge</span>
+          <h2 class="mb-0"><%= t("admin.profile.account_info_title") %></h2>
+          <span class="ms-auto badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1 rounded-pill small">
+            <%= t("admin.admins.role_super_admin") %>
+          </span>
+        </div>
 
-      <div class="row g-3">
-        <!-- Fullname (Read-only) -->
-        <div class="col-12 col-md-6">
-          <div class="form-floating shadow-sm rounded">
-            <input type="text" class="form-control bg-light" id="adminProfileFullname" value="<%= @admin.fullname %>" readonly disabled>
-            <label for="adminProfileFullname">
-              <%= t("admin.profile.fullname_label") %>
-            </label>
-          </div>
-          <div class="form-text small text-secondary mt-1">
-            <span class="material-symbols-outlined fs-6 align-middle">lock</span>
-            <%= t("admin.profile.readonly_managed_by_admin") %>
+        <div class="card-body p-4">
+          <div class="row g-3">
+            <!-- Fullname -->
+            <div class="col-12 col-md-6">
+              <div class="form-floating shadow-sm rounded">
+                <%= f.text_field :fullname,
+                    class: "form-control #{invalid_class(@admin, :fullname) if @form_type == 'account_info'}",
+                    id: "adminProfileFullname",
+                    placeholder: t("admin.profile.fullname_label"),
+                    required: true %>
+                <label for="adminProfileFullname">
+                  <%= t("admin.profile.fullname_label") %> <span class="text-danger">*</span>
+                </label>
+                <%= field_error(@admin, :fullname) if @form_type == "account_info" %>
+              </div>
+            </div>
+
+            <!-- Email -->
+            <div class="col-12 col-md-6">
+              <div class="form-floating shadow-sm rounded">
+                <%= f.email_field :email,
+                    class: "form-control #{invalid_class(@admin, :email) if @form_type == 'account_info'}",
+                    id: "adminProfileEmail",
+                    placeholder: "admin@leanhouse.vn",
+                    required: true %>
+                <label for="adminProfileEmail">
+                  <%= t("admin.profile.email_label") %> <span class="text-danger">*</span>
+                </label>
+                <%= field_error(@admin, :email) if @form_type == "account_info" %>
+              </div>
+            </div>
           </div>
         </div>
 
-        <!-- Email (Read-only) -->
-        <div class="col-12 col-md-6">
-          <div class="form-floating shadow-sm rounded">
-            <input type="email" class="form-control bg-light" id="adminProfileEmail" value="<%= @admin.email %>" readonly disabled>
-            <label for="adminProfileEmail">
-              <%= t("admin.profile.email_label") %>
-            </label>
+        <div class="card-footer bg-white p-3 border-top d-flex justify-content-end gap-3">
+          <%= link_to admin_dashboard_path, class: "btn btn-outline-secondary px-3 align-self-center d-flex align-items-center gap-1" do %>
+            <span class="material-symbols-outlined fs-5">close</span>
+            <span><%= t("cancel") %></span>
+          <% end %>
+
+          <%= f.button type: :submit,
+                       class: "custom-primary-btn py-2 px-4 d-flex align-items-center gap-2 shadow-sm",
+                       data: { loading_target: "button" } do %>
+            <span class="material-symbols-outlined fs-5">save</span>
+            <span data-loading-target="text"><%= t("admin.profile.update_info_btn") %></span>
+            <span class="material-symbols-outlined spin d-none" data-loading-target="spinner">progress_activity</span>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  <% else %>
+    <!-- Personal Info Card (Read-only for Support Staff) -->
+    <div class="card shadow-sm border-0 mb-4">
+      <div class="card-header bg-white py-3 border-bottom d-flex align-items-center gap-2">
+        <h2 class="mb-0 d-flex align-items-center gap-2">
+          <span class="icon material-symbols-filled fs-3">badge</span>
+          <%= t("admin.profile.account_info_title") %>
+        </h2>
+        <span class="ms-auto badge bg-info-subtle text-info-emphasis border border-info-subtle px-2 py-1 rounded-pill small">
+          <%= t("admin.admins.role_support") %>
+        </span>
+      </div>
+
+      <div class="card-body p-4">
+        <div class="alert alert-light border shadow-none d-flex align-items-start gap-2 mb-4 p-3 rounded">
+          <span class="material-symbols-outlined text-primary fs-5 mt-1">info</span>
+          <p class="small text-secondary mb-0">
+            <%= t("admin.profile.account_info_notice") %>
+          </p>
+        </div>
+
+        <div class="row g-3">
+          <!-- Fullname (Read-only) -->
+          <div class="col-12 col-md-6">
+            <div class="form-floating shadow-sm rounded">
+              <input type="text" class="form-control bg-light" id="adminProfileFullname" value="<%= @admin.fullname %>" readonly disabled>
+              <label for="adminProfileFullname">
+                <%= t("admin.profile.fullname_label") %>
+              </label>
+            </div>
+            <div class="form-text small text-secondary mt-1">
+              <span class="material-symbols-outlined fs-6 align-middle">lock</span>
+              <%= t("admin.profile.readonly_managed_by_admin") %>
+            </div>
           </div>
-          <div class="form-text small text-secondary mt-1">
-            <span class="material-symbols-outlined fs-6 align-middle">lock</span>
-            <%= t("admin.profile.email_immutable") %>
+
+          <!-- Email (Read-only) -->
+          <div class="col-12 col-md-6">
+            <div class="form-floating shadow-sm rounded">
+              <input type="email" class="form-control bg-light" id="adminProfileEmail" value="<%= @admin.email %>" readonly disabled>
+              <label for="adminProfileEmail">
+                <%= t("admin.profile.email_label") %>
+              </label>
+            </div>
+            <div class="form-text small text-secondary mt-1">
+              <span class="material-symbols-outlined fs-6 align-middle">lock</span>
+              <%= t("admin.profile.email_immutable") %>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  <% end %>
 
+  <!-- Form 2: Change Password Card -->
   <%= form_with model: @admin, url: admin_profile_path, method: :patch,
                 local: true,
                 class: "admin-form needs-validation",
@@ -70,8 +144,8 @@
                   loading_text_value: t("saving", default: "Đang lưu..."),
                   action: "submit->loading#submit"
                 } do |f| %>
+    <%= hidden_field_tag :form_type, "password" %>
 
-    <!-- Change Password Card -->
     <div class="card shadow-sm border-0 mb-4">
       <div class="card-header bg-white py-3 border-bottom d-flex align-items-center gap-2">
         <span class="icon material-symbols-filled fs-3">lock</span>
@@ -87,7 +161,7 @@
           <div class="col-12" data-controller="form">
             <div class="form-floating rounded position-relative">
               <%= f.password_field :current_password,
-                  class: "form-control shadow-sm pe-5 #{invalid_class(@admin, :current_password)}",
+                  class: "form-control shadow-sm pe-5 #{invalid_class(@admin, :current_password) if @form_type != 'account_info'}",
                   id: "adminCurrentPassword",
                   autocomplete: "current-password",
                   placeholder: "••••••••",
@@ -101,7 +175,7 @@
                     data-action="click->form#togglePasswordVisibility">
                 visibility
               </span>
-              <%= field_error(@admin, :current_password, classes: "mt-2") %>
+              <%= field_error(@admin, :current_password, classes: "mt-2") if @form_type != "account_info" %>
             </div>
           </div>
 
@@ -109,7 +183,7 @@
           <div class="col-12 col-md-6" data-controller="form">
             <div class="form-floating rounded position-relative">
               <%= f.password_field :password,
-                  class: "form-control shadow-sm pe-5 #{invalid_class(@admin, :password)}",
+                  class: "form-control shadow-sm pe-5 #{invalid_class(@admin, :password) if @form_type != 'account_info'}",
                   id: "adminNewPassword",
                   autocomplete: "new-password",
                   placeholder: "••••••••",
@@ -127,7 +201,7 @@
                 visibility
               </span>
 
-              <%= field_error(@admin, :password, classes: "mt-2") %>
+              <%= field_error(@admin, :password, classes: "mt-2") if @form_type != "account_info" %>
             </div>
           </div>
 
@@ -135,7 +209,7 @@
           <div class="col-12 col-md-6" data-controller="form">
             <div class="form-floating rounded position-relative">
               <%= f.password_field :password_confirmation,
-                  class: "form-control shadow-sm pe-5 #{invalid_class(@admin, :password_confirmation)}",
+                  class: "form-control shadow-sm pe-5 #{invalid_class(@admin, :password_confirmation) if @form_type != 'account_info'}",
                   id: "adminNewPasswordConfirmation",
                   autocomplete: "new-password",
                   placeholder: "••••••••",
@@ -149,7 +223,7 @@
                     data-action="click->form#togglePasswordVisibility">
                 visibility
               </span>
-              <%= field_error(@admin, :password_confirmation, classes: "mt-2") %>
+              <%= field_error(@admin, :password_confirmation, classes: "mt-2") if @form_type != "account_info" %>
             </div>
           </div>
 
@@ -184,22 +258,21 @@
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Form Actions -->
-    <div class="d-flex justify-content-end gap-3">
-      <%= link_to admin_dashboard_path, class: "btn btn-outline-secondary px-3 align-self-center d-flex align-items-center gap-1" do %>
-        <span class="material-symbols-outlined fs-5">close</span>
-        <span><%= t("cancel") %></span>
-      <% end %>
+      <div class="card-footer bg-white p-3 border-top d-flex justify-content-end gap-3">
+        <%= link_to admin_dashboard_path, class: "btn btn-outline-secondary px-3 align-self-center d-flex align-items-center gap-1" do %>
+          <span class="material-symbols-outlined fs-5">close</span>
+          <span><%= t("cancel") %></span>
+        <% end %>
 
-      <%= f.button type: :submit,
-                   class: "custom-primary-btn py-2 px-4 d-flex align-items-center gap-2 shadow-sm",
-                   data: { loading_target: "button" } do %>
-        <span class="material-symbols-outlined fs-5">lock_reset</span>
-        <span data-loading-target="text"><%= t("admin.profile.update_btn") %></span>
-        <span class="material-symbols-outlined spin d-none" data-loading-target="spinner">progress_activity</span>
-      <% end %>
+        <%= f.button type: :submit,
+                     class: "custom-primary-btn py-2 px-4 d-flex align-items-center gap-2 shadow-sm",
+                     data: { loading_target: "button" } do %>
+          <span class="material-symbols-outlined fs-5">lock_reset</span>
+          <span data-loading-target="text"><%= t("admin.profile.update_btn") %></span>
+          <span class="material-symbols-outlined spin d-none" data-loading-target="spinner">progress_activity</span>
+        <% end %>
+      </div>
     </div>
   <% end %>
 </div>

@@ -83,4 +83,32 @@ class AdminTest < ActiveSupport::TestCase
     assert_not second_super.valid?
     assert_includes second_super.errors[:role], I18n.t("activerecord.errors.models.admin.attributes.role.single_super_admin")
   end
+
+  test "change_password context requires valid current_password and new password" do
+    admin = Admin.create!(
+      email: "support_cp@leanhouse.vn",
+      fullname: "Support Staff User",
+      password: "Password123!",
+      password_confirmation: "Password123!",
+      role: "support",
+      is_active: true
+    )
+
+    admin.current_password = ""
+    admin.password = ""
+    assert_not admin.valid?(:change_password)
+    assert admin.errors[:current_password].any?
+    assert admin.errors[:password].any?
+
+    admin.current_password = "WrongPassword!"
+    admin.password = "NewSecret123"
+    admin.password_confirmation = "NewSecret123"
+    assert_not admin.valid?(:change_password)
+    assert_includes admin.errors[:current_password], "Mật khẩu hiện tại không hợp lệ!"
+
+    admin.current_password = "Password123!"
+    admin.password = "NewSecret123"
+    admin.password_confirmation = "NewSecret123"
+    assert admin.valid?(:change_password)
+  end
 end

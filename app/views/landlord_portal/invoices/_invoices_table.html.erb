@@ -5,10 +5,10 @@
     <span class="material-symbols-outlined invoice-empty-icon"><%= local_assigns[:current_tab] == "individual" ? "person_search" : "receipt" %></span>
     <% if local_assigns[:current_tab] == "individual" && params[:q].blank? && params[:status].blank? && params[:term_status].blank? && params[:payment_status].blank? %>
       <p class="fs-5 fw-bold mb-1"><%= t('invoice.no_custom_invoices', month: billing_month.strftime("%m/%Y")) %></p>
-      <p class="text-secondary small mb-0"><%= t('invoice.no_custom_invoices_hint') %></p>
+      <p class="text-secondary small"><%= t('invoice.no_custom_invoices_hint') %></p>
     <% else %>
       <p class="fs-5 fw-bold mb-1"><%= t('invoice.no_invoices', month: billing_month.strftime("%m/%Y")) %></p>
-      <p class="text-secondary small mb-0"><%= t('invoice.no_invoices_hint') %></p>
+      <p class="text-secondary small"><%= t('invoice.no_invoices_hint') %></p>
     <% end %>
   </div>
 <% else %>
