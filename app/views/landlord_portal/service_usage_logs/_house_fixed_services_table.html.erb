@@ -4,7 +4,7 @@
         controller: "pagination-sync",
         pagination_sync_canonical_url_value: (@selected_service ? landlord_house_service_service_usage_logs_path(house, @selected_service) : landlord_house_service_usage_logs_path(house)),
         pagination_sync_default_params_value: { tab: "fixed" }.to_json,
-        pagination_sync_query_params_value: ["tab", "month", "floor_id", "room_id", "service_id", "service_variant_id", "status"].to_json,
+        pagination_sync_query_params_value: ["tab", "month", "occupancy", "floor_id", "room_id", "service_id", "service_variant_id", "status"].to_json,
         pagination_sync_total_pages_selector_value: "[data-pagination-total-pages]",
         action: "turbo:frame-load->pagination-sync#updateUrl"
       } do %>
@@ -72,7 +72,9 @@
   <% if summary.items.empty? %>
     <div class="empty card bg-light text-center py-5 rounded-4 mx-auto">
       <span class="material-symbols-outlined text-secondary fs-1 mb-2">fact_check</span>
-      <p class="fs-5 fw-bold mb-1"><%= t("service_usage_logs.no_fixed_services_house") %></p>
+      <p class="fs-5 fw-bold mb-1">
+        <%= summary.empty_filter? ? t("service_usage_logs.no_empty_rooms_with_fixed_services") : t("service_usage_logs.no_fixed_services_house") %>
+      </p>
       <p class="text-secondary small"><%= t("service_usage_logs.no_fixed_services_house_hint") %></p>
     </div>
 
@@ -151,19 +153,41 @@
 
                   <td class="text-center pe-3 py-3">
                     <% if item.billed? %>
-                      <div class="d-flex flex-column align-items-center gap-2">
-                        <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-1">
-                          <%= t("service_usage_logs.status_billed") %>
-                        </span>
-                        <% if item.invoice.present? %>
-                          <%= link_to landlord_house_invoice_path(house, item.invoice),
-                                      class: "small font-monospace fw-medium text-primary hover-underline",
-                                      title: t("invoice.view"),
-                                      data: { turbo_frame: "_top" } do %>
-                            <%= item.invoice.code %>
+                      <% if item.multiple_invoices? %>
+                        <div class="d-flex flex-column align-items-center gap-1">
+                          <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-1">
+                            <%= t("service_usage_logs.status_billed") %> (<%= t("service_usage_logs.multiple_invoices_badge", count: item.invoices.size) %>)
+                          </span>
+                          <div class="d-flex flex-column gap-1 mt-1 text-start">
+                            <% item.invoice_details.each do |detail| %>
+                              <div class="small d-flex align-items-center gap-1">
+                                <%= link_to landlord_house_invoice_path(house, detail.invoice),
+                                            class: "font-monospace fw-medium text-primary hover-underline",
+                                            title: [detail.title.presence, detail.note.presence].compact.join(" - ").presence || detail.invoice.code,
+                                            data: { turbo_frame: "_top" } do %>
+                                  <%= detail.invoice.code %>
+                                <% end %>
+                                <span class="text-secondary small">(SL: <%= detail.quantity_formatted %>)</span>
+                              </div>
+                            <% end %>
+                          </div>
+                        </div>
+
+                      <% else %>
+                        <div class="d-flex flex-column align-items-center gap-2">
+                          <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-1">
+                            <%= t("service_usage_logs.status_billed") %>
+                          </span>
+                          <% if item.invoice.present? %>
+                            <%= link_to landlord_house_invoice_path(house, item.invoice),
+                                        class: "small font-monospace fw-medium text-primary hover-underline",
+                                        title: [item.invoice.title.presence, item.invoice.note.presence].compact.join(" - ").presence || item.invoice.code,
+                                        data: { turbo_frame: "_top" } do %>
+                              <%= item.invoice.code %>
+                            <% end %>
                           <% end %>
-                        <% end %>
-                      </div>
+                        </div>
+                      <% end %>
 
                     <% elsif item.waived? %>
                       <span class="badge bg-light text-secondary border rounded-pill px-2 py-1">

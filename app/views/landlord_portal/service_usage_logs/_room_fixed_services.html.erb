@@ -30,11 +30,20 @@
 
   <div class="d-flex align-items-center gap-2 ms-auto">
     <% if summary.has_active_invoice? %>
-      <%= link_to landlord_house_invoice_path(house, summary.active_invoice),
-                  class: "btn btn-outline-primary d-flex align-items-center gap-1 shadow-sm",
-                  data: { turbo_frame: "_top" } do %>
-        <span class="material-symbols-outlined fs-6">receipt_long</span>
-        <span><%= t("service_usage_logs.view_invoice") %></span>
+      <% if summary.active_invoices.size > 1 %>
+        <%= link_to landlord_house_invoices_path(house, room_id: room.id, month: summary.billing_month_str),
+                    class: "btn btn-outline-primary d-flex align-items-center gap-1 shadow-sm",
+                    data: { turbo_frame: "_top" } do %>
+          <span class="material-symbols-outlined fs-6">receipt_long</span>
+          <span><%= t("service_usage_logs.view_invoices_count", count: summary.active_invoices.size) %></span>
+        <% end %>
+      <% else %>
+        <%= link_to landlord_house_invoice_path(house, summary.active_invoice),
+                    class: "btn btn-outline-primary d-flex align-items-center gap-1 shadow-sm",
+                    data: { turbo_frame: "_top" } do %>
+          <span class="material-symbols-outlined fs-6">receipt_long</span>
+          <span><%= t("service_usage_logs.view_invoice") %></span>
+        <% end %>
       <% end %>
     <% else %>
       <%= link_to new_landlord_house_invoice_path(house, room_id: room.id, billing_month: summary.billing_month_str),
@@ -205,9 +214,42 @@
 
             <td class="text-center py-3">
               <% if item.billed? %>
-                <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-1">
-                  <%= t("service_usage_logs.billed_in_invoice_badge") %>
-                </span>
+                <% if item.multiple_invoices? %>
+                  <div class="d-flex flex-column align-items-center gap-1">
+                    <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-1">
+                      <%= t("service_usage_logs.billed_in_invoice_badge") %> (<%= t("service_usage_logs.multiple_invoices_badge", count: item.invoices.size) %>)
+                    </span>
+                    <div class="d-flex flex-column gap-1 mt-1 text-start">
+                      <% item.invoice_details.each do |detail| %>
+                        <div class="small d-flex align-items-center gap-1">
+                          <%= link_to landlord_house_invoice_path(house, detail.invoice),
+                                      class: "font-monospace fw-medium text-primary hover-underline",
+                                      title: [detail.title.presence, detail.note.presence].compact.join(" - ").presence || detail.invoice.code,
+                                      data: { turbo_frame: "_top" } do %>
+                            <%= detail.invoice.code %>
+                          <% end %>
+                          <span class="text-secondary small">(SL: <%= detail.quantity_formatted %>)</span>
+                        </div>
+                      <% end %>
+                    </div>
+                  </div>
+                <% elsif item.invoice.present? %>
+                  <div class="d-flex flex-column align-items-center gap-1">
+                    <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-1">
+                      <%= t("service_usage_logs.billed_in_invoice_badge") %>
+                    </span>
+                    <%= link_to landlord_house_invoice_path(house, item.invoice),
+                                class: "small font-monospace fw-medium text-primary hover-underline",
+                                title: [item.invoice.title.presence, item.invoice.note.presence].compact.join(" - ").presence || item.invoice.code,
+                                data: { turbo_frame: "_top" } do %>
+                      <%= item.invoice.code %>
+                    <% end %>
+                  </div>
+                <% else %>
+                  <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-1">
+                    <%= t("service_usage_logs.billed_in_invoice_badge") %>
+                  </span>
+                <% end %>
               <% elsif item.waived? %>
                 <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle rounded-pill px-2 py-1">
                   <%= t("service_usage_logs.not_billed_in_invoice_badge") %>

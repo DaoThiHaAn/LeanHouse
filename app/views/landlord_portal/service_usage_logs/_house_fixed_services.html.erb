@@ -24,6 +24,18 @@
                         onchange: "this.form.requestSubmit()" %>
     </div>
 
+    <!-- Hiện trạng phòng -->
+    <div class="d-flex align-items-center gap-2">
+      <%= f.label :occupancy, "#{t('service_usage_logs.room_occupancy')}:", class: "fw-bold text-nowrap" %>
+      <%= f.select :occupancy, [
+            [t("service_usage_logs.occupancy_occupied"), "occupied"],
+            [t("service_usage_logs.occupancy_empty"), "empty"]
+          ],
+          { selected: summary.occupancy },
+          class: "form-select shadow-sm w-auto",
+          onchange: "this.form.requestSubmit()" %>
+    </div>
+
     <!-- Chọn tầng & phòng -->
     <%= render "floor_room_selects", f: f, house: house %>
 

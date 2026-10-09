@@ -92,7 +92,7 @@ class RoomFixedServicesSummaryTest < ActiveSupport::TestCase
     assert_equal 290_000, summary.total_amount
   end
 
-  test "uses actual billed quantities and flags waived services when active invoice exists" do
+  test "uses actual billed quantities and keeps unbilled as draft in current month" do
     svc_wifi = @house.services.create!(name: "Wifi")
     v_wifi = svc_wifi.service_variants.create!(unit: "per_room", fee: 100_000, is_real_time: false)
     RoomService.create!(room: @room, service_variant: v_wifi, service: svc_wifi)
@@ -115,7 +115,7 @@ class RoomFixedServicesSummaryTest < ActiveSupport::TestCase
       total_amount: 100_000,
       status: :pending
     )
-    # Only Wifi is billed, Trash is waived (not present in invoice)
+    # Only Wifi is billed
     invoice.invoice_items.create!(
       service_variant: v_wifi,
       item_type: "fixed_service",
@@ -137,11 +137,55 @@ class RoomFixedServicesSummaryTest < ActiveSupport::TestCase
     assert_equal "1", item_wifi.quantity
     assert_equal 100_000, item_wifi.amount
 
+    # In current month, Trash stays draft for future invoicing
+    item_trash = summary.items.find { |i| i.variant.id == v_trash.id }
+    assert item_trash.draft?
+    assert_equal "1", item_trash.quantity
+    assert_equal 30_000, item_trash.amount
+
+    assert_equal 130_000, summary.total_amount
+  end
+
+  test "waives unbilled services when active invoice exists in past month" do
+    svc_wifi = @house.services.create!(name: "Wifi")
+    v_wifi = svc_wifi.service_variants.create!(unit: "per_room", fee: 100_000, is_real_time: false)
+    RoomService.create!(room: @room, service_variant: v_wifi, service: svc_wifi)
+
+    svc_trash = @house.services.create!(name: "Rác")
+    v_trash = svc_trash.service_variants.create!(unit: "per_room", fee: 30_000, is_real_time: false)
+    RoomService.create!(room: @room, service_variant: v_trash, service: svc_trash)
+    @room.room_services.update_all(created_at: 2.months.ago)
+
+    past_month = 1.month.ago.beginning_of_month
+    invoice = Invoice.create!(
+      code: "INV-PAST-01",
+      title: "Hóa đơn tháng trước",
+      house: @house,
+      room: @room,
+      created_by: @landlord_user,
+      invoice_type: "room",
+      billing_month: past_month,
+      due_date: past_month + 10.days,
+      subtotal: 100_000,
+      total_amount: 100_000,
+      status: :pending
+    )
+    invoice.invoice_items.create!(
+      service_variant: v_wifi,
+      item_type: "fixed_service",
+      name: "Wifi",
+      unit: "phòng",
+      unit_price: 100_000,
+      quantity: 1.0,
+      amount: 100_000
+    )
+
+    summary = RoomFixedServicesSummary.call(room: @room, billing_month: past_month)
+
     item_trash = summary.items.find { |i| i.variant.id == v_trash.id }
     assert item_trash.waived?
     assert_equal "0", item_trash.quantity
     assert_equal 0, item_trash.amount
-
     assert_equal 100_000, summary.total_amount
   end
 
@@ -262,5 +306,68 @@ class RoomFixedServicesSummaryTest < ActiveSupport::TestCase
     assert_nil summary_t2.active_invoice
     assert_equal false, summary_t2.has_active_invoice?
     assert summary_t2.items.first.draft?
+  end
+
+  test "consolidates multiple billed items of the same service variant in room summary" do
+    svc_wifi = @house.services.create!(name: "Wifi Cố Định")
+    v_wifi = svc_wifi.service_variants.create!(unit: "per_room", fee: 80_000, is_real_time: false)
+    RoomService.create!(room: @room, service_variant: v_wifi, service: svc_wifi)
+
+    billing_month = Date.current.beginning_of_month
+    inv1 = @room.invoices.create!(
+      house: @house,
+      billing_month: billing_month,
+      status: :pending,
+      invoice_type: "room",
+      code: "HD-ROOM-MULTI-01",
+      created_by: @landlord_user,
+      title: "HĐ tháng",
+      subtotal: 80_000,
+      total_amount: 80_000,
+      due_date: Date.current + 5.days
+    )
+    inv1.invoice_items.create!(
+      service_variant: v_wifi,
+      name: "Wifi Cố Định",
+      unit: "phòng",
+      unit_price: 80_000,
+      quantity: 1,
+      amount: 80_000,
+      item_type: :fixed_service
+    )
+
+    inv2 = @room.invoices.create!(
+      house: @house,
+      billing_month: billing_month,
+      status: :paid,
+      invoice_type: "room",
+      code: "HD-ROOM-MULTI-02",
+      created_by: @landlord_user,
+      title: "HĐ thu trước",
+      note: "thu trước 2 tháng",
+      subtotal: 160_000,
+      total_amount: 160_000,
+      due_date: Date.current + 5.days
+    )
+    inv2.invoice_items.create!(
+      service_variant: v_wifi,
+      name: "Wifi Cố Định",
+      unit: "phòng",
+      unit_price: 80_000,
+      quantity: 2,
+      amount: 160_000,
+      item_type: :fixed_service
+    )
+
+    summary = RoomFixedServicesSummary.call(room: @room, billing_month: billing_month)
+
+    wifi_item = summary.items.find { |i| i.variant == v_wifi }
+    assert_not_nil wifi_item
+    assert_equal "3", wifi_item.quantity
+    assert_equal 240_000, wifi_item.amount
+    assert wifi_item.billed?
+    assert wifi_item.multiple_invoices?
+    assert_equal 2, wifi_item.invoices.size
+    assert_equal 2, wifi_item.invoice_details.size
   end
 end

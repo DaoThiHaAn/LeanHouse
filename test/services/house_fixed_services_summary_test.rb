@@ -121,7 +121,7 @@ class HouseFixedServicesSummaryTest < ActiveSupport::TestCase
     assert_equal 0, summary_billed.items.size
   end
 
-  test "handles billed and waived items when invoice exists" do
+  test "handles billed and unbilled items when invoice exists in current month (unbilled stays draft)" do
     invoice = @room1.invoices.create!(
       house: @house,
       billing_month: @billing_month,
@@ -134,7 +134,7 @@ class HouseFixedServicesSummaryTest < ActiveSupport::TestCase
       total_amount: 50_000,
       due_date: Date.current + 5.days
     )
-    # Only billed Wifi in invoice, waived Cleaning
+    # Only billed Wifi in invoice
     invoice.invoice_items.create!(
       service_variant: @var_wifi,
       name: "Wifi",
@@ -152,16 +152,51 @@ class HouseFixedServicesSummaryTest < ActiveSupport::TestCase
     assert_equal invoice, r1_wifi.invoice
 
     r1_cleaning = summary.items.find { |it| it.room == @room1 && it.variant == @var_cleaning }
-    assert r1_cleaning.waived?
-    assert_equal 0, r1_cleaning.amount
+    # In current month, unbilled service remains draft for future invoicing
+    assert r1_cleaning.draft?
+    assert_equal "2", r1_cleaning.quantity
+    assert_equal 60_000, r1_cleaning.amount
 
     # Room 201 still has no invoice, so draft
     r2_wifi = summary.items.find { |it| it.room == @room2 && it.variant == @var_wifi }
     assert r2_wifi.draft?
 
     assert_equal 1, summary.billed_count
-    assert_equal 1, summary.waived_count
-    assert_equal 1, summary.draft_count
+    assert_equal 0, summary.waived_count
+    assert_equal 2, summary.draft_count
+  end
+
+  test "waives unbilled items when invoice exists in past month" do
+    past_month = 1.month.ago.beginning_of_month
+    @room1.room_services.update_all(created_at: 2.months.ago)
+    invoice = @room1.invoices.create!(
+      house: @house,
+      billing_month: past_month,
+      status: :pending,
+      invoice_type: "room",
+      code: "HD-PAST-101",
+      created_by: @landlord_user,
+      title: "Hóa đơn phòng 101 tháng trước",
+      subtotal: 50_000,
+      total_amount: 50_000,
+      due_date: past_month + 5.days
+    )
+    invoice.invoice_items.create!(
+      service_variant: @var_wifi,
+      name: "Wifi",
+      unit: "per_room",
+      unit_price: 50_000,
+      quantity: 1,
+      amount: 50_000,
+      item_type: :fixed_service
+    )
+
+    summary = HouseFixedServicesSummary.call(house: @house, billing_month: past_month)
+
+    r1_cleaning = summary.items.find { |it| it.room == @room1 && it.variant == @var_cleaning }
+    assert r1_cleaning.waived?
+    assert_equal 0, r1_cleaning.amount
+    assert_equal "0", r1_cleaning.quantity
   end
 
   test "handles extra billed fixed service items and ignores nullified service_variant items" do
@@ -211,5 +246,102 @@ class HouseFixedServicesSummaryTest < ActiveSupport::TestCase
     assert_equal svc_parking, summary.items.first.service
     assert_equal var_parking, summary.items.first.variant
     assert summary.items.first.billed?
+  end
+
+  test "consolidates multiple billed items of the same service variant in the same room" do
+    inv1 = @room1.invoices.create!(
+      house: @house,
+      billing_month: @billing_month,
+      status: :pending,
+      invoice_type: "room",
+      code: "HD-CONSOLIDATE-01",
+      created_by: @landlord_user,
+      title: "Hóa đơn 1",
+      subtotal: 50_000,
+      total_amount: 50_000,
+      due_date: Date.current + 5.days
+    )
+    inv1.invoice_items.create!(
+      service_variant: @var_wifi,
+      name: "Wifi",
+      unit: "per_room",
+      unit_price: 50_000,
+      quantity: 1,
+      amount: 50_000,
+      item_type: :fixed_service
+    )
+
+    inv2 = @room1.invoices.create!(
+      house: @house,
+      billing_month: @billing_month,
+      status: :paid,
+      invoice_type: "room",
+      code: "HD-CONSOLIDATE-02",
+      created_by: @landlord_user,
+      title: "Hóa đơn 2",
+      note: "đóng trước 2 tháng",
+      subtotal: 100_000,
+      total_amount: 100_000,
+      due_date: Date.current + 5.days
+    )
+    inv2.invoice_items.create!(
+      service_variant: @var_wifi,
+      name: "Wifi",
+      unit: "per_room",
+      unit_price: 50_000,
+      quantity: 2,
+      amount: 100_000,
+      item_type: :fixed_service
+    )
+
+    summary = HouseFixedServicesSummary.call(
+      house: @house,
+      billing_month: @billing_month,
+      params: { room_id: @room1.id, service_variant_id: @var_wifi.id }
+    )
+
+    # Exactly 1 consolidated item for Wifi in Room 101 instead of 2 duplicated rows
+    assert_equal 1, summary.items.size
+    wifi_item = summary.items.first
+
+    assert_equal "3", wifi_item.quantity
+    assert_equal 150_000, wifi_item.amount
+    assert wifi_item.billed?
+    assert wifi_item.multiple_invoices?
+    assert_equal 2, wifi_item.invoices.size
+    assert_equal 2, wifi_item.invoice_details.size
+
+    detail_inv2 = wifi_item.invoice_details.find { |d| d.invoice == inv2 }
+    assert_not_nil detail_inv2
+    assert_equal "2", detail_inv2.quantity_formatted
+    assert_equal 100_000, detail_inv2.amount
+    assert_equal "đóng trước 2 tháng", detail_inv2.note
+  end
+
+  test "filters occupied rooms by default and separates empty rooms" do
+    # Create an empty room with Wifi assigned
+    room_empty = @floor2.rooms.create!(name: "202", max_slots: 5, tenants_count: 0, area: 20)
+    RoomService.create!(room: room_empty, service_variant: @var_wifi, service: @svc_wifi)
+
+    # By default (occupancy: occupied), empty room is excluded from summary and financial card
+    summary_default = HouseFixedServicesSummary.call(house: @house, billing_month: @billing_month)
+    assert_equal "occupied", summary_default.occupancy
+    assert_equal 2, summary_default.total_rooms_count
+    assert_not_includes summary_default.items.map(&:room), room_empty
+    # Total amount only sums room1 (110k) and room2 (50k) = 160k, excluding room_empty (50k)
+    assert_equal 160_000, summary_default.total_amount
+
+    # When filtering by empty rooms, only room_empty is included
+    summary_empty = HouseFixedServicesSummary.call(
+      house: @house,
+      billing_month: @billing_month,
+      params: { occupancy: "empty" }
+    )
+    assert_equal "empty", summary_empty.occupancy
+    assert summary_empty.empty_filter?
+    assert_equal 1, summary_empty.total_rooms_count
+    assert_equal 1, summary_empty.items.size
+    assert_equal room_empty, summary_empty.items.first.room
+    assert_equal 50_000, summary_empty.total_amount
   end
 end

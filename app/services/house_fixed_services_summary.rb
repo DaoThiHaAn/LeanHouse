@@ -3,8 +3,26 @@
 class HouseFixedServicesSummary
   DEFAULT_PER_PAGE = 10
 
-  Item = Data.define(:room, :service, :variant, :name, :unit, :unit_price, :quantity, :amount, :status, :invoice) do
-    def initialize(room:, service:, variant:, name:, unit:, unit_price:, quantity:, amount:, status:, invoice: nil)
+  InvoiceDetail = Data.define(:invoice, :quantity, :unit_price, :amount, :name, :note, :title) do
+    def quantity_formatted
+      quantity.to_s.sub(/\.0$/, "")
+    end
+
+    def code
+      invoice&.code
+    end
+  end
+
+  Item = Data.define(
+    :room, :service, :variant, :name, :unit, :unit_price,
+    :quantity, :amount, :status, :invoice, :invoices, :invoice_details
+  ) do
+    def initialize(
+      room:, service:, variant:, name:, unit:, unit_price:,
+      quantity:, amount:, status:, invoice: nil, invoices: nil, invoice_details: nil
+    )
+      resolved_invoices = invoices || (invoice ? [ invoice ] : [])
+      resolved_details = invoice_details || []
       super(
         room: room,
         service: service,
@@ -15,7 +33,9 @@ class HouseFixedServicesSummary
         quantity: quantity,
         amount: amount,
         status: status,
-        invoice: invoice
+        invoice: invoice || resolved_invoices.first,
+        invoices: resolved_invoices,
+        invoice_details: resolved_details
       )
     end
 
@@ -29,6 +49,10 @@ class HouseFixedServicesSummary
 
     def draft?
       status == :draft
+    end
+
+    def multiple_invoices?
+      invoices.size > 1
     end
 
     def quantity_formatted
@@ -90,6 +114,18 @@ class HouseFixedServicesSummary
     billing_month.strftime("%Y-%m")
   end
 
+  def occupancy
+    params[:occupancy].presence || "occupied"
+  end
+
+  def occupied_filter?
+    occupancy == "occupied"
+  end
+
+  def empty_filter?
+    occupancy == "empty"
+  end
+
   private
 
   def load_rooms
@@ -97,8 +133,17 @@ class HouseFixedServicesSummary
 
     if params[:room_id].present?
       scope = scope.where(id: params[:room_id])
-    elsif params[:floor_id].present?
-      scope = scope.where(floor_id: params[:floor_id])
+    else
+      case occupancy
+      when "empty"
+        scope = scope.empty
+      when "occupied"
+        scope = scope.occupied
+      end
+
+      if params[:floor_id].present?
+        scope = scope.where(floor_id: params[:floor_id])
+      end
     end
 
     @rooms = scope.to_a
@@ -154,20 +199,52 @@ class HouseFixedServicesSummary
       matching_pairs = all_invoice_fixed_items.select { |(it, _inv)| it.service_variant_id == variant.id }
 
       if matching_pairs.any?
-        matching_pairs.each do |it, inv|
-          @items << Item.new(
-            room: room,
-            service: variant.service,
-            variant: variant,
-            name: it.name,
-            unit: it.unit,
-            unit_price: it.unit_price,
+        total_qty = matching_pairs.sum { |(it, _)| it.quantity.to_f }
+        total_amount = matching_pairs.sum { |(it, _)| it.amount.to_i }
+        all_invs = matching_pairs.map { |(_, inv)| inv }.uniq
+        first_it, first_inv = matching_pairs.first
+
+        details = matching_pairs.map do |it, inv|
+          InvoiceDetail.new(
+            invoice: inv,
             quantity: it.quantity.to_s.sub(/\.0$/, ""),
+            unit_price: it.unit_price,
             amount: it.amount,
-            status: :billed,
-            invoice: inv
+            name: it.name,
+            note: inv.note,
+            title: inv.title
           )
         end
+
+        @items << Item.new(
+          room: room,
+          service: variant.service,
+          variant: variant,
+          name: first_it.name.presence || variant.service.name,
+          unit: first_it.unit.presence || variant.human_unit,
+          unit_price: first_it.unit_price || variant.fee,
+          quantity: total_qty.to_s.sub(/\.0$/, ""),
+          amount: total_amount,
+          status: :billed,
+          invoice: first_inv,
+          invoices: all_invs,
+          invoice_details: details
+        )
+      elsif current_or_future_month?
+        qty = calculate_draft_quantity(room, variant)
+        amount = (qty * variant.fee).round
+        @items << Item.new(
+          room: room,
+          service: variant.service,
+          variant: variant,
+          name: variant.service.name,
+          unit: variant.human_unit,
+          unit_price: variant.fee,
+          quantity: qty.to_s.sub(/\.0$/, ""),
+          amount: amount,
+          status: :draft,
+          invoice: nil
+        )
       else
         @items << Item.new(
           room: room,
@@ -188,18 +265,37 @@ class HouseFixedServicesSummary
       fixed_room_services.any? { |rs| rs.service_variant_id == it.service_variant_id }
     end
 
-    extra_pairs.each do |it, inv|
+    extra_pairs.group_by { |(it, _inv)| it.service_variant_id }.each do |_variant_id, pairs|
+      total_qty = pairs.sum { |(it, _)| it.quantity.to_f }
+      total_amount = pairs.sum { |(it, _)| it.amount.to_i }
+      all_invs = pairs.map { |(_, inv)| inv }.uniq
+      first_it, first_inv = pairs.first
+
+      details = pairs.map do |it, inv|
+        InvoiceDetail.new(
+          invoice: inv,
+          quantity: it.quantity.to_s.sub(/\.0$/, ""),
+          unit_price: it.unit_price,
+          amount: it.amount,
+          name: it.name,
+          note: inv.note,
+          title: inv.title
+        )
+      end
+
       @items << Item.new(
         room: room,
-        service: it.service_variant.service,
-        variant: it.service_variant,
-        name: it.name,
-        unit: it.unit,
-        unit_price: it.unit_price,
-        quantity: it.quantity.to_s.sub(/\.0$/, ""),
-        amount: it.amount,
+        service: first_it.service_variant.service,
+        variant: first_it.service_variant,
+        name: first_it.name,
+        unit: first_it.unit,
+        unit_price: first_it.unit_price,
+        quantity: total_qty.to_s.sub(/\.0$/, ""),
+        amount: total_amount,
         status: :billed,
-        invoice: inv
+        invoice: first_inv,
+        invoices: all_invs,
+        invoice_details: details
       )
     end
   end
@@ -258,5 +354,9 @@ class HouseFixedServicesSummary
 
   def paginate_items
     @paginated_items = Kaminari.paginate_array(items).page(page).per(per_page)
+  end
+
+  def current_or_future_month?
+    billing_month >= Date.current.beginning_of_month
   end
 end
