@@ -47,9 +47,15 @@
       <%= link_to landlord_house_service_usage_log_path(house, log), class: "d-inline-block position-relative text-decoration-none", data: { turbo_frame: "usage_log_detail_modal" }, title: t("service_usage_logs.view_detail") do %>
         <%= image_tag log.reading_photo.variant(resize_to_limit: [50, 50]), class: "rounded border shadow-sm", alt: t("invoice.meter_photo") %>
       <% end %>
-      <p class="text-secondary small mt-1" title="<%= t('service_usage_logs.photo_uploaded_at') %>">
-        <%= log.reading_photo.blob.created_at.strftime("%d/%m/%Y %H:%M") %>
-      </p>
+      <% if log.photo_captured_at.present? %>
+        <p class="text-dark fw-medium small mt-1" title="<%= t('service_usage_logs.photo_captured_at', default: 'Thời gian chụp thực tế') %>">
+          <%= log.photo_captured_at.strftime("%d/%m/%Y %H:%M") %>
+        </p>
+      <% else %>
+        <p class="text-secondary small mt-1" title="<%= t('service_usage_logs.photo_uploaded_at') %>">
+          <%= log.reading_photo.blob.created_at.strftime("%d/%m/%Y %H:%M") %>
+        </p>
+      <% end %>
     <% else %>
       <span class="text-secondary small fst-italic"><%= t("invoice.no_photo") %></span>
     <% end %>

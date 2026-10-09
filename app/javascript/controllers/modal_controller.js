@@ -64,8 +64,9 @@ export default class extends Controller {
   connect() {
     patchBootstrapModal()
 
-    if (typeof bootstrap !== "undefined" && bootstrap.Modal) {
-      this.modal = bootstrap.Modal.getOrCreateInstance(this.element)
+    const bootstrapModal = window.bootstrap?.Modal || (typeof bootstrap !== "undefined" ? bootstrap.Modal : null)
+    if (bootstrapModal) {
+      this.modal = bootstrapModal.getOrCreateInstance(this.element)
       if (this.autoOpenValue) {
         this.modal.show()
       }
@@ -78,12 +79,15 @@ export default class extends Controller {
   disconnect() {
     window.removeEventListener("close-modal", this.closeHandler)
 
-    if (this.modal) {
+    const bootstrapModal = window.bootstrap?.Modal || (typeof bootstrap !== "undefined" ? bootstrap.Modal : null)
+    const instance = this.modal || (bootstrapModal ? bootstrapModal.getInstance(this.element) : null)
+
+    if (instance) {
       try {
-        this.modal.hide()
+        instance.hide()
       } catch (_) {}
       try {
-        this.modal.dispose()
+        instance.dispose()
       } catch (_) {}
       this.modal = null
     }
@@ -99,9 +103,11 @@ export default class extends Controller {
   }
 
   close() {
-    if (this.modal) {
+    const bootstrapModal = window.bootstrap?.Modal || (typeof bootstrap !== "undefined" ? bootstrap.Modal : null)
+    const instance = this.modal || (bootstrapModal ? bootstrapModal.getInstance(this.element) : null)
+    if (instance) {
       try {
-        this.modal.hide()
+        instance.hide()
       } catch (_) {}
     }
   }

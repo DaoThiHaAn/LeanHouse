@@ -1,8 +1,8 @@
 <%# locals: (attachment:) %>
-<div class="modal fade" id="deleteFileModal-<%= attachment.id %>" tabindex="-1" aria-labelledby="deleteFileModalLabel-<%= attachment.id %>" aria-hidden="true">
+<div class="modal fade" id="deleteFileModal-<%= attachment.id %>" tabindex="-1" aria-labelledby="deleteFileModalLabel-<%= attachment.id %>" aria-hidden="true" data-controller="modal">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content border-0 shadow">
-      <%= form_with url: admin_uploaded_file_path(attachment), method: :delete do |f| %>
+      <%= form_with url: admin_uploaded_file_path(attachment), method: :delete, data: { action: "turbo:submit-start->modal#close" } do |f| %>
         <div class="modal-header bg-danger text-white">
           <h2 class="text-white d-flex align-items-center gap-2 mb-0" id="deleteFileModalLabel-<%= attachment.id %>">
             <span class="material-symbols-outlined fs-4">warning</span>
@@ -155,7 +155,7 @@
             <%= t("cancel") %>
           </button>
 
-          <button type="submit" class="btn btn-danger btn-sm d-inline-flex align-items-center gap-1">
+          <button type="submit" class="btn btn-danger btn-sm d-inline-flex align-items-center gap-1" data-bs-dismiss="modal">
             <span class="material-symbols-outlined fs-6">delete</span>
             <span><%= t("admin.uploaded_files.confirm_delete_btn") %></span>
           </button>

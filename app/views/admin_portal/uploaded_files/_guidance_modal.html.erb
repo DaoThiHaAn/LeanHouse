@@ -1,5 +1,5 @@
 <!-- Modal Hướng Dẫn & Quy Định Kiểm Duyệt Tệp Tin Hệ Thống -->
-<div class="modal fade" id="uploadedFilesGuidanceModal" tabindex="-1" aria-labelledby="uploadedFilesGuidanceModalLabel" aria-hidden="true">
+<div class="modal fade" id="uploadedFilesGuidanceModal" tabindex="-1" aria-labelledby="uploadedFilesGuidanceModalLabel" aria-hidden="true" data-controller="modal">
   <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
     <div class="modal-content border-0 shadow">
       <!-- Modal Header -->
@@ -7,7 +7,7 @@
         <div class="d-flex align-items-center gap-2">
           <span class="material-symbols-outlined fs-3 text-warning">shield</span>
           <div>
-            <h2 class="h5 modal-title mb-0 text-white" id="uploadedFilesGuidanceModalLabel">
+            <h2 class="modal-title mb-0 text-white" id="uploadedFilesGuidanceModalLabel">
               <%= t("admin.uploaded_files.guidance.title") %>
             </h2>
             <small class="text-white-50"><%= t("admin.uploaded_files.guidance.subtitle") %></small>

@@ -216,5 +216,15 @@ module AdminPortal
         []
       end
     end
+
+    def blob_captured_at(blob)
+      return nil unless blob&.image?
+
+      unless blob.respond_to?(:captured_at)
+        ActiveStorage::Blob.include(ActiveStorageBlobExif) unless ActiveStorage::Blob.include?(ActiveStorageBlobExif)
+      end
+
+      blob.respond_to?(:captured_at) ? blob.captured_at : nil
+    end
   end
 end

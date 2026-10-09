@@ -5,12 +5,13 @@
   <span hidden data-pagination-total-pages="<%= requests.total_pages %>"></span>
 
   <% if requests.empty? %>
-    <div class="text-center py-5">
+    <div class="empty card text-center py-5">
       <p class="fs-5 fw-medium text-secondary mb-2">
         <%= (params[:house_id].present? || params[:month].present? || params[:year].present? || params[:status].present? || params[:request_type].present?) ? t("request.unfound") : t("request.none") %>
       </p>
       <%= image_tag 'request.png', alt: "Request icon", width: "160px", class: "d-block mx-auto mt-3 opacity-75" %>
     </div>
+
   <% else %>
     <div class="table-responsive border rounded-3 bg-white mt-3">
       <table class="table table-hover align-middle mb-0">

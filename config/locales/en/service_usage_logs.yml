@@ -58,6 +58,7 @@ en:
     delete_success: "Meter log deleted successfully!"
     detail_title: "Service Usage Log Details: %{service}"
     photo_uploaded_at: "Photo Uploaded At"
+    photo_captured_at: "Photo Captured At (Real Time)"
     file_size: "File Size"
     meter_details: "Meter Readings"
     audit_info: "Audit Trail & Confirmation"

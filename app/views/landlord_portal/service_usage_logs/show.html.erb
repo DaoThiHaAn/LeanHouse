@@ -42,11 +42,28 @@
                                 class: "img-fluid rounded border mx-auto shadow-sm w-100 usage-log-modal-photo",
                                 alt: t("invoice.meter_photo") %>
 
-                  <div class="d-flex justify-content-between align-items-center my-4 pb-2 border-bottom">
-                    <span class="text-secondary small"><%= t("service_usage_logs.photo_uploaded_at") %>:</span>
-                    <span class="fw-bold text-dark small">
-                      <%= l(@log.reading_photo.blob.created_at, format: :long) %>
-                    </span>
+                  <div class="d-flex flex-column gap-2 my-4 pb-2 border-bottom">
+                    <% if @log.photo_captured_at.present? %>
+                      <div class="d-flex justify-content-between align-items-center">
+                        <span class="text-secondary small d-flex align-items-center gap-1">
+                          <span class="material-symbols-outlined fs-6 text-primary">schedule</span>
+                          <span><%= t("service_usage_logs.photo_captured_at", default: "Thời gian chụp thực tế") %>:</span>
+                        </span>
+                        <span class="fw-bold text-dark small">
+                          <%= l(@log.photo_captured_at, format: :long) %>
+                        </span>
+                      </div>
+                    <% end %>
+
+                    <div class="d-flex justify-content-between align-items-center">
+                      <span class="text-secondary small d-flex align-items-center gap-1">
+                        <span class="material-symbols-outlined fs-6 text-secondary">cloud_upload</span>
+                        <span><%= t("service_usage_logs.photo_uploaded_at") %>:</span>
+                      </span>
+                      <span class="fw-semibold text-secondary small">
+                        <%= l(@log.reading_photo.blob.created_at, format: :long) %>
+                      </span>
+                    </div>
                   </div>
 
                   <div class="text-center mt-2">

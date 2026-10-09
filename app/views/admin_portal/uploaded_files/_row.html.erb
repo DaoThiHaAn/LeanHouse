@@ -79,6 +79,12 @@
     <small class="text-secondary">
       <%= attachment.created_at.strftime("%H:%M") %>
     </small>
+    <% if attachment.blob.image? && attachment.blob.metadata["captured_at"].present? %>
+      <div class="text-success admin-file-text-xs d-flex align-items-center gap-1 mt-1" title="<%= t('admin.uploaded_files.detail.captured_date_label', default: 'Thời gian chụp (EXIF):') %> <%= Time.zone.parse(attachment.blob.metadata['captured_at']).strftime('%d/%m/%Y %H:%M') %>">
+        <span class="material-symbols-outlined fs-6">photo_camera</span>
+        <span><%= Time.zone.parse(attachment.blob.metadata["captured_at"]).strftime("%d/%m %H:%M") %></span>
+      </div>
+    <% end %>
   </td>
 
   <!-- Actions -->

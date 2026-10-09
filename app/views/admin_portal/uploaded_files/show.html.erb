@@ -1,13 +1,13 @@
 <%= turbo_frame_tag "uploaded_file_detail_modal" do %>
-  <div class="modal fade show d-block admin-file-modal-backdrop" id="uploadedFileDetailModal" tabindex="-1" aria-modal="true" role="dialog">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+  <div class="modal fade" id="uploadedFileDetailModal" tabindex="-1" aria-hidden="true" data-controller="modal" data-modal-auto-open-value="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
       <div class="modal-content border-0 shadow">
         <div class="modal-header bg-dark text-white">
           <div class="d-flex align-items-center gap-2">
             <span class="material-symbols-filled fs-5">files</span>
             <h5 class="modal-title mb-0 text-truncate admin-file-modal-title"><%= @attachment.blob.filename %></h5>
           </div>
-          <%= link_to admin_uploaded_files_path, class: "btn-close btn-close-white", data: { turbo_frame: "uploaded_file_detail_modal" } do %><% end %>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
 
         <div class="modal-body p-4">
@@ -63,6 +63,22 @@
                   <span class="text-secondary small"><%= t("admin.uploaded_files.detail.size_label") %></span>
                   <span class="small text-dark"><%= number_to_human_size(@attachment.blob.byte_size) %></span>
                 </div>
+                <% if @attachment.blob.image? %>
+                  <div class="d-flex justify-content-between py-1 border-bottom border-light">
+                    <span class="text-secondary small"><%= t("admin.uploaded_files.detail.captured_date_label", default: "Thời gian chụp (EXIF):") %></span>
+                    <% captured_time = blob_captured_at(@attachment.blob) %>
+                    <% if captured_time.present? %>
+                      <span class="small fw-semibold text-success d-inline-flex align-items-center gap-1">
+                        <span class="material-symbols-outlined fs-6">schedule</span>
+                        <%= captured_time.strftime("%d/%m/%Y %H:%M:%S") %>
+                      </span>
+                    <% else %>
+                      <span class="small text-secondary fst-italic">
+                        <%= t("admin.uploaded_files.detail.no_exif", default: "Không có thông tin EXIF") %>
+                      </span>
+                    <% end %>
+                  </div>
+                <% end %>
                 <div class="d-flex justify-content-between py-1 border-bottom border-light">
                   <span class="text-secondary small"><%= t("admin.uploaded_files.detail.uploaded_date_label") %></span>
                   <span class="small text-dark"><%= @attachment.created_at.strftime("%d/%m/%Y %H:%M:%S") %></span>
@@ -130,7 +146,9 @@
             <% end %>
           </div>
           <div class="d-flex align-items-center gap-2">
-            <%= link_to t("close"), admin_uploaded_files_path, class: "btn btn-secondary btn-sm", data: { turbo_frame: "uploaded_file_detail_modal" } %>
+            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
+              <%= t("close") %>
+            </button>
             <button type="button"
                     class="btn btn-sm btn-danger d-inline-flex align-items-center gap-1"
                     data-bs-toggle="modal"

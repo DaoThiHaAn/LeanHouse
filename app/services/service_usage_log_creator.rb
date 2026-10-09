@@ -34,7 +34,7 @@ class ServiceUsageLogCreator
       # the server as well as in the form, so a crafted request cannot create one.
       log.is_confirmed = true if log.room&.empty?
 
-      log.submitted_by = (log.is_confirmed? || log.latest_reading.present?) ? user : nil
+      log.submitted_by = (log.is_confirmed? || log.latest_reading.present? || log_params[:reading_photo].present?) ? user : nil
 
       if log.is_confirmed?
         log.confirmed_by = user

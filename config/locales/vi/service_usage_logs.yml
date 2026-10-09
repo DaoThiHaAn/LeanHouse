@@ -58,6 +58,7 @@ vi:
     delete_success: "Đã xóa chỉ số thành công!"
     detail_title: "Chi tiết Chỉ số dịch vụ: %{service}"
     photo_uploaded_at: "Thời gian tải ảnh lên"
+    photo_captured_at: "Thời gian chụp thực tế"
     file_size: "Dung lượng tệp"
     meter_details: "Thông số đo đạc"
     audit_info: "Lịch sử & Xác nhận"

@@ -251,4 +251,34 @@ class ServiceUsageLogTest < ActiveSupport::TestCase
     assert_nil item[:service_usage_log_id]
     assert_not item[:has_log]
   end
+
+  test "photo_captured_at returns nil when no reading_photo is attached" do
+    log = ServiceUsageLog.new
+    assert_nil log.photo_captured_at
+  end
+
+  test "photo_captured_at returns parsed time when metadata has captured_at" do
+    log = ServiceUsageLog.new(
+      room: @room,
+      service: @service,
+      service_variant: @variant,
+      service_name: @service.name,
+      unit: "kWh",
+      unit_price: 3500,
+      billing_month: @billing_month,
+      start_date: @billing_month,
+      end_date: @billing_month.end_of_month,
+      prev_reading: 100,
+      latest_reading: 150
+    )
+    log.reading_photo.attach(
+      io: StringIO.new("fake image"),
+      filename: "reading.jpg",
+      content_type: "image/jpeg"
+    )
+    log.reading_photo.blob.metadata["captured_at"] = "2026-10-05T14:20:00+07:00"
+
+    expected_time = Time.zone.parse("2026-10-05T14:20:00+07:00")
+    assert_equal expected_time, log.photo_captured_at
+  end
 end

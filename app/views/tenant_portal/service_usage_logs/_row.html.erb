@@ -23,6 +23,11 @@
         <a href="<%= url_for(log.reading_photo) %>" target="_blank">
           <%= image_tag log.reading_photo.variant(resize_to_limit: [50, 50]), class: "rounded border shadow-sm", alt: t("invoice.meter_photo") %>
         </a>
+        <% if log.photo_captured_at.present? %>
+          <div class="text-secondary small mt-1" title="<%= t('service_usage_logs.photo_captured_at', default: 'Thời gian chụp thực tế') %>">
+            <%= log.photo_captured_at.strftime("%d/%m/%Y %H:%M") %>
+          </div>
+        <% end %>
       <% else %>
         <span class="text-secondary small fst-italic"><%= t("invoice.no_photo_yet") %></span>
       <% end %>

@@ -588,6 +588,8 @@ vi:
         filename_label: "Tên tệp:"
         mime_label: "Định dạng (MIME):"
         size_label: "Kích thước:"
+        captured_date_label: "Thời gian chụp (EXIF):"
+        no_exif: "Không có thông tin EXIF"
         uploaded_date_label: "Ngày tải lên:"
         checksum_label: "Checksum (SHA256):"
         linked_record: "Bản ghi liên kết"

@@ -102,6 +102,13 @@ class ServiceUsageLog < ApplicationRecord
     end
   end
 
+  def photo_captured_at
+    return unless reading_photo.attached?
+
+    reading_photo.blob.captured_at
+  end
+
+
   private
 
   # Persist vacancy at creation time so a later move-in cannot make an old
@@ -137,4 +144,5 @@ class ServiceUsageLog < ApplicationRecord
       throw :abort
     end
   end
+
 end

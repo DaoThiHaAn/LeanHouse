@@ -69,4 +69,59 @@ class AdminPortalTest < ApplicationSystemTestCase
     assert_text "Lỗi hiển thị hóa đơn", wait: 5
     assert_text "tenant_help@leanhouse.vn"
   end
+
+  test "uploaded files index deletes file without leaving backdrop and search input functions properly" do
+    tenant_user = create_tenant(tel: "0907773333", fullname: "Tenant File Test")
+    tenant_user.avatar.attach(
+      io: StringIO.new("test avatar 1"),
+      filename: "test_avatar_file.png",
+      content_type: "image/png"
+    )
+
+    other_tenant = create_tenant(tel: "0907774444", fullname: "Other File Test")
+    other_tenant.avatar.attach(
+      io: StringIO.new("test avatar 2"),
+      filename: "searchable_avatar.png",
+      content_type: "image/png"
+    )
+
+    visit admin_login_path
+    fill_in "email", with: @admin.email
+    fill_in "password", with: "AdminPassword123"
+    find("button[type='submit']").click
+    assert_no_current_path admin_login_path, wait: 5
+
+    visit admin_uploaded_files_path
+    assert_text "test_avatar_file.png", wait: 5
+    assert_text "searchable_avatar.png"
+
+    # Open delete modal for test_avatar_file.png
+    row = find("tr", text: "test_avatar_file.png")
+    within row do
+      find("button[title='#{I18n.t('admin.uploaded_files.delete_btn_title')}']").click
+    end
+
+    assert_selector ".modal.show", wait: 5
+    assert_selector ".modal-backdrop", wait: 5
+
+    # Confirm deletion
+    within ".modal.show" do
+      find("button[type='submit']").click
+    end
+
+    # Backdrop and modal must disappear completely
+    assert_no_selector ".modal-backdrop", wait: 5
+    assert_no_selector ".modal.show"
+    within "#uploaded_files_table" do
+      assert_no_text "test_avatar_file.png"
+    end
+
+    # Search bar is interactable and filters results
+    fill_in "admin_files_search_q", with: "searchable"
+    assert_text "searchable_avatar.png", wait: 5
+
+    fill_in "admin_files_search_q", with: "nonexistent_term_999"
+    assert_no_text "searchable_avatar.png", wait: 5
+    assert_text I18n.t("admin.uploaded_files.empty")
+  end
 end

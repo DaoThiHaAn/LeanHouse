@@ -2,6 +2,7 @@
 
 module AdminPortal
   class UploadedFilesController < BaseController
+    before_action :ensure_blob_exif_loaded
     before_action :set_attachment, only: %i[show destroy]
 
     def index
@@ -37,7 +38,9 @@ module AdminPortal
         format.turbo_stream do
           flash.now[:notice] = t("admin.uploaded_files.delete_success", filename: filename, default: "Đã gỡ bỏ tệp \"#{filename}\" thành công và gửi thông báo tới người dùng!")
           render turbo_stream: [
+            turbo_stream.append("events", partial: "layouts/shared_components/event", locals: { event: "close-modal" }),
             turbo_stream.remove(helpers.dom_id(@attachment)),
+            turbo_stream.update("uploaded_file_detail_modal", ""),
             turbo_stream.update("flash", partial: "layouts/shared_components/flash_message")
           ]
         end
@@ -49,6 +52,10 @@ module AdminPortal
     end
 
     private
+
+    def ensure_blob_exif_loaded
+      ActiveStorage::Blob.include(ActiveStorageBlobExif) unless ActiveStorage::Blob.include?(ActiveStorageBlobExif)
+    end
 
     def set_attachment
       @attachment = ActiveStorage::Attachment.find(params[:id])

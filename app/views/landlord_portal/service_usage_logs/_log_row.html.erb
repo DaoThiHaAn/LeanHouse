@@ -46,10 +46,17 @@
         <%= image_tag log.reading_photo.variant(resize_to_limit: [80, 80]), class: "rounded border shadow-sm", alt: t("invoice.meter_photo") %>
       <% end %>
 
-      <div class="text-secondary small" title="<%= t('service_usage_logs.photo_uploaded_at') %>">
-        <span class="material-symbols-outlined fs-6 align-middle text-muted">schedule</span>
-        <%= l(log.reading_photo.blob.created_at, format: :default) %>
-      </div>
+      <% if log.photo_captured_at.present? %>
+        <div class="text-dark small fw-medium" title="<%= t('service_usage_logs.photo_captured_at', default: 'Thời gian chụp thực tế') %>">
+          <span class="material-symbols-outlined fs-6 align-middle text-primary">schedule</span>
+          <%= l(log.photo_captured_at, format: :default) %>
+        </div>
+      <% else %>
+        <div class="text-secondary small" title="<%= t('service_usage_logs.photo_uploaded_at') %>">
+          <span class="material-symbols-outlined fs-6 align-middle text-muted">schedule</span>
+          <%= l(log.reading_photo.blob.created_at, format: :default) %>
+        </div>
+      <% end %>
 
     <% else %>
       <span class="text-secondary small fst-italic"><%= t("invoice.no_photo") %></span>

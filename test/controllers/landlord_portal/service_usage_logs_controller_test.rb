@@ -384,6 +384,35 @@ class LandlordPortal::ServiceUsageLogsControllerTest < ActionDispatch::Integrati
     assert_equal 135, @log.usage_quantity
   end
 
+  test "landlord uploading new photo updates submitted_by from tenant to landlord" do
+    tenant = User.create!(
+      fullname: "Tenant Le",
+      tel: "091#{SecureRandom.random_number(10_000_000).to_s.rjust(7, '0')}",
+      password: "Password123",
+      password_confirmation: "Password123",
+      role: "tenant",
+      sex: "female",
+      bday: 25.years.ago.to_date,
+      address: "123 Tenant St",
+      tel_verified_at: Time.current
+    )
+    @log.update!(submitted_by: tenant)
+    assert_equal tenant, @log.reload.submitted_by
+
+    new_photo = fixture_file_upload(Rails.root.join("test/fixtures/files/test_image.jpg"), "image/jpeg") rescue Rack::Test::UploadedFile.new(StringIO.new("fake img"), "image/jpeg", true, original_filename: "new_meter.jpg")
+
+    patch landlord_house_service_usage_log_path(@house, @log), params: {
+      service_usage_log: {
+        latest_reading: 250,
+        reading_photo: new_photo
+      }
+    }
+    assert_redirected_to landlord_house_service_usage_logs_path(@house, month: @billing_month.strftime("%Y-%m"))
+
+    @log.reload
+    assert_equal @landlord_user, @log.submitted_by
+  end
+
   test "should destroy unbilled log" do
     assert_difference("ServiceUsageLog.count", -1) do
       delete landlord_house_service_usage_log_path(@house, @log)

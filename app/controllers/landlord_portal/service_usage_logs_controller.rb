@@ -107,7 +107,17 @@ class LandlordPortal::ServiceUsageLogsController < LandlordPortal::BaseControlle
 
     @log.allow_landlord_override = true
 
-    if @log.update(log_params)
+    attributes_to_update = log_params.to_h
+    if log_params[:reading_photo].present?
+      attributes_to_update[:submitted_by] = current_user
+    end
+
+    if log_params[:is_confirmed] == "1" || log_params[:is_confirmed] == true
+      attributes_to_update[:confirmed_by] = current_user
+      attributes_to_update[:confirmed_at] = Time.current
+    end
+
+    if @log.update(attributes_to_update)
       redirect_to determine_redirect_path(@log), notice: t("service_usage_logs.update_success")
     else
       render :edit, status: :unprocessable_entity

@@ -578,6 +578,8 @@ en:
         filename_label: "Filename:"
         mime_label: "MIME Type:"
         size_label: "File Size:"
+        captured_date_label: "Captured Date (EXIF):"
+        no_exif: "No EXIF metadata"
         uploaded_date_label: "Uploaded Date:"
         checksum_label: "Checksum (SHA256):"
         linked_record: "Linked Record"

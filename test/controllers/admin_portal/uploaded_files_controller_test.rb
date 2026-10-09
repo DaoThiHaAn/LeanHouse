@@ -161,12 +161,38 @@ class AdminPortal::UploadedFilesControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "user_avatar.png"
   end
 
-  test "show action renders file details" do
+  test "show action renders file details including no exif notice for plain images" do
     login_as(@admin)
     get admin_uploaded_file_url(@user_attachment)
     assert_response :success
     assert_includes response.body, "user_avatar.png"
     assert_includes response.body, @tenant.fullname
+    assert_includes response.body, "Thời gian chụp (EXIF):"
+    assert_includes response.body, "Không có thông tin EXIF"
+  end
+
+  test "show action renders actual capture time when EXIF is present" do
+    login_as(@admin)
+    @user_attachment.blob.update!(metadata: { "captured_at" => "2026-09-20T08:15:30+07:00" })
+
+    get admin_uploaded_file_url(@user_attachment)
+    assert_response :success
+    assert_includes response.body, "Thời gian chụp (EXIF):"
+    assert_includes response.body, "20/09/2026 08:15:30"
+  end
+
+  test "show action does not render capture time row for non-image files" do
+    login_as(@admin)
+    @tenant.avatar.attach(
+      io: StringIO.new("%PDF-1.4 test"),
+      filename: "contract_document.pdf",
+      content_type: "application/pdf"
+    )
+    pdf_attachment = @tenant.avatar.attachment
+
+    get admin_uploaded_file_url(pdf_attachment)
+    assert_response :success
+    assert_not_includes response.body, "Thời gian chụp (EXIF):"
   end
 
   test "show action via turbo frame renders file modal without full layout" do
@@ -204,6 +230,10 @@ class AdminPortal::UploadedFilesControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_match(/turbo-stream/, response.media_type)
+    assert_select "turbo-stream[action='append'][target='events']"
+    assert_select "turbo-stream[action='remove'][target='#{ActionView::RecordIdentifier.dom_id(@user_attachment)}']"
+    assert_select "turbo-stream[action='update'][target='uploaded_file_detail_modal']"
+    assert_select "turbo-stream[action='update'][target='flash']"
     assert_not @tenant.reload.avatar.attached?
   end
 
