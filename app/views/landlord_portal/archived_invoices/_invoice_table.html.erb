@@ -3,13 +3,13 @@
 <span hidden data-pagination-total-pages="<%= invoices.respond_to?(:total_pages) ? invoices.total_pages : 1 %>"></span>
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-  <h2 class="mb-0 fs-5">
+  <h2 class="mb-0">
     <span class="material-symbols-filled align-middle fs-4">receipt_long</span>
     <%= t("invoice.list") %>
   </h2>
 
   <span class="badge bg-light text-dark border p-2 fs-6">
-    <%= "#{t('total')}: #{invoices.total_count}" rescue "#{t('total')}: #{invoices.size}" %>
+    <%= "#{t('total')}: #{invoices.respond_to?(:total_count) ? invoices.total_count : invoices.size}" %>
   </span>
 </div>
 
@@ -21,8 +21,8 @@
         <th><%= t("form.house.self") %></th>
         <th><%= t("invoice.room_or_target") %></th>
         <th><%= t("invoice.month") %></th>
-        <th><%= t("invoice.due_date", default: "Hạn đóng") %></th>
-        <th><%= t("invoice.total_amount") %></th>
+        <th><%= t("invoice.due_date") %></th>
+        <th><%= t("admin.invoices.total_amount") %></th>
         <th class="text-center pe-3"><%= t("actions") %></th>
       </tr>
     </thead>
@@ -34,13 +34,8 @@
               <span class="invoice-code-tag mb-1"><%= invoice.code %></span>
               <p class="fw-semibold mb-0"><%= invoice.title %></p>
             </td>
-            <td>
-              <% if invoice.house&.is_deleted? %>
-                <span class="text-decoration-line-through text-secondary"><%= invoice.house.name %></span>
-                <span class="badge bg-danger-subtle text-danger border border-danger-subtle ms-1 small"><%= t("form.house.status_deleted") %></span>
-              <% else %>
-                <%= invoice.house&.name || t("none") %>
-              <% end %>
+            <td class="text-decoration-line-through">
+              <%= invoice.house&.name || t("none") %>
             </td>
             <td>
               <%= invoice_target_info(invoice) %>

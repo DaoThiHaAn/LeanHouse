@@ -16,11 +16,15 @@ module Invoices
     def call
       ensure_room_has_staying_tenants!
 
-      if @inv_type == "individual"
-        issue_individual_invoices
+      created_invoices = if @inv_type == "individual"
+                           issue_individual_invoices
       else
-        [ issue_room_invoice ]
+                           [ issue_room_invoice ]
       end
+
+      auto_close_applicable_contracts!(created_invoices)
+
+      created_invoices
     end
 
     private
@@ -265,6 +269,28 @@ module Invoices
           due_date: invoice.due_date.strftime("%d/%m/%Y"),
           house_id: @house.id
         ).deliver_later(tenant_users)
+      end
+    end
+
+    def auto_close_applicable_contracts!(invoices)
+      tenant_ids = invoices.map(&:tenant_id).compact
+      if tenant_ids.empty?
+        tenant_ids = if @house.bed?
+                       @room.all_staying_bed_tenants.map { |i| i[:tenant]&.id }.compact.uniq
+        else
+                       @room.all_staying_tenants.map(&:id).compact.uniq
+        end
+      end
+
+      return if tenant_ids.empty?
+
+      max_invoice_end_date = invoices.map(&:end_date).compact.max || @billing_month.end_of_month
+      reference_date = [ Date.current, max_invoice_end_date ].compact.max
+
+      @house.contracts.unfinished.where(tenant_id: tenant_ids).find_each do |contract|
+        if contract.due_date < Date.current || (max_invoice_end_date < Date.current && contract.due_date <= max_invoice_end_date)
+          ContractClosing.close_if_overdue!(contract, reference_date, send_noti: false)
+        end
       end
     end
   end

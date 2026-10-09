@@ -19,9 +19,6 @@
     <h1 class="text-center mb-1"><%= t("form.contract.info") %></h1>
     <p class="text-center text-secondary small mb-2">
       #<%= @contract.id %> - <%= @contract.title_name %>
-      <% if @house.is_deleted? %>
-        <span class="badge bg-danger-subtle text-danger border border-danger-subtle ms-1"><%= t("form.house.status_deleted") %></span>
-      <% end %>
     </p>
 
     <% if @house.is_deleted? %>

@@ -3,10 +3,38 @@ class ContractClosing
     new(...).call
   end
 
-  def initialize(house:, contract:, remove_tenant: false)
+  # Batch close all overdue unfinished contracts matching the scope.
+  def self.close_overdue!(scope = Contract.unfinished.where("contracts.due_date < ?", Date.current), send_noti: true)
+    scope.includes(tenant: :user, landlord: :user, house: {}).find_each do |contract|
+      close_if_overdue!(contract, send_noti: send_noti)
+    end
+  end
+
+  # Auto-close a contract if it is unfinished and overdue as of reference_date.
+  # Sets end_date to due_date and unlinks has_contract on the active stay.
+  def self.close_if_overdue!(contract, reference_date = Date.current, send_noti: false)
+    contract.reload
+    return false if contract.finished?
+    return false unless contract.due_date < reference_date
+
+    new(
+      house: contract.house,
+      contract: contract,
+      end_date: contract.due_date,
+      send_noti: send_noti,
+      overdue: true
+    ).call
+
+    true
+  end
+
+  def initialize(house:, contract:, remove_tenant: false, end_date: nil, send_noti: true, overdue: false)
     @house = house
     @contract = contract
     @remove_tenant = remove_tenant
+    @end_date = end_date || Date.current
+    @send_noti = send_noti
+    @overdue = overdue
   end
 
   def call
@@ -14,7 +42,7 @@ class ContractClosing
 
     Contract.transaction do
       # 1. Close contract (soft completion by setting end_date)
-      contract.update!(end_date: Date.current)
+      contract.update!(end_date: @end_date)
 
       tenant_stay&.update!(has_contract: false)
 
@@ -34,8 +62,14 @@ class ContractClosing
       end
     end
 
-    # 3. Send contract closed notifications to Landlord and Tenant
-    send_contract_closed_notifications
+    # 3. Send contract closed notifications if enabled
+    if @send_noti
+      if @overdue
+        send_overdue_closed_notifications
+      else
+        send_contract_closed_notifications
+      end
+    end
 
     # 4. If tenant was also removed from the house, send tenant removed notifications to Landlord and Tenant
     if @remove_tenant && tenant_stay
@@ -48,6 +82,20 @@ class ContractClosing
   private
 
   attr_reader :house, :contract
+
+  def send_overdue_closed_notifications
+    recipients = [ contract.tenant&.user, contract.landlord&.user ].compact.uniq
+    return if recipients.empty?
+
+    ContractOverdueClosedNotifier.with(
+      contract: contract,
+      contract_id: contract.id,
+      contract_name: contract.name,
+      tenant_name: contract.tenant&.user&.fullname,
+      due_date: contract.due_date.strftime("%d/%m/%Y"),
+      house_id: house.id
+    ).deliver_later(recipients)
+  end
 
   def send_contract_closed_notifications
     recipients = [ contract.tenant.user ].compact

@@ -3,7 +3,7 @@
 <div class="contract house-main-container">
   <div class="d-flex flex-column justify-content-center align-items-center mb-4 border-bottom py-3 flex-wrap gap-2">
     <h1 class="mb-2"><%= t("invoice.archive_title") %></h1>
-    <p class="text-secondary fw-medium mb-0">
+    <p class="text-secondary">
       <%= t("invoice.archive_sub") %>
     </p>
   </div>
@@ -25,7 +25,7 @@
                       turbo_action: "advance"
                     } do |f| %>
 
-        <div class="col-12 col-md-5 col-lg-5">
+        <div class="col-12 col-md-5 col-lg-4">
           <div class="input-group border rounded-3 overflow-hidden shadow-sm transition-all">
             <span class="input-group-text bg-white border-0 pe-1">
               <span class="material-symbols-outlined fs-5 text-secondary">search</span>
@@ -41,12 +41,12 @@
           </div>
         </div>
 
-        <div class="col-12 col-md-4 col-lg-4">
+        <div class="col-12 col-md-4 col-lg-4 col-xl-3">
           <div class="form-floating shadow-sm rounded-3">
             <%= f.select :house_id,
                 options_for_select(
                   [[t("invoice.all_houses"), ""]] +
-                  @houses.map { |h| ["#{h.name} (#{t('form.house.status_deleted')})", h.id] },
+                  @houses.map { |h| [h.name, h.id] },
                   @house_id
                 ),
                 {},
@@ -59,12 +59,13 @@
           </div>
         </div>
 
-        <div class="col-12 col-md-3 col-lg-3">
+        <div class="col-12 col-md-3 col-lg-2">
           <div class="form-floating shadow-sm rounded-3">
             <%= f.month_field :month,
                 value: @month,
                 class: "form-control",
                 id: "floatingMonthSelect",
+                placeholder: "dd/mm/yyyy",
                 data: { action: "change->search#changed" } %>
             <label for="floatingMonthSelect" class="text-secondary small fw-medium">
               <%= t("invoice.billing_month") %>

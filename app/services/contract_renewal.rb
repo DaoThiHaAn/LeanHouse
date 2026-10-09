@@ -20,18 +20,22 @@ class ContractRenewal
       )
     )
 
+    if new_contract.due_date.present? && new_contract.due_date < Date.current
+      new_contract.end_date = new_contract.due_date
+    end
+
     Contract.transaction do
       # 1. Close the old contract if it is not already closed
       if old_contract.present? && old_contract.end_date.blank?
         old_contract.update!(end_date: Date.current)
       end
 
-      # 2. Save the new contract and ensure tenant_stay has_contract is true
+      # 2. Save the new contract and set has_contract appropriately
       new_contract.save!
-      tenant_stay.update!(has_contract: true)
+      tenant_stay.update!(has_contract: !new_contract.finished?)
     end
 
-    send_notifications(new_contract) if @send_noti
+    send_notifications(new_contract) if @send_noti && !new_contract.finished?
 
     new_contract
   end

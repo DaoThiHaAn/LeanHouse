@@ -141,6 +141,8 @@ module Invoices
         end
       end
 
+      auto_close_target_contracts!(created_invoices, target_stays)
+
       Result.new(success?: true, invoices: created_invoices, error_message: nil)
     rescue ActiveRecord::RecordInvalid => e
       Result.new(success?: false, invoices: [], error_message: e.record.errors.full_messages.to_sentence)
@@ -188,6 +190,20 @@ module Invoices
           amount: amount,
           note: item[:note].presence
         }
+      end
+    end
+
+    def auto_close_target_contracts!(invoices, stays)
+      tenant_ids = stays.map(&:tenant_id).compact.uniq
+      return if tenant_ids.empty?
+
+      max_invoice_end_date = invoices.map(&:end_date).compact.max
+      reference_date = [ Date.current, max_invoice_end_date ].compact.max
+
+      @house.contracts.unfinished.where(tenant_id: tenant_ids).find_each do |contract|
+        if contract.due_date < Date.current || (max_invoice_end_date.present? && max_invoice_end_date < Date.current && contract.due_date <= max_invoice_end_date)
+          ContractClosing.close_if_overdue!(contract, reference_date, send_noti: false)
+        end
       end
     end
 

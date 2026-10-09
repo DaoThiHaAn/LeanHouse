@@ -9,7 +9,7 @@
   </h2>
 
   <span class="badge bg-light text-dark border p-2 fs-6">
-    <%= t("admin.contracts.total", count: contracts.total_count) rescue "#{t('total')}: #{contracts.size}" %>
+    <%= "#{t('total')}: #{contracts.respond_to?(:total_count) ? contracts.total_count : contracts.size}" %>
   </span>
 </div>
 
@@ -34,13 +34,8 @@
             <td>
               <%= link_to contract.title_name, landlord_archived_contract_path(contract), class: "text-dark text-decoration-none fw-semibold hover-underline", data: { turbo_frame: "_top" } %>
             </td>
-            <td>
-              <% if contract.house&.is_deleted? %>
-                <span class="text-decoration-line-through text-secondary"><%= contract.house.name %></span>
-                <span class="badge bg-danger-subtle text-danger border border-danger-subtle ms-1 small"><%= t("form.house.status_deleted") %></span>
-              <% else %>
-                <%= contract.house&.name || t("none") %>
-              <% end %>
+            <td class="text-decoration-line-through">
+              <%= contract.house&.name || t("none") %>
             </td>
             <td>
               <div class="fw-semibold"><%= contract.tenant.user.fullname %></div>

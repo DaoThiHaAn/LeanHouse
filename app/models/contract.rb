@@ -75,6 +75,17 @@ class Contract < ApplicationRecord
     "#{start_date.strftime('%d/%m/%Y')} - #{due_date.strftime('%d/%m/%Y')}"
   end
 
+  # Auto-close this contract if it is unfinished and overdue as of reference_date (defaults to Date.current).
+  # Delegates to ContractClosing service.
+  def auto_close_if_overdue!(reference_date = Date.current, send_noti: true)
+    ContractClosing.close_if_overdue!(self, reference_date, send_noti: send_noti)
+  end
+
+  # Batch close all overdue unfinished contracts matching the scope via ContractClosing service.
+  def self.close_overdue!(scope = unfinished.where("contracts.due_date < ?", Date.current), send_noti: true)
+    ContractClosing.close_overdue!(scope, send_noti: send_noti)
+  end
+
   private
 
   def normalize_name

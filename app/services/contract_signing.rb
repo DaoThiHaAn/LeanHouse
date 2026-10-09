@@ -19,12 +19,16 @@ class ContractSigning
       )
     )
 
-    Contract.transaction do
-      contract.save!
-      tenant_stay.update!(has_contract: true)
+    if contract.due_date.present? && contract.due_date < Date.current
+      contract.end_date = contract.due_date
     end
 
-    send_notifications(contract) if @send_noti
+    Contract.transaction do
+      contract.save!
+      tenant_stay.update!(has_contract: !contract.finished?)
+    end
+
+    send_notifications(contract) if @send_noti && !contract.finished?
 
     contract
   end
