@@ -27,7 +27,7 @@ class AdminPortal::DashboardAndUsersControllerTest < ActionDispatch::Integration
     assert_includes response.body, I18n.t("error_pages.unauthorized.title")
   end
 
-  test "should access dashboard when authenticated and display monthly metrics" do
+  test "should access dashboard when authenticated and display monthly metrics and lazy turbo frames" do
     post admin_handle_login_url, params: { email: @admin.email, password: "Password123!" }
 
     get admin_dashboard_url
@@ -35,6 +35,40 @@ class AdminPortal::DashboardAndUsersControllerTest < ActionDispatch::Integration
     assert_includes response.body, I18n.t("admin.dashboard.recent_users")
     assert_includes response.body, I18n.t("admin.dashboard.recent_houses")
     assert_includes response.body, I18n.t("admin.dashboard.this_month_badge", count: 1, month: Date.current.strftime("%m/%Y"))
+    assert_includes response.body, I18n.t("admin.dashboard.new_this_month", month: Date.current.strftime("%m/%Y"))
+    assert_includes response.body, 'id="admin_recent_users"'
+    assert_includes response.body, 'id="admin_recent_houses"'
+  end
+
+  test "should render recent_users turbo frame" do
+    post admin_handle_login_url, params: { email: @admin.email, password: "Password123!" }
+
+    get recent_users_admin_dashboard_url
+    assert_response :success
+    assert_includes response.body, 'turbo-frame id="admin_recent_users"'
+    assert_includes response.body, @user.fullname
+  end
+
+  test "should render recent_houses turbo frame" do
+    post admin_handle_login_url, params: { email: @admin.email, password: "Password123!" }
+
+    landlord = Landlord.find_or_create_by!(id: @user.id)
+    house = House.create!(
+      landlord: landlord,
+      name: "Lazy House",
+      address_l1: "123 Street",
+      address_l2: "Ward 1",
+      address_l3: "District 1",
+      mode: "room",
+      floors_count: 1,
+      inv_creation_date: 1,
+      is_deleted: false
+    )
+
+    get recent_houses_admin_dashboard_url
+    assert_response :success
+    assert_includes response.body, 'turbo-frame id="admin_recent_houses"'
+    assert_includes response.body, house.name
   end
 
   test "should access users list when authenticated" do

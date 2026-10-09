@@ -42,6 +42,7 @@ en:
       locked_count: "Locked"
       room_houses: "Room-based"
       bed_houses: "Bed-based"
+      new_this_month: "New in %{month}"
       total_rooms: "Total rooms"
       view_list: "View list"
       view_houses: "View properties"

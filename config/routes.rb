@@ -255,7 +255,10 @@ Rails.application.routes.draw do
     get "/logout", to: "sessions#destroy"
 
     root to: "dashboard#show"
-    resource :dashboard, only: [ :show ], controller: "dashboard"
+    resource :dashboard, only: [ :show ], controller: "dashboard" do
+      get :recent_users
+      get :recent_houses
+    end
     resource :profile, only: [ :edit, :update ]
     resources :users, only: [ :index, :show ] do
       member do

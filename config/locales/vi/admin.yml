@@ -45,6 +45,7 @@ vi:
       locked_count: "Bị khóa"
       room_houses: "Thuê theo phòng"
       bed_houses: "Thuê theo giường"
+      new_this_month: "Mới trong tháng %{month}"
       total_rooms: "Tổng số phòng"
       view_list: "Xem danh sách"
       view_houses: "Xem nhà"
@@ -110,6 +111,7 @@ vi:
       filter_tenant: "Khách thuê"
       filter_all_statuses: "Tất cả trạng thái"
       clear_filter: "Xóa bộ lọc"
+      view: "Xem chi tiết tài khoản"
 
     houses:
       title: "Quản lý Nhà"
@@ -154,7 +156,7 @@ vi:
       no_floors: "Chưa có tầng nào được tạo."
       no_houses_found: "Không tìm thấy nhà nào phù hợp."
       no_rooms_found: "Không tìm thấy phòng nào phù hợp với bộ lọc."
-      search_room_placeholder: "Tìm tên/số phòng..."
+      search_room_placeholder: "Tìm tên phòng..."
       floor_filter: "Tầng"
       occupancy_filter: "Tình trạng"
       all_floors: "Tất cả các tầng"

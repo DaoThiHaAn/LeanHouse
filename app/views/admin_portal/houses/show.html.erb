@@ -17,14 +17,11 @@
       <div class="d-flex flex-column gap-3">
         <!-- Header & Search/Filter Card -->
         <div class="card admin-card shadow-sm">
-          <div class="card-header border-0 bg-white py-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+          <div class="card-header border-0 bg-white py-3 d-flex align-items-center flex-wrap gap-2">
             <h2 class="d-flex align-items-center gap-2 mb-0">
               <span class="material-symbols-outlined fs-3">layers</span>
               <%= t("admin.houses.floors_and_rooms_structure") %>
             </h2>
-            <span class="badge bg-light text-secondary border">
-              <%= @total_rooms_count %> <%= t("form.room.self").downcase %>
-            </span>
           </div>
 
           <!-- Room Filter & Search Form -->
@@ -132,7 +129,7 @@
                             <strong class="text-primary fs-6"><%= room.title_name %></strong>
                             <small class="text-secondary"><%= room.area %> m²</small>
                           </div>
-                          <div class="small text-secondary mb-2"><%= room.floor.title_name %></div>
+                          <div class="fw-medium mb-2"><%= room.floor.title_name %></div>
 
                           <div class="small text-secondary d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
                             <span><%= t("admin.houses.room_rent") %>:</span>
@@ -184,7 +181,7 @@
                             <%= t("admin.houses.occupied_slots") %>: <%= room.tenants_count %>/<%= room.max_slots %>
                           </span>
                         </div>
-                        <div class="small text-secondary mb-2"><%= room.floor.title_name %></div>
+                        <div class="fw-medium mb-2"><%= room.floor.title_name %></div>
 
                         <div class="small text-secondary mb-2 fw-semibold pt-2 border-top">
                           <%= t("admin.houses.beds_list") %> (<%= active_beds.size %>):

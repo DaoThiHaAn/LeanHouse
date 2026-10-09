@@ -24,13 +24,18 @@
           <span class="badge bg-danger-subtle text-danger border border-danger-subtle ms-1 small"><%= t("admin.houses.status_deleted") %></span>
         <% end %>
       </h3>
-      <p class="text-secondary small mb-0 text-break"><%= house.full_address %></p>
+      <p class="text-secondary small text-break" title="<%= t("form.house.addr") %>">
+        <span class="material-symbols-outlined fs-6">location_on</span>
+        <%= house.full_address %>
+      </p>
     </div>
 
     <div class="pt-2 border-top">
       <div class="small text-secondary mb-1"><%= t("admin.houses.owner") %>:</div>
       <% if house.landlord&.user %>
-        <%= link_to house.landlord.user.fullname, admin_user_path(house.landlord.user), class: "link fw-bold mt-1" %>
+        <%= link_to house.landlord.user.fullname, admin_user_path(house.landlord.user),
+            class: "link fw-bold mt-1",
+            title: t("admin.users.view") %>
         <div class="small text-dark-emphasis font-monospace"><%= house.landlord.user.tel %></div>
       <% else %>
         <span class="text-secondary">-</span>

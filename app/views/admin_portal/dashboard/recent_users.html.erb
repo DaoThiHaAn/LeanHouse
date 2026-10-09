@@ -1,0 +1,52 @@
+<%= turbo_frame_tag "admin_recent_users" do %>
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th class="ps-3"><%= t("form.profile.fullname") %></th>
+          <th><%= t("form.profile.tel") %></th>
+          <th><%= t("form.profile.role") %></th>
+          <th><%= t("form.house.state") %></th>
+          <th class="text-center"><%= t("actions") %></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% if @recent_users.any? %>
+          <% @recent_users.each do |user| %>
+            <tr>
+              <td class="ps-3">
+                <div class="fw-bold"><%= user.fullname %></div>
+                <small class="text-secondary"><%= l(user.created_at.to_date, format: :default) rescue user.created_at.strftime("%d/%m/%Y") %></small>
+              </td>
+              <td><%= user.tel %></td>
+              <td>
+                <% if user.landlord? %>
+                  <span class="badge badge-role-landlord"><%= t("role.landlord") %></span>
+                <% else %>
+                  <span class="badge badge-role-tenant"><%= t("role.tenant") %></span>
+                <% end %>
+              </td>
+              <td>
+                <% if user.is_active? %>
+                  <span class="badge bg-success-subtle text-success border border-success-subtle"><%= t("admin.users.active_short") %></span>
+                <% else %>
+                  <span class="badge bg-danger-subtle text-danger border border-danger-subtle"><%= t("admin.users.inactive_short") %></span>
+                <% end %>
+              </td>
+              <td class="text-center">
+                <%= link_to admin_user_path(user), class: "btn btn-sm btn-light border", title: t("view_detail"), data: { turbo_frame: "_top" } do %>
+                  <span class="material-symbols-outlined fs-6 align-middle">visibility</span>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        <% else %>
+          <tr>
+            <td colspan="5" class="text-center text-secondary py-4"><%= t("admin.dashboard.no_users_yet") %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>

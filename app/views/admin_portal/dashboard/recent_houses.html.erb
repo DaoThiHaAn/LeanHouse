@@ -1,0 +1,44 @@
+<%= turbo_frame_tag "admin_recent_houses" do %>
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th class="ps-3"><%= t("form.house.name") %></th>
+          <th><%= t("form.house.mode") %></th>
+          <th class="text-center"><%= t("actions") %></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if @recent_houses.any? %>
+          <% @recent_houses.each do |house| %>
+            <tr>
+              <td class="ps-3">
+                <div class="fw-bold"><%= house.name %></div>
+                <small class="text-secondary">
+                  <%= [house.address_l1, house.address_l2].compact_blank.join(", ") %>
+                  <span class="mx-1">•</span>
+                  <%= l(house.created_at.to_date, format: :default) rescue house.created_at.strftime("%d/%m/%Y") %>
+                </small>
+              </td>
+              <td>
+                <span class="badge <%= house.room? ? 'bg-primary-subtle text-primary border border-primary-subtle' : 'bg-info-subtle text-info border border-info-subtle' %>">
+                  <%= house.room? ? t("admin.houses.mode_room") : t("admin.houses.mode_bed") %>
+                </span>
+              </td>
+              <td class="text-center">
+                <%= link_to admin_house_path(house), class: "btn btn-sm btn-light border", title: t("view_detail"), data: { turbo_frame: "_top" } do %>
+                  <span class="material-symbols-outlined fs-6 align-middle">visibility</span>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        <% else %>
+          <tr>
+            <td colspan="3" class="text-center text-secondary py-4"><%= t("admin.dashboard.no_houses_yet") %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>
+
