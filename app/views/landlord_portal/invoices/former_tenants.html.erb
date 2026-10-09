@@ -1,0 +1,23 @@
+<% content_for :title, "#{t('invoice.former_tenants_title')} - #{@house.name}" %>
+
+<div>
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 pb-2 border-bottom gap-3">
+    <div>
+      <h1 class="mb-1 fs-3"><%= t("invoice.former_tenants_title") %></h1>
+      <p class="text-secondary mb-0"><%= t("invoice.former_tenants_sub") %></p>
+    </div>
+
+    <div class="d-flex align-items-center gap-2">
+      <%= link_to landlord_house_invoices_path(@house), class: "btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-1 shadow-sm px-3 rounded-pill" do %>
+        <span class="material-symbols-outlined fs-6">arrow_back</span>
+        <span><%= t("invoice.view_active_invoices") %></span>
+      <% end %>
+    </div>
+  </div>
+
+  <%# Table with Turbo Frame %>
+  <%= render "former_invoice_table", invoices: @invoices, house: @house, year: @year, available_years: @available_years %>
+</div>
+
+<%= turbo_frame_tag "edit_invoice_modal" %>
+

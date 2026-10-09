@@ -136,6 +136,7 @@ vi:
   month: "Tháng"
   month_val: "Tháng %{val}"
   year: "Năm"
+  all_years: "Tất cả các năm"
   person_unit: "Người"
   you: "Bạn"
   clear_search: "Xóa từ khóa"

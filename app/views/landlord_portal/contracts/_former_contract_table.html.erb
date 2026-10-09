@@ -1,0 +1,118 @@
+<%# Locals: contracts, house, year, available_years %>
+<% years = local_assigns[:available_years] || @available_years || [] %>
+
+<%= turbo_frame_tag "former_contracts_table",
+      data: {
+        turbo_action: "advance",
+        controller: "pagination-sync",
+        pagination_sync_canonical_url_value: former_tenants_landlord_house_contracts_path(house),
+        pagination_sync_default_params_value: {}.to_json,
+        pagination_sync_query_params_value: ["year"].to_json,
+        pagination_sync_total_pages_selector_value: "[data-pagination-total-pages]",
+        action: "turbo:frame-load->pagination-sync#updateUrl"
+      } do %>
+
+  <span hidden data-pagination-total-pages="<%= contracts.total_pages %>"></span>
+
+  <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3">
+    <div class="d-flex align-items-center flex-wrap gap-3">
+      <h2 class="mb-0 fs-5">
+        <span class="material-symbols-filled align-middle fs-4">history</span>
+        <%= t("form.contract.list") %>
+      </h2>
+
+      <%= form_with url: former_tenants_landlord_house_contracts_path(house),
+                    method: :get,
+                    class: "d-flex align-items-center gap-2",
+                    data: {
+                      turbo_frame: "former_contracts_table",
+                      turbo_action: "advance"
+                    } do |f| %>
+        <%= f.label :year, "#{t('year')}:", class: "fw-semibold text-secondary text-nowrap m-0" %>
+        <%= f.select :year,
+                     options_for_select([[t("all_years"), ""]] + years.map { |y| [y.to_s, y.to_s] }, year),
+                     {},
+                     class: "form-select form-select-sm shadow-sm w-auto",
+                     onchange: "this.form.requestSubmit()" %>
+
+        <% if year.present? %>
+          <%= link_to former_tenants_landlord_house_contracts_path(house),
+                      class: "btn btn-sm btn-outline-secondary d-flex align-items-center gap-1",
+                      data: { turbo_frame: "former_contracts_table" } do %>
+            <span class="material-symbols-outlined fs-6">filter_alt_off</span>
+            <span><%= t("clear_filter") %></span>
+          <% end %>
+        <% end %>
+      <% end %>
+    </div>
+
+    <span class="badge bg-light text-dark border p-2 fs-6">
+      <%= "#{t('total')}: #{contracts.respond_to?(:total_count) ? contracts.total_count : contracts.size}" %>
+    </span>
+  </div>
+
+  <div class="table-responsive bg-white rounded-3 shadow-sm border">
+    <table class="table table-bordered table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th class="ps-3"><%= t("form.contract.id_and_name") %></th>
+          <th><%= t("form.tenant.self") %></th>
+          <th><%= t("form.tenant.rental_unit") %></th>
+          <th><%= t("form.contract.period") %></th>
+          <th class="text-center pe-3"><%= t("actions") %></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if contracts.any? %>
+          <% contracts.each do |contract| %>
+            <% historical_stay = house.tenant_stay_for(contract.tenant_id) || house.historical_tenant_stay_for(contract.tenant_id) %>
+            <tr id="<%= dom_id(contract) %>">
+              <td class="ps-3">
+                <span class="badge bg-light text-secondary border mb-1">#<%= contract.id %></span>
+                <div>
+                  <%= link_to contract.title_name, landlord_house_contract_path(house, contract), class: "text-dark text-decoration-none fw-semibold hover-underline", data: { turbo_frame: "_top" } %>
+                </div>
+              </td>
+              <td>
+                <div class="fw-semibold"><%= contract.tenant.user.fullname %></div>
+                <small class="text-secondary"><%= contract.tenant.user.tel %></small>
+              </td>
+              <td>
+                <%= historical_stay&.rental_unit&.location_info || t("none") %>
+              </td>
+              <td><%= contract.formatted_period %></td>
+              <td class="text-center pe-3">
+                <div class="d-flex align-items-center justify-content-center gap-1">
+                  <%= link_to landlord_house_contract_path(house, contract),
+                              class: "table-action",
+                              title: t("view_detail"),
+                              data: { turbo_frame: "_top" } do %>
+                    <span class="material-symbols-filled fs-5">visibility</span>
+                  <% end %>
+
+                  <%= link_to extend_landlord_house_contract_path(house, contract),
+                              data: { turbo_frame: "extend_modal" },
+                              title: t("form.contract.extend"),
+                              aria: { label: t("form.contract.extend") },
+                              class: "table-action" do %>
+                    <span class="material-symbols-outlined fs-5" aria-hidden="true">more_time</span>
+                  <% end %>
+                </div>
+              </td>
+            </tr>
+          <% end %>
+        <% else %>
+          <tr>
+            <td colspan="5" class="text-center py-4 text-secondary">
+              <%= t("form.contract.no_former_contracts") %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="mt-3">
+    <%= paginate contracts, params: { year: year } %>
+  </div>
+<% end %>

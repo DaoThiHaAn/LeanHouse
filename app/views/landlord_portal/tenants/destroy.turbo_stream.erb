@@ -1,5 +1,15 @@
 <%= turbo_stream.remove ActionView::RecordIdentifier.dom_id(@tenant) %>
 
+<% if @house.all_linked_tenants(signed_contract: true).none? %>
+  <%= turbo_stream.update "tenant_table_body" do %>
+    <tr>
+      <td colspan="7" class="text-center text-secondary py-2 fw-semibold">
+        <%= t("form.tenant.no") %>
+      </td>
+    </tr>
+  <% end %>
+<% end %>
+
 <%= turbo_stream.replace "tenant_stats_grid" do %>
   <%= render "landlord_portal/tenants/stats_cards", stats: @stats, house: @house %>
 <% end %>

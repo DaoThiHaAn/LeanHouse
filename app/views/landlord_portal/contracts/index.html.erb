@@ -65,13 +65,17 @@
     </div>
   <% end %>
 
-  <%# 2. Main Contracts Section %>
   <% unless @has_contracts %>
-    <div class="align-self-center mx-auto">
+    <div class="align-self-center mx-auto text-center">
       <p class="fs-5 fw-semibold text-center">
         <%= t("form.contract.let_sign") %>
       </p>
-      <%= image_tag 'agreement.gif', alt: "Contract gif", width: "170px", class: "d-block mx-auto" %>
+      <%= image_tag 'agreement.gif', alt: "Contract gif", width: "170px", class: "d-block mx-auto mb-3" %>
+      <%= link_to former_tenants_landlord_house_contracts_path(@house),
+                  class: "btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-1 shadow-sm rounded-pill px-3" do %>
+        <span class="material-symbols-outlined fs-6">history</span>
+        <span><%= t("form.contract.former_tenants_contracts") %></span>
+      <% end %>
     </div>
   <% else %>
     <div class="flex-grow-1 main-table-zone">
@@ -116,7 +120,14 @@
         </div>
       <% end %>
 
-      <h2 class="fs-5 mb-3"><%= t("form.contract.list") %></h2>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="fs-5 mb-0"><%= t("form.contract.list") %></h2>
+        <%= link_to former_tenants_landlord_house_contracts_path(@house),
+                    class: "btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-1 shadow-sm rounded-pill px-3" do %>
+          <span class="material-symbols-outlined fs-6">history</span>
+          <span><%= t("form.contract.former_tenants_contracts") %></span>
+        <% end %>
+      </div>
 
       <%= turbo_frame_tag "contract_table",
             src: filtered_landlord_house_contracts_path(@house, params.permit(:page, :state, :query)),

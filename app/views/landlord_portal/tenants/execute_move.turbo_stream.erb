@@ -1,5 +1,19 @@
-<%= turbo_stream.replace ActionView::RecordIdentifier.dom_id(@tenant) do %>
-  <%= render "landlord_portal/tenants/tenant_row", tenant: @tenant, house: @house %>
+<% if @house.tenant_stay_for(@tenant.id)&.has_contract? %>
+  <%= turbo_stream.replace ActionView::RecordIdentifier.dom_id(@tenant) do %>
+    <%= render "landlord_portal/tenants/tenant_row", tenant: @tenant, house: @house %>
+  <% end %>
+<% else %>
+  <%= turbo_stream.remove ActionView::RecordIdentifier.dom_id(@tenant) %>
+
+  <% if @house.all_linked_tenants(signed_contract: true).none? %>
+    <%= turbo_stream.update "tenant_table_body" do %>
+      <tr>
+        <td colspan="7" class="text-center text-secondary py-2 fw-semibold">
+          <%= t("form.tenant.no") %>
+        </td>
+      </tr>
+    <% end %>
+  <% end %>
 <% end %>
 
 <%= turbo_stream.replace "tenant_stats_grid" do %>

@@ -6,6 +6,11 @@
     <p class="text-secondary"><%= t('invoice.management_subtitle') %></p>
   </div>
   <div class="d-flex gap-3 align-items-center">
+    <%= link_to former_tenants_landlord_house_invoices_path(@house), class: "btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-1 shadow-sm px-3 rounded-pill" do %>
+      <span class="material-symbols-outlined fs-6">history</span>
+      <span><%= t("invoice.former_tenants_invoices") %></span>
+    <% end %>
+
     <button type="button" class="manual-btn d-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#invoiceCreationGuideModal">
       <span class="material-symbols-outlined fs-6">help</span> <%= t('invoice.guide.btn_title') %>
     </button>

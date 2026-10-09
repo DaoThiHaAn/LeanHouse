@@ -229,4 +229,31 @@ class LandlordPortal::ContractsControllerTest < ActionDispatch::IntegrationTest
     assert_equal I18n.t("errors.tenant_has_pending_invoices", count: 1), flash[:alert]
     assert_nil @tenant_stay.reload.checkout_at
   end
+
+  test "landlord can access contracts former-tenants and filter by year and search" do
+    # Check out tenant to make them a former tenant
+    @tenant_stay.update_columns(checkin_at: 2.months.ago, checkout_at: 1.month.ago)
+    @contract.update!(end_date: 1.month.ago.to_date)
+
+    sign_in_as(@landlord_user)
+
+    get former_tenants_landlord_house_contracts_path(@house)
+    assert_response :success
+    assert_select "tr#contract_#{@contract.id}"
+
+    # Filter by matching year
+    get former_tenants_landlord_house_contracts_path(@house, year: @contract.start_date.year)
+    assert_response :success
+    assert_select "tr#contract_#{@contract.id}"
+
+    # Filter by non-matching year
+    get former_tenants_landlord_house_contracts_path(@house, year: 1999)
+    assert_response :success
+    assert_select "tr#contract_#{@contract.id}", count: 0
+
+    # Search by tenant name
+    get former_tenants_landlord_house_contracts_path(@house, q: @tenant.user.fullname)
+    assert_response :success
+    assert_select "tr#contract_#{@contract.id}"
+  end
 end

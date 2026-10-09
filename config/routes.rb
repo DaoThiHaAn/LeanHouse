@@ -169,6 +169,7 @@ Rails.application.routes.draw do
       resources :contracts, except: %i[new create] do
         collection do
           get :filtered
+          get "former-tenants", to: "contracts#former_tenants", as: :former_tenants
         end
         member do
           get :extend
@@ -196,6 +197,7 @@ Rails.application.routes.draw do
           get :preview
           get :new_custom
           post :create_custom
+          get "former-tenants", to: "invoices#former_tenants", as: :former_tenants
         end
         member do
           patch :mark_paid

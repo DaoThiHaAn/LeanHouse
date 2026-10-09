@@ -1,0 +1,149 @@
+<%# Locals: invoices, house, year, available_years %>
+<% years = local_assigns[:available_years] || @available_years || [] %>
+
+<%= turbo_frame_tag "former_invoices_table",
+      data: {
+        turbo_action: "advance",
+        controller: "pagination-sync",
+        pagination_sync_canonical_url_value: former_tenants_landlord_house_invoices_path(house),
+        pagination_sync_default_params_value: {}.to_json,
+        pagination_sync_query_params_value: ["year"].to_json,
+        pagination_sync_total_pages_selector_value: "[data-pagination-total-pages]",
+        action: "turbo:frame-load->pagination-sync#updateUrl"
+      } do %>
+
+  <span hidden data-pagination-total-pages="<%= invoices.respond_to?(:total_pages) ? invoices.total_pages : 1 %>"></span>
+
+  <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3">
+    <div class="d-flex align-items-center flex-wrap gap-3">
+      <h2 class="mb-0 fs-5">
+        <span class="material-symbols-filled align-middle fs-4">history</span>
+        <%= t("invoice.list") %>
+      </h2>
+
+      <%= form_with url: former_tenants_landlord_house_invoices_path(house),
+                    method: :get,
+                    class: "d-flex align-items-center gap-2",
+                    data: {
+                      turbo_frame: "former_invoices_table",
+                      turbo_action: "advance"
+                    } do |f| %>
+        <%= f.label :year, "#{t('year')}:", class: "fw-semibold text-secondary text-nowrap m-0" %>
+        <%= f.select :year,
+                     options_for_select([[t("all_years"), ""]] + years.map { |y| [y.to_s, y.to_s] }, year),
+                     {},
+                     class: "form-select form-select-sm shadow-sm w-auto",
+                     onchange: "this.form.requestSubmit()" %>
+
+        <% if year.present? %>
+          <%= link_to former_tenants_landlord_house_invoices_path(house),
+                      class: "btn btn-sm btn-outline-secondary d-flex align-items-center gap-1",
+                      data: { turbo_frame: "former_invoices_table" } do %>
+            <span class="material-symbols-outlined fs-6">filter_alt_off</span>
+            <span><%= t("clear_filter") %></span>
+          <% end %>
+        <% end %>
+      <% end %>
+    </div>
+
+    <span class="badge bg-light text-dark border p-2 fs-6">
+      <%= "#{t('total')}: #{invoices.respond_to?(:total_count) ? invoices.total_count : invoices.size}" %>
+    </span>
+  </div>
+
+  <div class="table-responsive bg-white rounded-3 shadow-sm border">
+    <table class="table invoice-table table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th class="ps-3"><%= t('invoice.code_and_title') %></th>
+          <th><%= t('invoice.room_or_target') %></th>
+          <th><%= t('invoice.billing_month') %></th>
+          <th><%= t('invoice.total') %></th>
+          <th class="text-center pe-3"><%= t("actions") %></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if invoices.any? %>
+          <% invoices.each do |inv| %>
+            <tr id="<%= dom_id(inv) %>" class="<%= 'opacity-50 text-decoration-line-through' if inv.cancelled? %>">
+              <td class="ps-3">
+                <p class="invoice-code-tag mb-1"><%= inv.code %></p>
+                <div class="fw-semibold"><%= inv.title %></div>
+              </td>
+              <td>
+                <%= invoice_target_info(inv) %>
+                <div class="mt-1"><%= invoice_type_badge(inv, show_target: false) %></div>
+              </td>
+              <td><%= format_month(inv.billing_month) %></td>
+              <td>
+                <span class="fw-bold">
+                  <%= format_money(inv.total_amount) %>
+                </span>
+              </td>
+              <td class="text-center pe-3">
+                <div class="d-flex align-items-center justify-content-center gap-2">
+                  <%= link_to landlord_house_invoice_path(house, inv),
+                            class: "table-action px-1 py-0",
+                            data: { turbo_frame: "_top" },
+                            title: t("view_detail"),
+                            aria: { label: t("view_detail") } do %>
+                    <span class="material-symbols-filled" aria-hidden="true">visibility</span>
+                  <% end %>
+
+                  <% if inv.pending? || inv.overdue? %>
+                    <%= link_to edit_landlord_house_invoice_path(house, inv),
+                              data: { turbo_frame: "edit_invoice_modal" },
+                              title: t("edit"),
+                              class: "table-action",
+                              aria: { label: t("edit") } do %>
+                      <span class="material-symbols-filled" aria-hidden="true">edit</span>
+                    <% end %>
+
+                    <button type="button"
+                            class="table-action text-success border-0 bg-transparent p-0"
+                            data-bs-toggle="modal"
+                            data-bs-target="#rowMarkPaidModal_<%= inv.id %>"
+                            title="<%= t('invoice.actions.done') %>"
+                            aria-label="<%= t('invoice.actions.done') %>">
+                      <span class="material-symbols-filled" aria-hidden="true">paid</span>
+                    </button>
+
+                    <%= button_to cancel_landlord_house_invoice_path(house, inv),
+                              method: :patch,
+                              title: t("invoice.actions.cancel"),
+                              aria: { label: t("invoice.actions.cancel") },
+                              data: { turbo_confirm: t("invoice.actions.cancel_confirm"), turbo_frame: "_top" },
+                              class: "table-action text-danger-emphasis" do %>
+                      <span class="material-symbols-filled" aria-hidden="true">cancel</span>
+                    <% end %>
+                  <% elsif inv.paid? %>
+                    <button type="button"
+                            class="table-action text-danger border-0 bg-transparent p-0"
+                            data-bs-toggle="modal"
+                            data-bs-target="#rowUndoPaidModal_<%= inv.id %>"
+                            title="<%= t('invoice.undo_paid_tooltip') %>"
+                            aria-label="<%= t('invoice.undo_paid_tooltip') %>">
+                      <span class="material-symbols-filled" aria-hidden="true">undo</span>
+                    </button>
+                  <% end %>
+                </div>
+
+                <%= render "landlord_portal/invoices/row_modals", house: house, inv: inv %>
+              </td>
+            </tr>
+          <% end %>
+        <% else %>
+          <tr>
+            <td colspan="5" class="text-center py-4 text-secondary">
+              <%= t("invoice.no_former_invoices") %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="mt-3">
+    <%= paginate invoices, params: { year: year } %>
+  </div>
+<% end %>

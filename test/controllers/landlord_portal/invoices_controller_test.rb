@@ -1723,4 +1723,55 @@ class LandlordPortal::InvoicesControllerTest < ActionDispatch::IntegrationTest
     assert_equal 1_400_000, inv_t1.total_amount
     assert_equal 1_900_000, inv_t2.total_amount
   end
+
+  test "landlord can access invoices former-tenants and filter by year and search" do
+    former_user = User.create!(
+      fullname: "Former Tenant Old",
+      tel: "0909999111",
+      password: "Password123!",
+      password_confirmation: "Password123!",
+      role: "tenant",
+      sex: "male",
+      bday: 25.years.ago.to_date,
+      address: "123 Old St",
+      tel_verified_at: Time.current
+    )
+    former_tenant = Tenant.find_or_create_by!(id: former_user.id)
+    former_invoice = @house.invoices.create!(
+      code: "HD-FORMER-01",
+      title: "Hóa đơn khách cũ",
+      room: @room1,
+      tenant: former_tenant,
+      created_by: @landlord_user,
+      billing_month: Date.new(2025, 6, 1),
+      due_date: Date.new(2025, 6, 10),
+      invoice_type: :custom,
+      status: :paid,
+      payment_method: :transfer,
+      paid_at: Date.new(2025, 6, 5),
+      subtotal: 1_000_000,
+      total_amount: 1_000_000
+    )
+
+    sign_in_as(@landlord_user)
+
+    get former_tenants_landlord_house_invoices_path(@house)
+    assert_response :success
+    assert_select "tr#invoice_#{former_invoice.id}"
+
+    # Filter by matching year
+    get former_tenants_landlord_house_invoices_path(@house, year: 2025)
+    assert_response :success
+    assert_select "tr#invoice_#{former_invoice.id}"
+
+    # Filter by non-matching year
+    get former_tenants_landlord_house_invoices_path(@house, year: 2020)
+    assert_response :success
+    assert_select "tr#invoice_#{former_invoice.id}", count: 0
+
+    # Search by code
+    get former_tenants_landlord_house_invoices_path(@house, q: "HD-FORMER-01")
+    assert_response :success
+    assert_select "tr#invoice_#{former_invoice.id}"
+  end
 end

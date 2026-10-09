@@ -1,7 +1,7 @@
 class LandlordPortal::ContractsController < LandlordPortal::BaseController
   layout "house_mngment"
 
-  load_and_authorize_resource :contract, through: :house, except: %i[new create index filtered]
+  load_and_authorize_resource :contract, through: :house, except: %i[new create index filtered former_tenants]
   before_action :authorize_tenant_belongs_to_house!, only: [ :new, :create ]
 
   def new
@@ -24,7 +24,7 @@ class LandlordPortal::ContractsController < LandlordPortal::BaseController
   end
 
   def show
-    @tenant_stay = @house.tenant_stay_for(@contract.tenant_id)
+    @tenant_stay = @house.tenant_stay_for(@contract.tenant_id) || @house.historical_tenant_stay_for(@contract.tenant_id)
   end
 
   def index
@@ -39,13 +39,51 @@ class LandlordPortal::ContractsController < LandlordPortal::BaseController
            locals: { house: @house, contracts: @contracts }
   end
 
+  def former_tenants
+    active_tenant_ids = @house.currently_linked_tenant_ids
+    scope = if active_tenant_ids.present?
+              @house.contracts.where.not(tenant_id: active_tenant_ids)
+            else
+              @house.contracts
+            end
+
+    # Extract all distinct years from former contracts
+    @available_years = scope.pluck(
+      Arel.sql("DISTINCT unnest(ARRAY[EXTRACT(YEAR FROM contracts.start_date)::int, EXTRACT(YEAR FROM contracts.due_date)::int, EXTRACT(YEAR FROM contracts.end_date)::int])")
+    ).compact.sort.reverse
+
+    @year = params[:year].presence
+    if @year.present?
+      year_int = @year.to_i
+      scope = scope.where(
+        "EXTRACT(YEAR FROM contracts.start_date) = :year OR EXTRACT(YEAR FROM contracts.due_date) = :year OR EXTRACT(YEAR FROM contracts.end_date) = :year",
+        year: year_int
+      )
+    end
+
+    @query = (params[:q] || params[:query])&.strip
+    if @query.present?
+      q_val = "%#{ActiveRecord::Base.sanitize_sql_like(@query)}%"
+      scope = scope.joins(tenant: :user).where(
+        "unaccent(users.fullname) ILIKE unaccent(:q) OR users.tel ILIKE :q OR unaccent(contracts.name) ILIKE unaccent(:q)",
+        q: q_val
+      )
+    end
+
+    @contracts = scope
+      .preload(tenant: :user)
+      .order(end_date: :desc, start_date: :desc, id: :desc)
+      .page(params[:page])
+      .per(15)
+  end
+
   def edit
-    @tenant_stay = @house.tenant_stay_for(@contract.tenant_id)
+    @tenant_stay = @house.tenant_stay_for(@contract.tenant_id) || @house.historical_tenant_stay_for(@contract.tenant_id)
     @user = @contract.tenant.user
   end
 
   def update
-    @tenant_stay = @house.tenant_stay_for(@contract.tenant_id)
+    @tenant_stay = @house.tenant_stay_for(@contract.tenant_id) || @house.historical_tenant_stay_for(@contract.tenant_id)
     @user = @contract.tenant.user
 
     if @contract.finished?

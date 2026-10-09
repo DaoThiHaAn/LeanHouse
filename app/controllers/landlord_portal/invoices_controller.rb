@@ -22,6 +22,54 @@ class LandlordPortal::InvoicesController < LandlordPortal::BaseController
     }
   end
 
+  def former_tenants
+    active_tenant_ids = @house.currently_linked_tenant_ids
+    scope = @house.invoices.kept
+
+    if active_tenant_ids.present?
+      scope = scope.where(
+        "invoices.tenant_id IS NOT NULL AND invoices.tenant_id NOT IN (:active_ids)",
+        active_ids: active_tenant_ids
+      ).or(
+        @house.invoices.kept.where(
+          invoice_type: "room"
+        ).where(
+          "NOT EXISTS (
+            SELECT 1 FROM tenant_stays ts
+            JOIN rental_units ru ON ru.id = ts.rental_unit_id
+            WHERE ru.rentable_type = 'Room' AND ru.rentable_id = invoices.room_id
+            AND ts.checkout_at IS NULL
+            AND ts.checkin_at <= (invoices.billing_month + INTERVAL '1 month' - INTERVAL '1 day')
+          )"
+        )
+      )
+    end
+
+    # Extract all distinct years from former invoices
+    @available_years = scope.pluck(Arel.sql("DISTINCT EXTRACT(YEAR FROM billing_month)::int")).compact.sort.reverse
+
+    @year = params[:year].presence
+    if @year.present?
+      year_int = @year.to_i
+      scope = scope.where("EXTRACT(YEAR FROM invoices.billing_month) = ?", year_int)
+    end
+
+    @query = (params[:q] || params[:query])&.strip
+    if @query.present?
+      q_val = "%#{ActiveRecord::Base.sanitize_sql_like(@query)}%"
+      scope = scope.left_joins(tenant: :user).where(
+        "invoices.code ILIKE :q OR invoices.title ILIKE :q OR users.fullname ILIKE :q OR users.tel ILIKE :q",
+        q: q_val
+      )
+    end
+
+    @invoices = scope
+      .includes(:tenant, :bank_account, :created_by, room: :floor)
+      .sorted
+      .page(params[:page])
+      .per(15)
+  end
+
   def show
     @items = @invoice.invoice_items.order(created_at: :asc)
     @bank_account = @invoice.bank_account || @landlord.bank_accounts.default_first.first

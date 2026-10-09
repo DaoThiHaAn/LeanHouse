@@ -136,6 +136,7 @@ en:
   month: "Month"
   month_val: "Month %{val}"
   year: "Year"
+  all_years: "All years"
   person_unit: "Tenants"
   you: "You"
   clear_search: "Clear search"

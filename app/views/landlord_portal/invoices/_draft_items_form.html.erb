@@ -242,11 +242,6 @@
               0 đ
             </span>
           </div>
-          <% if room.house.bed? && local_assigns[:invoice_type] == "individual" %>
-            <div class="text-secondary small mt-1">
-              <%= t('invoice.bed_mode_individual_total_hint', default: 'Tổng các hóa đơn sẽ xuất cho phòng. Mỗi khách thanh toán theo giá giường riêng + dịch vụ chia đều.') %>
-            </div>
-          <% end %>
         </div>
       </div>
     </div>

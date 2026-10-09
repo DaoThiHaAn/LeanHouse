@@ -23,8 +23,9 @@
             <td>
               <% if inv.house %>
                 <% if inv.house.is_deleted? %>
-                  <span class="text-decoration-line-through text-secondary"><%= inv.house.name %></span>
-                  <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle small ms-1">(<%= t('form.house.deleted_status', default: 'Nhà đã xóa') %>)</span>
+                  <span class="text-decoration-line-through text-secondary" title="<%=t('form.house.deleted_status') %>">
+                    <%= inv.house.name %>
+                  </span>
                 <% else %>
                   <%= link_to inv.house.name, admin_house_path(inv.house), class: "link fw-semibold" %>
                 <% end %>

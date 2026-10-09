@@ -207,6 +207,24 @@ class LandlordPortal::TenantsControllerTest < ActionDispatch::IntegrationTest
     assert_equal Date.current, @contract1.reload.end_date
   end
 
+  test "execute_move with end_contract=1 via turbo_stream removes row, updates stats, unsigned banner, and flash" do
+    sign_in_as(@landlord_user)
+    post move_landlord_house_tenant_path(@house, @tenant1),
+      params: { rental_unit_id: @rental_unit3.id, end_contract: "1" },
+      as: :turbo_stream
+    assert_response :success
+    assert_equal "text/vnd.turbo-stream.html; charset=utf-8", response.content_type
+    assert_select "turbo-stream[action='remove'][target='#{ActionView::RecordIdentifier.dom_id(@tenant1)}']"
+    assert_select "turbo-stream[action='replace'][target='tenant_stats_grid']"
+    assert_select "turbo-stream[action='update'][target='unsigned_tenants_wrapper']"
+    assert_select "turbo-stream[action='append'][target='events']"
+    assert_select "turbo-stream[action='update'][target='flash']"
+    new_stay = @tenant1.reload.current_stay
+    assert_equal @rental_unit3, new_stay.rental_unit
+    assert_not new_stay.has_contract
+    assert_equal Date.current, @contract1.reload.end_date
+  end
+
   test "execute_move without end_contract keeps contract intact on new stay" do
     sign_in_as(@landlord_user)
     post move_landlord_house_tenant_path(@house, @tenant1),

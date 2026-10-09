@@ -278,6 +278,7 @@ vi:
         collapse_view: "Thu gọn"
         click_to_view: "Nhấp để xem danh sách"
       "no": "Không tìm thấy khách thuê nào!"
+      moving: "Đang chuyển chỗ"
 
     bed:
       self: "Giường"
@@ -442,3 +443,12 @@ vi:
       view_house_contracts: "Quản lý hợp đồng nhà này"
       no_contracts_in_archive: "Chưa có hợp đồng nào trong kho lưu trữ."
       view_all_contracts_btn: "Xem tất cả hợp đồng"
+      former_tenants_title: "Hợp đồng khách đã rời đi"
+      former_tenants_sub: "Danh sách hợp đồng của khách thuê đã trả phòng / rời khỏi nhà"
+      former_tenants_contracts: "Hợp đồng khách cũ"
+      search_former_placeholder: "Tìm theo tên khách, SĐT, tên hợp đồng..."
+      current_tenants: "Khách đang ở"
+      former_tenants: "Khách đã rời đi"
+      view_active_contracts: "Hợp đồng hiện tại"
+      id_and_name: "Mã & Tên hợp đồng"
+      no_former_contracts: "Không tìm thấy hợp đồng của khách đã rời đi"
