@@ -1,6 +1,14 @@
 require "test_helper"
 
 class PublicPagesControllerTest < ActionDispatch::IntegrationTest
+  test "GET / (main_home) succeeds and renders optimized webp images" do
+    get root_url
+    assert_response :success
+    assert_select "img[src*='banner']"
+    assert_select "img[src*='landlord-1']"
+    assert_select "img[src*='tenant-1']"
+  end
+
   test "GET /report-issues succeeds" do
     get report_issues_url
     assert_response :success
