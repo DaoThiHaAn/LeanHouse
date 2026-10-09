@@ -47,4 +47,6 @@ module ActiveStorageBlobExif
   end
 end
 
-ActiveStorage::Blob.include(ActiveStorageBlobExif) unless ActiveStorage::Blob.include?(ActiveStorageBlobExif)
+ActiveSupport.on_load(:active_storage_blob) do
+  include ActiveStorageBlobExif unless include?(ActiveStorageBlobExif)
+end

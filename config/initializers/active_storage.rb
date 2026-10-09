@@ -4,6 +4,6 @@ Rails.application.config.after_initialize do
   Rails.application.config.active_storage.analyzers.insert(0, ExifImageAnalyzer)
 end
 
-Rails.application.config.to_prepare do
-  ActiveStorage::Blob.include(ActiveStorageBlobExif) unless ActiveStorage::Blob.include?(ActiveStorageBlobExif)
+ActiveSupport.on_load(:active_storage_blob) do
+  include ActiveStorageBlobExif unless include?(ActiveStorageBlobExif)
 end
