@@ -96,7 +96,16 @@
     <h2 class="fw-bold mb-2"><%= t("form.tenant.select_unit") %>:</h2>
 
     <p>
-      <%= tenant_stay&.rental_unit&.location_info || t("none") %>,
+      <% if tenant_stay&.rental_unit %>
+        <% if tenant_stay.rental_unit.deleted? %>
+          <span class="text-decoration-line-through text-secondary"><%= tenant_stay.rental_unit.location_info %></span>
+          <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle small ms-1">(<%= t('status_deleted') %>)</span>
+        <% else %>
+          <%= tenant_stay.rental_unit.location_info %>
+        <% end %>
+      <% else %>
+        <%= t("none") %>
+      <% end %>,
       <% if house.is_deleted? %>
         <span class="text-decoration-line-through text-secondary"><%= house.name %></span>
       <% else %>

@@ -81,7 +81,12 @@
             <span><%= t('invoice.payer_info') %></span>
           </div>
           <div class="invoice-party-name">
-            <%= invoice.room.title_name %>
+            <% if invoice.room.deleted? %>
+              <span class="text-decoration-line-through text-secondary"><%= invoice.room.title_name %></span>
+              <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle small ms-1">(<%= t('status_deleted') %>)</span>
+            <% else %>
+              <%= invoice.room.title_name %>
+            <% end %>
             (<%= invoice.room.floor.title_name %>)
           </div>
           <div class="invoice-party-info">

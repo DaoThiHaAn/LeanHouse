@@ -24,6 +24,13 @@ class RentalUnit < ApplicationRecord
     rentable.tenant_removed!
   end
 
+  # Check if the underlying room or bed has been soft-deleted
+  def deleted?
+    return true if rentable.nil?
+
+    rentable.deleted? || (rentable_type == "Bed" && room&.deleted?)
+  end
+
   def bed
     rentable if rentable_type == "Bed"
   end

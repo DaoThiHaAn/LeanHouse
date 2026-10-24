@@ -345,4 +345,31 @@ class LandlordPortal::RequestsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "turbo-stream[action='replace'][target='landlord_requests_nav_badge']"
   end
+
+  test "landlord request detail modal does not display documents purged notice when registration card image is purged by admin before review" do
+    sign_in_as(@landlord_user)
+
+    # Admin deletes registration card image via moderation, documents_purged_at is still nil
+    @vehicle_req.registration_card_image.purge
+    assert_nil @vehicle_req.reload.documents_purged_at
+    assert_not @vehicle_req.registration_card_image.attached?
+
+    get landlord_request_path(@landlord_request), headers: { "Turbo-Frame" => "request_detail_modal" }
+    assert_response :success
+    assert_select "div", text: I18n.t("request.documents_purged"), count: 0
+    assert_select "span.text-secondary.fst-italic", text: I18n.t("not_available")
+  end
+
+  test "landlord request detail modal displays documents purged notice when documents were purged after review" do
+    sign_in_as(@landlord_user)
+
+    # Landlord reviews/approves or request expires, auto-purging documents and setting documents_purged_at
+    @vehicle_req.purge_documents!
+    assert @vehicle_req.reload.documents_purged_at.present?
+    assert_not @vehicle_req.registration_card_image.attached?
+
+    get landlord_request_path(@landlord_request), headers: { "Turbo-Frame" => "request_detail_modal" }
+    assert_response :success
+    assert_select "div", text: I18n.t("request.documents_purged"), count: 1
+  end
 end

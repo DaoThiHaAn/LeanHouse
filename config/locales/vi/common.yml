@@ -146,6 +146,7 @@ vi:
   required_fields: "Thông tin bắt buộc"
   clear_img: "Xóa ảnh"
   staying: "Đang thuê"
+  not_available: "Không khả dụng"
 
   error_pages:
     actions:

@@ -78,7 +78,16 @@
                 <small class="text-secondary"><%= contract.tenant.user.tel %></small>
               </td>
               <td>
-                <%= historical_stay&.rental_unit&.location_info || t("none") %>
+                <% if historical_stay&.rental_unit %>
+                  <% if historical_stay.rental_unit.deleted? %>
+                    <span class="text-decoration-line-through text-secondary"><%= historical_stay.rental_unit.location_info %></span>
+                    <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle small ms-1"><%= t('status_deleted') %></span>
+                  <% else %>
+                    <%= historical_stay.rental_unit.location_info %>
+                  <% end %>
+                <% else %>
+                  <%= t("none") %>
+                <% end %>
               </td>
               <td><%= contract.formatted_period %></td>
               <td class="text-center pe-3">

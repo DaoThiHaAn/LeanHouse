@@ -256,4 +256,16 @@ class LandlordPortal::ContractsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "tr#contract_#{@contract.id}"
   end
+
+  test "former contracts view displays deleted badge when room is soft-deleted" do
+    @tenant_stay.update_columns(checkin_at: 2.months.ago, checkout_at: 1.month.ago)
+    @contract.update!(end_date: 1.month.ago.to_date)
+    @room.update!(deleted: true)
+
+    sign_in_as(@landlord_user)
+
+    get former_tenants_landlord_house_contracts_path(@house)
+    assert_response :success
+    assert_select "tr#contract_#{@contract.id} .badge", text: I18n.t("status_deleted")
+  end
 end

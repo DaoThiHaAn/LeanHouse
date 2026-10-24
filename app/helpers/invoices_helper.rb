@@ -107,15 +107,34 @@ module InvoicesHelper
     return "" unless invoice
 
     room_text = invoice.room_title.presence || invoice.house.name
+    room_deleted = invoice.room&.deleted?
     parts = []
 
     if (invoice.individual? || invoice.custom?) && invoice.tenant.present?
       user = invoice.tenant.user
       parts << content_tag(:div, user.fullname, class: "fw-semibold text-dark")
-      parts << content_tag(:div, room_text, class: "small text-secondary") if room_text.present?
+      if room_text.present?
+        room_content = if room_deleted
+                         safe_join([
+                           content_tag(:span, room_text, class: "text-decoration-line-through text-secondary"),
+                           content_tag(:span, t("status_deleted"), class: "badge bg-secondary-subtle text-secondary border border-secondary-subtle small ms-1")
+                         ])
+                       else
+                         room_text
+                       end
+        parts << content_tag(:div, room_content, class: "small text-secondary")
+      end
       parts << content_tag(:small, user.tel, class: "text-secondary font-monospace d-block") if user.tel.present?
     else
-      parts << content_tag(:p, room_text, class: "d-flex align-items-center gap-1 mb-0 fw-semibold text-dark")
+      room_content = if room_deleted
+                       safe_join([
+                         content_tag(:span, room_text, class: "text-decoration-line-through text-secondary"),
+                         content_tag(:span, t("status_deleted"), class: "badge bg-secondary-subtle text-secondary border border-secondary-subtle small ms-1")
+                       ])
+                     else
+                       room_text
+                     end
+      parts << content_tag(:p, room_content, class: "d-flex align-items-center gap-1 mb-0 fw-semibold text-dark")
     end
 
     parts << content_tag(:div, invoice_type_badge(invoice, show_target: false), class: "mt-1") if show_type_badge

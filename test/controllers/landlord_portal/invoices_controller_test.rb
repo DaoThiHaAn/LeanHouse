@@ -1774,4 +1774,41 @@ class LandlordPortal::InvoicesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "tr#invoice_#{former_invoice.id}"
   end
+
+  test "former invoices view displays deleted badge when room is soft-deleted" do
+    former_user = User.create!(
+      fullname: "Le Thi Former",
+      tel: "0909999222",
+      password: "Password123!",
+      password_confirmation: "Password123!",
+      role: "tenant",
+      sex: "female",
+      bday: 25.years.ago.to_date,
+      address: "123 Old St",
+      tel_verified_at: Time.current
+    )
+    former_tenant = Tenant.find_or_create_by!(id: former_user.id)
+    former_invoice = @house.invoices.create!(
+      code: "HD-FORMER-DEL-ROOM",
+      title: "Hóa đơn phòng đã xóa",
+      room: @room1,
+      tenant: former_tenant,
+      created_by: @landlord_user,
+      billing_month: Date.new(2025, 6, 1),
+      due_date: Date.new(2025, 6, 10),
+      invoice_type: :custom,
+      status: :paid,
+      payment_method: :transfer,
+      paid_at: Date.new(2025, 6, 5),
+      subtotal: 1_000_000,
+      total_amount: 1_000_000
+    )
+    @room1.update!(deleted: true)
+
+    sign_in_as(@landlord_user)
+
+    get former_tenants_landlord_house_invoices_path(@house)
+    assert_response :success
+    assert_select "tr#invoice_#{former_invoice.id} .badge", text: I18n.t("status_deleted")
+  end
 end
